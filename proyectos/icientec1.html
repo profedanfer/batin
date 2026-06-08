@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión Primer Año · Proyectos 1ro BATIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #fff8f2;
+    --surface:  #fff1e6;
+    --card:     #ffffff;
+    --border:   #f0c9a0;
+    --accent:   #c45e00;
+    --accent2:  #0077aa;
+    --accent3:  #e05000;
+    --gold:     #c47800;
+    --text:     #2a1800;
+    --muted:    #996633;
+    --radius:   10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: #2a1800;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TERMINAL HEADER ── */
+  .terminal-bar {
+    background: #fde8d0;
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .term-path { color: var(--accent); margin-left: .5rem; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 4rem 2rem 3rem;
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 .hi { color: var(--accent); }
+  .hero h1 .cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7em;
+    color: var(--accent2);
+    display: block;
+    margin-top: .3rem;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: #bbb;
+    max-width: 580px;
+    margin: 0 auto 2rem;
+    line-height: 1.75;
+  }
+
+  /* ── PERSONAJES ── */
+  .chars {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .char-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .75rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    font-size: 14px;
+  }
+  .char-card .emoji { font-size: 24px; }
+  .char-card .name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: .9rem; }
+  .char-card .role { font-size: 12px; color: var(--muted); }
+
+  /* ── SEPARADOR ── */
+  .sep {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 2rem;
+  }
+
+  /* ── INTRO NARRATIVA ── */
+  .narrative {
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+  }
+  .narrative .terminal-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #7a4a1a;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+  .narrative .terminal-block .prompt { color: var(--accent); }
+  .narrative .terminal-block .out   { color: var(--text); }
+  .narrative .terminal-block .warn  { color: var(--gold); }
+  .narrative p {
+    color: #5a3010;
+    font-size: 15px;
+    margin-bottom: 1rem;
+  }
+  .narrative strong { color: var(--text); }
+
+  /* ── CÓMO FUNCIONA ── */
+  .how {
+    max-width: 820px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: .75rem;
+  }
+  .how-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    border-top: 3px solid var(--accent);
+  }
+  .how-card.b2 { border-top-color: var(--accent2); }
+  .how-card.b3 { border-top-color: var(--accent3); }
+  .how-card.b4 { border-top-color: var(--gold); }
+  .how-card .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: .4rem;
+  }
+  .how-card .step-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    margin-bottom: .3rem;
+  }
+  .how-card .step-desc {
+    font-size: 13px;
+    color: #999;
+  }
+
+  /* ── PROYECTOS ── */
+  .projects-section {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: .4rem;
+  }
+  .section-title .accent { color: var(--accent); }
+  .section-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* filtros */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .filter-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: #c45e00; color: #c45e00; }
+  .filter-btn.on {
+    background: var(--card);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* grid de tarjetas */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .pcard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pcard::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .pcard:hover { border-color: #c45e00; transform: translateY(-2px); }
+  .pcard:hover::before { opacity: 1; }
+  .pcard.tipo-word::before { background: var(--accent2); }
+  .pcard.tipo-hist::before { background: var(--gold); }
+  .pcard.tipo-mesa::before { background: var(--accent3); }
+
+  .pcard-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .pcard-icon { font-size: 26px; line-height: 1; }
+  .pcard-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+  .badge-excel { border-color: var(--accent);  color: var(--accent); }
+  .badge-word  { border-color: var(--accent2); color: var(--accent2); }
+  .badge-hist  { border-color: var(--gold);    color: var(--gold); }
+  .badge-mesa  { border-color: var(--accent3); color: var(--accent3); }
+
+  .pcard-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .pcard-desc { font-size: 13px; color: #7a4a1a; line-height: 1.55; }
+
+  .pcard-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .ptag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    background: #fde8d0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: #666;
+  }
+
+  .pcard-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pcard-nivel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .pcard-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* ── MODAL ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1.1rem; right: 1.1rem;
+    background: none; border: none;
+    color: var(--muted); font-size: 18px; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-header { margin-bottom: 1rem; }
+  .modal-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: .4rem;
+    line-height: 1.3;
+    padding-right: 2rem;
+  }
+  .modal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .msec { margin-bottom: 1.1rem; }
+  .msec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .4rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .msec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msec p  { font-size: 14px; color: #5a3010; line-height: 1.6; }
+  .msec li { font-size: 14px; color: #5a3010; line-height: 1.7; }
+  .msec ul { padding-left: 1.2rem; }
+  .msec li { margin-bottom: .15rem; }
+
+  .mission-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.2rem;
+    padding: .75rem;
+    border-radius: var(--radius);
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s;
+    text-align: center;
+  }
+  .mission-btn:hover { background: rgba(196,94,0,.08); }
+
+  /* ── FERIA ── */
+  .feria-section {
+    max-width: 820px;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+  }
+  .feria-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent3);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+  }
+  .feria-box h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent3);
+    margin-bottom: .8rem;
+  }
+  .feria-box p { font-size: 14px; color: #5a3010; margin-bottom: .6rem; }
+  .feria-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: .6rem;
+    margin-top: 1rem;
+  }
+  .fstep {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .8rem;
+    text-align: center;
+  }
+  .fstep .fn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--accent3);
+    font-weight: 700;
+    display: block;
+    margin-bottom: .25rem;
+  }
+  .fstep .ft { font-size: 12px; color: #996633; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* scrollbar dark */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #f0c9a0; border-radius: 3px; }
+
+  @media (max-width: 500px) {
+    .hero { padding: 2.5rem 1.2rem 2rem; }
+    .narrative, .how, .feria-section { padding: 0 1.2rem; }
+    .projects-section { padding: 0 1rem 3rem; }
+    .modal { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BARRA TERMINAL -->
+<div class="terminal-bar">
+  <span class="dot dot-r"></span>
+  <span class="dot dot-y"></span>
+  <span class="dot dot-g"></span>
+  <span class="term-path">~/directorio-raiz/1ro-batin/proyectos$</span>
+  <span style="margin-left:.5rem">_</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-label">// directorio raíz · misión 1ro batin · 2026</span>
+  <h1>
+    Bienvenidos al<br>
+    <span class="hi">Directorio Raíz</span>
+    <span class="cmd">$ choose_your_mission --year=1</span>
+  </h1>
+  <p class="hero-desc">
+    Techi, Bit y Gatiel tienen una misión para vos. Este año no solo vas a aprender Excel, Word y herramientas digitales: vas a usarlas para <strong>investigar algo real</strong>, crear algo que otros puedan usar, y quizás hasta participar en la feria científica.
+  </p>
+  <div class="chars">
+    <div class="char-card">
+      <span class="emoji">👩‍💻</span>
+      <div>
+        <div class="name">Techi</div>
+        <div class="role">Pensamiento lateral</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🤖</span>
+      <div>
+        <div class="name">Bit</div>
+        <div class="role">Lógica y datos</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🦊</span>
+      <div>
+        <div class="name">Gatiel</div>
+        <div class="role">El astuto. Siempre hay otro camino.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- NARRATIVA INTRO -->
+<section class="narrative">
+  <div class="terminal-block">
+    <div><span class="prompt">techi@raiz:~$</span> <span class="out">iniciar_mision --modulo=proyectos</span></div>
+    <div style="margin-top:.6rem"><span class="warn">[ADVERTENCIA]</span> <span class="out">Este año no habrá ejercicios sin sentido.</span></div>
+    <div><span class="warn">[ADVERTENCIA]</span> <span class="out">Cada herramienta que aprendas tiene una misión concreta.</span></div>
+    <div style="margin-top:.6rem"><span class="prompt">bit@raiz:~$</span> <span class="out">cargar modulo proyectos_reales...</span></div>
+    <div><span class="out">OK · 12 misiones disponibles · nivel 1ro BATIN</span></div>
+  </div>
+
+  <p>
+    <strong>Techi dice:</strong> "¿Recuerdan cuando aprendí a hackear el laberinto? No lo logré buscando la respuesta correcta. Lo logré cambiando la pregunta." Este año en Gabinete de Informática va a pasar lo mismo.
+  </p>
+  <p>
+    No vas a aprender Excel para completar ejercicios del libro. Vas a aprender Excel porque tu grupo necesita analizar datos reales de algo que les importa. No vas a aprender Word para escribir cualquier cosa: vas a aprender Word porque tu informe tiene que quedar prolijo para presentarlo en septiembre.
+  </p>
+  <p>
+    <strong>Bit agrega:</strong> "Los datos no mienten, pero sí confunden si no sabés leerlos. Elegí una misión, recolectá datos, analizalos. Eso es lo que hace un técnico en informática."
+  </p>
+  <p>
+    <strong>Gatiel sonríe:</strong> "Y si de paso creás un juego de mesa para enseñarle a otros... mejor todavía. La información compartida no se pierde, se multiplica."
+  </p>
+</section>
+
+<hr class="sep" style="margin: 0 2rem 3rem;">
+
+<!-- CÓMO FUNCIONA -->
+<section class="how">
+  <div class="section-label">// cómo funciona</div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="step-num">paso_01</div>
+      <div class="step-title">Elegís tu misión</div>
+      <div class="step-desc">Tu grupo elige un proyecto de las 12 misiones disponibles. Mirá las tarjetas y elegí algo que les importe de verdad.</div>
+    </div>
+    <div class="how-card b2">
+      <div class="step-num">paso_02</div>
+      <div class="step-title">Investigás con datos reales</div>
+      <div class="step-desc">No hay ejercicios inventados. Los datos que analizás en Excel son datos de tu entorno: el curso, la escuela, tu barrio.</div>
+    </div>
+    <div class="how-card b3">
+      <div class="step-num">paso_03</div>
+      <div class="step-title">Creás algo tangible</div>
+      <div class="step-desc">Un informe en Word, un juego de mesa, un manual, una encuesta. Algo que existe y que otros pueden usar.</div>
+    </div>
+    <div class="how-card b4">
+      <div class="step-num">paso_04</div>
+      <div class="step-title">Lo presentás en septiembre</div>
+      <div class="step-desc">La feria científica ICIENTEC es el destino. Ahí mostrás tu proyecto, tu prototipo y lo que aprendiste.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="projects-section">
+  <div class="section-title">Las <span class="accent">12 misiones</span> disponibles</div>
+  <div class="section-sub">// elegí por herramienta o por tipo de proyecto · hacé clic para ver la guía completa</div>
+
+  <div class="filters" id="filters"></div>
+  <div class="cards-grid" id="grid"></div>
+</section>
+
+<!-- FERIA -->
+<section class="feria-section">
+  <div class="feria-box">
+    <h3>🏆 Destino final: ICIENTEC — Septiembre 2026</h3>
+    <p>Techi lo dice claramente: <em>"Tu futuro no se improvisa. Se programa día a día."</em> La feria científica no es un evento sorpresa. Es el resultado de meses de trabajo real.</p>
+    <p>Tu proyecto debe llegar a septiembre con tres cosas:</p>
+    <div class="feria-steps">
+      <div class="fstep">
+        <span class="fn">📊</span>
+        <span class="ft">Datos analizados en Excel con gráficos</span>
+      </div>
+      <div class="fstep">
+        <span class="fn">📄</span>
+        <span class="ft">Informe en Word completo y estructurado</span>
+      </div>
+      <div class="fstep">
+        <span class="fn">🔧</span>
+        <span class="ft">Prototipo de la solución propuesta</span>
+      </div>
+      <div class="fstep">
+        <span class="fn">🎤</span>
+        <span class="ft">Exposición oral de 5 minutos por grupo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERLAY MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="cerrarModal()">[ ✕ ]</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <p>profe.DanFer · Centro Educativo Departamental Miguela Rodríguez · <a href="https://sites.google.com/view/profe-danfer" target="_blank">sites.google.com/view/profe-danfer</a></p>
+  <p style="margin-top:.4rem; font-size:11px; color:#444">"Si usted tiene un soneto de Verlaine, y yo no tengo nada, y usted me lo enseña… hay crecimiento. Eso es cultura." — Michel Serres</p>
+</footer>
+
+<script>
+const MISIONES = [
+  {
+    id:1, icon:"📊", tipo:"excel",
+    titulo:"El presupuesto del curso",
+    desc:"Diseñar una planilla para gestionar gastos reales de un evento escolar.",
+    tags:["SUMA","PROMEDIO","gráficos"],
+    nivel:"N2–N4",
+    narrativa:"Bit dice: «Los números no mienten. Pero si no los organizás, sí pueden confundirte.» Esta misión es sobre dinero real de tu escuela.",
+    objetivo:"Aprender Excel organizando datos que les importan: dinero real de un evento escolar.",
+    herramientas:["Fórmulas aritméticas básicas","Referencias absolutas y relativas","Gráfico de barras o torta","Google Sheets en el celular"],
+    pasos:[
+      "Elegir un evento escolar real (kermés, excursión, acto)",
+      "Registrar ingresos y egresos en una tabla de Excel",
+      "Calcular totales y porcentajes con fórmulas",
+      "Generar un gráfico del presupuesto",
+      "Comparar lo planificado vs lo real",
+      "Presentar conclusiones al curso"
+    ],
+    juego:"Juego de mesa: cada jugador recibe un presupuesto ficticio y tarjetas de gasto imprevisto. Gana quien cierra el balance positivo.",
+    feria:"Datos reales del evento + análisis de diferencias entre plan y ejecución real.",
+    investigacion:"¿Cómo gestiona el dinero un estudiante vs lo que planifica? Serie de datos propios."
+  },
+  {
+    id:2, icon:"🗳️", tipo:"excel",
+    titulo:"Encuesta digital al curso",
+    desc:"Crear, distribuir y analizar una encuesta sobre hábitos digitales de los estudiantes.",
+    tags:["CONTAR.SI","Google Forms","porcentajes","datos"],
+    nivel:"N3–N5",
+    narrativa:"Techi pregunta: «¿Cuántas horas al día usás el celular? ¿Lo sabés con certeza o lo suponés?» Hay una diferencia enorme entre creer un dato y medirlo.",
+    objetivo:"Entender cómo se recolectan y procesan datos en investigación real, usando herramientas gratuitas desde el celular.",
+    herramientas:["Google Forms para crear la encuesta","Google Sheets para importar datos","CONTAR.SI y SUMAR.SI","Gráficos para el análisis"],
+    pasos:[
+      "Definir el tema: uso del celular, hábitos de sueño, alimentación…",
+      "Crear la encuesta en Google Forms (desde el celular)",
+      "Compartirla al curso y recolectar 30 respuestas",
+      "Importar los datos a Excel y limpiarlos",
+      "Calcular frecuencias y porcentajes con fórmulas",
+      "Crear gráficos y redactar conclusiones"
+    ],
+    juego:"Juego de detectives: cada grupo recibe un gráfico incompleto y debe adivinar los datos faltantes con pistas.",
+    feria:"Base de datos propia del grupo, lista para el análisis de la feria científica.",
+    investigacion:"30 estudiantes = muestra válida para un artículo escolar sobre hábitos digitales juveniles."
+  },
+  {
+    id:3, icon:"🧬", tipo:"hist",
+    titulo:"Los ancestros del sistema",
+    desc:"Investigar pioneros de la informática y crear material para enseñar a otros.",
+    tags:["historia","Word","Canva","exposición"],
+    nivel:"N2–N4",
+    narrativa:"Gatiel murmura: «¿Alguna vez te preguntaste quién diseñó las reglas del juego antes de que existieran los videojuegos? Ellos fueron los primeros hackers de la realidad.»",
+    objetivo:"Conocer el contexto histórico de la informática investigando a sus verdaderos pioneros.",
+    herramientas:["Word para redactar el informe","Canva para diseñar el póster","Google para búsqueda académica","Google Docs en el celular"],
+    pasos:[
+      "Cada grupo recibe un pionero: Ada Lovelace, Turing, Von Neumann, Grace Hopper…",
+      "Investigar: contexto histórico, aporte principal, legado actual",
+      "Redactar informe en Word con estructura formal (portada, secciones, conclusión)",
+      "Diseñar póster en Canva para exponer",
+      "Exponer al resto del curso en 3 minutos",
+      "Dejar el material disponible para otros cursos"
+    ],
+    juego:"Trivia de pioneros: tarjetas con preguntas. Cada grupo es 'experto' en su personaje y árbitro en esas preguntas.",
+    feria:"Línea de tiempo colaborativa con todos los personajes investigados por el curso.",
+    investigacion:"Construir una enciclopedia digital de historia informática: texto, imágenes y fuentes verificadas."
+  },
+  {
+    id:4, icon:"🎮", tipo:"mesa",
+    titulo:"Excel Quest: el juego",
+    desc:"Diseñar un juego de mesa donde las fórmulas de Excel son los hechizos del personaje.",
+    tags:["creatividad","diseño","fórmulas","enseñar"],
+    nivel:"N3–N5",
+    narrativa:"Techi sonríe: «La mejor forma de saber si realmente entendiste algo es poder enseñárselo a otro. ¿Podés diseñar un juego donde las fórmulas de Excel sean poderes?»",
+    objetivo:"Consolidar el aprendizaje de Excel creando un recurso que otros estudiantes puedan usar.",
+    herramientas:["Word para el manual de reglas","Canva para diseñar cartas y tablero","Excel para crear y validar los ejercicios de cada carta"],
+    pasos:[
+      "Diseñar el concepto: tablero, cartas de fórmulas, mecánica del juego",
+      "Crear los ejercicios de cada carta (SUMA, SI, PROMEDIO, MAX…)",
+      "Redactar el manual de reglas en Word",
+      "Diseñar e imprimir el material con Canva",
+      "Probar el juego con otro grupo y ajustarlo",
+      "Presentarlo como producto terminado"
+    ],
+    juego:"El proyecto mismo ES el juego. Los creadores se convierten en expertos y árbitros.",
+    feria:"Prototipo de herramienta educativa creada por estudiantes para estudiantes.",
+    investigacion:"¿Aprenden mejor quienes juegan el juego o quienes solo leen? Comparar grupos: dato para artículo."
+  },
+  {
+    id:5, icon:"🌡️", tipo:"excel",
+    titulo:"Datos del entorno escolar",
+    desc:"Medir una variable real de la escuela (temperatura, asistencia, ruido) durante semanas y analizarla.",
+    tags:["series de tiempo","MAX / MIN","registro","tendencias"],
+    nivel:"N3–N5",
+    narrativa:"Bit explica: «Un dato aislado no dice nada. Diez datos en el tiempo dicen una historia. Cien datos en el tiempo dicen la verdad.»",
+    objetivo:"Practicar el registro continuo de datos reales y el análisis de tendencias con Excel.",
+    herramientas:["Excel para registro semanal","Gráfico de línea para visualizar la evolución","Funciones MAX, MIN, PROMEDIO","Google Sheets en el celular"],
+    pasos:[
+      "Elegir qué medir: temperatura del aula, asistencia diaria, nivel de ruido…",
+      "Diseñar la tabla de registro en Excel",
+      "Registrar datos durante al menos 4 semanas",
+      "Calcular estadísticas descriptivas (máximo, mínimo, promedio)",
+      "Graficar la evolución en el tiempo",
+      "Interpretar hallazgos y escribir conclusiones"
+    ],
+    juego:"Predicción antes de ver el gráfico: cada grupo predice la tendencia. El que más se acerca gana.",
+    feria:"Serie de tiempo real con estadísticas. Datos auténticos del propio entorno escolar.",
+    investigacion:"Datos longitudinales propios, base sólida para un artículo de investigación con metodología clara."
+  },
+  {
+    id:6, icon:"📰", tipo:"word",
+    titulo:"El periódico del BATIN",
+    desc:"Crear un periódico digital del curso usando Word con columnas, imágenes y estilos de texto.",
+    tags:["Word","columnas","estilos","diseño editorial"],
+    nivel:"N2–N4",
+    narrativa:"Gatiel dice: «La información sin forma es ruido. Aprender a darle forma es el primer paso para que otros quieran leerla.»",
+    objetivo:"Dominar Word de forma creativa: estilos, columnas, insertar imágenes, formato coherente.",
+    herramientas:["Word: columnas, estilos de título, insertar imágenes","Google Docs para avanzar desde el celular","Canva para diseñar la cabecera y el logo"],
+    pasos:[
+      "Definir secciones: noticias del curso, entrevista, opinión, tecnología",
+      "Cada grupo redacta su sección en Word",
+      "Unificar en un solo documento con estilo coherente",
+      "Aplicar estilos de titular, subtítulo y cuerpo",
+      "Diseñar la cabecera con logo en Canva",
+      "Publicar o imprimir la edición"
+    ],
+    juego:"Juego de roles: editor, redactor, fotógrafo, corrector. Hay fechas límite como en una redacción real.",
+    feria:"Presentar el proceso de producción editorial y las decisiones de diseño tomadas.",
+    investigacion:"Documentar cómo el trabajo colaborativo afecta la calidad del producto final escrito."
+  },
+  {
+    id:7, icon:"🧩", tipo:"mesa",
+    titulo:"Trivia de los pioneros",
+    desc:"Crear un juego de preguntas y respuestas sobre la historia de la informática.",
+    tags:["historia IT","investigación","Word","tarjetas"],
+    nivel:"N2–N3",
+    narrativa:"Techi recuerda: «En la Bóveda del Conocimiento, las preguntas más difíciles no tienen una sola respuesta. Tienen muchas capas.» Este juego tiene tres niveles de dificultad.",
+    objetivo:"Aprender historia de la informática mientras se diseña material educativo para otros cursos.",
+    herramientas:["Word para redactar preguntas y respuestas","Canva para imprimir las tarjetas","Excel para registrar puntuaciones durante el juego"],
+    pasos:[
+      "Investigar personajes, inventos y fechas clave de la historia informática",
+      "Redactar 40 preguntas en tres niveles de dificultad en Word",
+      "Diseñar las tarjetas en Canva (frente: pregunta, reverso: respuesta + dato curioso)",
+      "Imprimir y preparar el juego",
+      "Jugar con el grupo y ajustar las preguntas confusas",
+      "Donar el juego terminado a la biblioteca del curso"
+    ],
+    juego:"El producto final es el juego. Pueden donarlo a cursos más jóvenes.",
+    feria:"Recurso educativo creado por estudiantes para estudiantes.",
+    investigacion:"¿Quienes jugaron recuerdan más datos que quienes solo leyeron? Hipótesis verificable."
+  },
+  {
+    id:8, icon:"💡", tipo:"excel",
+    titulo:"Calculadora de consumo de datos",
+    desc:"Modelar en Excel cuánto dato gasta cada app del celular y cuánto cuesta al mes.",
+    tags:["función SI","referencias absolutas","cotidiano","celular"],
+    nivel:"N3–N5",
+    narrativa:"Bit pregunta: «¿Sabés realmente cuántos megabytes consume TikTok por hora? ¿Y si pudieras calcularlo con exactitud y proponer un plan de uso eficiente?»",
+    objetivo:"Aplicar Excel a un problema personal y concreto: el gasto de datos móviles.",
+    herramientas:["Excel con referencias absolutas","Función SI (¿superás tu plan?)","Gráfico comparativo por app","Encuesta al curso para recolectar datos"],
+    pasos:[
+      "Encuestar al curso: ¿qué apps usan y cuánto tiempo al día?",
+      "Buscar el consumo promedio de datos de cada app (en MB/hora)",
+      "Construir la calculadora: ingresás horas de uso → calcula el consumo total",
+      "Agregar función SI: si el consumo supera el plan → alerta",
+      "Graficar cuáles apps consumen más",
+      "Proponer un plan de uso eficiente como conclusión"
+    ],
+    juego:"Cada estudiante carga sus datos reales. Comparan quién gasta más datos y en qué app.",
+    feria:"Prototipo de herramienta útil y real para jóvenes con plan de datos limitado.",
+    investigacion:"¿El uso excesivo de datos se correlaciona con menor rendimiento académico? Hipótesis con datos propios."
+  },
+  {
+    id:9, icon:"🗺️", tipo:"hist",
+    titulo:"Línea de tiempo interactiva",
+    desc:"Construir colaborativamente una línea de tiempo de la historia de la informática.",
+    tags:["Word","Canva","colaboración","décadas"],
+    nivel:"N2–N3",
+    narrativa:"Gatiel dice: «Para saber adónde vas, primero tenés que entender de dónde viene todo esto. La informática no apareció de la nada. Fue un proceso de rebelión creativa generación tras generación.»",
+    objetivo:"Comprender la evolución histórica de la informática y practicar diseño de documentos colaborativos.",
+    herramientas:["Word: formas, cuadros de texto, líneas","Canva para la versión visual","Google Docs para el trabajo en equipo"],
+    pasos:[
+      "Dividir la historia en décadas: 1940, 1950, 1960… 2020",
+      "Cada grupo investiga y redacta su década",
+      "Diseñar el segmento visual de su período",
+      "Unir todos los segmentos en una línea continua",
+      "Exponer la línea de tiempo al curso completo",
+      "Exhibirla en el aula durante el año"
+    ],
+    juego:"Juego de ordenar: tarjetas con eventos sin fecha. Los grupos compiten para ordenarlos correctamente.",
+    feria:"Artefacto visual del curso para exhibir en el stand de la feria.",
+    investigacion:"¿Qué décadas produjeron más innovaciones y por qué? Análisis cualitativo con fuentes."
+  },
+  {
+    id:10, icon:"🧮", tipo:"mesa",
+    titulo:"FÓRMULA 1: el juego de fórmulas",
+    desc:"Juego de carreras donde avanzás respondiendo ejercicios reales de Excel.",
+    tags:["gamificación","fórmulas","competencia","enseñar"],
+    nivel:"N3–N4",
+    narrativa:"Techi ríe: «¿Qué tal si el camino para dominar las fórmulas de Excel fuera… literalmente una carrera? Cada casilla es un desafío. Cada fórmula correcta te acerca a la meta.»",
+    objetivo:"Consolidar el aprendizaje de fórmulas de Excel de forma competitiva y divertida.",
+    herramientas:["Excel para crear y validar los ejercicios de cada casilla","Canva para el tablero y las tarjetas","Word para el manual de reglas"],
+    pasos:[
+      "Diseñar un tablero tipo carrera con 40 casillas",
+      "Asignar a cada casilla una tarjeta con ejercicio de Excel (nivel 1, 2 o 3)",
+      "Incluir casillas especiales: ayuda, penalidad, comodín",
+      "El ejercicio se resuelve en la PC antes de avanzar",
+      "Imprimir y jugar en parejas o tríos",
+      "Registrar qué ejercicios resultaron más difíciles"
+    ],
+    juego:"El producto es el juego. Los creadores se convierten en árbitros expertos.",
+    feria:"Prototipo de material didáctico innovador creado por los propios estudiantes.",
+    investigacion:"Registrar tiempos y errores por casilla → identificar qué fórmulas cuestan más → dato cuantificable."
+  },
+  {
+    id:11, icon:"📋", tipo:"word",
+    titulo:"Manual del estudiante de BATIN",
+    desc:"Escribir un manual práctico para los que van a empezar el Bachillerato el año que viene.",
+    tags:["Word","índice automático","estilos","destinatario real"],
+    nivel:"N3–N4",
+    narrativa:"Bit reflexiona: «La mejor forma de aprender algo es tener que explicárselo a alguien que recién empieza. ¿Qué te hubiera gustado saber el primer día?»",
+    objetivo:"Aprender Word con propósito real: dejar un recurso útil para futuras generaciones del BATIN.",
+    herramientas:["Word: estilos, índice automático, encabezados, pie de página","Canva para la portada","Google Docs en el celular para avanzar en casa","Función de comentarios de Word para revisión entre pares"],
+    pasos:[
+      "Definir el contenido: qué les hubiera gustado saber al empezar",
+      "Redactar secciones: materias, herramientas, consejos, recursos digitales",
+      "Aplicar estilos de título y subtítulo coherentemente",
+      "Insertar índice automático",
+      "Agregar imágenes de pantallas capturadas",
+      "Revisar con la función de comentarios de Word"
+    ],
+    juego:"Revisión cruzada: intercambiar manuales entre grupos y marcar errores con comentarios de Word.",
+    feria:"Entregar el manual terminado a la dirección para usar con próximas generaciones.",
+    investigacion:"Documentar el proceso de escritura colaborativa y analizar la calidad del resultado final."
+  },
+  {
+    id:12, icon:"🔬", tipo:"hist",
+    titulo:"Mujeres que programaron la historia",
+    desc:"Investigar y visibilizar a las mujeres pioneras de la informática.",
+    tags:["historia","Word","Canva","género y tecnología"],
+    nivel:"N2–N4",
+    narrativa:"Gatiel dice en voz baja: «Hay personas que construyeron los cimientos de todo lo que usás hoy, y casi nadie sabe sus nombres. Es hora de cambiar eso.»",
+    objetivo:"Investigar historia de la informática desde una perspectiva poco conocida y necesaria.",
+    herramientas:["Word para las fichas biográficas","Canva para la infografía visual","Google para búsqueda con fuentes verificables"],
+    pasos:[
+      "Investigar: Ada Lovelace, Grace Hopper, Margaret Hamilton, Katherine Johnson…",
+      "Redactar una ficha biográfica detallada por persona en Word",
+      "Crear una infografía visual con Canva",
+      "Analizar: ¿qué barreras enfrentaron? ¿cómo las superaron?",
+      "Relacionar con el contexto histórico de cada período",
+      "Diseñar una muestra visual para exponer en el curso"
+    ],
+    juego:"Adivinanza de pioneras: el grupo da 3 pistas sin decir el nombre. Los demás adivinan.",
+    feria:"Exhibición visual: póster con las pioneras y su legado tecnológico actual.",
+    investigacion:"¿Cómo cambió la presencia femenina en informática desde entonces hasta hoy? Comparar datos históricos y actuales."
+  }
+];
+
+const FILTROS = [
+  { key:"all",   label:"// todas" },
+  { key:"excel", label:"Excel" },
+  { key:"word",  label:"Word" },
+  { key:"hist",  label:"Historia IT" },
+  { key:"mesa",  label:"Juego de mesa" }
+];
+
+let activo = "all";
+
+function renderFiltros() {
+  document.getElementById("filters").innerHTML = FILTROS.map(f =>
+    `<button class="filter-btn${activo===f.key?' on':''}" onclick="setFiltro('${f.key}')">${f.label}</button>`
+  ).join("");
+}
+
+function renderGrid() {
+  const lista = activo==="all" ? MISIONES : MISIONES.filter(m => m.tipo===activo);
+  document.getElementById("grid").innerHTML = lista.map(m => `
+    <div class="pcard tipo-${m.tipo}" onclick="abrirModal(${m.id})">
+      <div class="pcard-top">
+        <span class="pcard-icon">${m.icon}</span>
+        <span class="pcard-badge badge-${m.tipo}">${m.tipo==="excel"?"Excel":m.tipo==="word"?"Word":m.tipo==="hist"?"Historia IT":"Juego de mesa"}</span>
+      </div>
+      <div class="pcard-title">${m.titulo}</div>
+      <div class="pcard-desc">${m.desc}</div>
+      <div class="pcard-tags">${m.tags.map(t=>`<span class="ptag">${t}</span>`).join("")}</div>
+      <div class="pcard-footer">
+        <span class="pcard-nivel">nivel ${m.nivel}</span>
+        <button class="pcard-btn">abrir misión →</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function setFiltro(k) { activo=k; renderFiltros(); renderGrid(); }
+
+function abrirModal(id) {
+  const m = MISIONES.find(x=>x.id===id);
+  document.getElementById("modal-body").innerHTML = `
+    <div class="modal-header">
+      <div style="font-size:32px;margin-bottom:.5rem">${m.icon}</div>
+      <h2>${m.titulo}</h2>
+      <div class="modal-meta">
+        <span class="pcard-badge badge-${m.tipo}" style="font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid">
+          ${m.tipo==="excel"?"Excel":m.tipo==="word"?"Word":m.tipo==="hist"?"Historia IT":"Juego de mesa"}
+        </span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)">nivel ${m.nivel}</span>
+      </div>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">mensaje del directorio raíz</div>
+      <p style="font-style:italic;color:#888;font-size:13px">${m.narrativa}</p>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">objetivo de la misión</div>
+      <p>${m.objetivo}</p>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">herramientas que vas a dominar</div>
+      <ul>${m.herramientas.map(h=>`<li>${h}</li>`).join("")}</ul>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">pasos de la misión</div>
+      <ul>${m.pasos.map((p,i)=>`<li><span style="color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:11px">[${String(i+1).padStart(2,'0')}]</span> ${p}</li>`).join("")}</ul>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">🎲 versión juego de mesa</div>
+      <p>${m.juego}</p>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">🏆 conexión con la feria científica</div>
+      <p>${m.feria}</p>
+    </div>
+
+    <div class="msec">
+      <div class="msec-label">🔬 potencial de investigación</div>
+      <p>${m.investigacion}</p>
+    </div>
+
+    <button class="mission-btn" onclick="cerrarModal()">[ cerrar misión ]</button>
+  `;
+  document.getElementById("overlay").classList.add("open");
+}
+
+function cerrarModal() {
+  document.getElementById("overlay").classList.remove("open");
+}
+
+document.getElementById("overlay").addEventListener("click", function(e){
+  if(e.target===this) cerrarModal();
+});
+
+renderFiltros();
+renderGrid();
+</script>
+</body>
+</html>

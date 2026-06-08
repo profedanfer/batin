@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab SQL · SQLite 2026 · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+/* Estilos propios del lab SQL SQLite */
+.wrap{max-width:900px;margin:0 auto;padding:32px 20px 64px}
+.card{border-radius:var(--r);margin-bottom:14px;overflow:hidden;border:1.5px solid var(--borde)}
+.sol-card{border-color:rgba(80,200,120,.3)}
+.code-block{background:#0d1117;padding:12px 16px;overflow-x:auto}
+pre.sql{font-family:var(--font-mono);font-size:12.5px;line-height:1.7;margin:0;white-space:pre;color:#c9d1d9}
+pre.sql .kw{color:#569CD6;font-weight:600}
+pre.sql .cm{color:#6A9955}
+pre.sql .st{color:#CE9178}
+pre.sql .nm{color:#B5CEA8}
+.filt-btn{font-size:12px;padding:5px 14px;border-radius:16px;border:1.5px solid var(--naranja-b);background:transparent;color:var(--naranja);cursor:pointer;font-weight:600;font-family:var(--font-mono)}
+.filt-btn.active{background:var(--naranja);color:#fff}
+.tab-btn{border:none;padding:7px 22px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600;background:rgba(255,255,255,.15);color:#fff;font-family:var(--font-mono)}
+.tab-btn.active{background:#fff;color:var(--naranja)}
+.hint{background:var(--bg3);border-left:4px solid var(--naranja);padding:8px 14px;font-size:12.5px;color:var(--texto3);font-family:var(--font-mono);border-radius:0 var(--r) var(--r) 0}
+kbd{background:var(--bg4);border:1px solid var(--borde2);border-radius:3px;padding:1px 6px;font-family:var(--font-mono);font-size:11px;color:var(--texto2)}
+
+/* Guía Techi */
+.techi-guia {
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--bg3);border:1px solid var(--borde);
+  border-left:3px solid var(--naranja);border-radius:var(--r2);
+  padding:14px 18px;margin-bottom:24px;
+}
+.techi-guia img{width:60px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3));}
+.techi-guia-nombre{font-family:var(--font-title);font-size:10px;font-weight:700;color:var(--naranja);margin-bottom:4px;}
+.techi-guia-texto{font-size:13px;color:var(--texto2);font-style:italic;line-height:1.7;}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div style="background:var(--bg2);border-bottom:1px solid var(--borde);padding:36px 56px 32px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--texto3);margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap">
+      <a href="../aprendiendo.html" style="color:var(--naranja);text-decoration:none">Estoy aprendiendo</a>
+      <span style="color:var(--borde3)">/</span>
+      <a href="../aprendiendo.html" style="color:var(--naranja);text-decoration:none">Ruta Sistemas y BD</a>
+      <span style="color:var(--borde3)">/</span>
+      <span>Lab SQL SQLite 2026</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 140px;gap:24px;align-items:center">
+      <div>
+        <span class="kicker">// DDL y DML · C.E.D. Miguela Rodríguez · 2026</span>
+        <h1 class="titulo-h1 mt-8">Laboratorio de <em class="naranja">SQL</em></h1>
+        <p class="desc mt-8">Script completo DDL y DML con SQLite. Ejercicios y soluciones organizados por tipo de sentencia.</p>
+      </div>
+      <div style="text-align:center">
+        <img src="../img/techi_estudiando.png" alt="Techi estudiando" style="width:130px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="techi-guia">
+  <img src="../img/techi_trabajando.png" alt="Techi trabajando">
+  <div>
+    <div class="techi-guia-nombre">TECHI</div>
+    <p class="techi-guia-texto">"Este laboratorio tiene tres secciones: el Script SQL para copiar y ejecutar en DB Browser, los Ejercicios para practicar, y las Soluciones para verificar. Antes de mirar las soluciones, intentá resolver cada ejercicio por tu cuenta."</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div style="background:var(--naranja);border-radius:var(--r2);padding:1.6rem 2rem;margin-bottom:1.5rem;text-align:center">
+  <div style="font-size:1.9rem;font-weight:700;color:#fff">Laboratorio de SQL</div>
+  <div style="font-size:1rem;color:#ffd4b0;margin-top:5px">DDL y DML con SQLite &mdash; C.E.D. Miguela Rodriguez 2026</div>
+  <div style="display:flex;gap:8px;justify-content:center;margin-top:1.1rem;flex-wrap:wrap">
+    <button onclick="showTab('script')" id="tab-script" class="tab-btn active">Script SQL</button>
+    <button onclick="showTab('ejercicios')" id="tab-ejercicios" class="tab-btn">Ejercicios</button>
+    <button onclick="showTab('soluciones')" id="tab-soluciones" class="tab-btn">Soluciones</button>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<div id="sec-script">
+  <div style="background:#FDE8D8;border-left:5px solid #E8650A;border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1rem">
+    <b style="color:#C45000">Como usar:</b>
+    <span style="font-size:13px;color:#5a3000"> Abre DB Browser &rarr; pestana <b>Execute SQL</b> &rarr; pega &rarr; presiona <kbd>F5</kbd></span>
+  </div>
+  <div class="code-block" style="border-radius:10px"><pre class="sql" id="script-pre"></pre></div>
+  <div style="margin-top:10px;display:flex;align-items:center;gap:12px">
+    <button onclick="copyScript()" style="background:#E8650A;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:13px;cursor:pointer;font-weight:600">Copiar script</button>
+    <span id="copy-ok" style="display:none;color:#1E5C2E;font-size:13px;font-weight:600">&#10003; Copiado!</span>
+  </div>
+</div>
+
+<!-- EJERCICIOS -->
+<div id="sec-ejercicios" style="display:none">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.1rem">
+    <button onclick="filterEx('all')" class="filt-btn active" data-f="all">Todos</button>
+    <button onclick="filterEx('DDL')" class="filt-btn" data-f="DDL">DDL</button>
+    <button onclick="filterEx('DML')" class="filt-btn" data-f="DML">DML</button>
+    <button onclick="filterEx('SELECT')" class="filt-btn" data-f="SELECT">SELECT</button>
+    <button onclick="filterEx('FK')" class="filt-btn" data-f="FK">FK</button>
+  </div>
+  <div id="ex-list"></div>
+</div>
+
+<!-- SOLUCIONES -->
+<div id="sec-soluciones" style="display:none">
+  <div style="background:#fff3cd;border-left:5px solid #E8650A;border-radius:8px;padding:.7rem 1.1rem;margin-bottom:1.1rem;font-size:13px;color:#7a4000;font-weight:600">
+    Seccion para el/la docente
+  </div>
+  <div id="sol-list"></div>
+</div>
+
+</div>
+<script>
+const CAT_COLOR={DDL:'#27AE60',DML:'#2980B9',SELECT:'#8E44AD',FK:'#C0392B'};
+
+function colorize(raw){
+  const KWS=['SELECT','FROM','WHERE','JOIN','LEFT','INNER','ON','GROUP','BY','ORDER','DESC','ASC','INSERT','INTO','VALUES','UPDATE','SET','DELETE','CREATE','TABLE','ALTER','DROP','RENAME','PRIMARY','KEY','AUTOINCREMENT','NOT','NULL','UNIQUE','DEFAULT','CHECK','FOREIGN','REFERENCES','AND','OR','AS','COUNT','SUM','PRAGMA','REAL','INTEGER','VARCHAR','CHAR','DATE','TEXT'];
+  return raw.split('\n').map(line=>{
+    const esc=line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if(/^\s*--/.test(esc))return '<span class="cm">'+esc+'</span>';
+    const ci=esc.indexOf('--');
+    let code=ci>=0?esc.slice(0,ci):esc;
+    const cmt=ci>=0?'<span class="cm">'+esc.slice(ci)+'</span>':'';
+    const strs=[];
+    code=code.replace(/'[^']*'/g,m=>{strs.push(m);return '\x00S'+(strs.length-1)+'\x00';});
+    KWS.forEach(k=>{code=code.replace(new RegExp('\\b'+k+'\\b','g'),'\x00K'+k+'\x00');});
+    code=code.replace(/(?<![#A-Za-z_])(\b\d+\b)(?![A-Za-z_(])/g,'\x00N$1\x00');
+    code=code.replace(/\x00K([A-Z]+)\x00/g,'<span class="kw">$1</span>')
+             .replace(/\x00N(\d+)\x00/g,'<span class="nm">$1</span>')
+             .replace(/\x00S(\d+)\x00/g,(_,i)=>'<span class="st">'+strs[+i]+'</span>');
+    return code+cmt;
+  }).join('\n');
+}
+
+const SCRIPT=`-- ============================================================
+--  PASO 1: Crear tabla Departamentos
+-- ============================================================
+CREATE TABLE Departamentos (
+    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    nombre         VARCHAR(30) NOT NULL UNIQUE,
+    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0)
+);
+
+-- ============================================================
+--  PASO 2: Crear tabla Empleados
+-- ============================================================
+CREATE TABLE Empleados (
+    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    idDepartamento INTEGER     NOT NULL,
+    nombre         VARCHAR(30) NOT NULL,
+    apellido       VARCHAR(30) NOT NULL,
+    salario        INTEGER     NOT NULL CHECK (salario >= 0),
+    fechaIngreso   DATE,
+    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento)
+);
+
+-- ============================================================
+--  PASO 3: Datos iniciales
+-- ============================================================
+INSERT INTO Departamentos (nombre, presupuesto)
+    VALUES ('RR.HH.', 6000000);
+
+INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)
+    VALUES (1, 'Ana', 'Garcia', 3500000, '2021-03-15');`;
+
+// Ejercicios: solo consigna + ayuda estructural (sin SQL de solucion)
+const EX=[
+  {n:1,c:'DDL',t:'Crear tabla Departamentos',
+   i:'Crea la tabla Departamentos con: idDepartamento PK AI NN UQ, nombre VARCHAR(30) NN UQ, presupuesto INTEGER NN con CHECK >= 0.',
+   h:'CREATE TABLE Departamentos ( ... CHECK (presupuesto >= 0) );'},
+  {n:2,c:'DDL',t:'Crear tabla Empleados',
+   i:'Crea la tabla Empleados con: idEmpleado PK AI NN UQ, idDepartamento FK NN, nombre y apellido VARCHAR(30) NN, salario INTEGER NN CHECK >= 0, fechaIngreso DATE.',
+   h:'CREATE TABLE Empleados ( ... FOREIGN KEY (idDepartamento) REFERENCES Departamentos(...) );'},
+  {n:3,c:'DDL',t:'Agregar columna ci a Empleados',
+   i:'Agrega la columna ci CHAR(8) a Empleados usando ALTER TABLE. Nota: SQLite no admite UNIQUE inline en ADD COLUMN.',
+   h:'ALTER TABLE Empleados ADD COLUMN ci CHAR(8);'},
+  {n:4,c:'DDL',t:'Crear tabla Estados',
+   i:'Crea la tabla Estados con: idEstado INTEGER PK AI NN UQ, descripcion VARCHAR(20) NN UQ. Luego inserta Activo e Inactivo.',
+   h:'CREATE TABLE Estados ( ... );  INSERT INTO Estados ...'},
+  {n:5,c:'DDL',t:'Agregar idEstado FK a Departamentos',
+   i:'SQLite no permite agregar FK con ALTER TABLE. Recrea Departamentos agregando idEstado INTEGER NOT NULL DEFAULT 1 con FK a Estados.',
+   h:'CREATE TABLE Departamentos_nueva ... INSERT INTO Departamentos_nueva SELECT ... DROP TABLE Departamentos; ALTER TABLE ... RENAME TO Departamentos;'},
+  {n:6,c:'DDL',t:'Agregar idEstado FK a Empleados',
+   i:'Recrea Empleados agregando idEstado INTEGER NOT NULL DEFAULT 1 con FK a Estados. Conserva la columna ci.',
+   h:'CREATE TABLE Empleados_nueva ... INSERT INTO Empleados_nueva SELECT ... DROP TABLE Empleados; ALTER TABLE ... RENAME TO Empleados;'},
+  {n:7,c:'DML',t:'Insertar departamentos',
+   i:"Inserta 3 departamentos: RR.HH. (6000000), Tecnologia (12000000), Contabilidad (8000000).",
+   h:"INSERT INTO Departamentos (nombre, presupuesto) VALUES (...);"},
+  {n:8,c:'DML',t:'Insertar empleados',
+   i:'Inserta 4 empleados en distintos departamentos. Usa fechas en formato aaaa-mm-dd.',
+   h:"INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso) VALUES (...);"},
+  {n:9,c:'DML',t:'Actualizar presupuesto de Contabilidad',
+   i:"Actualiza el presupuesto del departamento 'Contabilidad' a 9500000.",
+   h:"UPDATE Departamentos SET presupuesto = ... WHERE nombre = '...';"},
+  {n:10,c:'DML',t:'Actualizar salario de Ana Garcia',
+   i:'Aumenta el salario de Ana Garcia a 4000000.',
+   h:"UPDATE Empleados SET salario = ... WHERE nombre = '...' AND apellido = '...';"},
+  {n:11,c:'DML',t:'Probar CHECK: salario negativo',
+   i:'Intenta insertar un empleado con salario = -1000. Anota el mensaje de error que aparece en DB Browser.',
+   h:"INSERT INTO Empleados (..., salario) VALUES (..., -1000);  -- observa el error"},
+  {n:12,c:'DML',t:"Probar UNIQUE: nombre de departamento duplicado",
+   i:"Intenta insertar un departamento con nombre 'RR.HH.' (ya existe). Anota el mensaje de error.",
+   h:"INSERT INTO Departamentos (nombre, presupuesto) VALUES ('RR.HH.', ...);  -- observa el error"},
+  {n:13,c:'SELECT',t:'Consultar todos los departamentos',
+   i:'Muestra todos los registros de la tabla Departamentos.',
+   h:'SELECT * FROM Departamentos;'},
+  {n:14,c:'SELECT',t:'Empleados con su departamento',
+   i:'Muestra nombre y apellido de cada empleado junto con el nombre de su departamento.',
+   h:'SELECT e.nombre, e.apellido, d.nombre AS departamento FROM Empleados e JOIN Departamentos d ON ...'},
+  {n:15,c:'SELECT',t:"Empleados de Tecnologia",
+   i:"Muestra los empleados del departamento 'Tecnologia'.",
+   h:"SELECT ... FROM Empleados e JOIN Departamentos d ON ... WHERE d.nombre = '...';"},
+  {n:16,c:'SELECT',t:'Cantidad de empleados por departamento',
+   i:'Muestra cada departamento y cuantos empleados tiene, incluyendo los que no tienen empleados.',
+   h:'SELECT d.nombre, COUNT(e.idEmpleado) FROM Departamentos d LEFT JOIN Empleados e ON ... GROUP BY ...'},
+  {n:17,c:'SELECT',t:'Suma de salarios por departamento',
+   i:'Muestra el departamento y la suma total de salarios, ordenado de mayor a menor.',
+   h:'SELECT d.nombre, SUM(e.salario) FROM ... GROUP BY ... ORDER BY ... DESC;'},
+  {n:18,c:'FK',t:'Probar FK: departamento inexistente',
+   i:'Activa PRAGMA foreign_keys e intenta insertar un empleado con idDepartamento = 99 (no existe). Anota el error.',
+   h:'PRAGMA foreign_keys = ON;  INSERT INTO Empleados (..., idDepartamento, ...) VALUES (..., 99, ...);'},
+];
+
+const SOL=[
+  {n:1,t:'Crear tabla Departamentos',s:`CREATE TABLE Departamentos (\n    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    nombre         VARCHAR(30) NOT NULL UNIQUE,\n    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0)\n);`,e:['PK AUTOINCREMENT: el ID se genera automaticamente.','UNIQUE en nombre: no puede haber dos departamentos con el mismo nombre.','CHECK (presupuesto >= 0): impide valores negativos.']},
+  {n:2,t:'Crear tabla Empleados',s:`CREATE TABLE Empleados (\n    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    idDepartamento INTEGER     NOT NULL,\n    nombre         VARCHAR(30) NOT NULL,\n    apellido       VARCHAR(30) NOT NULL,\n    salario        INTEGER     NOT NULL CHECK (salario >= 0),\n    fechaIngreso   DATE,\n    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento)\n);`,e:['FK: idDepartamento debe existir en Departamentos.','DATE: SQLite guarda fechas en formato aaaa-mm-dd.','CHECK (salario >= 0): impide salarios negativos.']},
+  {n:3,t:'Agregar columna ci',s:`ALTER TABLE Empleados ADD COLUMN ci CHAR(8);\n-- CHAR(8): longitud fija, ideal para CI de 8 digitos.\n-- SQLite no permite UNIQUE en ADD COLUMN.`,e:['CHAR(n): longitud fija, ideal para datos de largo constante.','ADD COLUMN es la unica operacion DDL sin recrear tabla en SQLite.']},
+  {n:4,t:'Crear tabla Estados',s:`CREATE TABLE Estados (\n    idEstado    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    descripcion VARCHAR(20) NOT NULL UNIQUE\n);\nINSERT INTO Estados (descripcion) VALUES ('Activo');\nINSERT INTO Estados (descripcion) VALUES ('Inactivo');`,e:["VARCHAR(20): suficiente para 'Activo' o 'Inactivo'.","Se insertan los valores base antes de usarlos como FK."]},
+  {n:5,t:'Agregar idEstado a Departamentos',s:`CREATE TABLE Departamentos_nueva (\n    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    nombre         VARCHAR(30) NOT NULL UNIQUE,\n    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0),\n    idEstado       INTEGER     NOT NULL DEFAULT 1,\n    FOREIGN KEY (idEstado) REFERENCES Estados(idEstado)\n);\nINSERT INTO Departamentos_nueva (idDepartamento, nombre, presupuesto)\n    SELECT idDepartamento, nombre, presupuesto FROM Departamentos;\nDROP TABLE Departamentos;\nALTER TABLE Departamentos_nueva RENAME TO Departamentos;`,e:['SQLite no permite ALTER TABLE ADD COLUMN con FK.','Patron: crear nueva, copiar datos, borrar vieja, renombrar.','DEFAULT 1: registros existentes quedan como Activo automaticamente.']},
+  {n:6,t:'Agregar idEstado a Empleados',s:`CREATE TABLE Empleados_nueva (\n    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    idDepartamento INTEGER     NOT NULL,\n    nombre         VARCHAR(30) NOT NULL,\n    apellido       VARCHAR(30) NOT NULL,\n    ci             CHAR(8),\n    salario        INTEGER     NOT NULL CHECK (salario >= 0),\n    fechaIngreso   DATE,\n    idEstado       INTEGER     NOT NULL DEFAULT 1,\n    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento),\n    FOREIGN KEY (idEstado)       REFERENCES Estados(idEstado)\n);\nINSERT INTO Empleados_nueva\n    (idEmpleado, idDepartamento, nombre, apellido, salario, fechaIngreso)\n    SELECT idEmpleado, idDepartamento, nombre, apellido, salario, fechaIngreso\n    FROM Empleados;\nDROP TABLE Empleados;\nALTER TABLE Empleados_nueva RENAME TO Empleados;`,e:['Se conserva ci aunque sin UNIQUE (limitacion de SQLite).','Empleados existentes quedan con idEstado = 1 por el DEFAULT.']},
+  {n:7,t:'Insertar departamentos',s:`INSERT INTO Departamentos (nombre, presupuesto) VALUES ('RR.HH.', 6000000);\nINSERT INTO Departamentos (nombre, presupuesto) VALUES ('Tecnologia', 12000000);\nINSERT INTO Departamentos (nombre, presupuesto) VALUES ('Contabilidad', 8000000);`,e:['No se especifica idDepartamento porque es AUTOINCREMENT.']},
+  {n:8,t:'Insertar empleados',s:`INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (1, 'Ana',   'Garcia',   3500000, '2021-03-15');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (2, 'Luis',  'Martinez', 5200000, '2020-07-01');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (2, 'Carla', 'Lopez',    4800000, '2019-11-20');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (3, 'Pedro', 'Ramirez',  3900000, '2022-01-10');`,e:["Formato: 'aaaa-mm-dd' (ISO 8601), el unico que SQLite interpreta correctamente."]},
+  {n:9,t:'Actualizar presupuesto',s:`UPDATE Departamentos\nSET    presupuesto = 9500000\nWHERE  nombre = 'Contabilidad';`,e:['WHERE es obligatorio para no actualizar todos los registros.']},
+  {n:10,t:'Actualizar salario',s:`UPDATE Empleados\nSET    salario = 4000000\nWHERE  nombre = 'Ana' AND apellido = 'Garcia';`,e:['Filtrar por nombre Y apellido es mas preciso que solo uno.']},
+  {n:11,t:'CHECK: salario negativo',s:`-- Error: CHECK constraint failed: salario >= 0`,e:['El CHECK en salario rechaza cualquier valor menor a 0.']},
+  {n:12,t:'UNIQUE: nombre duplicado',s:`-- Error: UNIQUE constraint failed: Departamentos.nombre`,e:['UNIQUE en nombre impide departamentos con el mismo nombre.']},
+  {n:13,t:'Consultar departamentos',s:`SELECT * FROM Departamentos;`,e:["SELECT *: trae todas las columnas. En produccion es mejor especificar columnas."]},
+  {n:14,t:'Empleados con departamento',s:`SELECT e.nombre, e.apellido, d.nombre AS departamento\nFROM   Empleados e\nJOIN   Departamentos d ON e.idDepartamento = d.idDepartamento;`,e:['JOIN (INNER JOIN): solo muestra empleados con departamento asignado.','AS: alias para distinguir columnas con el mismo nombre.']},
+  {n:15,t:'Empleados de Tecnologia',s:`SELECT e.nombre, e.apellido, e.salario\nFROM   Empleados e\nJOIN   Departamentos d ON e.idDepartamento = d.idDepartamento\nWHERE  d.nombre = 'Tecnologia';`,e:['WHERE filtra los resultados despues del JOIN.']},
+  {n:16,t:'Cantidad por departamento',s:`SELECT d.nombre AS departamento,\n       COUNT(e.idEmpleado) AS cantidad\nFROM   Departamentos d\nLEFT JOIN Empleados e ON d.idDepartamento = e.idDepartamento\nGROUP BY d.idDepartamento, d.nombre;`,e:['LEFT JOIN: incluye departamentos sin empleados (muestra 0).','COUNT() cuenta los registros de cada grupo.']},
+  {n:17,t:'Suma de salarios',s:`SELECT d.nombre AS departamento,\n       SUM(e.salario) AS total_salarios\nFROM   Departamentos d\nLEFT JOIN Empleados e ON d.idDepartamento = e.idDepartamento\nGROUP BY d.idDepartamento, d.nombre\nORDER BY total_salarios DESC;`,e:['SUM(): suma salarios de cada grupo.','ORDER BY ... DESC: ordena de mayor a menor.']},
+  {n:18,t:'FK: departamento inexistente',s:`PRAGMA foreign_keys = ON;\n-- Error: FOREIGN KEY constraint failed`,e:['PRAGMA foreign_keys = ON activa verificacion de FK (OFF por defecto en SQLite).','Sin este PRAGMA, SQLite acepta IDs inexistentes sin error.']},
+];
+
+document.getElementById('script-pre').innerHTML=colorize(SCRIPT);
+
+// Ejercicios: consigna + ayuda estructural solamente
+document.getElementById('ex-list').innerHTML=EX.map(ex=>`
+  <div class="card" data-cat="${ex.c}">
+    <div style="background:#C45000;padding:9px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="background:#fff;color:#C45000;font-weight:700;font-size:13px;border-radius:6px;padding:2px 9px">Ej ${ex.n}</span>
+      <span style="color:#fff;font-weight:600;font-size:14px;flex:1">${ex.t}</span>
+      <span style="background:${CAT_COLOR[ex.c]};color:#fff;font-size:11px;border-radius:10px;padding:2px 10px;font-weight:600">${ex.c}</span>
+    </div>
+    <div style="background:#FDE8D8;padding:10px 14px;font-size:13px;color:#7a3000;border-bottom:1px solid #e8c8a0">${ex.i}</div>
+    <div class="hint">&#128204; ${ex.h}</div>
+  </div>`).join('');
+
+// Soluciones: SQL completo + explicacion
+document.getElementById('sol-list').innerHTML=SOL.map(s=>`
+  <div class="sol-card card">
+    <div style="background:#1E5C2E;padding:9px 14px;display:flex;align-items:center;gap:10px">
+      <span style="background:#fff;color:#1E5C2E;font-weight:700;font-size:13px;border-radius:6px;padding:2px 9px">Ej ${s.n}</span>
+      <span style="color:#fff;font-weight:600;font-size:14px">&#10003; ${s.t}</span>
+    </div>
+    <div class="code-block"><pre class="sql">${colorize(s.s)}</pre></div>
+    <div style="background:#E8F5EC;padding:9px 14px;border-top:1px solid #b8dcc4">
+      <div style="font-size:12px;font-weight:700;color:#1E5C2E;margin-bottom:4px">Explicacion:</div>
+      ${s.e.map(x=>`<div style="font-size:12.5px;color:#1a4a28;margin-bottom:2px">&bull; ${x}</div>`).join('')}
+    </div>
+  </div>`).join('');
+
+function showTab(t){
+  ['script','ejercicios','soluciones'].forEach(id=>{
+    document.getElementById('sec-'+id).style.display=id===t?'block':'none';
+    document.getElementById('tab-'+id).classList.toggle('active',id===t);
+  });
+}
+function filterEx(cat){
+  document.querySelectorAll('.filt-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-f')===cat));
+  document.querySelectorAll('#ex-list .card').forEach(c=>{
+    c.style.display=(cat==='all'||c.getAttribute('data-cat')===cat)?'block':'none';
+  });
+}
+function copyScript(){
+  navigator.clipboard.writeText(SCRIPT).then(()=>{
+    const ok=document.getElementById('copy-ok');
+    ok.style.display='inline';
+    setTimeout(()=>ok.style.display='none',2000);
+  });
+}
+</script>
+
+</div>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+const CAT_COLOR={DDL:'#27AE60',DML:'#2980B9',SELECT:'#8E44AD',FK:'#C0392B'};
+
+function colorize(raw){
+  const KWS=['SELECT','FROM','WHERE','JOIN','LEFT','INNER','ON','GROUP','BY','ORDER','DESC','ASC','INSERT','INTO','VALUES','UPDATE','SET','DELETE','CREATE','TABLE','ALTER','DROP','RENAME','PRIMARY','KEY','AUTOINCREMENT','NOT','NULL','UNIQUE','DEFAULT','CHECK','FOREIGN','REFERENCES','AND','OR','AS','COUNT','SUM','PRAGMA','REAL','INTEGER','VARCHAR','CHAR','DATE','TEXT'];
+  return raw.split('\n').map(line=>{
+    const esc=line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if(/^\s*--/.test(esc))return '<span class="cm">'+esc+'</span>';
+    const ci=esc.indexOf('--');
+    let code=ci>=0?esc.slice(0,ci):esc;
+    const cmt=ci>=0?'<span class="cm">'+esc.slice(ci)+'</span>':'';
+    const strs=[];
+    code=code.replace(/'[^']*'/g,m=>{strs.push(m);return '\x00S'+(strs.length-1)+'\x00';});
+    KWS.forEach(k=>{code=code.replace(new RegExp('\\b'+k+'\\b','g'),'\x00K'+k+'\x00');});
+    code=code.replace(/(?<![#A-Za-z_])(\b\d+\b)(?![A-Za-z_(])/g,'\x00N$1\x00');
+    code=code.replace(/\x00K([A-Z]+)\x00/g,'<span class="kw">$1</span>')
+             .replace(/\x00N(\d+)\x00/g,'<span class="nm">$1</span>')
+             .replace(/\x00S(\d+)\x00/g,(_,i)=>'<span class="st">'+strs[+i]+'</span>');
+    return code+cmt;
+  }).join('\n');
+}
+
+const SCRIPT=`-- ============================================================
+--  PASO 1: Crear tabla Departamentos
+-- ============================================================
+CREATE TABLE Departamentos (
+    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    nombre         VARCHAR(30) NOT NULL UNIQUE,
+    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0)
+);
+
+-- ============================================================
+--  PASO 2: Crear tabla Empleados
+-- ============================================================
+CREATE TABLE Empleados (
+    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    idDepartamento INTEGER     NOT NULL,
+    nombre         VARCHAR(30) NOT NULL,
+    apellido       VARCHAR(30) NOT NULL,
+    salario        INTEGER     NOT NULL CHECK (salario >= 0),
+    fechaIngreso   DATE,
+    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento)
+);
+
+-- ============================================================
+--  PASO 3: Datos iniciales
+-- ============================================================
+INSERT INTO Departamentos (nombre, presupuesto)
+    VALUES ('RR.HH.', 6000000);
+
+INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)
+    VALUES (1, 'Ana', 'Garcia', 3500000, '2021-03-15');`;
+
+// Ejercicios: solo consigna + ayuda estructural (sin SQL de solucion)
+const EX=[
+  {n:1,c:'DDL',t:'Crear tabla Departamentos',
+   i:'Crea la tabla Departamentos con: idDepartamento PK AI NN UQ, nombre VARCHAR(30) NN UQ, presupuesto INTEGER NN con CHECK >= 0.',
+   h:'CREATE TABLE Departamentos ( ... CHECK (presupuesto >= 0) );'},
+  {n:2,c:'DDL',t:'Crear tabla Empleados',
+   i:'Crea la tabla Empleados con: idEmpleado PK AI NN UQ, idDepartamento FK NN, nombre y apellido VARCHAR(30) NN, salario INTEGER NN CHECK >= 0, fechaIngreso DATE.',
+   h:'CREATE TABLE Empleados ( ... FOREIGN KEY (idDepartamento) REFERENCES Departamentos(...) );'},
+  {n:3,c:'DDL',t:'Agregar columna ci a Empleados',
+   i:'Agrega la columna ci CHAR(8) a Empleados usando ALTER TABLE. Nota: SQLite no admite UNIQUE inline en ADD COLUMN.',
+   h:'ALTER TABLE Empleados ADD COLUMN ci CHAR(8);'},
+  {n:4,c:'DDL',t:'Crear tabla Estados',
+   i:'Crea la tabla Estados con: idEstado INTEGER PK AI NN UQ, descripcion VARCHAR(20) NN UQ. Luego inserta Activo e Inactivo.',
+   h:'CREATE TABLE Estados ( ... );  INSERT INTO Estados ...'},
+  {n:5,c:'DDL',t:'Agregar idEstado FK a Departamentos',
+   i:'SQLite no permite agregar FK con ALTER TABLE. Recrea Departamentos agregando idEstado INTEGER NOT NULL DEFAULT 1 con FK a Estados.',
+   h:'CREATE TABLE Departamentos_nueva ... INSERT INTO Departamentos_nueva SELECT ... DROP TABLE Departamentos; ALTER TABLE ... RENAME TO Departamentos;'},
+  {n:6,c:'DDL',t:'Agregar idEstado FK a Empleados',
+   i:'Recrea Empleados agregando idEstado INTEGER NOT NULL DEFAULT 1 con FK a Estados. Conserva la columna ci.',
+   h:'CREATE TABLE Empleados_nueva ... INSERT INTO Empleados_nueva SELECT ... DROP TABLE Empleados; ALTER TABLE ... RENAME TO Empleados;'},
+  {n:7,c:'DML',t:'Insertar departamentos',
+   i:"Inserta 3 departamentos: RR.HH. (6000000), Tecnologia (12000000), Contabilidad (8000000).",
+   h:"INSERT INTO Departamentos (nombre, presupuesto) VALUES (...);"},
+  {n:8,c:'DML',t:'Insertar empleados',
+   i:'Inserta 4 empleados en distintos departamentos. Usa fechas en formato aaaa-mm-dd.',
+   h:"INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso) VALUES (...);"},
+  {n:9,c:'DML',t:'Actualizar presupuesto de Contabilidad',
+   i:"Actualiza el presupuesto del departamento 'Contabilidad' a 9500000.",
+   h:"UPDATE Departamentos SET presupuesto = ... WHERE nombre = '...';"},
+  {n:10,c:'DML',t:'Actualizar salario de Ana Garcia',
+   i:'Aumenta el salario de Ana Garcia a 4000000.',
+   h:"UPDATE Empleados SET salario = ... WHERE nombre = '...' AND apellido = '...';"},
+  {n:11,c:'DML',t:'Probar CHECK: salario negativo',
+   i:'Intenta insertar un empleado con salario = -1000. Anota el mensaje de error que aparece en DB Browser.',
+   h:"INSERT INTO Empleados (..., salario) VALUES (..., -1000);  -- observa el error"},
+  {n:12,c:'DML',t:"Probar UNIQUE: nombre de departamento duplicado",
+   i:"Intenta insertar un departamento con nombre 'RR.HH.' (ya existe). Anota el mensaje de error.",
+   h:"INSERT INTO Departamentos (nombre, presupuesto) VALUES ('RR.HH.', ...);  -- observa el error"},
+  {n:13,c:'SELECT',t:'Consultar todos los departamentos',
+   i:'Muestra todos los registros de la tabla Departamentos.',
+   h:'SELECT * FROM Departamentos;'},
+  {n:14,c:'SELECT',t:'Empleados con su departamento',
+   i:'Muestra nombre y apellido de cada empleado junto con el nombre de su departamento.',
+   h:'SELECT e.nombre, e.apellido, d.nombre AS departamento FROM Empleados e JOIN Departamentos d ON ...'},
+  {n:15,c:'SELECT',t:"Empleados de Tecnologia",
+   i:"Muestra los empleados del departamento 'Tecnologia'.",
+   h:"SELECT ... FROM Empleados e JOIN Departamentos d ON ... WHERE d.nombre = '...';"},
+  {n:16,c:'SELECT',t:'Cantidad de empleados por departamento',
+   i:'Muestra cada departamento y cuantos empleados tiene, incluyendo los que no tienen empleados.',
+   h:'SELECT d.nombre, COUNT(e.idEmpleado) FROM Departamentos d LEFT JOIN Empleados e ON ... GROUP BY ...'},
+  {n:17,c:'SELECT',t:'Suma de salarios por departamento',
+   i:'Muestra el departamento y la suma total de salarios, ordenado de mayor a menor.',
+   h:'SELECT d.nombre, SUM(e.salario) FROM ... GROUP BY ... ORDER BY ... DESC;'},
+  {n:18,c:'FK',t:'Probar FK: departamento inexistente',
+   i:'Activa PRAGMA foreign_keys e intenta insertar un empleado con idDepartamento = 99 (no existe). Anota el error.',
+   h:'PRAGMA foreign_keys = ON;  INSERT INTO Empleados (..., idDepartamento, ...) VALUES (..., 99, ...);'},
+];
+
+const SOL=[
+  {n:1,t:'Crear tabla Departamentos',s:`CREATE TABLE Departamentos (\n    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    nombre         VARCHAR(30) NOT NULL UNIQUE,\n    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0)\n);`,e:['PK AUTOINCREMENT: el ID se genera automaticamente.','UNIQUE en nombre: no puede haber dos departamentos con el mismo nombre.','CHECK (presupuesto >= 0): impide valores negativos.']},
+  {n:2,t:'Crear tabla Empleados',s:`CREATE TABLE Empleados (\n    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    idDepartamento INTEGER     NOT NULL,\n    nombre         VARCHAR(30) NOT NULL,\n    apellido       VARCHAR(30) NOT NULL,\n    salario        INTEGER     NOT NULL CHECK (salario >= 0),\n    fechaIngreso   DATE,\n    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento)\n);`,e:['FK: idDepartamento debe existir en Departamentos.','DATE: SQLite guarda fechas en formato aaaa-mm-dd.','CHECK (salario >= 0): impide salarios negativos.']},
+  {n:3,t:'Agregar columna ci',s:`ALTER TABLE Empleados ADD COLUMN ci CHAR(8);\n-- CHAR(8): longitud fija, ideal para CI de 8 digitos.\n-- SQLite no permite UNIQUE en ADD COLUMN.`,e:['CHAR(n): longitud fija, ideal para datos de largo constante.','ADD COLUMN es la unica operacion DDL sin recrear tabla en SQLite.']},
+  {n:4,t:'Crear tabla Estados',s:`CREATE TABLE Estados (\n    idEstado    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    descripcion VARCHAR(20) NOT NULL UNIQUE\n);\nINSERT INTO Estados (descripcion) VALUES ('Activo');\nINSERT INTO Estados (descripcion) VALUES ('Inactivo');`,e:["VARCHAR(20): suficiente para 'Activo' o 'Inactivo'.","Se insertan los valores base antes de usarlos como FK."]},
+  {n:5,t:'Agregar idEstado a Departamentos',s:`CREATE TABLE Departamentos_nueva (\n    idDepartamento INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    nombre         VARCHAR(30) NOT NULL UNIQUE,\n    presupuesto    INTEGER     NOT NULL CHECK (presupuesto >= 0),\n    idEstado       INTEGER     NOT NULL DEFAULT 1,\n    FOREIGN KEY (idEstado) REFERENCES Estados(idEstado)\n);\nINSERT INTO Departamentos_nueva (idDepartamento, nombre, presupuesto)\n    SELECT idDepartamento, nombre, presupuesto FROM Departamentos;\nDROP TABLE Departamentos;\nALTER TABLE Departamentos_nueva RENAME TO Departamentos;`,e:['SQLite no permite ALTER TABLE ADD COLUMN con FK.','Patron: crear nueva, copiar datos, borrar vieja, renombrar.','DEFAULT 1: registros existentes quedan como Activo automaticamente.']},
+  {n:6,t:'Agregar idEstado a Empleados',s:`CREATE TABLE Empleados_nueva (\n    idEmpleado     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n    idDepartamento INTEGER     NOT NULL,\n    nombre         VARCHAR(30) NOT NULL,\n    apellido       VARCHAR(30) NOT NULL,\n    ci             CHAR(8),\n    salario        INTEGER     NOT NULL CHECK (salario >= 0),\n    fechaIngreso   DATE,\n    idEstado       INTEGER     NOT NULL DEFAULT 1,\n    FOREIGN KEY (idDepartamento) REFERENCES Departamentos(idDepartamento),\n    FOREIGN KEY (idEstado)       REFERENCES Estados(idEstado)\n);\nINSERT INTO Empleados_nueva\n    (idEmpleado, idDepartamento, nombre, apellido, salario, fechaIngreso)\n    SELECT idEmpleado, idDepartamento, nombre, apellido, salario, fechaIngreso\n    FROM Empleados;\nDROP TABLE Empleados;\nALTER TABLE Empleados_nueva RENAME TO Empleados;`,e:['Se conserva ci aunque sin UNIQUE (limitacion de SQLite).','Empleados existentes quedan con idEstado = 1 por el DEFAULT.']},
+  {n:7,t:'Insertar departamentos',s:`INSERT INTO Departamentos (nombre, presupuesto) VALUES ('RR.HH.', 6000000);\nINSERT INTO Departamentos (nombre, presupuesto) VALUES ('Tecnologia', 12000000);\nINSERT INTO Departamentos (nombre, presupuesto) VALUES ('Contabilidad', 8000000);`,e:['No se especifica idDepartamento porque es AUTOINCREMENT.']},
+  {n:8,t:'Insertar empleados',s:`INSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (1, 'Ana',   'Garcia',   3500000, '2021-03-15');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (2, 'Luis',  'Martinez', 5200000, '2020-07-01');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (2, 'Carla', 'Lopez',    4800000, '2019-11-20');\nINSERT INTO Empleados (idDepartamento, nombre, apellido, salario, fechaIngreso)\n    VALUES (3, 'Pedro', 'Ramirez',  3900000, '2022-01-10');`,e:["Formato: 'aaaa-mm-dd' (ISO 8601), el unico que SQLite interpreta correctamente."]},
+  {n:9,t:'Actualizar presupuesto',s:`UPDATE Departamentos\nSET    presupuesto = 9500000\nWHERE  nombre = 'Contabilidad';`,e:['WHERE es obligatorio para no actualizar todos los registros.']},
+  {n:10,t:'Actualizar salario',s:`UPDATE Empleados\nSET    salario = 4000000\nWHERE  nombre = 'Ana' AND apellido = 'Garcia';`,e:['Filtrar por nombre Y apellido es mas preciso que solo uno.']},
+  {n:11,t:'CHECK: salario negativo',s:`-- Error: CHECK constraint failed: salario >= 0`,e:['El CHECK en salario rechaza cualquier valor menor a 0.']},
+  {n:12,t:'UNIQUE: nombre duplicado',s:`-- Error: UNIQUE constraint failed: Departamentos.nombre`,e:['UNIQUE en nombre impide departamentos con el mismo nombre.']},
+  {n:13,t:'Consultar departamentos',s:`SELECT * FROM Departamentos;`,e:["SELECT *: trae todas las columnas. En produccion es mejor especificar columnas."]},
+  {n:14,t:'Empleados con departamento',s:`SELECT e.nombre, e.apellido, d.nombre AS departamento\nFROM   Empleados e\nJOIN   Departamentos d ON e.idDepartamento = d.idDepartamento;`,e:['JOIN (INNER JOIN): solo muestra empleados con departamento asignado.','AS: alias para distinguir columnas con el mismo nombre.']},
+  {n:15,t:'Empleados de Tecnologia',s:`SELECT e.nombre, e.apellido, e.salario\nFROM   Empleados e\nJOIN   Departamentos d ON e.idDepartamento = d.idDepartamento\nWHERE  d.nombre = 'Tecnologia';`,e:['WHERE filtra los resultados despues del JOIN.']},
+  {n:16,t:'Cantidad por departamento',s:`SELECT d.nombre AS departamento,\n       COUNT(e.idEmpleado) AS cantidad\nFROM   Departamentos d\nLEFT JOIN Empleados e ON d.idDepartamento = e.idDepartamento\nGROUP BY d.idDepartamento, d.nombre;`,e:['LEFT JOIN: incluye departamentos sin empleados (muestra 0).','COUNT() cuenta los registros de cada grupo.']},
+  {n:17,t:'Suma de salarios',s:`SELECT d.nombre AS departamento,\n       SUM(e.salario) AS total_salarios\nFROM   Departamentos d\nLEFT JOIN Empleados e ON d.idDepartamento = e.idDepartamento\nGROUP BY d.idDepartamento, d.nombre\nORDER BY total_salarios DESC;`,e:['SUM(): suma salarios de cada grupo.','ORDER BY ... DESC: ordena de mayor a menor.']},
+  {n:18,t:'FK: departamento inexistente',s:`PRAGMA foreign_keys = ON;\n-- Error: FOREIGN KEY constraint failed`,e:['PRAGMA foreign_keys = ON activa verificacion de FK (OFF por defecto en SQLite).','Sin este PRAGMA, SQLite acepta IDs inexistentes sin error.']},
+];
+
+document.getElementById('script-pre').innerHTML=colorize(SCRIPT);
+
+// Ejercicios: consigna + ayuda estructural solamente
+document.getElementById('ex-list').innerHTML=EX.map(ex=>`
+  <div class="card" data-cat="${ex.c}">
+    <div style="background:#C45000;padding:9px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="background:#fff;color:#C45000;font-weight:700;font-size:13px;border-radius:6px;padding:2px 9px">Ej ${ex.n}</span>
+      <span style="color:#fff;font-weight:600;font-size:14px;flex:1">${ex.t}</span>
+      <span style="background:${CAT_COLOR[ex.c]};color:#fff;font-size:11px;border-radius:10px;padding:2px 10px;font-weight:600">${ex.c}</span>
+    </div>
+    <div style="background:#FDE8D8;padding:10px 14px;font-size:13px;color:#7a3000;border-bottom:1px solid #e8c8a0">${ex.i}</div>
+    <div class="hint">&#128204; ${ex.h}</div>
+  </div>`).join('');
+
+// Soluciones: SQL completo + explicacion
+document.getElementById('sol-list').innerHTML=SOL.map(s=>`
+  <div class="sol-card card">
+    <div style="background:#1E5C2E;padding:9px 14px;display:flex;align-items:center;gap:10px">
+      <span style="background:#fff;color:#1E5C2E;font-weight:700;font-size:13px;border-radius:6px;padding:2px 9px">Ej ${s.n}</span>
+      <span style="color:#fff;font-weight:600;font-size:14px">&#10003; ${s.t}</span>
+    </div>
+    <div class="code-block"><pre class="sql">${colorize(s.s)}</pre></div>
+    <div style="background:#E8F5EC;padding:9px 14px;border-top:1px solid #b8dcc4">
+      <div style="font-size:12px;font-weight:700;color:#1E5C2E;margin-bottom:4px">Explicacion:</div>
+      ${s.e.map(x=>`<div style="font-size:12.5px;color:#1a4a28;margin-bottom:2px">&bull; ${x}</div>`).join('')}
+    </div>
+  </div>`).join('');
+
+function showTab(t){
+  ['script','ejercicios','soluciones'].forEach(id=>{
+    document.getElementById('sec-'+id).style.display=id===t?'block':'none';
+    document.getElementById('tab-'+id).classList.toggle('active',id===t);
+  });
+}
+function filterEx(cat){
+  document.querySelectorAll('.filt-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-f')===cat));
+  document.querySelectorAll('#ex-list .card').forEach(c=>{
+    c.style.display=(cat==='all'||c.getAttribute('data-cat')===cat)?'block':'none';
+  });
+}
+function copyScript(){
+  navigator.clipboard.writeText(SCRIPT).then(()=>{
+    const ok=document.getElementById('copy-ok');
+    ok.style.display='inline';
+    setTimeout(()=>ok.style.display='none',2000);
+  });
+}
+</script>
+</body>
+</html>

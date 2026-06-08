@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión ICIENTEC · 2do BATIN · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #fff8f2;
+    --surface: #fff1e6;
+    --card:    #ffffff;
+    --border:  #f0c9a0;
+    --accent:  #c45e00;
+    --accent2: #8a3a00;
+    --accent3: #e05000;
+    --gold:    #b04000;
+    --text:    #2a1800;
+    --muted:   #996633;
+    --radius:  10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .terminal-bar {
+    background: #fde8d0;
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .term-path { color: var(--accent); margin-left: .5rem; }
+  .hero {
+    padding: 4rem 2rem 3rem;
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .hero h1 .hi { color: var(--accent); }
+  .hero h1 .cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7em;
+    color: var(--accent2);
+    display: block;
+    margin-top: .3rem;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto 2rem;
+    line-height: 1.75;
+  }
+  .hero-desc strong { color: var(--text); }
+  .chars {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .char-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .75rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    font-size: 14px;
+  }
+  .char-card .emoji { font-size: 24px; }
+  .char-card .name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: .9rem; color: var(--text); }
+  .char-card .role { font-size: 12px; color: var(--muted); }
+  .sep { border: none; border-top: 1px solid var(--border); margin: 0 2rem; }
+  .narrative {
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+  }
+  .terminal-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #7a4a1a;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+  .terminal-block .prompt { color: var(--accent); }
+  .terminal-block .out    { color: var(--text); }
+  .terminal-block .warn   { color: var(--gold); }
+  .narrative p { color: #5a3010; font-size: 15px; margin-bottom: 1rem; }
+  .narrative strong { color: var(--text); }
+  .metodo-section {
+    max-width: 820px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .metodo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: .75rem;
+  }
+  .metodo-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    border-top: 3px solid var(--accent);
+  }
+  .metodo-card.b2 { border-top-color: var(--accent2); }
+  .metodo-card.b3 { border-top-color: var(--accent3); }
+  .metodo-card.b4 { border-top-color: var(--gold); }
+  .metodo-card.b5 { border-top-color: #c47800; }
+  .metodo-card .step-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: .4rem; }
+  .metodo-card .step-title { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: .88rem; margin-bottom: .3rem; color: var(--text); }
+  .metodo-card .step-desc { font-size: 13px; color: var(--muted); }
+  .projects-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+  .section-title { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: .4rem; color: var(--text); }
+  .section-title .accent { color: var(--accent); }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .filter-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.on { background: var(--card); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 1rem;
+  }
+  .pcard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); opacity: 0; transition: opacity .15s; }
+  .pcard:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .pcard:hover::before { opacity: 1; }
+  .pcard.hw::before  { background: var(--accent3); }
+  .pcard.sw::before  { background: var(--accent2); }
+  .pcard.alg::before { background: var(--gold); }
+  .pcard.lab::before { background: #c47800; }
+  .pcard-top { display: flex; align-items: flex-start; justify-content: space-between; }
+  .pcard-icon { font-size: 26px; line-height: 1; }
+  .pcard-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); }
+  .pcard-title { font-family: 'Orbitron', sans-serif; font-size: .95rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+  .pcard-desc { font-size: 13px; color: #7a4a1a; line-height: 1.55; font-style: italic; }
+  .pcard-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ptag { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 6px; background: #fde8d0; border: 1px solid var(--border); border-radius: 3px; color: var(--muted); }
+  .pcard-footer { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .pcard-mat { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .pcard-btn { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent2); background: none; border: none; cursor: pointer; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(42,24,0,.75); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem; max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
+  .modal-close { position: absolute; top: 1.1rem; right: 1.1rem; background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+  .modal-close:hover { color: var(--text); }
+  .modal-header { margin-bottom: 1rem; }
+  .modal-header h2 { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: .4rem; line-height: 1.3; padding-right: 2rem; color: var(--text); }
+  .modal-pregunta { font-style: italic; font-size: 14px; color: var(--accent); margin-bottom: 1rem; line-height: 1.55; }
+  .msec { margin-bottom: 1.1rem; }
+  .msec-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; display: flex; align-items: center; gap: .4rem; }
+  .msec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msec p  { font-size: 14px; color: #5a3010; line-height: 1.6; }
+  .msec ul { padding-left: 1.2rem; }
+  .msec li { font-size: 14px; color: #5a3010; line-height: 1.7; margin-bottom: .15rem; }
+  .msec li strong { color: var(--text); }
+  .conexion-box { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: .75rem 1rem; font-size: 13px; color: #5a3010; line-height: 1.6; }
+  .conexion-box strong { color: var(--accent); }
+  .mission-btn { display: block; width: 100%; margin-top: 1.2rem; padding: .75rem; border-radius: var(--radius); background: transparent; border: 1px solid var(--accent); color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 13px; cursor: pointer; transition: background .15s; text-align: center; }
+  .mission-btn:hover { background: rgba(196,94,0,.08); }
+  .feria-section { max-width: 820px; margin: 0 auto 4rem; padding: 0 2rem; }
+  .feria-box { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent3); border-radius: var(--radius); padding: 1.5rem 1.75rem; }
+  .feria-box h3 { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--accent3); margin-bottom: .8rem; }
+  .feria-box p { font-size: 14px; color: #5a3010; margin-bottom: .6rem; }
+  .feria-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .6rem; margin-top: 1rem; }
+  .fstep { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .8rem; text-align: center; }
+  .fstep .fn { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--accent3); font-weight: 700; display: block; margin-bottom: .25rem; }
+  .fstep .ft { font-size: 12px; color: var(--muted); }
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #f0c9a0; border-radius: 3px; }
+  @media (max-width: 500px) {
+    .hero { padding: 2.5rem 1.2rem 2rem; }
+    .narrative, .metodo-section, .feria-section { padding: 0 1.2rem; }
+    .projects-section { padding: 0 1rem 3rem; }
+    .modal { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="terminal-bar">
+  <span class="dot dot-r"></span>
+  <span class="dot dot-y"></span>
+  <span class="dot dot-g"></span>
+  <span class="term-path">~/directorio-raiz/2do-batin/icientec$</span>
+  <span style="margin-left:.5rem">_</span>
+</div>
+
+<section class="hero">
+  <span class="hero-label">// directorio raíz · misión icientec · 2do batin · 2026</span>
+  <h1>
+    Investigación<br>
+    <span class="hi">con método real</span>
+    <span class="cmd">$ elegir_investigacion --anio=2 --modo=ciencia</span>
+  </h1>
+  <p class="hero-desc">
+    Techi, Bit y Gatiel tienen una nueva misión para vos. El ICIENTEC no es un trabajo de carpeta: es <strong>ciencia de verdad</strong>. Encontrás un problema en tu mundo, lo estudiás con método, analizás datos y proponés una solución que sirva.
+  </p>
+  <div class="chars">
+    <div class="char-card">
+      <span class="emoji">👩‍💻</span>
+      <div><div class="name">Techi</div><div class="role">Pensamiento lateral</div></div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🤖</span>
+      <div><div class="name">Bit</div><div class="role">Lógica y datos</div></div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🦊</span>
+      <div><div class="name">Gatiel</div><div class="role">El astuto. Siempre hay otro camino.</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<section class="narrative">
+  <div class="terminal-block">
+    <div><span class="prompt">techi@raiz:~$</span> <span class="out">iniciar_mision --modulo=icientec --nivel=2</span></div>
+    <div style="margin-top:.6rem"><span class="warn">[ALERTA]</span> <span class="out">Este año programás. Pero programar sin saber qué problema resolvés es ruido.</span></div>
+    <div><span class="warn">[ALERTA]</span> <span class="out">El ICIENTEC no es un trabajo más. Es donde la lógica se vuelve impacto real.</span></div>
+    <div style="margin-top:.6rem"><span class="prompt">bit@raiz:~$</span> <span class="out">cargar banco_de_investigacion --registros=18...</span></div>
+    <div><span class="out">OK · 18 ideas disponibles · conectadas a tus materias · listas para ejecutar</span></div>
+  </div>
+  <p>
+    <strong>Techi lo plantea así:</strong> "En 1ro aprendiste a recolectar datos. Este año ya sabés algo que muy poca gente sabe a tu edad: cómo piensa una computadora. Eso cambia las preguntas que podés hacer y los problemas que podés medir."
+  </p>
+  <p>
+    No alcanza con tener una idea linda. Un proyecto de investigación real tiene una pregunta concreta, datos que la respaldan o la refutan, y una propuesta de solución que nace de lo que encontraste, no de lo que suponías antes de empezar.
+  </p>
+  <p>
+    <strong>Bit agrega:</strong> "Cada tarjeta de acá tiene una pregunta investigable. No una descripción, no un tema general: una pregunta. Si podés responderla con datos reales recolectados por vos, tenés un proyecto."
+  </p>
+  <p>
+    <strong>Gatiel sonríe:</strong> "Y si de paso conectás con lo que estás viendo en Hardware, en Software, en Algorítmica... mejor todavía. La investigación más fuerte es la que cruza fronteras entre materias."
+  </p>
+</section>
+
+<hr class="sep" style="margin: 0 2rem 3rem;">
+
+<section class="metodo-section">
+  <div class="section-label">// cómo se hace una investigación real</div>
+  <div class="metodo-grid">
+    <div class="metodo-card">
+      <div class="step-num">paso_01</div>
+      <div class="step-title">Observás</div>
+      <div class="step-desc">Encontrás un problema real en tu entorno: el colegio, el barrio, el curso, el laboratorio.</div>
+    </div>
+    <div class="metodo-card b2">
+      <div class="step-num">paso_02</div>
+      <div class="step-title">Preguntás</div>
+      <div class="step-desc">Formulás una pregunta que se pueda responder con datos. No con opiniones: con evidencia.</div>
+    </div>
+    <div class="metodo-card b3">
+      <div class="step-num">paso_03</div>
+      <div class="step-title">Recolectás</div>
+      <div class="step-desc">Encuestas, mediciones, experimentos, registros. Los datos los conseguís vos, no los buscás en Google.</div>
+    </div>
+    <div class="metodo-card b4">
+      <div class="step-num">paso_04</div>
+      <div class="step-title">Analizás</div>
+      <div class="step-desc">Calculás, comparás, graficás. Python puede ayudarte. Los números solos no dicen nada: vos los interpretás.</div>
+    </div>
+    <div class="metodo-card b5">
+      <div class="step-num">paso_05</div>
+      <div class="step-title">Proponés</div>
+      <div class="step-desc">Tu solución nace de lo que encontraste. No de lo que creías antes. Eso es la diferencia entre ciencia y suposición.</div>
+    </div>
+  </div>
+</section>
+
+<section class="projects-section">
+  <div class="section-title">Las <span class="accent">18 misiones</span> disponibles</div>
+  <div class="section-sub">// filtrá por materia · hacé clic para ver la guía completa con pasos</div>
+  <div class="filters" id="filters"></div>
+  <div class="cards-grid" id="grid"></div>
+</section>
+
+<section class="feria-section">
+  <div class="feria-box">
+    <h3>🏆 Destino final: ICIENTEC — Feria científica 2026</h3>
+    <p><strong>Bit lo dice sin rodeos:</strong> <em>"Un proyecto de investigación sin datos propios no es una investigación: es una opinión con diapositivas."</em></p>
+    <p>Tu proyecto debe llegar a la feria con cuatro elementos concretos:</p>
+    <div class="feria-steps">
+      <div class="fstep"><span class="fn">❓</span><span class="ft">Pregunta de investigación clara y específica</span></div>
+      <div class="fstep"><span class="fn">📊</span><span class="ft">Datos propios recolectados con método</span></div>
+      <div class="fstep"><span class="fn">🔍</span><span class="ft">Análisis con conclusiones fundamentadas</span></div>
+      <div class="fstep"><span class="fn">💡</span><span class="ft">Propuesta de solución concreta y viable</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="cerrarModal()">[ ✕ ]</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <p>profe.DanFer · Centro Educativo Departamental Miguela Rodríguez · <a href="https://sites.google.com/view/profe-danfer" target="_blank">sites.google.com/view/profe-danfer</a></p>
+  <p style="margin-top:.4rem; font-size:11px; color:#996633">"La ciencia no es solo conocimiento. Es una manera de pensar." — Carl Sagan</p>
+</footer>
+
+<script>
+const FILTROS = [
+  {id:'todos',label:'Todos'},{id:'py',label:'Python'},{id:'hw',label:'Hardware'},
+  {id:'sw',label:'Software'},{id:'alg',label:'Algorítmica'},{id:'lab',label:'Laboratorio'}
+];
+const MISIONES = [
+  {icon:'🖥️',mats:['hw','alg'],clase:'hw',titulo:'¿Cuánto dura realmente una PC de escuela?',desc:'¿Existe relación entre la antigüedad del hardware y la frecuencia de fallas reportadas?',tags:['relevamiento','hardware','datos reales'],contexto:'Las PCs de los laboratorios escolares en Paraguay tienen en promedio más de 8 años. Nadie sistematizó cuándo fallan ni por qué.',pasos:['<strong>Relevamiento:</strong> registrá marca, modelo, año y fallas de cada PC del CED','<strong>Entrevistas:</strong> consultá a docentes y técnicos sobre problemas frecuentes','<strong>Tabulación:</strong> organizá los datos en una tabla comparativa','<strong>Análisis:</strong> calculá promedios de vida útil y tipo de falla más común','<strong>Propuesta:</strong> plan de mantenimiento preventivo con calendario'],conexion:'Conecta con <strong>Hardware</strong> (componentes, mantenimiento) y <strong>Algorítmica</strong> (tablas, cálculo de promedios y frecuencias).',voz:'Gatiel dice: "Los datos que nadie juntó todavía son los más valiosos. Esos son tuyos."'},
+  {icon:'📱',mats:['py','lab'],clase:'lab',titulo:'Celular como herramienta de aprendizaje',desc:'¿Los estudiantes del CED usan el celular más para estudiar o para distraerse durante las clases?',tags:['encuesta','Python','análisis'],contexto:'Todos tienen celular. Pydroid3 funciona en él. Pero nadie midió exactamente para qué se usa en clase.',pasos:['<strong>Observación:</strong> registrá usos del celular durante 2 semanas en distintas materias','<strong>Encuesta:</strong> preguntá a estudiantes de 1ro, 2do y 3ro cómo usan el celular','<strong>Categorización:</strong> clasificá usos en productivos / distracción / mixtos','<strong>Análisis con Python:</strong> contadores y porcentajes por categoría','<strong>Propuesta:</strong> protocolo de uso responsable del celular en clase'],conexion:'Conecta con <strong>Laboratorio</strong> (Python para análisis de datos) y el contexto real de la institución.',voz:'Bit dice: "Si medís antes de opinar, tenés un argumento. Si opinás sin medir, tenés una creencia."'},
+  {icon:'🔓',mats:['sw','py'],clase:'sw',titulo:'Software pirata en las casas',desc:'¿Qué porcentaje de hogares del barrio usa software sin licencia y por qué razones?',tags:['encuesta','ética','licencias'],contexto:'En Software vieron ética, licencias y piratería. Este proyecto verifica si eso se aplica en la realidad del entorno cercano.',pasos:['<strong>Encuesta:</strong> diseñá un formulario anónimo sobre software instalado en casa','<strong>Muestra:</strong> encuestá al menos 40 hogares del barrio','<strong>Análisis:</strong> calculá porcentajes de uso legal vs ilegal por tipo de software','<strong>Causas:</strong> identificá las razones más frecuentes (costo, desconocimiento, costumbre)','<strong>Propuesta:</strong> listado de alternativas gratuitas y legales por categoría'],conexion:'Conecta con <strong>Software</strong> (licencias, ética, software libre) y <strong>Python</strong> (análisis de datos de la encuesta).',voz:'Techi dice: "¿Qué pasaría si la gente supiera que hay opciones gratuitas y legales para todo lo que usa?"'},
+  {icon:'♻️',mats:['hw','py'],clase:'hw',titulo:'Basura electrónica en el barrio',desc:'¿Cómo desechan equipos informáticos viejos los hogares del barrio y qué riesgos implica?',tags:['observación','medioambiente','hardware'],contexto:'El e-waste es un problema ambiental global que empieza en casa. Paraguay no tiene regulación clara al respecto.',pasos:['<strong>Encuesta:</strong> preguntá a vecinos qué hacen con sus equipos viejos','<strong>Relevamiento:</strong> buscá puntos de descarte o reciclado en la zona','<strong>Investigación:</strong> documentá qué materiales tóxicos contienen los equipos','<strong>Mapeo:</strong> estimá cuántos equipos se descartan por año en el barrio','<strong>Propuesta:</strong> campaña de concientización o punto de recolección en el CED'],conexion:'Conecta con <strong>Hardware</strong> (componentes físicos, materiales) y <strong>Python</strong> (tabulación y análisis de datos).',voz:'Gatiel pregunta: "¿Cuántos metales pesados hay enterrados en el barrio sin que nadie lo sepa?"'},
+  {icon:'🧮',mats:['alg','py'],clase:'alg',titulo:'¿Algorítmica o Matemática? El puente que falta',desc:'¿Los estudiantes que resuelven mejor problemas matemáticos también programan con menos errores lógicos?',tags:['datos reales','correlación','lógica'],contexto:'Hay una hipótesis no probada: pensar matemáticamente ayuda a programar. Este proyecto la pone a prueba con datos reales del curso.',pasos:['<strong>Datos:</strong> recopilá notas de Matemática y Algorítmica del curso','<strong>Clasificación:</strong> dividí en grupos alto/medio/bajo rendimiento en cada materia','<strong>Análisis:</strong> buscá correlación entre el desempeño en ambas materias','<strong>Casos:</strong> entrevistá estudiantes con perfiles distintos para entender estrategias','<strong>Propuesta:</strong> ejercicios puente entre lógica matemática y algorítmica'],conexion:'Conecta con <strong>Algorítmica</strong> (lógica estructurada) y <strong>Python</strong> (análisis estadístico básico con listas y promedios).',voz:'Bit dice: "Correlación no es causalidad. Pero si encontrás una, ya tenés algo interesante que explicar."'},
+  {icon:'🧠',mats:['sw','py'],clase:'sw',titulo:'Inteligencia artificial: ¿miedo o herramienta?',desc:'¿Qué percepción tienen los docentes del CED sobre la IA en el aula y cómo difiere de la de los estudiantes?',tags:['encuesta','IA','generaciones'],contexto:'En Software vieron inteligencia artificial como concepto. Este proyecto mide qué piensan las personas reales de su entorno cercano.',pasos:['<strong>Encuesta diferenciada:</strong> diseñá dos versiones: una para docentes, otra para estudiantes','<strong>Variables:</strong> medí conocimiento, uso, percepción de riesgo y confianza','<strong>Comparación:</strong> analizá diferencias generacionales en las respuestas','<strong>Análisis:</strong> identificá mitos y realidades sobre IA en el CED','<strong>Propuesta:</strong> taller de alfabetización en IA para la comunidad educativa'],conexion:'Conecta con <strong>Software</strong> (inteligencia artificial, aplicaciones de la informática) y <strong>Python</strong> (conteo y análisis de respuestas).',voz:'Techi dice: "Lo interesante no es lo que la gente sabe sobre IA. Es la diferencia entre lo que cree y lo que es real."'},
+  {icon:'🔧',mats:['hw','lab'],clase:'hw',titulo:'Mantenimiento cero: consecuencias reales',desc:'¿Qué diferencia hay en el rendimiento de PCs con y sin mantenimiento preventivo en instituciones educativas?',tags:['experimento','hardware','medición'],contexto:'Hardware enseña mantenimiento preventivo y correctivo. Este proyecto verifica con datos si hacerlo realmente importa.',pasos:['<strong>Selección:</strong> identificá PCs con y sin mantenimiento reciente en el CED','<strong>Medición:</strong> registrá tiempos de arranque, temperatura y velocidad de respuesta','<strong>Mantenimiento:</strong> aplicá limpieza y ajuste en un grupo, dejá el otro sin cambios','<strong>Comparación:</strong> medí los mismos indicadores después del mantenimiento','<strong>Propuesta:</strong> plan semestral de mantenimiento preventivo para el laboratorio'],conexion:'Conecta con <strong>Hardware</strong> (mantenimiento preventivo, diagnóstico) y <strong>Laboratorio</strong> (registro y análisis de datos).',voz:'Bit dice: "Un experimento con grupo de control es lo que diferencia una observación de una conclusión."'},
+  {icon:'📊',mats:['py','alg'],clase:'py',titulo:'El primer error de programación',desc:'¿Cuáles son los errores más frecuentes al programar en Python en 2do BATIN y en qué momento ocurren?',tags:['investigación-acción','Python','datos propios'],contexto:'Este proyecto investiga desde adentro: los mismos estudiantes son los sujetos de estudio. Datos únicos e irrepetibles.',pasos:['<strong>Registro:</strong> anotá errores de compilación/ejecución durante 6 semanas de clases','<strong>Categorización:</strong> clasificá en sintaxis, lógica, tipos, índices, etc.','<strong>Temporalidad:</strong> registrá en qué semana del aprendizaje ocurre cada tipo','<strong>Análisis:</strong> identificá el error más costoso en tiempo y el más frecuente','<strong>Propuesta:</strong> guía de errores comunes y cómo resolverlos para futuros 2dos'],conexion:'Conecta con <strong>Python</strong> y <strong>Algorítmica</strong>. Es investigación-acción dentro del aula: los datos están disponibles todos los jueves.',voz:'Gatiel dice: "Los datos que nadie tiene todavía son los más valiosos. Y estos los generás vos, en tiempo real."'},
+  {icon:'🌐',mats:['sw','hw'],clase:'sw',titulo:'Conectividad real en el aula',desc:'¿Cuál es la velocidad real de internet disponible en el CED y cómo afecta las actividades de aprendizaje?',tags:['medición','redes','infraestructura'],contexto:'Todo el mundo se queja del wifi. Nadie lo midió sistemáticamente para proponer una solución concreta.',pasos:['<strong>Medición:</strong> registrá velocidades de subida/bajada en distintos horarios y aulas','<strong>Mapeo:</strong> identificá zonas con mejor y peor señal en el edificio','<strong>Encuesta:</strong> preguntá a docentes y alumnos cómo afecta la conectividad sus clases','<strong>Análisis:</strong> correlacioná velocidad, hora y cantidad de usuarios conectados','<strong>Propuesta:</strong> recomendaciones técnicas para mejorar la red del CED'],conexion:'Conecta con <strong>Software</strong> (redes, protocolos) y <strong>Hardware</strong> (infraestructura de red, routers).',voz:'Techi dice: "Antes de pedir que arreglen el wifi, medí exactamente qué tan roto está y dónde."'},
+  {icon:'💤',mats:['py','lab'],clase:'lab',titulo:'¿Cuánto duermen los estudiantes técnicos?',desc:'¿Existe relación entre las horas de sueño y el rendimiento en materias técnicas?',tags:['encuesta','rendimiento','datos propios'],contexto:'Los estudiantes técnicos tienen carga horaria alta. Nadie midió si eso afecta el rendimiento en las materias más exigentes.',pasos:['<strong>Encuesta:</strong> relevá horas de sueño durante 2 semanas en el curso','<strong>Datos académicos:</strong> cruzá con notas de Algorítmica y Laboratorio del mismo período','<strong>Grupos:</strong> clasificá en menos de 6hs, 6-8hs y más de 8hs de sueño','<strong>Análisis:</strong> calculá promedio de rendimiento por grupo','<strong>Propuesta:</strong> recomendaciones de hábitos para estudiantes técnicos'],conexion:'Conecta con <strong>Python</strong> (análisis estadístico) y <strong>Laboratorio</strong> (datos reales del propio curso como fuente de investigación).',voz:'Bit dice: "Si hay correlación entre sueño y notas, eso vale más que cualquier consejo genérico."'},
+  {icon:'🔐',mats:['sw','alg'],clase:'sw',titulo:'Contraseñas inseguras: el eslabón débil',desc:'¿Qué tan seguras son las contraseñas que usan los estudiantes del CED y cuántos conocen las buenas prácticas?',tags:['encuesta','seguridad','ética'],contexto:'En Software vieron seguridad informática. Este proyecto mide si ese conocimiento se traslada al comportamiento real.',pasos:['<strong>Encuesta anónima:</strong> preguntá sobre características de las contraseñas (sin pedirlas)','<strong>Test de conocimiento:</strong> evaluá si conocen criterios de contraseña segura','<strong>Análisis:</strong> cruzá conocimiento declarado vs práctica real','<strong>Clasificación:</strong> categorizá nivel de seguridad de los hábitos del grupo','<strong>Propuesta:</strong> taller de seguridad digital para el curso o toda la institución'],conexion:'Conecta con <strong>Software</strong> (seguridad, ética) y <strong>Algorítmica</strong> (análisis lógico de patrones de respuesta).',voz:'Gatiel dice: "El eslabón más débil de cualquier sistema siempre es el humano. ¿Cuán débil es el tuyo?"'},
+  {icon:'🌡️',mats:['hw','py'],clase:'hw',titulo:'Calor y rendimiento de equipos',desc:'¿Cómo influye la temperatura ambiente del aula en el rendimiento y la estabilidad de las computadoras?',tags:['experimento','hardware','medición'],contexto:'Paraguay tiene veranos extremos. Los laboratorios escolares rara vez tienen climatización. Nadie midió el impacto real.',pasos:['<strong>Medición:</strong> registrá temperatura del aula y temperatura interna de las PCs en distintos horarios','<strong>Rendimiento:</strong> medí velocidad de procesamiento en distintas condiciones térmicas','<strong>Fallas:</strong> registrá reinicios o cierres inesperados y la temperatura al momento','<strong>Análisis:</strong> establecé un umbral de temperatura crítica para los equipos','<strong>Propuesta:</strong> medidas de ventilación o uso horario del laboratorio según temperatura'],conexion:'Conecta con <strong>Hardware</strong> (componentes, temperatura, disipación) y <strong>Python</strong> (registro y análisis de datos).',voz:'Bit dice: "Una PC que se reinicia sola en verano no es un misterio. Es un problema con causa medible."'},
+  {icon:'🎮',mats:['py','sw'],clase:'py',titulo:'Videojuegos y pensamiento lógico',desc:'¿Los estudiantes que juegan videojuegos estratégicos desarrollan mejor pensamiento lógico?',tags:['test','correlación','Python'],contexto:'Hay estudios internacionales al respecto, pero ninguno con estudiantes técnicos de Paraguay.',pasos:['<strong>Clasificación:</strong> encuestá qué tipo de videojuegos juega cada estudiante y cuánto tiempo','<strong>Test lógico:</strong> aplicá un test estandarizado de pensamiento lógico al grupo','<strong>Correlación:</strong> analizá si el tipo y frecuencia de juego se relaciona con el resultado','<strong>Grupos:</strong> comparé jugadores de estrategia vs acción vs no jugadores','<strong>Propuesta:</strong> posibles actividades con videojuegos educativos en el aula'],conexion:'Conecta con <strong>Python</strong> (análisis de correlación básica) y <strong>Software</strong> (aplicaciones de la informática, IA en juegos).',voz:'Techi dice: "¿Y si la mejor forma de aprender lógica fuera algo que ya hacés por placer?"'},
+  {icon:'🏫',mats:['sw','hw'],clase:'sw',titulo:'Ciclo de vida del software en el CED',desc:'¿Qué software usan los docentes del CED y cuántos tienen versiones desactualizadas o sin soporte?',tags:['relevamiento','ciclo de vida','licencias'],contexto:'En Software vieron ciclo de vida del software. Este proyecto aplica ese concepto exacto a su propia institución.',pasos:['<strong>Inventario:</strong> relevá el software instalado en las PCs del CED','<strong>Versiones:</strong> verificá si están actualizadas o tienen soporte activo','<strong>Uso real:</strong> encuestá docentes sobre qué software realmente usan en clase','<strong>Análisis:</strong> clasificá software por estado (vigente, obsoleto, sin licencia, libre)','<strong>Propuesta:</strong> plan de actualización y migración a software libre donde corresponda'],conexion:'Conecta directamente con <strong>Software</strong> (ciclo de vida, licencias, SO) y <strong>Hardware</strong> (requisitos de sistema, compatibilidad).',voz:'Gatiel dice: "Un relevamiento real de tu institución vale más que cualquier caso hipotético del libro."'},
+  {icon:'🗺️',mats:['alg','lab'],clase:'alg',titulo:'Pseudocódigo vs código real: la brecha',desc:'¿Los estudiantes que diseñan el algoritmo en pseudocódigo antes de programar cometen menos errores?',tags:['experimento','algorítmica','Python'],contexto:'En Algorítmica aprenden pseudocódigo. En Laboratorio programan. Nadie verificó con datos si uno realmente ayuda al otro.',pasos:['<strong>Experimento:</strong> dividí el curso en dos grupos para resolver el mismo problema','<strong>Grupo A:</strong> diseña pseudocódigo primero, luego programa','<strong>Grupo B:</strong> va directo al código sin pseudocódigo previo','<strong>Medición:</strong> contá errores, tiempo y cantidad de correcciones en cada grupo','<strong>Análisis:</strong> compará resultados y buscá diferencias significativas'],conexion:'Conecta con <strong>Algorítmica</strong> (pseudocódigo, lógica) y <strong>Laboratorio</strong> (programación en Python). Datos recolectados en el propio aula.',voz:'Bit dice: "Si el pseudocódigo ayuda, los datos lo van a mostrar. Si no ayuda, eso también es un resultado válido."'},
+  {icon:'🤖',mats:['py','sw'],clase:'py',titulo:'¿Dependen los estudiantes de la IA para programar?',desc:'¿Los estudiantes que usan asistentes de IA para programar aprenden más rápido o desarrollan menos autonomía?',tags:['observación','IA','Python'],contexto:'ChatGPT y similares escriben código. La pregunta es si usarlos ayuda a aprender o sustituye el aprendizaje.',pasos:['<strong>Encuesta:</strong> relevá con qué frecuencia y para qué usan IA al programar','<strong>Test sin IA:</strong> evaluá resolución de problemas sin asistencia de herramientas externas','<strong>Comparación:</strong> cruzá uso de IA con autonomía demostrada en el test','<strong>Entrevistas:</strong> preguntá a estudiantes cómo describen su propio proceso','<strong>Propuesta:</strong> protocolo de uso responsable de IA en materias técnicas'],conexion:'Conecta con <strong>Python</strong> (el lenguaje que usan y para el cual buscan ayuda) y <strong>Software</strong> (IA, ética en el uso de tecnología).',voz:'Techi dice: "Usar IA para aprender y usarla para no aprender son dos cosas completamente distintas."'},
+  {icon:'⚡',mats:['hw','alg'],clase:'hw',titulo:'Consumo eléctrico del laboratorio',desc:'¿Cuánto consume eléctricamente el laboratorio del CED por mes y qué estrategias reducirían ese costo?',tags:['cálculo','hardware','eficiencia'],contexto:'Las instituciones educativas pagan facturas altas. Nadie calculó cuánto aporta el laboratorio de informática al total.',pasos:['<strong>Medición:</strong> calculá el consumo estimado de cada equipo (Watts × horas de uso)','<strong>Relevamiento:</strong> registrá horas reales de uso del laboratorio por semana','<strong>Cálculo:</strong> estimá el costo mensual en guaraníes con tarifas de ANDE','<strong>Comparación:</strong> calculá el ahorro con medidas de uso eficiente','<strong>Propuesta:</strong> protocolo de uso eficiente con impacto económico estimado'],conexion:'Conecta con <strong>Hardware</strong> (componentes y su consumo energético) y <strong>Algorítmica</strong> (cálculos, fórmulas, tablas comparativas).',voz:'Bit dice: "Cuando ponés un número al problema, el problema deja de ser abstracto."'},
+  {icon:'📈',mats:['py','lab','alg'],clase:'py',titulo:'Progresión del aprendizaje en Python',desc:'¿Cómo evoluciona la cantidad y el tipo de errores de programación a lo largo del año en 2do BATIN?',tags:['longitudinal','Python','datos propios'],contexto:'Este es un proyecto longitudinal único: sigue al propio curso durante todo el año. Los datos son irrepetibles.',pasos:['<strong>Registro continuo:</strong> anotá errores de cada clase desde mayo hasta noviembre','<strong>Categorización:</strong> clasificá por tipo en cada unidad temática','<strong>Análisis temporal:</strong> graficá la evolución de errores mes a mes','<strong>Hitos:</strong> identificá qué temas generan más errores y cuándo disminuyen','<strong>Producto:</strong> informe de progresión con curva de aprendizaje del grupo'],conexion:'Conecta con <strong>Python</strong>, <strong>Laboratorio</strong> y <strong>Algorítmica</strong>. Investigación-acción longitudinal: los datos están disponibles en clase todos los lunes y jueves.',voz:'Gatiel dice: "Un estudio de todo el año es algo que casi nadie hace. Y eso lo hace difícil de superar."'}
+];
+
+function renderFiltros() {
+  const c = document.getElementById('filters');
+  FILTROS.forEach((f, i) => {
+    const b = document.createElement('button');
+    b.className = 'filter-btn' + (i === 0 ? ' on' : '');
+    b.textContent = f.label;
+    b.dataset.id = f.id;
+    b.onclick = () => filtrar(f.id);
+    c.appendChild(b);
+  });
+}
+
+function renderGrid() {
+  const g = document.getElementById('grid');
+  MISIONES.forEach((m, i) => {
+    const tags = m.tags.map(t => `<span class="ptag">${t}</span>`).join('');
+    const mats = m.mats.map(x => x.toUpperCase()).join(' · ');
+    const div = document.createElement('div');
+    div.className = `pcard ${m.clase}`;
+    div.dataset.mats = m.mats.join(' ');
+    div.innerHTML = `
+      <div class="pcard-top">
+        <span class="pcard-icon">${m.icon}</span>
+        <span class="pcard-badge">${mats}</span>
+      </div>
+      <div class="pcard-title">${m.titulo}</div>
+      <div class="pcard-desc">"${m.desc}"</div>
+      <div class="pcard-tags">${tags}</div>
+      <div class="pcard-footer">
+        <span class="pcard-mat">inv_${String(i+1).padStart(2,'0')}</span>
+        <button class="pcard-btn" onclick="event.stopPropagation();abrirModal(${i})">[ ver misión → ]</button>
+      </div>`;
+    div.onclick = () => abrirModal(i);
+    g.appendChild(div);
+  });
+}
+
+function filtrar(id) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  document.querySelectorAll('.pcard').forEach(c => {
+    c.style.display = (id === 'todos' || c.dataset.mats.includes(id)) ? '' : 'none';
+  });
+}
+
+function abrirModal(i) {
+  const m = MISIONES[i];
+  const pasos = m.pasos.map(p => `<li>${p}</li>`).join('');
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-header">
+      <h2>${m.icon} ${m.titulo}</h2>
+      <div class="modal-pregunta">"${m.desc}"</div>
+    </div>
+    <div class="msec"><div class="msec-label">contexto</div><p>${m.contexto}</p></div>
+    <div class="msec"><div class="msec-label">pasos sugeridos</div><ul>${pasos}</ul></div>
+    <div class="msec"><div class="msec-label">conexión con tus materias</div><div class="conexion-box">${m.conexion}</div></div>
+    <div class="msec"><div class="msec-label">techi · bit · gatiel dicen</div><p><em>${m.voz}</em></p></div>
+    <button class="mission-btn" onclick="cerrarModal()">[ entendido · cerrar misión ]</button>`;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) cerrarModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+
+renderFiltros();
+renderGrid();
+</script>
+</body>
+</html>

@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciclo Mientras · Ejercicios · Lab 2 · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+  :root {
+    --bg:      #fff8f2;
+    --surface: #fff1e6;
+    --card:    #ffffff;
+    --border:  #f0c9a0;
+    --accent:  #c45e00;
+    --accent2: #8a3a00;
+    --accent3: #e05000;
+    --gold:    #b04000;
+    --text:    #2a1800;
+    --muted:   #996633;
+    --radius:  10px;
+    --c-gatiel: #7a4a1a;
+    --c-techi:  #c45e00;
+    --c-bit:    #8a3a00;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── BARRA TERMINAL ── */
+  .terminal-bar {
+    background: #fde8d0;
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .term-path { color: var(--accent); margin-left: .5rem; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 3.5rem 2rem 2.5rem;
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    color: var(--text);
+  }
+  .hero h1 .hi { color: var(--accent); }
+  .hero h1 .cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65em;
+    color: var(--accent2);
+    display: block;
+    margin-top: .4rem;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 2rem;
+    line-height: 1.75;
+  }
+
+  /* ── PERSONAJES HERO ── */
+  .chars {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .char-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .75rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    font-size: 14px;
+  }
+  .char-card .emoji { font-size: 24px; }
+  .char-card .name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: .88rem; color: var(--text); }
+  .char-card .role { font-size: 12px; color: var(--muted); }
+
+  .sep { border: none; border-top: 1px solid var(--border); margin: 0 2rem; }
+
+  /* ── ESCENA NARRATIVA ── */
+  .narrative {
+    max-width: 720px;
+    margin: 2.5rem auto;
+    padding: 0 2rem;
+  }
+  .narrative > p {
+    color: #5a3010;
+    font-size: 15px;
+    margin-bottom: 1rem;
+  }
+  .narrative strong { color: var(--text); }
+
+  /* Bloques de diálogo por personaje */
+  .dialogo {
+    border-radius: var(--radius);
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.85;
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+  }
+  .dialogo-techi {
+    background: #fff4eb;
+    border-left-color: var(--c-techi);
+  }
+  .dialogo-bit {
+    background: #fdf0e8;
+    border-left-color: #d4730a;
+  }
+  .dialogo-gatiel {
+    background: #f9eadb;
+    border-left-color: var(--c-gatiel);
+  }
+  .d-who {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: .4rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .d-who.techi  { color: var(--c-techi); }
+  .d-who.bit    { color: #d4730a; }
+  .d-who.gatiel { color: var(--c-gatiel); }
+  .d-text { color: var(--text); }
+  .d-text code {
+    background: #f0d5b8;
+    color: var(--accent2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .d-text .out   { color: var(--accent3); }
+  .d-text .ok    { color: #1a7a3a; }
+  .d-text .warn  { color: #b04000; }
+  .d-text .dim   { color: var(--muted); }
+
+  /* Bloque terminal clásico */
+  .terminal-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #7a4a1a;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+  .terminal-block .prompt { color: var(--accent); }
+  .terminal-block .out    { color: var(--text); }
+  .terminal-block .warn   { color: var(--gold); }
+  .terminal-block .ok     { color: #1a7a3a; }
+
+  /* ── SECCIÓN EJERCICIOS ── */
+  .ejercicios-section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: .5rem;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: .4rem;
+    color: var(--text);
+  }
+  .section-title .accent { color: var(--accent); }
+  .section-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Filtros */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .filter-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.on { background: var(--card); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+
+  /* Grid de ejercicios */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+    gap: 1rem;
+  }
+  .ecard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ecard::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .ecard:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .ecard:hover::before { opacity: 1; }
+  .ecard.n3::before { background: var(--accent); }
+  .ecard.n4::before { background: #d4730a; }
+  .ecard.n5::before { background: var(--accent2); }
+  .ecard.nx::before { background: var(--c-gatiel); }
+
+  .ecard-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .ecard-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .ecard-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .ecard-badge.n3 { border-color: #f0c9a0; color: var(--accent); }
+  .ecard-badge.n4 { border-color: #e8b880; color: #d4730a; }
+  .ecard-badge.n5 { border-color: #d8a060; color: var(--accent2); }
+  .ecard-badge.nx { border-color: #c09060; color: var(--c-gatiel); font-style: italic; }
+  .ecard-who {
+    font-size: 16px;
+    line-height: 1;
+  }
+  .ecard-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .ecard-desc {
+    font-size: 13px;
+    color: #7a4a1a;
+    line-height: 1.55;
+  }
+  .ecard-context {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .ecard-footer {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ecard-bloom {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .ecard-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .ecard-btn:hover { color: var(--accent); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(42,24,0,.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 640px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-who {
+    font-size: 22px;
+    margin-bottom: .3rem;
+  }
+  .modal-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .8rem;
+    display: block;
+  }
+  .modal-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: .8rem;
+    color: var(--text);
+  }
+  .modal-consigna {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 1.2rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    border-left: 3px solid var(--accent);
+  }
+  .modal-consigna code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: #f0d5b8;
+    color: var(--accent2);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .msec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .4rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .hint-toggle {
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: .5rem;
+    transition: border-color .15s;
+  }
+  .hint-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .hint-box {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    font-size: 13px;
+    color: #5a3010;
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+  .hint-box.open { display: block; }
+  .hint-box ul { margin-left: 1.2rem; }
+  .hint-box li { margin-bottom: .4rem; }
+  .hint-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: #f0d5b8;
+    color: var(--accent2);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .variante-box {
+    background: #fff4eb;
+    border: 1px solid #f0c9a0;
+    border-left: 3px solid var(--gold);
+    border-radius: var(--radius);
+    padding: .9rem 1.1rem;
+    font-size: 13px;
+    color: #6a3a10;
+    line-height: 1.7;
+  }
+  .variante-box strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+<style>
+/* Override terminal-bar for BATIN */
+.terminal-bar {
+  background: var(--bg2) !important;
+  border-bottom: 1px solid var(--borde) !important;
+  color: var(--texto3) !important;
+}
+.term-path { color: var(--naranja) !important; }
+/* Breadcrumb */
+.batin-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  padding: 10px 28px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  gap: 6px;
+}
+.batin-ruta a { color: var(--naranja); text-decoration: none; }
+.batin-ruta .sep { color: var(--borde3); }
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="batin-ruta">
+  <a href="../aprendiendo.html">Estoy aprendiendo</a>
+  <span class="sep">/</span>
+  <a href="../aprendiendo.html">Ruta Algorítmica</a>
+  <span class="sep">/</span>
+  <span>Ciclo Mientras · Ejercicios · 2do BATIN</span>
+</div>
+
+
+
+<!-- Barra terminal -->
+<div class="terminal-bar">
+  <span class="dot dot-r"></span>
+  <span class="dot dot-y"></span>
+  <span class="dot dot-g"></span>
+  <span class="term-path">lab2 / ciclo-mientras / ejercicios.py</span>
+  <span style="margin-left:auto">2do BATIN · 2026</span>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <span class="hero-label">Laboratorio 2 · Estructuras Repetitivas</span>
+  <h1>
+    El ciclo que <span class="hi">no sabe</span> cuándo para
+    <span class="cmd">while condicion == True: # seguir...</span>
+  </h1>
+  <p class="hero-desc">
+    El <strong>ciclo Mientras</strong> repite mientras una condición sea verdadera.
+    No cuenta pasos: espera. Y eso lo hace diferente, poderoso, y a veces traicionero.
+    Gatiel, Techi y Bit te explican cómo domesticarlo.
+  </p>
+  <div class="chars">
+    <div class="char-card">
+      <span class="emoji">👩‍💻</span>
+      <div><div class="name">Techi</div><div class="role">Identidad profesional</div></div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🤖</span>
+      <div><div class="name">Bit</div><div class="role">Guía técnico · lógica y datos</div></div>
+    </div>
+    <div class="char-card">
+      <span class="emoji">🦊</span>
+      <div><div class="name">Gatiel</div><div class="role">Pensamiento crítico · siempre hay otro camino</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- Escena narrativa -->
+<div class="narrative">
+
+  <div class="terminal-block">
+    <div><span class="prompt">lab2@batin:~$</span> <span class="out">python3 mientras.py --modo=clase</span></div>
+    <div style="margin-top:.5rem"><span class="warn">[CARGANDO]</span> <span class="out">Estructura: ciclo Mientras · Python · 2do BATIN</span></div>
+    <div><span class="ok">[OK]</span> <span class="out">12 ejercicios disponibles · Bloom N3 → Desafío Extra</span></div>
+  </div>
+
+  <!-- Diálogo: Techi abre -->
+  <div class="dialogo dialogo-techi">
+    <div class="d-who techi">👩‍💻 Techi</div>
+    <div class="d-text">
+      El ciclo <code>for</code> sabía de antemano cuántas veces iba a repetir.<br>
+      El ciclo <code>while</code>... no. El <code>while</code> no cuenta. <span class="out">Evalúa.</span><br>
+      Repite mientras algo sea verdadero. Y cuando eso deje de serlo, para.<br>
+      <span class="dim"># O no para nunca. Eso también puede pasar.</span>
+    </div>
+  </div>
+
+  <!-- Diálogo: Bit explica -->
+  <div class="dialogo dialogo-bit">
+    <div class="d-who bit">🤖 Bit</div>
+    <div class="d-text">
+      Anatomía del ciclo Mientras:<br><br>
+      <code>while &lt;condicion&gt;:</code><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code># bloque que se repite</code><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code># ALGO debe cambiar aquí</code><br><br>
+      Tres preguntas antes de escribirlo:<br>
+      <span class="out">1.</span> ¿Cuál es la condición de continuación?<br>
+      <span class="out">2.</span> ¿Qué cambia dentro del ciclo para que alguna vez sea falsa?<br>
+      <span class="out">3.</span> ¿Qué necesito inicializar antes de entrar?
+    </div>
+  </div>
+
+  <!-- Diálogo: Gatiel con la pregunta trampa -->
+  <div class="dialogo dialogo-gatiel">
+    <div class="d-who gatiel">🦊 Gatiel</div>
+    <div class="d-text">
+      <span class="warn">Pregunta trampa:</span> ¿qué pasa acá?<br><br>
+      <code>x = 5</code><br>
+      <code>while x > 0:</code><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>print(x)</code><br><br>
+      <span class="dim"># &lt;-- x nunca cambia. El ciclo... ¿para?</span><br><br>
+      No. Nunca para. Eso se llama <span class="out">bucle infinito</span>.<br>
+      En clase vas a tener que <span class="out">matar el proceso</span> con Ctrl+C.<br>
+      En sistemas reales, eso se llama <span class="out">incidente de producción</span>.<br>
+      <span class="dim"># Pequeña diferencia.</span>
+    </div>
+  </div>
+
+  <!-- Diálogo: Techi sobre la condición centinela -->
+  <div class="dialogo dialogo-techi">
+    <div class="d-who techi">👩‍💻 Techi</div>
+    <div class="d-text">
+      Entonces, ¿cuándo uso <code>while</code> en vez de <code>for</code>?<br><br>
+      Cuando <span class="out">no sabés de antemano cuántas veces vas a repetir</span>.<br><br>
+      Ejemplos reales:<br>
+      <span class="dim">→</span> Pedir la contraseña hasta que sea correcta.<br>
+      <span class="dim">→</span> Leer datos hasta que el usuario escriba "fin".<br>
+      <span class="dim">→</span> Intentar conectar a un servidor hasta que responda.<br>
+      <span class="dim">→</span> Esperar que un archivo termine de descargarse.<br><br>
+      El <code>while</code> es el ciclo de los procesos reales.
+    </div>
+  </div>
+
+  <!-- Diálogo: Bit con la misión -->
+  <div class="dialogo dialogo-bit">
+    <div class="d-who bit">🤖 Bit</div>
+    <div class="d-text">
+      <span class="ok">[MISIÓN]</span> 12 ejercicios. Empezás con N3 y subís de nivel.<br>
+      Cada ejercicio tiene una pista colapsable.<br><br>
+      <span class="warn">Regla de Bit:</span> intentá resolver sin la pista.<br>
+      Si después de 5 minutos genuinos no avanzás: la abrís. Sin culpa.<br>
+      <span class="dim"># Así es como funciona el debugging profesional también.</span>
+    </div>
+  </div>
+
+  <!-- Diálogo: Gatiel cierra la intro -->
+  <div class="dialogo dialogo-gatiel">
+    <div class="d-who gatiel">🦊 Gatiel</div>
+    <div class="d-text">
+      Y si encontrás una solución diferente a la esperada y funciona igual:<br>
+      <span class="out">¡eso es lo mejor que te puede pasar!</span><br><br>
+      En programación, hay mil caminos al mismo resultado.<br>
+      Lo que importa es que <span class="out">la lógica sea correcta</span> y que <span class="out">no explote</span>.<br>
+      <span class="dim"># Lo de no explotar es importante.</span>
+    </div>
+  </div>
+
+</div>
+
+<hr class="sep" style="margin:0 2rem 2.5rem">
+
+<!-- Sección de ejercicios -->
+<div class="ejercicios-section">
+
+  <span class="section-label">// banco de ejercicios</span>
+  <div class="section-title">Misiones del ciclo <span class="accent">Mientras</span></div>
+  <p class="section-sub">Haz clic en cualquier ejercicio para ver la consigna completa. · Bloom N3 → N5 + Desafío Extra</p>
+
+  <div class="filters">
+    <button class="filter-btn on" data-f="todos">Todos (12)</button>
+    <button class="filter-btn" data-f="n3">N3 · Aplicar</button>
+    <button class="filter-btn" data-f="n4">N4 · Analizar</button>
+    <button class="filter-btn" data-f="n5">N5 · Evaluar</button>
+    <button class="filter-btn" data-f="nx">Desafío Extra</button>
+  </div>
+
+  <div class="cards-grid" id="grid"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>
+    <a href="index.html">← volver al inicio</a> &nbsp;·&nbsp;
+    2do BATIN · Laboratorio 2 · 2026 &nbsp;·&nbsp;
+    Prof. Daniela Ferreira · CEDMR · Luque, Paraguay
+  </p>
+</footer>
+
+<script>
+const EJS = [
+  {
+    id:"01", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"🤖", char:"Bit",
+    titulo:"Contador de intentos",
+    contexto:"Juego educativo de adivinanza",
+    desc:"El programa no sabe cuántas veces el usuario va a equivocarse. Perfecto para while.",
+    consigna:"El programa elige un número secreto entre 1 y 10. Le pide al usuario que lo adivine. Sigue pidiendo hasta que lo adivine. Al final, muestra cuántos intentos necesitó.",
+    pistas:[
+      "Declara <code>intentos = 0</code> antes del ciclo.",
+      "La condición del <code>while</code>: mientras el número ingresado sea distinto al secreto.",
+      "Dentro del ciclo: pide el número, suma 1 al contador.",
+      "Al salir, muestra el contador."
+    ]
+  },
+  {
+    id:"02", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Suma hasta cero",
+    contexto:"Registro de ventas del día en una pequeña tienda",
+    desc:"El encargado ingresa montos uno a uno y escribe 0 cuando termina. Nadie sabe cuántas ventas habrá.",
+    consigna:"El programa pide números al usuario uno por uno y los acumula. El ciclo termina cuando el usuario ingresa 0. Al final, muestra la suma total y la cantidad de números ingresados (sin contar el 0).",
+    pistas:[
+      "Inicializa <code>suma = 0</code> y <code>cantidad = 0</code> antes del ciclo.",
+      "Lee el primer número ANTES del ciclo para que la condición tenga algo que evaluar.",
+      "Condición del <code>while</code>: mientras el número sea distinto de 0.",
+      "Al FINAL del cuerpo del ciclo, vuelve a leer el número (patrón leer-al-final)."
+    ]
+  },
+  {
+    id:"03", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Validación de contraseña",
+    contexto:"Acceso a un sistema básico",
+    desc:"Si no sabés cuántas veces el usuario va a equivocarse, while es tu mejor amigo.",
+    consigna:"El programa define una contraseña correcta. Le pide al usuario que la ingrese. Si se equivoca, vuelve a pedirla. Cuando ingresa la correcta, muestra 'Acceso concedido'.",
+    pistas:[
+      "Define la contraseña correcta como variable antes del ciclo.",
+      "Lee el primer intento ANTES del ciclo.",
+      "Condición del <code>while</code>: mientras la ingresada sea distinta a la correcta.",
+      "Dentro del ciclo solo se vuelve a pedir."
+    ]
+  },
+  {
+    id:"04", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"🤖", char:"Bit",
+    titulo:"Promedio de notas con centinela",
+    contexto:"Gestión de calificaciones · valor centinela",
+    desc:"El docente no sabe cuántos estudiantes tiene el día que escribe el programa. El valor -1 avisa cuándo terminar.",
+    consigna:"El programa lee notas (0 a 10) hasta que el docente ingresa -1 como señal de fin. Al terminar, muestra la suma total, la cantidad de notas y el promedio.",
+    pistas:[
+      "El -1 es el centinela: no se suma ni se cuenta.",
+      "Lee la primera nota ANTES del ciclo.",
+      "Condición: mientras la nota sea distinta de -1.",
+      "Al final del cuerpo del ciclo, lee la siguiente nota.",
+      "Antes de dividir, verificá que la cantidad no sea 0."
+    ],
+    variante:"¿Qué pasa si el docente ingresa -1 como primera nota? ¿Tu programa lo maneja sin errores?"
+  },
+  {
+    id:"05", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Función: pedir número positivo",
+    contexto:"Validación de entrada · patrón reutilizable",
+    desc:"En todo sistema real, los datos que ingresa el usuario deben validarse. Esta función se puede reutilizar en cualquier proyecto.",
+    consigna:"Escribi una función <code>pedirPositivo()</code> que pida un número al usuario y solo lo acepte si es mayor a 0. Si ingresa un valor inválido, muestra 'Número inválido, intenta de nuevo' y vuelve a pedir. Retorna el número válido.",
+    pistas:[
+      "Lee el número dentro de la función.",
+      "El <code>while</code> repite mientras el número NO sea positivo.",
+      "El mensaje de error va dentro del ciclo.",
+      "Al salir del ciclo, retorna el número.",
+      "Desde el programa principal, llama a la función y usa el valor retornado."
+    ]
+  },
+  {
+    id:"06", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Tabla de multiplicar interactiva",
+    contexto:"Herramienta de repaso · ciclos anidados",
+    desc:"Un ciclo interior genera la tabla. Un ciclo exterior pregunta si querés ver otra. Dos while, una misión.",
+    consigna:"El programa pide un número y muestra su tabla de multiplicar del 1 al 10 usando <code>while</code>. Luego pregunta '¿Querés ver otra tabla? (s/n)'. Si el usuario responde 's', repite el proceso. De lo contrario, termina.",
+    pistas:[
+      "Dos ciclos: el exterior controla si el usuario quiere otra tabla; el interior genera la tabla.",
+      "El multiplicador empieza en 1, termina en 10: usá un contador.",
+      "Condición del ciclo exterior: mientras la respuesta sea 's'.",
+      "Lee la respuesta al FINAL del cuerpo del ciclo exterior."
+    ]
+  },
+  {
+    id:"07", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Traza de ejecución paso a paso",
+    contexto:"Análisis · no ejecutes, pensá",
+    desc:"Antes de correr el código, un técnico puede predecir qué va a pasar. Eso se llama traza de ejecución.",
+    consigna:"Analizá este código SIN ejecutarlo. ¿Cuántas veces se ejecuta el ciclo? ¿Cuál es el valor final de x y de suma? Justificá con una tabla de seguimiento.\n\nx = 1\nsuma = 0\nwhile x <= 5:\n    suma = suma + x\n    x = x + 2",
+    pistas:[
+      "Hace una tabla con columnas: iteración | x (antes) | condición | suma | x (después).",
+      "Rellena fila por fila hasta que la condición sea falsa.",
+      "Cuando x vale 7: ¿es x <= 5 verdadero o falso?"
+    ],
+    variante:"Modificá el código para que también imprima cuántas iteraciones se ejecutaron, sin contarlas manualmente."
+  },
+  {
+    id:"08", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"🤖", char:"Bit",
+    titulo:"Detectar bucle infinito potencial",
+    contexto:"Depuración · pensamiento crítico antes de ejecutar",
+    desc:"Bit dice que identificar un bucle infinito antes de ejecutar el código es la diferencia entre un técnico y alguien que apaga y enciende la PC.",
+    consigna:"Se presentan tres versiones de un ciclo. Identificá cuál o cuáles generarían un bucle infinito, explicá por qué y proponé la corrección mínima necesaria.\n\nVersión A:\nn = 10\nwhile n > 0:\n    print(n)\n\nVersión B:\nn = 1\nwhile n != 10:\n    n = n + 3\n\nVersión C:\nn = 0\nwhile n < 5:\n    print(n)\n    n = n + 1",
+    pistas:[
+      "Versión A: ¿n cambia en algún momento dentro del ciclo?",
+      "Versión B: n empieza en 1 y suma 3 cada vez. ¿Alguna vez n va a valer EXACTAMENTE 10?",
+      "Versión C: trazá la ejecución paso a paso."
+    ]
+  },
+  {
+    id:"09", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"while vs for · ¿cuándo usás cada uno?",
+    contexto:"Análisis comparativo · decisiones técnicas fundamentadas",
+    desc:"Techi dice que elegir la estructura correcta es parte de escribir código profesional. No elegís por costumbre: elegís con criterio.",
+    consigna:"Resolvé el mismo problema de dos formas: (a) con <code>for</code> y (b) con <code>while</code>. Problema: mostrar los números pares entre 2 y 20. Luego respondé: ¿cuál es más legible para este caso? ¿En qué situaciones preferirías usar while en lugar de for?",
+    pistas:[
+      "Con <code>for</code>: usá <code>range(2, 21, 2)</code>.",
+      "Con <code>while</code>: inicializá un contador en 2 y sumá 2 en cada iteración.",
+      "Para la reflexión: pensá en casos donde no sabés de antemano cuántas veces vas a repetir."
+    ]
+  },
+  {
+    id:"10", nivel:"n4", dif:"Alta", bloom:"Analiza (N4)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Menú con validación · patrón real",
+    contexto:"Menú de consola · patrón frecuente en proyectos reales",
+    desc:"Todo sistema que construyas en el Proyecto de Promoción va a tener un menú. Este ejercicio te enseña cómo estructurarlo correctamente.",
+    consigna:"El programa muestra un menú con opciones 1, 2 y 3. Si el usuario elige una opción inválida, vuelve a mostrar el menú. El programa termina cuando elige la opción 3. Analizá qué es más claro: usar <code>while True</code> con <code>break</code> o un <code>while</code> con condición explícita.",
+    pistas:[
+      "Patrón A: <code>while True:</code> con un <code>break</code> cuando el usuario elige salir.",
+      "Patrón B: <code>opcion = 0; while opcion != 3:</code>",
+      "¿Cuál hace más evidente cuándo termina el ciclo sin necesidad de buscar el break?"
+    ],
+    variante:"Agregá un contador de intentos inválidos. Si el usuario ingresa más de 3 opciones inválidas, el programa termina automáticamente con un mensaje."
+  },
+  {
+    id:"11", nivel:"n5", dif:"Alta", bloom:"Evalúa (N5)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Evaluador de calidad de contraseña",
+    contexto:"Seguridad · ética digital · validación avanzada",
+    desc:"Una contraseña débil no es solo un error de programación. Es un riesgo para quien usa el sistema. Techi dice: programar con criterio es programar con ética.",
+    consigna:"El programa pide una contraseña y evalúa si cumple: (1) al menos 8 caracteres, (2) al menos un número. Si no cumple, informa qué condición falta y vuelve a pedir. Si cumple ambas, muestra 'Contraseña aceptada'. Al final, evaluá por escrito: ¿qué ventaja tiene usar while en lugar de repetir el código de verificación?",
+    pistas:[
+      "Para verificar si tiene número: usá un ciclo <code>for</code> interno o la función <code>any(c.isdigit() for c in clave)</code>.",
+      "Guardá el resultado de cada verificación en variables booleanas.",
+      "El <code>while</code> externo continúa mientras la contraseña NO sea válida.",
+      "Para la reflexión: ¿cuántas líneas ahorraría el ciclo frente a repetir la verificación 3 veces manualmente?"
+    ]
+  },
+  {
+    id:"12", nivel:"nx", dif:"Desafío Extra BATIN", bloom:"Crea / Evalúa (N5–N6)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Fibonacci con condición · Desafío",
+    contexto:"Matemática + programación · potencial ICIENTEC",
+    desc:"Gatiel dice que Fibonacci no es solo matemática: es naturaleza, arte y algoritmo. Si entendés esto, podés aplicarlo en cualquier análisis de patrones.",
+    consigna:"La sucesión de Fibonacci empieza en 0 y 1; cada número siguiente es la suma de los dos anteriores (0, 1, 1, 2, 3, 5, 8, 13…). Escribí un programa que pida un número límite N y muestre todos los de Fibonacci menores a N usando while. Luego: ¿cuántos de los menores a 1000 son pares? Integrá la respuesta en el mismo programa.",
+    pistas:[
+      "Necesitás dos variables: <code>a = 0</code>, <code>b = 1</code>.",
+      "En cada iteración: el nuevo valor es <code>a + b</code>; luego <code>a = b</code> y <code>b = nuevo</code>.",
+      "Para verificar si es par: usá el operador <code>%</code> (módulo).",
+      "Usá un contador separado para los pares."
+    ],
+    variante:"¿Podés encontrar cuál es el número de Fibonacci par más grande menor a 1 000 000? Tu programa debería responderlo sin modificaciones."
+  }
+];
+
+function renderGrid(filtro){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  EJS.filter(e => filtro === 'todos' || e.nivel === filtro).forEach(e => {
+    const card = document.createElement('div');
+    card.className = `ecard ${e.nivel}`;
+    card.innerHTML = `
+      <div class="ecard-top">
+        <span class="ecard-num">${e.id} · ${e.char}</span>
+        <span class="ecard-badge ${e.nivel}">${e.dif}</span>
+      </div>
+      <div class="ecard-who">${e.who}</div>
+      <div class="ecard-title">${e.titulo}</div>
+      <div class="ecard-desc">${e.desc}</div>
+      <div class="ecard-context">${e.contexto}</div>
+      <div class="ecard-footer">
+        <span class="ecard-bloom">${e.bloom}</span>
+        <button class="ecard-btn">ver misión →</button>
+      </div>
+    `;
+    card.addEventListener('click', () => abrirModal(e));
+    grid.appendChild(card);
+  });
+}
+
+function abrirModal(e){
+  const c = document.getElementById('modal-content');
+  const consignaHTML = e.consigna.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>');
+  const pistasHTML = e.pistas.map(p => `<li>${p}</li>`).join('');
+  const varianteHTML = e.variante
+    ? `<div class="variante-box" style="margin-top:1rem"><strong>Para ir más lejos · Gatiel dice:</strong> ${e.variante}</div>`
+    : '';
+  c.innerHTML = `
+    <div class="modal-who">${e.who}</div>
+    <span class="modal-tag">${e.bloom} · ${e.dif} · ${e.char} presenta</span>
+    <div class="modal-title">${e.titulo}</div>
+    <div class="modal-consigna">${consignaHTML}</div>
+    <div class="msec-label">// contexto</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${e.contexto}</p>
+    <div class="msec-label">// pistas · Bit dice</div>
+    <button class="hint-toggle" onclick="toggleHint(this)">
+      🦊 ¿Por dónde empiezo? — Abre solo si intentaste durante 5 minutos genuinos
+    </button>
+    <div class="hint-box">
+      <ul>${pistasHTML}</ul>
+    </div>
+    ${varianteHTML}
+  `;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function toggleHint(btn){
+  const box = btn.nextElementSibling;
+  box.classList.toggle('open');
+  btn.textContent = box.classList.contains('open')
+    ? '🦊 Cerrar pistas'
+    : '🦊 ¿Por dónde empiezo? — Abre solo si intentaste durante 5 minutos genuinos';
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('open');
+});
+document.getElementById('overlay').addEventListener('click', e => {
+  if(e.target === document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderGrid(btn.dataset.f);
+  });
+});
+
+renderGrid('todos');
+</script>
+
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+const EJS = [
+  {
+    id:"01", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"🤖", char:"Bit",
+    titulo:"Contador de intentos",
+    contexto:"Juego educativo de adivinanza",
+    desc:"El programa no sabe cuántas veces el usuario va a equivocarse. Perfecto para while.",
+    consigna:"El programa elige un número secreto entre 1 y 10. Le pide al usuario que lo adivine. Sigue pidiendo hasta que lo adivine. Al final, muestra cuántos intentos necesitó.",
+    pistas:[
+      "Declara <code>intentos = 0</code> antes del ciclo.",
+      "La condición del <code>while</code>: mientras el número ingresado sea distinto al secreto.",
+      "Dentro del ciclo: pide el número, suma 1 al contador.",
+      "Al salir, muestra el contador."
+    ]
+  },
+  {
+    id:"02", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Suma hasta cero",
+    contexto:"Registro de ventas del día en una pequeña tienda",
+    desc:"El encargado ingresa montos uno a uno y escribe 0 cuando termina. Nadie sabe cuántas ventas habrá.",
+    consigna:"El programa pide números al usuario uno por uno y los acumula. El ciclo termina cuando el usuario ingresa 0. Al final, muestra la suma total y la cantidad de números ingresados (sin contar el 0).",
+    pistas:[
+      "Inicializa <code>suma = 0</code> y <code>cantidad = 0</code> antes del ciclo.",
+      "Lee el primer número ANTES del ciclo para que la condición tenga algo que evaluar.",
+      "Condición del <code>while</code>: mientras el número sea distinto de 0.",
+      "Al FINAL del cuerpo del ciclo, vuelve a leer el número (patrón leer-al-final)."
+    ]
+  },
+  {
+    id:"03", nivel:"n3", dif:"Fácil", bloom:"Aplica (N3)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Validación de contraseña",
+    contexto:"Acceso a un sistema básico",
+    desc:"Si no sabés cuántas veces el usuario va a equivocarse, while es tu mejor amigo.",
+    consigna:"El programa define una contraseña correcta. Le pide al usuario que la ingrese. Si se equivoca, vuelve a pedirla. Cuando ingresa la correcta, muestra 'Acceso concedido'.",
+    pistas:[
+      "Define la contraseña correcta como variable antes del ciclo.",
+      "Lee el primer intento ANTES del ciclo.",
+      "Condición del <code>while</code>: mientras la ingresada sea distinta a la correcta.",
+      "Dentro del ciclo solo se vuelve a pedir."
+    ]
+  },
+  {
+    id:"04", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"🤖", char:"Bit",
+    titulo:"Promedio de notas con centinela",
+    contexto:"Gestión de calificaciones · valor centinela",
+    desc:"El docente no sabe cuántos estudiantes tiene el día que escribe el programa. El valor -1 avisa cuándo terminar.",
+    consigna:"El programa lee notas (0 a 10) hasta que el docente ingresa -1 como señal de fin. Al terminar, muestra la suma total, la cantidad de notas y el promedio.",
+    pistas:[
+      "El -1 es el centinela: no se suma ni se cuenta.",
+      "Lee la primera nota ANTES del ciclo.",
+      "Condición: mientras la nota sea distinta de -1.",
+      "Al final del cuerpo del ciclo, lee la siguiente nota.",
+      "Antes de dividir, verificá que la cantidad no sea 0."
+    ],
+    variante:"¿Qué pasa si el docente ingresa -1 como primera nota? ¿Tu programa lo maneja sin errores?"
+  },
+  {
+    id:"05", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Función: pedir número positivo",
+    contexto:"Validación de entrada · patrón reutilizable",
+    desc:"En todo sistema real, los datos que ingresa el usuario deben validarse. Esta función se puede reutilizar en cualquier proyecto.",
+    consigna:"Escribi una función <code>pedirPositivo()</code> que pida un número al usuario y solo lo acepte si es mayor a 0. Si ingresa un valor inválido, muestra 'Número inválido, intenta de nuevo' y vuelve a pedir. Retorna el número válido.",
+    pistas:[
+      "Lee el número dentro de la función.",
+      "El <code>while</code> repite mientras el número NO sea positivo.",
+      "El mensaje de error va dentro del ciclo.",
+      "Al salir del ciclo, retorna el número.",
+      "Desde el programa principal, llama a la función y usa el valor retornado."
+    ]
+  },
+  {
+    id:"06", nivel:"n3", dif:"Media", bloom:"Aplica (N3)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Tabla de multiplicar interactiva",
+    contexto:"Herramienta de repaso · ciclos anidados",
+    desc:"Un ciclo interior genera la tabla. Un ciclo exterior pregunta si querés ver otra. Dos while, una misión.",
+    consigna:"El programa pide un número y muestra su tabla de multiplicar del 1 al 10 usando <code>while</code>. Luego pregunta '¿Querés ver otra tabla? (s/n)'. Si el usuario responde 's', repite el proceso. De lo contrario, termina.",
+    pistas:[
+      "Dos ciclos: el exterior controla si el usuario quiere otra tabla; el interior genera la tabla.",
+      "El multiplicador empieza en 1, termina en 10: usá un contador.",
+      "Condición del ciclo exterior: mientras la respuesta sea 's'.",
+      "Lee la respuesta al FINAL del cuerpo del ciclo exterior."
+    ]
+  },
+  {
+    id:"07", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Traza de ejecución paso a paso",
+    contexto:"Análisis · no ejecutes, pensá",
+    desc:"Antes de correr el código, un técnico puede predecir qué va a pasar. Eso se llama traza de ejecución.",
+    consigna:"Analizá este código SIN ejecutarlo. ¿Cuántas veces se ejecuta el ciclo? ¿Cuál es el valor final de x y de suma? Justificá con una tabla de seguimiento.\n\nx = 1\nsuma = 0\nwhile x <= 5:\n    suma = suma + x\n    x = x + 2",
+    pistas:[
+      "Hace una tabla con columnas: iteración | x (antes) | condición | suma | x (después).",
+      "Rellena fila por fila hasta que la condición sea falsa.",
+      "Cuando x vale 7: ¿es x <= 5 verdadero o falso?"
+    ],
+    variante:"Modificá el código para que también imprima cuántas iteraciones se ejecutaron, sin contarlas manualmente."
+  },
+  {
+    id:"08", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"🤖", char:"Bit",
+    titulo:"Detectar bucle infinito potencial",
+    contexto:"Depuración · pensamiento crítico antes de ejecutar",
+    desc:"Bit dice que identificar un bucle infinito antes de ejecutar el código es la diferencia entre un técnico y alguien que apaga y enciende la PC.",
+    consigna:"Se presentan tres versiones de un ciclo. Identificá cuál o cuáles generarían un bucle infinito, explicá por qué y proponé la corrección mínima necesaria.\n\nVersión A:\nn = 10\nwhile n > 0:\n    print(n)\n\nVersión B:\nn = 1\nwhile n != 10:\n    n = n + 3\n\nVersión C:\nn = 0\nwhile n < 5:\n    print(n)\n    n = n + 1",
+    pistas:[
+      "Versión A: ¿n cambia en algún momento dentro del ciclo?",
+      "Versión B: n empieza en 1 y suma 3 cada vez. ¿Alguna vez n va a valer EXACTAMENTE 10?",
+      "Versión C: trazá la ejecución paso a paso."
+    ]
+  },
+  {
+    id:"09", nivel:"n4", dif:"Media", bloom:"Analiza (N4)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"while vs for · ¿cuándo usás cada uno?",
+    contexto:"Análisis comparativo · decisiones técnicas fundamentadas",
+    desc:"Techi dice que elegir la estructura correcta es parte de escribir código profesional. No elegís por costumbre: elegís con criterio.",
+    consigna:"Resolvé el mismo problema de dos formas: (a) con <code>for</code> y (b) con <code>while</code>. Problema: mostrar los números pares entre 2 y 20. Luego respondé: ¿cuál es más legible para este caso? ¿En qué situaciones preferirías usar while en lugar de for?",
+    pistas:[
+      "Con <code>for</code>: usá <code>range(2, 21, 2)</code>.",
+      "Con <code>while</code>: inicializá un contador en 2 y sumá 2 en cada iteración.",
+      "Para la reflexión: pensá en casos donde no sabés de antemano cuántas veces vas a repetir."
+    ]
+  },
+  {
+    id:"10", nivel:"n4", dif:"Alta", bloom:"Analiza (N4)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Menú con validación · patrón real",
+    contexto:"Menú de consola · patrón frecuente en proyectos reales",
+    desc:"Todo sistema que construyas en el Proyecto de Promoción va a tener un menú. Este ejercicio te enseña cómo estructurarlo correctamente.",
+    consigna:"El programa muestra un menú con opciones 1, 2 y 3. Si el usuario elige una opción inválida, vuelve a mostrar el menú. El programa termina cuando elige la opción 3. Analizá qué es más claro: usar <code>while True</code> con <code>break</code> o un <code>while</code> con condición explícita.",
+    pistas:[
+      "Patrón A: <code>while True:</code> con un <code>break</code> cuando el usuario elige salir.",
+      "Patrón B: <code>opcion = 0; while opcion != 3:</code>",
+      "¿Cuál hace más evidente cuándo termina el ciclo sin necesidad de buscar el break?"
+    ],
+    variante:"Agregá un contador de intentos inválidos. Si el usuario ingresa más de 3 opciones inválidas, el programa termina automáticamente con un mensaje."
+  },
+  {
+    id:"11", nivel:"n5", dif:"Alta", bloom:"Evalúa (N5)",
+    who:"👩‍💻", char:"Techi",
+    titulo:"Evaluador de calidad de contraseña",
+    contexto:"Seguridad · ética digital · validación avanzada",
+    desc:"Una contraseña débil no es solo un error de programación. Es un riesgo para quien usa el sistema. Techi dice: programar con criterio es programar con ética.",
+    consigna:"El programa pide una contraseña y evalúa si cumple: (1) al menos 8 caracteres, (2) al menos un número. Si no cumple, informa qué condición falta y vuelve a pedir. Si cumple ambas, muestra 'Contraseña aceptada'. Al final, evaluá por escrito: ¿qué ventaja tiene usar while en lugar de repetir el código de verificación?",
+    pistas:[
+      "Para verificar si tiene número: usá un ciclo <code>for</code> interno o la función <code>any(c.isdigit() for c in clave)</code>.",
+      "Guardá el resultado de cada verificación en variables booleanas.",
+      "El <code>while</code> externo continúa mientras la contraseña NO sea válida.",
+      "Para la reflexión: ¿cuántas líneas ahorraría el ciclo frente a repetir la verificación 3 veces manualmente?"
+    ]
+  },
+  {
+    id:"12", nivel:"nx", dif:"Desafío Extra BATIN", bloom:"Crea / Evalúa (N5–N6)",
+    who:"🦊", char:"Gatiel",
+    titulo:"Fibonacci con condición · Desafío",
+    contexto:"Matemática + programación · potencial ICIENTEC",
+    desc:"Gatiel dice que Fibonacci no es solo matemática: es naturaleza, arte y algoritmo. Si entendés esto, podés aplicarlo en cualquier análisis de patrones.",
+    consigna:"La sucesión de Fibonacci empieza en 0 y 1; cada número siguiente es la suma de los dos anteriores (0, 1, 1, 2, 3, 5, 8, 13…). Escribí un programa que pida un número límite N y muestre todos los de Fibonacci menores a N usando while. Luego: ¿cuántos de los menores a 1000 son pares? Integrá la respuesta en el mismo programa.",
+    pistas:[
+      "Necesitás dos variables: <code>a = 0</code>, <code>b = 1</code>.",
+      "En cada iteración: el nuevo valor es <code>a + b</code>; luego <code>a = b</code> y <code>b = nuevo</code>.",
+      "Para verificar si es par: usá el operador <code>%</code> (módulo).",
+      "Usá un contador separado para los pares."
+    ],
+    variante:"¿Podés encontrar cuál es el número de Fibonacci par más grande menor a 1 000 000? Tu programa debería responderlo sin modificaciones."
+  }
+];
+
+function renderGrid(filtro){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  EJS.filter(e => filtro === 'todos' || e.nivel === filtro).forEach(e => {
+    const card = document.createElement('div');
+    card.className = `ecard ${e.nivel}`;
+    card.innerHTML = `
+      <div class="ecard-top">
+        <span class="ecard-num">${e.id} · ${e.char}</span>
+        <span class="ecard-badge ${e.nivel}">${e.dif}</span>
+      </div>
+      <div class="ecard-who">${e.who}</div>
+      <div class="ecard-title">${e.titulo}</div>
+      <div class="ecard-desc">${e.desc}</div>
+      <div class="ecard-context">${e.contexto}</div>
+      <div class="ecard-footer">
+        <span class="ecard-bloom">${e.bloom}</span>
+        <button class="ecard-btn">ver misión →</button>
+      </div>
+    `;
+    card.addEventListener('click', () => abrirModal(e));
+    grid.appendChild(card);
+  });
+}
+
+function abrirModal(e){
+  const c = document.getElementById('modal-content');
+  const consignaHTML = e.consigna.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>');
+  const pistasHTML = e.pistas.map(p => `<li>${p}</li>`).join('');
+  const varianteHTML = e.variante
+    ? `<div class="variante-box" style="margin-top:1rem"><strong>Para ir más lejos · Gatiel dice:</strong> ${e.variante}</div>`
+    : '';
+  c.innerHTML = `
+    <div class="modal-who">${e.who}</div>
+    <span class="modal-tag">${e.bloom} · ${e.dif} · ${e.char} presenta</span>
+    <div class="modal-title">${e.titulo}</div>
+    <div class="modal-consigna">${consignaHTML}</div>
+    <div class="msec-label">// contexto</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${e.contexto}</p>
+    <div class="msec-label">// pistas · Bit dice</div>
+    <button class="hint-toggle" onclick="toggleHint(this)">
+      🦊 ¿Por dónde empiezo? — Abre solo si intentaste durante 5 minutos genuinos
+    </button>
+    <div class="hint-box">
+      <ul>${pistasHTML}</ul>
+    </div>
+    ${varianteHTML}
+  `;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function toggleHint(btn){
+  const box = btn.nextElementSibling;
+  box.classList.toggle('open');
+  btn.textContent = box.classList.contains('open')
+    ? '🦊 Cerrar pistas'
+    : '🦊 ¿Por dónde empiezo? — Abre solo si intentaste durante 5 minutos genuinos';
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('open');
+});
+document.getElementById('overlay').addEventListener('click', e => {
+  if(e.target === document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderGrid(btn.dataset.f);
+  });
+});
+
+renderGrid('todos');
+</script>
+</body>
+</html>

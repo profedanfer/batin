@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab SQL · Sistema Biblioteca · BATIN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══ HERO ══ */
+.lab-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 36px 56px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.lab-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--azul-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+.lab-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.lab-hero-char img {
+  width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px var(--azul-s));
+  animation: floatBit 4s ease-in-out infinite;
+}
+@keyframes floatBit {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ══ RUTA BREADCRUMB ══ */
+.lab-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lab-ruta a { color: var(--naranja); text-decoration: none; }
+.lab-ruta a:hover { text-decoration: underline; }
+.lab-ruta .sep { color: var(--borde3); }
+
+/* ══ STATUS DB ══ */
+.db-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 8px 14px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+}
+.db-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--borde2);
+  flex-shrink: 0;
+  transition: background .3s;
+}
+.db-dot.on { background: #50c878; box-shadow: 0 0 6px #50c878; }
+.db-info { color: var(--texto3); margin-left: 6px; }
+
+/* ══ TABS ══ */
+.lab-tabs-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  padding: 0 56px;
+  gap: 0;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+  overflow-x: auto;
+}
+.lab-tabs-nav button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 13px 18px;
+  color: var(--texto3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.lab-tabs-nav button:hover { color: var(--texto); }
+.lab-tabs-nav button.activa { color: var(--azul); border-bottom-color: var(--azul); }
+
+/* ══ CONTENIDO TABS ══ */
+.lab-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 56px 64px;
+}
+.tab-content { display: none; }
+.tab-content.activa { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══ SECCIONES ══ */
+.titulo-seccion {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  margin-top: 24px;
+}
+.titulo-seccion:first-child { margin-top: 0; }
+
+.seccion-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin: 20px 0 8px;
+}
+
+/* ══ CÓDIGO SQL ══ */
+.tag-tabla {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: var(--azul-s);
+  color: var(--azul);
+  border: 1px solid var(--azul-b);
+  margin-bottom: 6px;
+}
+pre.codigo-sql {
+  background: #0d1117;
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c9d1d9;
+  overflow-x: auto;
+  margin-bottom: 14px;
+  white-space: pre;
+}
+
+/* ══ MER / ESTRUCTURA ══ */
+.chips-tablas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.chip-tabla {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--azul-s);
+  color: var(--azul);
+  border: 1px solid var(--azul-b);
+  cursor: pointer;
+  transition: all .15s;
+}
+.chip-tabla:hover { background: var(--azul-m); }
+
+.mer-tabla {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.mer-tabla-header {
+  background: var(--azul-s);
+  border-bottom: 1px solid var(--azul-b);
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--azul);
+}
+.mer-tabla-campo {
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.mer-tabla-campo:last-child { border-bottom: none; }
+
+/* ══ EDITOR SQL ══ */
+.editor-wrap {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg4);
+  border-bottom: 1px solid var(--borde);
+}
+.editor-header span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+}
+.btn-ejecutar {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 5px;
+  background: var(--azul);
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-ejecutar:hover { background: var(--azul2); }
+
+textarea.editor-sql {
+  width: 100%;
+  min-height: 130px;
+  padding: 14px 18px;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  border: none;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+}
+
+/* ══ RESULTADO ══ */
+.resultado-area {
+  border-top: 1px solid var(--borde);
+  min-height: 40px;
+}
+.resultado-area.ok { border-top: 2px solid #50c878; }
+.resultado-area.err { border-top: 2px solid #e05050; }
+
+.resultado-barra {
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.resultado-barra.ok { background: rgba(80,200,120,.1); color: #50c878; }
+.resultado-barra.err { background: rgba(224,80,80,.08); color: #e08080; }
+
+.tabla-resultado { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabla-resultado th {
+  background: var(--bg4);
+  color: var(--azul);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde2);
+}
+.tabla-resultado td {
+  padding: 8px 14px;
+  color: var(--texto2);
+  border-bottom: 1px solid var(--borde);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.tabla-resultado tr:last-child td { border-bottom: none; }
+.tabla-resultado tr:hover td { background: var(--bg3); }
+
+/* ══ EJERCICIOS ══ */
+.ejercicio-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.ejercicio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--borde);
+  background: var(--bg4);
+}
+.ejercicio-card-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  flex: 1;
+}
+.ejercicio-card-body { padding: 16px 18px; }
+
+/* ══ GUÍA BIT ══ */
+.bit-guia {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 16px 18px;
+  margin-bottom: 24px;
+}
+.bit-guia img {
+  width: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+.bit-guia-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  font-style: italic;
+  line-height: 1.7;
+}
+.bit-guia-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--azul);
+  margin-bottom: 4px;
+}
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 800px) {
+  .lab-hero { padding: 32px 20px 28px; }
+  .lab-hero-inner { grid-template-columns: 1fr; }
+  .lab-hero-char { display: none; }
+  .lab-tabs-nav { padding: 0 16px; }
+  .lab-content { padding: 24px 20px 48px; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="lab-hero">
+  <div class="lab-hero-inner">
+    <div>
+      <div class="lab-ruta">
+        <a href="../aprendiendo.html">Estoy aprendiendo</a>
+        <span class="sep">/</span>
+        <a href="../aprendiendo.html">Ruta Sistemas y BD</a>
+        <span class="sep">/</span>
+        <span>Laboratorio SQL · Sistema Biblioteca</span>
+      </div>
+      <span class="kicker azul">// Laboratorio SQL · SQLite en navegador</span>
+      <h1 class="titulo-h1 mt-8">Sistema <em class="azul">Biblioteca</em></h1>
+      <p class="desc mt-8">
+        Practica DDL y DML con una base de datos real que corre directamente en el navegador.
+        No necesitas instalar nada — sql.js ejecuta SQLite aquí mismo.
+      </p>
+      <div class="db-status-bar">
+        <div class="db-dot" id="dbDot"></div>
+        <span id="dbStatusTxt">Iniciando base de datos…</span>
+        <span class="db-info" id="dbInfoTxt"></span>
+        <button onclick="resetDB()" style="margin-left:auto;font-family:var(--font-mono);font-size:10px;padding:4px 12px;border-radius:4px;border:1px solid var(--borde2);background:transparent;color:var(--texto3);cursor:pointer">🔄 Reiniciar BD</button>
+      </div>
+    </div>
+    <div class="lab-hero-char">
+      <img src="../img/bit_trabajando.png" alt="Bit trabajando">
+    </div>
+  </div>
+</div>
+
+<!-- TABS NAV -->
+<div class="lab-tabs-nav">
+  <button class="activa" onclick="mostrarTab('script', this)">📄 Script SQL</button>
+  <button onclick="mostrarTab('diagrama', this)">🗂️ Estructura</button>
+  <button onclick="mostrarTab('editor', this)">⌨️ Editor libre</button>
+  <button onclick="mostrarTab('ejercicios', this)">✏️ Ejercicios</button>
+  <button onclick="mostrarTab('soluciones', this)">✅ Soluciones</button>
+</div>
+
+<!-- CONTENIDO -->
+<div class="lab-content">
+
+<div id="tab-script" class="tab-content activa">
+  <h2 class="titulo-seccion">Script de creación y carga inicial</h2>
+  <p style="font-family:Arial,sans-serif;font-size:0.85rem;color:var(--gris-texto);margin-bottom:1.2rem;">
+    Este es el script completo que inicializa la base de datos. Se ejecuta automáticamente al cargar la página.
+  </p>
+
+  <div class="seccion-titulo">Creación de tablas (DDL)</div>
+
+  <div class="tag-tabla">Estados</div>
+  <pre class="codigo-sql">CREATE TABLE Estados (
+    idEstado INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    descripcion VARCHAR(30) NOT NULL UNIQUE
+);</pre>
+
+  <div class="tag-tabla">Generos</div>
+  <pre class="codigo-sql">CREATE TABLE Generos (
+    idGenero INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    descripcion VARCHAR(30) NOT NULL UNIQUE
+);</pre>
+
+  <div class="tag-tabla">Autores</div>
+  <pre class="codigo-sql">CREATE TABLE Autores (
+    idAutor INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    idEstado INTEGER NOT NULL,
+    FOREIGN KEY (idEstado) REFERENCES Estados(idEstado)
+);</pre>
+
+  <div class="tag-tabla">Libros</div>
+  <pre class="codigo-sql">CREATE TABLE Libros (
+    idLibro INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    titulo VARCHAR(30) NOT NULL,
+    codigo VARCHAR(20),
+    anioPublicacion INTEGER,
+    idGenero INTEGER NOT NULL,
+    FOREIGN KEY (idGenero) REFERENCES Generos(idGenero)
+);</pre>
+
+  <div class="tag-tabla">RelLibrosAutores</div>
+  <pre class="codigo-sql">CREATE TABLE RelLibrosAutores (
+    idLibro INTEGER NOT NULL,
+    idAutor INTEGER NOT NULL,
+    PRIMARY KEY (idLibro, idAutor),
+    FOREIGN KEY (idLibro) REFERENCES Libros(idLibro),
+    FOREIGN KEY (idAutor) REFERENCES Autores(idAutor)
+);</pre>
+
+  <div class="seccion-titulo">Datos iniciales (DML)</div>
+
+  <div class="tag-tabla">INSERT – Estados</div>
+  <pre class="codigo-sql">INSERT INTO Estados VALUES (1, 'Activo');
+INSERT INTO Estados VALUES (2, 'Inactivo');</pre>
+
+  <div class="tag-tabla">INSERT – Generos</div>
+  <pre class="codigo-sql">INSERT INTO Generos VALUES (1, 'Novela');
+INSERT INTO Generos VALUES (2, 'Informática');
+INSERT INTO Generos VALUES (3, 'Historia');</pre>
+
+  <div class="tag-tabla">INSERT – Autores</div>
+  <pre class="codigo-sql">INSERT INTO Autores VALUES (1, 'Antoine de Saint-Exupéry', '', 1);
+INSERT INTO Autores VALUES (2, 'Carlos', 'Pérez', 1);
+INSERT INTO Autores VALUES (3, 'Ana', 'Gómez', 1);
+INSERT INTO Autores VALUES (4, 'Miguel', 'López', 1);</pre>
+
+  <div class="tag-tabla">INSERT – Libros</div>
+  <pre class="codigo-sql">INSERT INTO Libros VALUES (1, 'El Principito',     'L001', 1943, 1);
+INSERT INTO Libros VALUES (2, 'Bases de Datos',    'L002', 2020, 2);
+INSERT INTO Libros VALUES (3, 'SQL Fácil',         'L003', 2022, 2);
+INSERT INTO Libros VALUES (4, 'Historia Universal','L004', 2019, 3);</pre>
+
+  <div class="tag-tabla">INSERT – RelLibrosAutores</div>
+  <pre class="codigo-sql">INSERT INTO RelLibrosAutores VALUES (1, 1);
+INSERT INTO RelLibrosAutores VALUES (2, 2);
+INSERT INTO RelLibrosAutores VALUES (2, 3);
+INSERT INTO RelLibrosAutores VALUES (3, 3);
+INSERT INTO RelLibrosAutores VALUES (4, 4);</pre>
+</div>
+
+<!-- ======================== TAB: DIAGRAMA / ESTRUCTURA ======================== -->
+<div id="tab-diagrama" class="tab-content">
+  <h2 class="titulo-seccion">Estructura de la base de datos</h2>
+  <div class="mer-grid">
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Estados</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> idEstado <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span><span style="background:#E8E4FC;color:#4A3FA0;padding:1px 5px;border-radius:3px;font-size:0.68rem;font-weight:bold">UQ</span> descripcion <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(30)</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Generos</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> idGenero <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span><span style="background:#E8E4FC;color:#4A3FA0;padding:1px 5px;border-radius:3px;font-size:0.68rem;font-weight:bold">UQ</span> descripcion <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(30)</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Autores</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> idAutor <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> nombre <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> apellido <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-fk">FK</span><span class="badge-nn">NN</span> idEstado <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Libros</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> idLibro <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> titulo <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo">codigo <em style="color:var(--gris-texto);font-size:0.72rem">VARCHAR(20)</em></div>
+      <div class="mer-tabla-campo">anioPublicacion <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-fk">FK</span><span class="badge-nn">NN</span> idGenero <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">RelLibrosAutores</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-fk">FK</span><span class="badge-nn">NN</span> idLibro <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-fk">FK</span><span class="badge-nn">NN</span> idAutor <em style="color:var(--gris-texto);font-size:0.72rem">INTEGER</em></div>
+    </div>
+
+  </div>
+
+  <div class="nota-importante">
+    <strong>Relaciones:</strong>
+    Autores.idEstado → Estados.idEstado &nbsp;|&nbsp;
+    Libros.idGenero → Generos.idGenero &nbsp;|&nbsp;
+    RelLibrosAutores.idLibro → Libros.idLibro &nbsp;|&nbsp;
+    RelLibrosAutores.idAutor → Autores.idAutor
+  </div>
+
+  <div class="advertencia">
+    <strong>Recordá:</strong> En SQLite, ALTER TABLE no permite cambiar tipos de datos ni agregar restricciones UNIQUE directamente. Cuando se necesita ese cambio, hay que recrear la tabla correctamente.
+  </div>
+</div>
+
+<!-- ======================== TAB: EDITOR LIBRE ======================== -->
+<div id="tab-editor" class="tab-content">
+  <h2 class="titulo-seccion">Editor SQL libre</h2>
+
+  <div class="db-status">
+    <div class="db-dot" id="dbDot"></div>
+    <span id="dbStatusTxt" style="font-weight:bold">Iniciando base de datos…</span>
+    <span id="dbInfoTxt" style="margin-left:0.3rem;color:var(--gris-texto)"></span>
+    <button class="btn-reset" onclick="resetDB()">↺ Reiniciar BD</button>
+  </div>
+
+  <p style="font-family:Arial,sans-serif;font-size:0.84rem;color:var(--gris-texto);margin-bottom:0.8rem;">
+    Escriba cualquier sentencia SQL. Puede ejecutar SELECT, INSERT, UPDATE, DELETE y más.
+  </p>
+
+  <p style="font-family:Arial,sans-serif;font-size:0.8rem;color:var(--gris-texto);margin-bottom:0.5rem;">
+    Acceso rápido a tablas:
+  </p>
+  <div class="chips-tablas">
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Estados;')">Estados</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Generos;')">Generos</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Autores;')">Autores</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Libros;')">Libros</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM RelLibrosAutores;')">RelLibrosAutores</span>
+    <span class="chip-tabla" onclick="insertarSQL(`SELECT L.titulo, G.descripcion AS genero, A.nombre || ' ' || A.apellido AS autor\nFROM Libros L\nJOIN Generos G ON L.idGenero = G.idGenero\nJOIN RelLibrosAutores R ON L.idLibro = R.idLibro\nJOIN Autores A ON R.idAutor = A.idAutor;`)">JOIN completo</span>
+  </div>
+
+  <br>
+
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <span>SQLite · sql.js</span>
+      <button class="btn-ejecutar" onclick="ejecutarSQL('editorLibre', 'resultadoLibre')">▶ Ejecutar</button>
+    </div>
+    <textarea id="editorLibre" class="editor-sql" placeholder="-- Escriba su sentencia SQL aquí
+SELECT * FROM Libros;" spellcheck="false"></textarea>
+    <div id="resultadoLibre" class="resultado-area"></div>
+  </div>
+</div>
+
+<!-- ======================== TAB: EJERCICIOS ======================== -->
+<div id="tab-ejercicios" class="tab-content">
+  <h2 class="titulo-seccion">Ejercicios prácticos</h2>
+
+  <div class="db-status" style="margin-bottom:1rem">
+    <div class="db-dot" id="dbDot2"></div>
+    <span id="dbStatusTxt2" style="font-weight:bold;font-family:Arial,sans-serif;font-size:0.82rem">Iniciando…</span>
+    <button class="btn-reset" onclick="resetDB()" style="margin-left:auto">↺ Reiniciar BD</button>
+  </div>
+
+  <!-- EJ 1 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 1</span>
+      <h3>Registro de géneros</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        La biblioteca está comenzando a organizar su catálogo. Registre los siguientes géneros literarios:
+        <ul><li>Novela</li><li>Informática</li><li>Historia</li></ul>
+        Escriba las sentencias INSERT necesarias para almacenar esta información en la tabla <code>Generos</code>.
+      </div>
+      <div class="hint"><strong>Pista:</strong> INSERT INTO Generos VALUES (id, 'descripcion');</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej1', 'res1')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej1" class="editor-sql" style="min-height:100px" spellcheck="false">-- Escriba los INSERT para Generos
+</textarea>
+        <div id="res1" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 2 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 2</span>
+      <h3>Registro de autores</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Registre en la tabla <code>Autores</code> a las siguientes personas:
+        <ul><li>Antoine de Saint-Exupéry</li><li>Carlos Pérez</li><li>Ana Gómez</li><li>Miguel López</li></ul>
+        Recuerde que la tabla tiene columnas separadas para <code>nombre</code> y <code>apellido</code>, y requiere un <code>idEstado</code> válido.
+      </div>
+      <div class="hint"><strong>Pista:</strong> INSERT INTO Autores VALUES (id, 'nombre', 'apellido', idEstado);</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej2', 'res2')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej2" class="editor-sql" style="min-height:100px" spellcheck="false">-- Escriba los INSERT para Autores
+</textarea>
+        <div id="res2" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 3 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 3</span>
+      <h3>Registro de libros</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Registre los siguientes libros en la tabla <code>Libros</code>:
+        <ul>
+          <li>El Principito – 1943 – Novela</li>
+          <li>Bases de Datos – 2020 – Informática</li>
+          <li>SQL Fácil – 2022 – Informática</li>
+          <li>Historia Universal – 2019 – Historia</li>
+        </ul>
+        Antes de insertar, consulte la tabla <code>Generos</code> para conocer el <code>idGenero</code> correspondiente.
+      </div>
+      <div class="hint"><strong>Pista:</strong> SELECT * FROM Generos; — luego INSERT INTO Libros VALUES (id, 'titulo', 'codigo', anio, idGenero);</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej3', 'res3')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej3" class="editor-sql" style="min-height:120px" spellcheck="false">-- Primero consulte los géneros
+-- Luego escriba los INSERT para Libros
+</textarea>
+        <div id="res3" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 4 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 4</span>
+      <h3>Relación libros–autores</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Registrá las relaciones entre libros y autores en <code>RelLibrosAutores</code>:
+        <ul>
+          <li>Antoine de Saint-Exupéry → El Principito</li>
+          <li>Carlos Pérez → Bases de Datos</li>
+          <li>Ana Gómez → Bases de Datos (coautora)</li>
+          <li>Ana Gómez → SQL Fácil</li>
+          <li>Miguel López → Historia Universal</li>
+        </ul>
+        Consulte primero <code>Libros</code> y <code>Autores</code> para conocer los identificadores.
+      </div>
+      <div class="hint"><strong>Pista:</strong> INSERT INTO RelLibrosAutores VALUES (idLibro, idAutor);</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej4', 'res4')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej4" class="editor-sql" style="min-height:120px" spellcheck="false">-- Consulte Libros y Autores primero
+-- Luego escriba los INSERT para RelLibrosAutores
+</textarea>
+        <div id="res4" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 5 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 5</span>
+      <h3>Nuevo libro con verificación previa</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        La biblioteca adquiere <em>Java para Todos</em> (2024), género Programación, de Laura Martínez.
+        <ol style="padding-left:1.4rem;margin-top:0.4rem">
+          <li>Verifique si el género Programación ya existe.</li>
+          <li>Si no existe, regístrelo.</li>
+          <li>Verifique si Laura Martínez ya está registrada.</li>
+          <li>Si no existe, regístrela.</li>
+          <li>Registre el libro y la relación.</li>
+        </ol>
+      </div>
+      <div class="hint"><strong>Pista:</strong> SELECT * FROM Generos WHERE descripcion = 'Programación'; — después INSERT si no existe.</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej5', 'res5')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej5" class="editor-sql" style="min-height:160px" spellcheck="false">-- Paso 1: Verificar género
+-- Paso 2: Insertar género si no existe
+-- Paso 3: Verificar autora
+-- Paso 4: Insertar autora si no existe
+-- Paso 5: Insertar libro
+-- Paso 6: Insertar relación
+</textarea>
+        <div id="res5" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 6 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 6</span>
+      <h3>Libro con varios autores</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        La biblioteca recibe <em>Introducción a Python</em> (2025), género Programación.
+        Fue desarrollado por dos autores: <strong>Laura Martínez</strong> y <strong>Carlos Pérez</strong>.
+        <br><br>
+        Realice todas las operaciones necesarias. Tenga en cuenta:
+        <ul>
+          <li>El libro debe registrarse una sola vez en <code>Libros</code>.</li>
+          <li>Los autores deben existir en <code>Autores</code> previamente.</li>
+          <li>La participación de cada autor debe registrarse en <code>RelLibrosAutores</code>.</li>
+        </ul>
+      </div>
+      <div class="hint"><strong>Pista:</strong> Dos INSERT en RelLibrosAutores, uno por autor (mismo idLibro, distinto idAutor).</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej6', 'res6')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej6" class="editor-sql" style="min-height:140px" spellcheck="false">-- Verificar/insertar género y autores
+-- Insertar el libro
+-- Relacionar con ambos autores
+</textarea>
+        <div id="res6" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ ANÁLISIS: Corregir error -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 7</span>
+      <h3>Corrección de error — UPDATE</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Al revisar la base de datos se detecta que el libro <em>SQL Fácil</em> fue registrado con el género
+        <strong>Historia</strong>, cuando en realidad pertenece al género <strong>Informática</strong>.
+        <br><br>
+        <strong>Parte A:</strong> ¿En qué tabla está el error? ¿Qué campo debe modificarse?<br>
+        <strong>Parte B:</strong> Consulte los identificadores necesarios antes de corregir.<br>
+        <strong>Parte C:</strong> Escriba el UPDATE correspondiente.
+      </div>
+      <div class="hint"><strong>Pista:</strong> UPDATE Libros SET idGenero = ? WHERE titulo = 'SQL Fácil';</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej7', 'res7')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej7" class="editor-sql" style="min-height:120px" spellcheck="false">-- Consulte primero para conocer los ids
+-- Luego escriba el UPDATE
+</textarea>
+        <div id="res7" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ ELIMINACIÓN -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 8</span>
+      <h3>Eliminación correcta — DELETE</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        La biblioteca decide retirar definitivamente el libro <em>Historia Universal</em>.
+        <br><br>
+        <strong>Parte A:</strong> ¿Qué tablas contienen información relacionada con ese libro?<br>
+        <strong>Parte B:</strong> ¿Qué registros deben eliminarse primero? ¿Por qué no se puede eliminar el libro directamente?<br>
+        <strong>Parte C:</strong> Escriba las sentencias DELETE en el orden correcto.
+      </div>
+      <div class="hint"><strong>Pista:</strong> Primero DELETE en RelLibrosAutores, luego DELETE en Libros.</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej8', 'res8')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej8" class="editor-sql" style="min-height:120px" spellcheck="false">-- Paso 1: Eliminar de RelLibrosAutores
+-- Paso 2: Eliminar de Libros
+</textarea>
+        <div id="res8" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ DESAFÍO JOIN -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 9</span>
+      <h3>Desafío — JOIN entre tablas</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Muestre una lista con el título del libro, el género al que pertenece y el nombre completo del autor.
+        <br><br>
+        Para esto es necesario unir las tablas: <code>Libros</code>, <code>Generos</code>, <code>RelLibrosAutores</code> y <code>Autores</code>.
+      </div>
+      <div class="hint"><strong>Pista:</strong> Use JOIN … ON … con las claves foráneas. Concatene nombre y apellido con || ' ' ||</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej9', 'res9')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej9" class="editor-sql" style="min-height:130px" spellcheck="false">SELECT 
+    -- complete la consulta con JOIN
+</textarea>
+        <div id="res9" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 10 – CAMBIO DE ESTRUCTURA -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">EJ 10</span>
+      <h3>Corrección de estructura — DDL</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Suponga que las tablas <code>Generos</code>, <code>Estados</code> y <code>Libros</code> fueron creadas con errores:
+        <ul>
+          <li>A <code>Generos.descripcion</code> le falta la restricción <code>UNIQUE</code>.</li>
+          <li>A <code>Estados.descripcion</code> le falta la restricción <code>UNIQUE</code>.</li>
+          <li>El campo <code>Libros.anioPublicacion</code> fue declarado como <code>DATE</code> en lugar de <code>INTEGER</code>.</li>
+        </ul>
+        <strong>Parte A:</strong> ¿Qué problema concreto genera cada error si no se corrige?<br><br>
+        <strong>Parte B:</strong> ¿Qué sentencia permite agregar UNIQUE sin recrear la tabla en SQLite?<br>
+        Verifique antes si hay valores repetidos en <code>descripcion</code>.<br><br>
+        <strong>Parte C:</strong> ¿Por qué en SQLite no se puede hacer <code>ALTER TABLE … ALTER COLUMN</code>?
+        Escriba el procedimiento completo para corregir el tipo de <code>anioPublicacion</code>.
+      </div>
+      <div class="hint"><strong>Pista A:</strong> CREATE UNIQUE INDEX nombre ON Tabla(campo);<br>
+      <strong>Pista B:</strong> Para cambiar tipo de dato: renombrar tabla → crear tabla nueva → copiar datos → eliminar la vieja.</div>
+      <div class="editor-wrap">
+        <div class="editor-header">
+          <span>editor</span>
+          <button class="btn-ejecutar" onclick="ejecutarSQL('ej10', 'res10')">▶ Ejecutar</button>
+        </div>
+        <textarea id="ej10" class="editor-sql" style="min-height:200px" spellcheck="false">-- Parte B: Verificar duplicados antes de crear índice
+SELECT descripcion, COUNT(*) FROM Generos GROUP BY descripcion HAVING COUNT(*) > 1;
+SELECT descripcion, COUNT(*) FROM Estados GROUP BY descripcion HAVING COUNT(*) > 1;
+
+-- Crear índices UNIQUE si no hay duplicados
+-- CREATE UNIQUE INDEX ...
+
+-- Parte C: Corregir tipo de anioPublicacion (DATE → INTEGER)
+-- Paso 1: Renombrar la tabla actual
+-- Paso 2: Crear la tabla correcta
+-- Paso 3: Copiar los datos con CAST
+-- Paso 4: Eliminar la tabla vieja
+</textarea>
+        <div id="res10" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================== TAB: SOLUCIONES ======================== -->
+<div id="tab-soluciones" class="tab-content">
+  <h2 class="titulo-seccion">Soluciones</h2>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 1 – INSERT Generos</span></div>
+    <div class="sol-explicacion">Se insertan tres registros. Los IDs se asignan explícitamente (aunque con AUTOINCREMENT también podrían omitirse).</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">INSERT INTO Generos VALUES (1, 'Novela');
+INSERT INTO Generos VALUES (2, 'Informática');
+INSERT INTO Generos VALUES (3, 'Historia');</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 2 – INSERT Autores</span></div>
+    <div class="sol-explicacion">Los autores se registran con nombre, apellido e idEstado = 1 (Activo). Antoine tiene apellido vacío en este modelo.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">INSERT INTO Autores VALUES (1, 'Antoine de Saint-Exupéry', '', 1);
+INSERT INTO Autores VALUES (2, 'Carlos', 'Pérez', 1);
+INSERT INTO Autores VALUES (3, 'Ana', 'Gómez', 1);
+INSERT INTO Autores VALUES (4, 'Miguel', 'López', 1);</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 3 – INSERT Libros</span></div>
+    <div class="sol-explicacion">Se consultan los idGenero antes de insertar. Novela=1, Informática=2, Historia=3.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">INSERT INTO Libros VALUES (1, 'El Principito',      'L001', 1943, 1);
+INSERT INTO Libros VALUES (2, 'Bases de Datos',     'L002', 2020, 2);
+INSERT INTO Libros VALUES (3, 'SQL Fácil',          'L003', 2022, 2);
+INSERT INTO Libros VALUES (4, 'Historia Universal', 'L004', 2019, 3);</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 4 – INSERT RelLibrosAutores</span></div>
+    <div class="sol-explicacion">Bases de Datos tiene dos autores: se insertan dos filas con el mismo idLibro pero distinto idAutor.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">INSERT INTO RelLibrosAutores VALUES (1, 1);
+INSERT INTO RelLibrosAutores VALUES (2, 2);
+INSERT INTO RelLibrosAutores VALUES (2, 3);
+INSERT INTO RelLibrosAutores VALUES (3, 3);
+INSERT INTO RelLibrosAutores VALUES (4, 4);</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 5 – Verificación + nuevo libro</span></div>
+    <div class="sol-explicacion">Primero se verifica si el género y la autora existen. Si no, se insertan. Luego se registran el libro y la relación.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT * FROM Generos WHERE descripcion = 'Programación';
+INSERT INTO Generos VALUES (4, 'Programación');
+
+SELECT * FROM Autores WHERE nombre = 'Laura' AND apellido = 'Martínez';
+INSERT INTO Autores VALUES (5, 'Laura', 'Martínez', 1);
+
+INSERT INTO Libros VALUES (5, 'Java para Todos', 'L005', 2024, 4);
+INSERT INTO RelLibrosAutores VALUES (5, 5);</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 6 – Libro con dos autores</span></div>
+    <div class="sol-explicacion">El libro se inserta una sola vez. Luego se insertan DOS filas en RelLibrosAutores, una por cada autor.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">INSERT INTO Libros VALUES (6, 'Introducción a Python', 'L006', 2025, 4);
+
+INSERT INTO RelLibrosAutores VALUES (6, 5);
+INSERT INTO RelLibrosAutores VALUES (6, 2);</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 7 – Corregir género de SQL Fácil</span></div>
+    <div class="sol-explicacion">El error está en el campo idGenero de la tabla Libros. Se consulta el idGenero de Informática (=2) y se actualiza.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT * FROM Generos WHERE descripcion = 'Informática';
+
+UPDATE Libros
+SET idGenero = 2
+WHERE titulo = 'SQL Fácil';</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 8 – Eliminar Historia Universal</span></div>
+    <div class="sol-explicacion">Primero se elimina la relación en RelLibrosAutores. Luego el libro. Si se intenta al revés, la FK genera error.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">DELETE FROM RelLibrosAutores
+WHERE idLibro = 4;
+
+DELETE FROM Libros
+WHERE idLibro = 4;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 9 – JOIN completo</span></div>
+    <div class="sol-explicacion">Se unen las cuatro tablas. El operador || concatena nombre y apellido del autor.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT 
+    L.titulo,
+    G.descripcion AS genero,
+    A.nombre || ' ' || A.apellido AS autor
+FROM Libros L
+JOIN Generos G ON L.idGenero = G.idGenero
+JOIN RelLibrosAutores R ON L.idLibro = R.idLibro
+JOIN Autores A ON R.idAutor = A.idAutor;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header"><span>Ejercicio 10 – Corrección de estructura (DDL)</span></div>
+    <div class="sol-explicacion">
+      Sin UNIQUE en descripcion, la tabla permitiría insertar "Informática" dos veces, generando duplicados y ambigüedad en las consultas.
+      Para corregirlo sin recrear la tabla se usa CREATE UNIQUE INDEX. Para cambiar el tipo de dato de una columna en SQLite, hay que recrear la tabla con el tipo correcto.
+    </div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">-- Verificar si hay duplicados antes de crear el índice
+SELECT descripcion, COUNT(*) FROM Generos GROUP BY descripcion HAVING COUNT(*) > 1;
+SELECT descripcion, COUNT(*) FROM Estados GROUP BY descripcion HAVING COUNT(*) > 1;
+
+-- Agregar UNIQUE a descripcion (si no hay duplicados)
+CREATE UNIQUE INDEX uqGenerosDescripcion ON Generos(descripcion);
+CREATE UNIQUE INDEX uqEstadosDescripcion ON Estados(descripcion);
+
+-- Corregir anioPublicacion de DATE a INTEGER (recrear tabla)
+ALTER TABLE Libros RENAME TO Libros_old;
+
+CREATE TABLE Libros (
+    idLibro INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    titulo VARCHAR(30) NOT NULL,
+    codigo VARCHAR(20),
+    anioPublicacion INTEGER,
+    idGenero INTEGER NOT NULL,
+    FOREIGN KEY (idGenero) REFERENCES Generos(idGenero)
+);
+
+INSERT INTO Libros (idLibro, titulo, codigo, anioPublicacion, idGenero)
+SELECT idLibro, titulo, codigo, CAST(anioPublicacion AS INTEGER), idGenero
+FROM Libros_old;
+
+DROP TABLE Libros_old;</pre>
+  </div>
+
+</div>
+
+
+</div><!-- fin lab-content -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+
+<script>
+const INIT_SQL = `
+PRAGMA foreign_keys = OFF;
+
+CREATE TABLE IF NOT EXISTS Estados (
+  idEstado INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+  descripcion VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS Generos (
+  idGenero INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+  descripcion VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS Autores (
+  idAutor INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+  nombre VARCHAR(30) NOT NULL,
+  apellido VARCHAR(30) NOT NULL,
+  idEstado INTEGER NOT NULL,
+  FOREIGN KEY (idEstado) REFERENCES Estados(idEstado)
+);
+CREATE TABLE IF NOT EXISTS Libros (
+  idLibro INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+  titulo VARCHAR(30) NOT NULL,
+  codigo VARCHAR(20),
+  anioPublicacion INTEGER,
+  idGenero INTEGER NOT NULL,
+  FOREIGN KEY (idGenero) REFERENCES Generos(idGenero)
+);
+CREATE TABLE IF NOT EXISTS RelLibrosAutores (
+  idLibro INTEGER NOT NULL,
+  idAutor INTEGER NOT NULL,
+  PRIMARY KEY (idLibro, idAutor),
+  FOREIGN KEY (idLibro) REFERENCES Libros(idLibro),
+  FOREIGN KEY (idAutor) REFERENCES Autores(idAutor)
+);
+
+INSERT INTO Estados VALUES (1,'Activo');
+INSERT INTO Estados VALUES (2,'Inactivo');
+INSERT INTO Generos VALUES (1,'Novela');
+INSERT INTO Generos VALUES (2,'Informática');
+INSERT INTO Generos VALUES (3,'Historia');
+INSERT INTO Autores VALUES (1,'Antoine de Saint-Exupéry','',1);
+INSERT INTO Autores VALUES (2,'Carlos','Pérez',1);
+INSERT INTO Autores VALUES (3,'Ana','Gómez',1);
+INSERT INTO Autores VALUES (4,'Miguel','López',1);
+INSERT INTO Libros VALUES (1,'El Principito','L001',1943,1);
+INSERT INTO Libros VALUES (2,'Bases de Datos','L002',2020,2);
+INSERT INTO Libros VALUES (3,'SQL Fácil','L003',2022,2);
+INSERT INTO Libros VALUES (4,'Historia Universal','L004',2019,3);
+INSERT INTO RelLibrosAutores VALUES (1,1);
+INSERT INTO RelLibrosAutores VALUES (2,2);
+INSERT INTO RelLibrosAutores VALUES (2,3);
+INSERT INTO RelLibrosAutores VALUES (3,3);
+INSERT INTO RelLibrosAutores VALUES (4,4);
+
+PRAGMA foreign_keys = ON;
+`;
+
+let db = null;
+
+function setStatus(ok, msg, info) {
+  ['dbDot','dbDot2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'db-dot' + (ok ? ' on' : ''); }
+  });
+  ['dbStatusTxt','dbStatusTxt2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = msg;
+  });
+  const info1 = document.getElementById('dbInfoTxt');
+  if (info1) info1.textContent = info || '';
+}
+
+function initDB() {
+  setStatus(false, 'Cargando sql.js…');
+  initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
+    .then(SQL => {
+      db = new SQL.Database();
+      db.run(INIT_SQL);
+      setStatus(true, 'Base de datos lista', '· 5 tablas · datos cargados');
+    })
+    .catch(e => {
+      setStatus(false, 'Error al cargar sql.js: ' + e.message);
+    });
+}
+
+function resetDB() {
+  if (db) { db.close(); db = null; }
+  setStatus(false, 'Reiniciando…');
+  initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
+    .then(SQL => {
+      db = new SQL.Database();
+      db.run(INIT_SQL);
+      setStatus(true, 'Base de datos reiniciada', '· estado original restaurado');
+    });
+}
+
+function insertarSQL(sql) {
+  const el = document.getElementById('editorLibre');
+  if (el) { el.value = sql; mostrarTab('editor', document.querySelector('.tabs-nav button:nth-child(3)')); }
+}
+
+function ejecutarSQL(editorId, resultadoId) {
+  const el = document.getElementById(editorId);
+  const res = document.getElementById(resultadoId);
+  if (!el || !res) return;
+  const sql = el.value.trim();
+  if (!sql || sql.startsWith('--')) { mostrarResultado(res, 'info', 'Escriba una sentencia SQL y presione Ejecutar.', null); return; }
+  if (!db) { mostrarResultado(res, 'error', 'La base de datos aún no está lista.', null); return; }
+
+  try {
+    const statements = sql.split(';').map(s => s.trim()).filter(s => s.length > 0 && !s.startsWith('--'));
+    let lastResult = null;
+    let rowsAffected = 0;
+    let lastIsSelect = false;
+
+    for (const stmt of statements) {
+      if (!stmt) continue;
+      const isSelect = /^\s*SELECT/i.test(stmt);
+      if (isSelect) {
+        const results = db.exec(stmt + ';');
+        lastResult = results;
+        lastIsSelect = true;
+      } else {
+        db.run(stmt + ';');
+        lastIsSelect = false;
+      }
+    }
+
+    if (lastIsSelect && lastResult && lastResult.length > 0) {
+      const { columns, values } = lastResult[0];
+      mostrarResultado(res, 'ok', `${values.length} fila(s) encontrada(s)`, { columns, values });
+    } else if (lastIsSelect && (!lastResult || lastResult.length === 0)) {
+      mostrarResultado(res, 'ok', 'Consulta ejecutada — sin resultados (0 filas)', null);
+    } else {
+      mostrarResultado(res, 'ok', 'Sentencia ejecutada correctamente ✓', null);
+    }
+  } catch (e) {
+    mostrarResultado(res, 'error', 'Error: ' + e.message, null);
+  }
+}
+
+function mostrarResultado(el, tipo, msg, tabla) {
+  el.className = 'resultado-area ' + (tipo === 'error' ? 'err' : 'ok');
+  let html = `<div class="resultado-barra ${tipo === 'error' ? 'err' : 'ok'}">${msg}</div>`;
+  if (tabla) {
+    html += '<div style="overflow-x:auto"><table class="tabla-resultado"><thead><tr>';
+    for (const col of tabla.columns) html += `<th>${col}</th>`;
+    html += '</tr></thead><tbody>';
+    for (const row of tabla.values) {
+      html += '<tr>';
+      for (const cell of row) html += `<td>${cell === null ? '<em style="color:var(--gris-texto)">NULL</em>' : cell}</td>`;
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+  }
+  el.innerHTML = html;
+}
+
+function mostrarTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activa'));
+  document.querySelectorAll('.tabs-nav button').forEach(b => b.classList.remove('activa'));
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('activa');
+  if (btn) btn.classList.add('activa');
+}
+
+document.addEventListener('DOMContentLoaded', initDB);
+</script>
+// Override mostrarTab to use new class
+const _mostrarTab = mostrarTab;
+function mostrarTab(id, btn, skipBtn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activa'));
+  document.querySelectorAll('.lab-tabs-nav button').forEach(b => b.classList.remove('activa'));
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('activa');
+  if (btn && !skipBtn) btn.classList.add('activa');
+  else if (!skipBtn) {
+    const map = {script:0,diagrama:1,editor:2,ejercicios:3,soluciones:4};
+    const idx = map[id];
+    if (idx !== undefined) {
+      const btns = document.querySelectorAll('.lab-tabs-nav button');
+      if (btns[idx]) btns[idx].classList.add('activa');
+    }
+  }
+}
+
+// Also update the dbDot2 and dbStatusTxt2 (now unified)
+const _setStatus = setStatus;
+</script>
+</body>
+</html>
