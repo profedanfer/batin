@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estoy construyendo · BATIN · profe.DanFer</title>
+<meta name="description" content="ICIENTEC y Proyecto de Promoción. Dos líneas de proyecto que construyen al técnico en informática del CEDMR.">
+<link rel="stylesheet" href="batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.construyendo-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 56px 56px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.construyendo-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 75% 50%, var(--naranja-s) 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 70%, var(--azul-s) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-char img {
+  width: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 24px var(--naranja-s));
+  animation: floatTechi 4.5s ease-in-out infinite;
+}
+
+@keyframes floatTechi {
+  0%, 100% { transform: translateY(0) rotate(.5deg); }
+  50% { transform: translateY(-10px) rotate(-.5deg); }
+}
+
+/* ══════════════════════════════════════
+   TABS NAV
+══════════════════════════════════════ */
+.tabs-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 0 56px;
+  display: flex;
+  gap: 0;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 14px 20px;
+  color: var(--texto3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn:hover { color: var(--texto); }
+.tab-btn.act   { color: var(--naranja); border-bottom-color: var(--naranja); }
+
+.tab-panel { display: none; }
+.tab-panel.act { display: block; }
+
+/* ══════════════════════════════════════
+   ICIENTEC INTRO
+══════════════════════════════════════ */
+.proy-section {
+  padding: 48px 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.icientec-header {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.icientec-char img {
+  width: 160px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px var(--naranja-s));
+}
+
+/* Cursos ICIENTEC */
+.icientec-cursos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.icientec-curso-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 20px;
+  text-decoration: none;
+  display: block;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.icientec-curso-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.icientec-curso-card.c1::before { background: var(--azul); }
+.icientec-curso-card.c2::before { background: var(--naranja); }
+.icientec-curso-card.c3::before { background: var(--violeta); }
+
+.icientec-curso-card:hover {
+  transform: translateY(-3px);
+}
+
+.icientec-curso-card.c1:hover { border-color: var(--azul-b); box-shadow: 0 8px 28px var(--azul-s); }
+.icientec-curso-card.c2:hover { border-color: var(--naranja-b); box-shadow: 0 8px 28px var(--naranja-s); }
+.icientec-curso-card.c3:hover { border-color: var(--violeta-b); box-shadow: 0 8px 28px var(--violeta-s); }
+
+.ic-curso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.icientec-curso-card.c1 .ic-curso-num { color: var(--azul); }
+.icientec-curso-card.c2 .ic-curso-num { color: var(--naranja); }
+.icientec-curso-card.c3 .ic-curso-num { color: var(--violeta); }
+
+.ic-curso-icon { font-size: 28px; margin-bottom: 10px; }
+
+.ic-curso-titulo {
+  font-family: var(--font-title);
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.ic-curso-desc {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.ic-curso-entregable {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.icientec-curso-card.c1 .ic-curso-entregable { background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b); }
+.icientec-curso-card.c2 .ic-curso-entregable { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
+.icientec-curso-card.c3 .ic-curso-entregable { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
+
+.ic-externo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-top: 14px;
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  background: var(--naranja-s);
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background .15s;
+}
+
+.ic-externo:hover { background: var(--naranja-m); }
+.ic-externo.azul { color: var(--azul); border-color: var(--azul-b); background: var(--azul-s); }
+.ic-externo.azul:hover { background: var(--azul-m); }
+
+/* Método científico */
+.metodo-section {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 32px;
+  margin-top: 36px;
+}
+
+.metodo-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 20px;
+}
+
+.metodo-pasos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.metodo-paso {
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  position: relative;
+}
+
+.metodo-paso::after {
+  content: '→';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--borde3);
+  font-size: 14px;
+  z-index: 1;
+}
+
+.metodo-paso:last-child::after { display: none; }
+
+.metodo-paso-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--azul);
+  margin-bottom: 6px;
+}
+
+.metodo-paso-nombre {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.metodo-paso-desc {
+  font-size: 11px;
+  color: var(--texto3);
+  line-height: 1.5;
+}
+
+/* Pautas ICIENTEC */
+.pautas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.pauta-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px;
+}
+
+.pauta-icon { font-size: 20px; margin-bottom: 8px; }
+
+.pauta-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.pauta-desc {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   PROYECTO DE PROMOCIÓN
+══════════════════════════════════════ */
+.promo-intro {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.promo-char img {
+  width: 180px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px var(--naranja-s));
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 48px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  bottom: 16px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--azul), var(--naranja), var(--violeta));
+  border-radius: 2px;
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -38px;
+  top: 20px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  z-index: 1;
+}
+
+.tl-item.c1::before { background: var(--azul); }
+.tl-item.c2::before { background: var(--naranja); }
+.tl-item.c3::before { background: var(--violeta); }
+
+.tl-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 22px 24px;
+  transition: border-color .2s;
+}
+
+.tl-item.c1 .tl-card { border-left: 3px solid var(--azul); }
+.tl-item.c2 .tl-card { border-left: 3px solid var(--naranja); }
+.tl-item.c3 .tl-card { border-left: 3px solid var(--violeta); }
+
+.tl-card:hover { border-color: var(--borde3); }
+
+.tl-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.tl-año {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+
+.tl-item.c1 .tl-año { color: var(--azul); }
+.tl-item.c2 .tl-año { color: var(--naranja); }
+.tl-item.c3 .tl-año { color: var(--violeta); }
+
+.tl-titulo {
+  font-family: var(--font-title);
+  font-size: .95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.tl-subtitulo {
+  font-size: 12px;
+  color: var(--texto3);
+  font-family: var(--font-mono);
+}
+
+.tl-desc {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+
+.tl-habilidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tl-habilidad {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--bg4);
+  border: 1px solid var(--borde2);
+  color: var(--texto3);
+}
+
+.tl-entregable {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+
+.tl-item.c1 .tl-entregable { background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b); }
+.tl-item.c2 .tl-entregable { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
+.tl-item.c3 .tl-entregable { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
+
+/* Pautas generales del proyecto */
+.pautas-promo {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 32px;
+  margin-top: 36px;
+}
+
+.pautas-promo-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin-bottom: 20px;
+}
+
+.pautas-promo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.pp-item {
+  padding: 14px;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+}
+
+.pp-icon { font-size: 18px; margin-bottom: 6px; }
+.pp-titulo { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.pp-desc { font-size: 11px; color: var(--texto3); line-height: 1.6; }
+
+/* ══════════════════════════════════════
+   DIFERENCIA ENTRE PROYECTOS
+══════════════════════════════════════ */
+.diferencia-box {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 32px;
+  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.dif-col h4 {
+  font-family: var(--font-title);
+  font-size: .85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.dif-col.icientec h4 { color: var(--azul); }
+.dif-col.promo h4    { color: var(--naranja); }
+
+.dif-sep {
+  background: var(--borde);
+  width: 1px;
+  align-self: stretch;
+}
+
+.dif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.dif-item::before {
+  content: '▸';
+  color: var(--texto3);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .construyendo-hero { padding: 40px 20px 32px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-char { display: none; }
+  .tabs-nav { padding: 0 16px; }
+  .proy-section { padding: 32px 20px 48px; }
+  .icientec-header { grid-template-columns: 1fr; }
+  .icientec-char { display: none; }
+  .icientec-cursos { grid-template-columns: 1fr; }
+  .metodo-pasos { grid-template-columns: 1fr; }
+  .metodo-paso::after { display: none; }
+  .promo-intro { grid-template-columns: 1fr; }
+  .promo-char { display: none; }
+  .diferencia-box { grid-template-columns: 1fr; }
+  .dif-sep { display: none; }
+}
+</style>
+</head>
+<body data-page="construyendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="construyendo-hero">
+  <div class="hero-inner">
+    <div>
+      <span class="kicker">// zona 03 · proyectos reales</span>
+      <h1 class="titulo-h1 mt-8">Estoy construyendo</h1>
+      <p class="desc mt-12">
+        Un proyecto no es una tarea. Es el primer sistema que construyes en serio.
+        Dos líneas de proyecto corren en paralelo durante el bachillerato —
+        cada una con su propósito, su ritmo y su resultado.
+      </p>
+      <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
+        <a href="#" onclick="showTab('icientec',this);return false" class="btn btn-azul">🔬 ICIENTEC</a>
+        <a href="#" onclick="showTab('promocion',this);return false" class="btn btn-naranja">🚀 Proyecto de Promoción</a>
+      </div>
+    </div>
+    <div class="hero-char">
+      <img src="img/techi_accion.png" alt="Techi en acción">
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-nav">
+  <button class="tab-btn act" onclick="showTab('icientec',this)">🔬 ICIENTEC</button>
+  <button class="tab-btn" onclick="showTab('promocion',this)">🚀 Proyecto de Promoción</button>
+  <button class="tab-btn" onclick="showTab('diferencia',this)">⚖️ ¿Cuál es cuál?</button>
+</div>
+
+<!-- ══════ ICIENTEC ══════ -->
+<div id="tab-icientec" class="tab-panel act">
+  <div class="proy-section">
+
+    <div class="icientec-header">
+      <div>
+        <span class="kicker azul">// Feria Científica del CEDMR · 1ro y 2do curso</span>
+        <h2 class="titulo-h2 mt-8">ICIENTEC</h2>
+        <p class="desc mt-12">
+          No es un trabajo escolar — es una investigación real con una pregunta concreta,
+          datos que la respaldan o refutan, y una propuesta de solución ejecutable.
+          El 3er curso forma parte del staff organizador.
+          Puede ser intercurso o intermodalidad.
+        </p>
+      </div>
+      <div class="icientec-char">
+        <img src="img/bit_ok.png" alt="Bit dando ok">
+      </div>
+    </div>
+
+    <!-- Los 3 cursos -->
+    <div class="icientec-cursos">
+
+      <div class="icientec-curso-card c1">
+        <div class="ic-curso-num">// 1er curso</div>
+        <div class="ic-curso-icon">🔭</div>
+        <div class="ic-curso-titulo">Investigo y propongo</div>
+        <p class="ic-curso-desc">
+          Identificas un problema real, lo investigas, recolectas datos con encuestas,
+          analizas en Excel, redactas en Word y presentas tu propuesta de solución
+          concreta — app, prototipo, proyecto ejecutable.
+          Si necesitas inspiración, encontrarás algunas ideas para empezar.
+        </p>
+        <span class="ic-curso-entregable">📊 Datos + Informe + Presentación</span><br>
+        <a href="proyectos/icientec1.html" target="_blank" class="ic-externo azul">¿Necesitas ideas? Aquí tienes algunas →</a>
+      </div>
+
+      <div class="icientec-curso-card c2">
+        <div class="ic-curso-num">// 2do curso</div>
+        <div class="ic-curso-icon">🧪</div>
+        <div class="ic-curso-titulo">Investigo y construyo</div>
+        <p class="ic-curso-desc">
+          Con mayor profundidad técnica: pregunta investigable, datos reales,
+          análisis riguroso y una propuesta de solución que ya puedes implementar
+          con Python, código o sistema funcional.
+          Si necesitas ideas para tu investigación, encontrarás algunas para inspirarte.
+        </p>
+        <span class="ic-curso-entregable">💻 Prototipo + Informe técnico</span><br>
+        <a href="proyectos/icientec2.html" target="_blank" class="ic-externo">¿Necesitas ideas? Aquí tienes algunas →</a>
+      </div>
+
+      <div class="icientec-curso-card c3">
+        <div class="ic-curso-num">// 3er curso</div>
+        <div class="ic-curso-icon">🎯</div>
+        <div class="ic-curso-titulo">Organizo y evalúo</div>
+        <p class="ic-curso-desc">
+          El 3er curso es el staff de la feria. Colaboración y apoyo técnico
+          a los equipos de 1ro y 2do. Liderazgo técnico en acción.
+        </p>
+        <span class="ic-curso-entregable">🗂️ Gestión + Evaluación + Liderazgo</span><br>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--texto3);margin-top:14px;display:inline-block">Guía del staff · próximamente</span>
+      </div>
+
+    </div>
+
+    <!-- Método científico -->
+    <div class="metodo-section">
+      <div class="metodo-titulo">// cómo se hace una investigación real</div>
+      <div class="metodo-pasos">
+        <div class="metodo-paso">
+          <div class="metodo-paso-num">paso_01</div>
+          <div class="metodo-paso-nombre">Observas</div>
+          <p class="metodo-paso-desc">Detectas un problema real en tu entorno</p>
+        </div>
+        <div class="metodo-paso">
+          <div class="metodo-paso-num">paso_02</div>
+          <div class="metodo-paso-nombre">Preguntas</div>
+          <p class="metodo-paso-desc">Formulas una pregunta investigable y verificable</p>
+        </div>
+        <div class="metodo-paso">
+          <div class="metodo-paso-num">paso_03</div>
+          <div class="metodo-paso-nombre">Recolectas</div>
+          <p class="metodo-paso-desc">Encuestas, mediciones, datos reales propios</p>
+        </div>
+        <div class="metodo-paso">
+          <div class="metodo-paso-num">paso_04</div>
+          <div class="metodo-paso-nombre">Analizas</div>
+          <p class="metodo-paso-desc">Excel, gráficos, estadísticas, conclusiones</p>
+        </div>
+        <div class="metodo-paso">
+          <div class="metodo-paso-num">paso_05</div>
+          <div class="metodo-paso-nombre">Propones</div>
+          <p class="metodo-paso-desc">Solución concreta: app, sistema, prototipo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pautas -->
+    <h3 class="titulo-h3 mt-32 mb-16">Pautas para un buen proyecto ICIENTEC</h3>
+    <div class="pautas-grid">
+      <div class="pauta-item">
+        <div class="pauta-icon">❓</div>
+        <div class="pauta-titulo">Una pregunta concreta</div>
+        <p class="pauta-desc">No un tema general — una pregunta que puedas responder con datos reales recolectados por ti.</p>
+      </div>
+      <div class="pauta-item">
+        <div class="pauta-icon">📊</div>
+        <div class="pauta-titulo">Datos propios</div>
+        <p class="pauta-desc">Encuestas al curso, mediciones del entorno, registros propios. No datos bajados de internet.</p>
+      </div>
+      <div class="pauta-item">
+        <div class="pauta-icon">💡</div>
+        <div class="pauta-titulo">Solución ejecutable</div>
+        <p class="pauta-desc">Una app, un sistema, un prototipo funcional. Algo que alguien pueda usar, no solo leer.</p>
+      </div>
+      <div class="pauta-item">
+        <div class="pauta-icon">🤝</div>
+        <div class="pauta-titulo">Puede ser intercurso</div>
+        <p class="pauta-desc">Los equipos pueden formarse entre distintos cursos o modalidades. La investigación no tiene fronteras de aula.</p>
+      </div>
+      <div class="pauta-item">
+        <div class="pauta-icon">📅</div>
+        <div class="pauta-titulo">Destino: septiembre</div>
+        <p class="pauta-desc">La feria ICIENTEC es en septiembre. No es una sorpresa — es el resultado de meses de trabajo constante.</p>
+      </div>
+      <div class="pauta-item">
+        <div class="pauta-icon">🔗</div>
+        <div class="pauta-titulo">Conecta con las materias</div>
+        <p class="pauta-desc">El proyecto más fuerte es el que cruza fronteras entre materias: datos de Laboratorio, lógica de Algorítmica.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ PROYECTO DE PROMOCIÓN ══════ -->
+<div id="tab-promocion" class="tab-panel">
+  <div class="proy-section">
+
+    <div class="promo-intro">
+      <div class="promo-char">
+        <img src="img/techi_estudiando.png" alt="Techi estudiando">
+      </div>
+      <div>
+        <span class="kicker">// Hilo conductor de los 3 años</span>
+        <h2 class="titulo-h2 mt-8">Proyecto de Promoción</h2>
+        <p class="desc mt-12">
+          Un sistema real que construyes progresivamente durante todo el bachillerato.
+          Cada año agrega una capa. Al graduarte, tienes algo que funciona.
+          No es paralelo a las materias — <strong style="color:var(--texto)">es la aplicación de todas ellas.</strong>
+        </p>
+        <div class="char-guia techi mt-24">
+          <img src="img/techi_trabajando.png" alt="Techi trabajando" class="char-guia-img">
+          <div class="char-guia-body">
+            <div class="char-guia-name techi">TECHI</div>
+            <p class="char-guia-texto">"El proyecto de promoción no es algo que haces al final. Es algo que construyes desde el primer año. Cuando llegas a 3ro, ya tienes la mitad del camino recorrido."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+
+      <div class="tl-item c1">
+        <div class="tl-card">
+          <div class="tl-header">
+            <div class="tl-año">1ro</div>
+            <div>
+              <div class="tl-titulo">Definir el problema y validar la necesidad</div>
+              <div class="tl-subtitulo">Etapa de investigación y viabilidad</div>
+            </div>
+          </div>
+          <p class="tl-desc">
+            Identificas un problema real, lo investigas con datos propios,
+            encuestas a los afectados y analizas viabilidad técnica, legal y económica.
+            Las herramientas de Laboratorio 1 — Excel, Word, PowerPoint —
+            son las herramientas profesionales reales de esta etapa.
+          </p>
+          <div class="tl-habilidades">
+            <span class="tl-habilidad">Excel · análisis de datos</span>
+            <span class="tl-habilidad">Word · informe técnico</span>
+            <span class="tl-habilidad">PowerPoint · presentación</span>
+            <span class="tl-habilidad">Encuesta · recolección</span>
+            <span class="tl-habilidad">Viabilidad técnica</span>
+            <span class="tl-habilidad">Viabilidad económica</span>
+          </div>
+          <span class="tl-entregable">📄 Entregable: informe + PPT + datos tabulados</span>
+        </div>
+      </div>
+
+      <div class="tl-item c2">
+        <div class="tl-card">
+          <div class="tl-header">
+            <div class="tl-año">2do</div>
+            <div>
+              <div class="tl-titulo">Modelar y programar la solución</div>
+              <div class="tl-subtitulo">Etapa de diseño y prototipo</div>
+            </div>
+          </div>
+          <p class="tl-desc">
+            Con los requerimientos definidos, empiezas a construir.
+            Modelas la solución con diagramas y DER, programas módulos básicos
+            con Python, implementas estructuras de datos y persistencia.
+            Al final de 2do, el prototipo ya funciona.
+          </p>
+          <div class="tl-habilidades">
+            <span class="tl-habilidad">Algorítmica 2 · pseudocódigo</span>
+            <span class="tl-habilidad">Python · prototipo</span>
+            <span class="tl-habilidad">Arreglos · estructuras</span>
+            <span class="tl-habilidad">Lab 2 · paradigmas</span>
+            <span class="tl-habilidad">DER · primer modelo</span>
+            <span class="tl-habilidad">Requerimientos cerrados</span>
+          </div>
+          <span class="tl-entregable">💻 Entregable: prototipo funcional + requerimientos</span>
+        </div>
+      </div>
+
+      <div class="tl-item c3">
+        <div class="tl-card">
+          <div class="tl-header">
+            <div class="tl-año">3ro</div>
+            <div>
+              <div class="tl-titulo">Implementar, optimizar y defender</div>
+              <div class="tl-subtitulo">Etapa de implementación y defensa formal</div>
+            </div>
+          </div>
+          <p class="tl-desc">
+            Implementas el sistema completo. Base de datos relacional normalizada,
+            POO con Java, integración de todos los módulos.
+            Documentación técnica completa, pruebas finales
+            y defensa formal ante un jurado evaluador.
+          </p>
+          <div class="tl-habilidades">
+            <span class="tl-habilidad">Java + POO</span>
+            <span class="tl-habilidad">Base de datos relacional</span>
+            <span class="tl-habilidad">Normalización 3FN</span>
+            <span class="tl-habilidad">SQL completo</span>
+            <span class="tl-habilidad">Documentación técnica</span>
+            <span class="tl-habilidad">Defensa formal</span>
+          </div>
+          <span class="tl-entregable">🎓 Entregable: sistema implementado + defensa formal</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pautas del proyecto de promoción -->
+    <div class="pautas-promo">
+      <div class="pautas-promo-titulo">// pautas generales del proyecto de promoción</div>
+      <div class="pautas-promo-grid">
+        <div class="pp-item">
+          <div class="pp-icon">👥</div>
+          <div class="pp-titulo">Todo el curso participa</div>
+          <p class="pp-desc">Es obligatorio para todos. Pueden trabajar con los mismos compañeros del ICIENTEC o con otros distintos.</p>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🔄</div>
+          <div class="pp-titulo">Continúa cada año</div>
+          <p class="pp-desc">No empieza de cero en 2do ni en 3ro. Lo que construiste el año anterior es la base del siguiente.</p>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🌐</div>
+          <div class="pp-titulo">Problema real</div>
+          <p class="pp-desc">El sistema debe resolver un problema real e identificable. No ejercicios de práctica — algo que alguien necesite.</p>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">📚</div>
+          <div class="pp-titulo">Aplica todo lo aprendido</div>
+          <p class="pp-desc">Cada asignatura aporta algo. No es un proyecto de Laboratorio — es el proyecto donde todo converge.</p>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">📋</div>
+          <div class="pp-titulo">Documentación desde 1ro</div>
+          <p class="pp-desc">Se documenta desde el primer año. La defensa de 3ro se basa en todo el proceso, no solo en el resultado.</p>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🎤</div>
+          <div class="pp-titulo">Defensa ante jurado</div>
+          <p class="pp-desc">La presentación final en 3ro es una defensa formal. El técnico explica, justifica y demuestra lo que construyó.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ ¿CUÁL ES CUÁL? ══════ -->
+<div id="tab-diferencia" class="tab-panel">
+  <div class="proy-section">
+    <span class="kicker">// aclaración importante</span>
+    <h2 class="titulo-h2 mt-8 mb-16">Son dos cosas distintas</h2>
+    <p class="desc mb-32">
+      Muchos estudiantes confunden los dos proyectos porque corren al mismo tiempo.
+      Esta tabla aclara la diferencia. Pueden compartir compañeros — pero no son el mismo proyecto.
+    </p>
+
+    <div class="diferencia-box">
+      <div class="dif-col icientec">
+        <h4>🔬 ICIENTEC</h4>
+        <div class="dif-item">Feria científica del CEDMR</div>
+        <div class="dif-item">Participa 1ro y 2do curso</div>
+        <div class="dif-item">3ro es staff organizador</div>
+        <div class="dif-item">Puede ser intercurso o intermodalidad</div>
+        <div class="dif-item">Destino: septiembre — feria pública</div>
+        <div class="dif-item">Enfoque: investigación + propuesta de solución</div>
+        <div class="dif-item">Evaluado en la feria por jurado externo</div>
+        <div class="dif-item">Herramienta principal según el curso</div>
+      </div>
+      <div class="dif-sep"></div>
+      <div class="dif-col promo">
+        <h4>🚀 Proyecto de Promoción</h4>
+        <div class="dif-item">Proyecto del bachillerato — los 3 años</div>
+        <div class="dif-item">Participan los 3 cursos en etapas</div>
+        <div class="dif-item">3ro defiende el sistema completo</div>
+        <div class="dif-item">Dentro del mismo curso (puede variar)</div>
+        <div class="dif-item">Destino: defensa formal en 3er año</div>
+        <div class="dif-item">Enfoque: sistema informático funcional</div>
+        <div class="dif-item">Evaluado por docentes en defensa interna</div>
+        <div class="dif-item">Aplica todas las asignaturas técnicas</div>
+      </div>
+    </div>
+
+    <div class="char-guia techi mt-24">
+      <img src="img/bit_motivando.png" alt="Bit motivando" class="char-guia-img">
+      <div class="char-guia-body">
+        <div class="char-guia-name bit">BIT</div>
+        <p class="char-guia-texto">
+          "Pueden trabajar con los mismos compañeros en los dos proyectos — eso está perfecto.
+          Lo importante es que sepan para qué es cada uno.
+          ICIENTEC es investigación y feria. El Proyecto de Promoción es el sistema que demuestran que son técnicos.
+          Dos objetivos distintos, dos productos distintos."
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="batin-footer"></div>
+<script src="batin.js"></script>
+<script>
+function showTab(id, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('act'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('act'));
+  document.getElementById('tab-' + id).classList.add('act');
+  // Marcar el botón correcto en la tabs-nav
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+      b.classList.add('act');
+    }
+  });
+  window.scrollTo({ top: document.querySelector('.tabs-nav').offsetTop - 60, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

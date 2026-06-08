@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Sistema · BATIN · profe.DanFer</title>
+<meta name="description" content="Los Ancestros del Sistema, el Manifiesto, Misión Hardware e IA crítica. La base cultural del BATIN.">
+<link rel="stylesheet" href="batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO EL SISTEMA
+══════════════════════════════════════ */
+.sistema-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 64px 56px 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sistema-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, rgba(232,101,10,.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.sistema-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.sistema-hero-char {
+  text-align: center;
+}
+
+.sistema-hero-char img {
+  width: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 24px var(--violeta-s));
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+/* ══════════════════════════════════════
+   TABS PRINCIPALES
+══════════════════════════════════════ */
+.tabs-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  padding: 0 56px;
+  gap: 0;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+}
+
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 14px 20px;
+  color: var(--texto3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn:hover { color: var(--texto); }
+.tab-btn.act { color: var(--violeta); border-bottom-color: var(--violeta); }
+
+.tab-panel { display: none; }
+.tab-panel.act { display: block; }
+
+/* ══════════════════════════════════════
+   ANCESTROS
+══════════════════════════════════════ */
+.ancestros-intro {
+  padding: 48px 56px 32px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.ancestros-pregunta {
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--texto2);
+  line-height: 1.7;
+  border-left: 3px solid var(--violeta);
+  padding-left: 20px;
+  margin-top: 16px;
+  font-style: italic;
+}
+
+/* Nodos */
+.nodos-section {
+  padding: 0 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.nodo-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+
+.nodo-card:hover { border-color: var(--borde3); }
+
+.nodo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nodo-num-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.nodo-card:nth-child(1) .nodo-num-badge { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
+.nodo-card:nth-child(2) .nodo-num-badge { background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b); }
+.nodo-card:nth-child(3) .nodo-num-badge { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
+.nodo-card:nth-child(4) .nodo-num-badge { background: rgba(240,80,80,.1); color: #f05050; border: 1px solid rgba(240,80,80,.3); }
+.nodo-card:nth-child(5) .nodo-num-badge { background: rgba(80,200,120,.1); color: #50c878; border: 1px solid rgba(80,200,120,.3); }
+.nodo-card:nth-child(6) .nodo-num-badge { background: rgba(255,160,50,.1); color: #ffa032; border: 1px solid rgba(255,160,50,.3); }
+.nodo-card:nth-child(7) .nodo-num-badge { background: rgba(255,220,50,.1); color: #ffdc32; border: 1px solid rgba(255,220,50,.3); }
+
+.nodo-titulo-wrap { flex: 1; }
+
+.nodo-titulo {
+  font-family: var(--font-title);
+  font-size: .95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.nodo-subtitulo {
+  font-size: 12px;
+  color: var(--texto3);
+  font-family: var(--font-mono);
+}
+
+.nodo-toggle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--texto3);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+
+.nodo-card.open .nodo-toggle { transform: rotate(90deg); color: var(--violeta); }
+
+.nodo-body {
+  display: none;
+  padding: 0 22px 22px;
+  border-top: 1px solid var(--borde);
+}
+
+.nodo-card.open .nodo-body { display: block; padding-top: 18px; }
+
+.personajes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.personaje-item {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 12px 14px;
+}
+
+.personaje-nombre {
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.personaje-rol {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  margin-bottom: 6px;
+}
+
+.personaje-desc {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.6;
+}
+
+.nodo-enlace {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--violeta);
+  text-decoration: none;
+  border: 1px solid var(--violeta-b);
+  padding: 5px 14px;
+  border-radius: 5px;
+  background: var(--violeta-s);
+  transition: all .15s;
+}
+
+.nodo-enlace:hover { background: var(--violeta-m); }
+
+/* ══════════════════════════════════════
+   MANIFIESTO
+══════════════════════════════════════ */
+.manifiesto-section {
+  padding: 48px 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.manifiesto-hero {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+.manifiesto-char-wrap img {
+  width: 180px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px var(--naranja-s));
+}
+
+.manifiesto-intro-texto h2 {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.manifiesto-sub {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--naranja);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.manifiesto-texto-completo {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--naranja);
+  border-radius: var(--r2);
+  padding: 32px 36px;
+}
+
+.manifiesto-parrafo {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.9;
+  margin-bottom: 18px;
+  font-weight: 300;
+}
+
+.manifiesto-parrafo:last-child { margin-bottom: 0; }
+
+.manifiesto-parrafo strong {
+  color: var(--texto);
+  font-weight: 500;
+}
+
+.manifiesto-parrafo.cierre {
+  color: var(--texto);
+  font-size: 16px;
+  font-weight: 500;
+  border-top: 1px solid var(--borde2);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+
+/* ══════════════════════════════════════
+   MISIÓN HARDWARE
+══════════════════════════════════════ */
+.hw-section {
+  padding: 48px 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.hw-intro {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.hw-char img {
+  width: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px var(--azul-s));
+}
+
+.temporada-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.temporada-label.t1 { color: var(--azul); }
+.temporada-label.t2 { color: var(--naranja); }
+
+.temporada-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+.eps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.ep-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 14px 15px;
+  text-decoration: none;
+  display: block;
+  transition: all .15s;
+}
+
+.ep-card:hover {
+  border-color: var(--azul-b);
+  background: var(--azul-s);
+  transform: translateY(-2px);
+}
+
+.ep-card.pronto {
+  opacity: .35;
+  pointer-events: none;
+}
+
+.ep-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--azul);
+  margin-bottom: 5px;
+}
+
+.ep-card.pronto .ep-num { color: var(--texto3); }
+
+.ep-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.ep-pronto-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--texto3);
+  margin-top: 4px;
+}
+
+/* ══════════════════════════════════════
+   IA CRÍTICA
+══════════════════════════════════════ */
+.ia-section {
+  padding: 48px 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.ia-intro {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.ia-char img {
+  width: 180px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px var(--violeta-s));
+}
+
+.ia-niveles {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ia-nivel {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.ia-nivel-curso {
+  text-align: center;
+}
+
+.ia-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.ia-nivel:nth-child(1) .ia-nivel-badge { background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b); }
+.ia-nivel:nth-child(2) .ia-nivel-badge { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
+.ia-nivel:nth-child(3) .ia-nivel-badge { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
+
+.ia-nivel-año {
+  font-size: 11px;
+  color: var(--texto3);
+  font-family: var(--font-mono);
+}
+
+.ia-nivel-titulo {
+  font-family: var(--font-title);
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.ia-nivel-desc {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.ia-nivel-temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ia-nivel-tema {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--bg4);
+  border: 1px solid var(--borde2);
+  color: var(--texto3);
+}
+
+.ia-proximamente {
+  background: var(--bg3);
+  border: 1.5px dashed var(--borde2);
+  border-radius: var(--r2);
+  padding: 28px;
+  text-align: center;
+  margin-top: 28px;
+}
+
+.ia-proximamente img {
+  width: 90px;
+  margin-bottom: 12px;
+  opacity: .7;
+}
+
+.ia-proximamente p {
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.ia-proximamente strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 800px) {
+  .sistema-hero { padding: 40px 20px 32px; }
+  .sistema-hero-inner { grid-template-columns: 1fr; }
+  .sistema-hero-char { display: none; }
+  .tabs-nav { padding: 0 16px; overflow-x: auto; }
+  .tab-btn { font-size: 11px; padding: 12px 14px; }
+  .ancestros-intro, .nodos-section, .manifiesto-section,
+  .hw-section, .ia-section { padding-left: 20px; padding-right: 20px; }
+  .manifiesto-hero { grid-template-columns: 1fr; }
+  .manifiesto-char-wrap { display: none; }
+  .hw-intro { grid-template-columns: 1fr; }
+  .hw-char { display: none; }
+  .ia-intro { grid-template-columns: 1fr; }
+  .ia-char { display: none; }
+  .ia-nivel { grid-template-columns: 1fr; }
+  .manifiesto-texto-completo { padding: 20px; }
+}
+</style>
+</head>
+<body data-page="sistema">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="sistema-hero">
+  <div class="sistema-hero-inner">
+    <div>
+      <span class="kicker violeta">// zona 01 · base cultural del BATIN</span>
+      <h1 class="titulo-h1 mt-8">El Sistema</h1>
+      <p class="desc mt-12">
+        Antes de escribir código, hay que entender el sistema que habitamos.
+        ¿Quiénes lo construyeron? ¿Con qué valores? ¿Hacia dónde va?
+        Esta sección no es un complemento — es el fundamento.
+      </p>
+      <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
+        <a href="#ancestros" class="btn btn-violeta">🧬 Los Ancestros</a>
+        <a href="#manifiesto" class="btn btn-naranja">📜 El Manifiesto</a>
+        <a href="#hardware" class="btn btn-azul">🛰️ Misión Hardware</a>
+        <a href="#ia-critica" class="btn btn-violeta">🤖 IA Crítica</a>
+      </div>
+    </div>
+    <div class="sistema-hero-char">
+      <img src="img/gatiel_explicando.png" alt="Gatiel explicando">
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-nav">
+  <button class="tab-btn act" data-tab-btn="ancestros" onclick="showTab('ancestros',this)">🧬 Los Ancestros</button>
+  <button class="tab-btn" data-tab-btn="manifiesto" onclick="showTab('manifiesto',this)">📜 Manifiesto</button>
+  <button class="tab-btn" data-tab-btn="hardware" onclick="showTab('hardware',this)">🛰️ Misión Hardware</button>
+  <button class="tab-btn" data-tab-btn="ia" onclick="showTab('ia',this)">🤖 IA Crítica</button>
+</div>
+
+<!-- ══════ ANCESTROS ══════ -->
+<div id="tab-ancestros" class="tab-panel act">
+
+  <div class="ancestros-intro" id="ancestros">
+    <div class="char-guia gatiel">
+      <img src="img/gatiel_leyendo.png" alt="Gatiel leyendo" class="char-guia-img">
+      <div class="char-guia-body">
+        <div class="char-guia-name gatiel">GATIEL</div>
+        <p class="char-guia-texto">
+          "Esta página no es una línea de tiempo. Es un mapa de ideas.
+          Aquí se recorren las mentes que imaginaron, construyeron, conectaron,
+          cuestionaron y gobernaron el sistema digital que hoy habitamos.
+          No desde la nostalgia tecnológica, sino desde una pregunta central:
+          <strong style="color:var(--texto)">¿Qué tipo de sistema estamos heredando… y cuál estamos eligiendo sostener?</strong>"
+        </p>
+      </div>
+    </div>
+    <p class="ancestros-pregunta">
+      Una genealogía crítica de la computación, la red y la decisión humana.
+    </p>
+  </div>
+
+  <div class="nodos-section">
+
+    <!-- NODO 01 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_01</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">El Código de Origen</div>
+          <div class="nodo-subtitulo">Los Cimientos · pensamiento computacional</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          En este nodo encontramos a quienes imaginaron el sistema antes de que existiera.
+          Su pensamiento lateral permitió ver lógica donde otros solo veían metal.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Ada Lovelace</div>
+            <div class="personaje-rol">La Visionaria</div>
+            <p class="personaje-desc">Mientras otros veían una calculadora gigante, ella vio una máquina capaz de crear música y arte a través de algoritmos.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Alan Turing</div>
+            <div class="personaje-rol">El Descifrador</div>
+            <p class="personaje-desc">El maestro de la lógica que demostró que una máquina podía resolver cualquier acertijo si se le hacían las preguntas correctas.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Grace Hopper</div>
+            <div class="personaje-rol">La Pionera</div>
+            <p class="personaje-desc">La mujer que nos enseñó a hablar con las máquinas en un lenguaje humano. Advirtió que la frase más peligrosa es: "Siempre se ha hecho así".</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo en el sitio ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 02 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_02</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">Arquitectos de la Estructura</div>
+          <div class="nodo-subtitulo">Hardware, Software y Experiencia</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Los personajes que sacaron la informática de los laboratorios y la pusieron en nuestras manos,
+          reescribiendo las reglas de cómo interactuamos con el silicio.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Margaret Hamilton</div>
+            <div class="personaje-rol">La Guardiana del Apolo</div>
+            <p class="personaje-desc">La ingeniera que salvó la misión a la Luna diseñando un software capaz de priorizar tareas críticas en medio de un caos de datos.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Hedy Lamarr</div>
+            <div class="personaje-rol">La Madre de la Conexión</div>
+            <p class="personaje-desc">Estrella de cine e inventora que ideó el sistema de salto de frecuencia, la lógica secreta que hoy permite que funcionen el Wi-Fi y el Bluetooth.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Steve Jobs</div>
+            <div class="personaje-rol">El Arquitecto de la Experiencia</div>
+            <p class="personaje-desc">El hombre que se negó a ver la informática como algo gris y aburrido, integrando el diseño y la belleza para que la tecnología fuera una extensión de nuestra creatividad.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Bill Gates</div>
+            <div class="personaje-rol">El Estratega del Software</div>
+            <p class="personaje-desc">Quien comprendió antes que nadie que el verdadero poder de una computadora no está en sus piezas, sino en el sistema operativo que le da vida.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Linus Torvalds</div>
+            <div class="personaje-rol">El Maestro del Código Abierto</div>
+            <p class="personaje-desc">El programador que decidió que el conocimiento debía ser libre, creando el núcleo (kernel) que hoy mueve a internet y a los servidores del mundo.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 03 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_03</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">El Tejido Global</div>
+          <div class="nodo-subtitulo">Redes, Conexión y Cultura Digital</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Nuestros ancestros más recientes. Ellos aplicaron el pensamiento lateral
+          para conectar cada mente del planeta en una sola red invisible.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Tim Berners-Lee</div>
+            <div class="personaje-rol">El Tejedor de la Red</div>
+            <p class="personaje-desc">El científico que imaginó un mundo donde toda la información estuviera conectada por enlaces invisibles, dándonos la World Wide Web.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Mark Zuckerberg</div>
+            <div class="personaje-rol">El Conector Social</div>
+            <p class="personaje-desc">El programador que transformó un directorio universitario en una red global, entendiendo que el código podía usarse para mapear las relaciones humanas.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Jack Dorsey</div>
+            <div class="personaje-rol">El Mensajero del Eco</div>
+            <p class="personaje-desc">El creador que apostó por la brevedad, obligando al mundo a pensar de forma lateral para decir lo más importante en caracteres limitados.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 04 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_04</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">Conciencia del Sistema</div>
+          <div class="nodo-subtitulo">Ética, Poder y Responsabilidad</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Aquí el sistema empieza a mirarse a sí mismo. No se trata de crear más código,
+          sino de preguntarse por sus consecuencias. Estos ancestros no solo optimizaron máquinas;
+          introdujeron conciencia en el algoritmo.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Shoshana Zuboff</div>
+            <div class="personaje-rol">La Intérprete del Poder Digital</div>
+            <p class="personaje-desc">La mente que nombró el "capitalismo de vigilancia". Nos recordó que en el mundo digital, si el producto es gratuito, el verdadero producto eres tú.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Cathy O'Neil</div>
+            <div class="personaje-rol">La Auditora del Algoritmo</div>
+            <p class="personaje-desc">Autora que expuso cómo las matemáticas pueden convertirse en "armas de destrucción" si operan sin transparencia. El problema no es el código, sino a quién beneficia.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Timnit Gebru</div>
+            <div class="personaje-rol">La Voz de la Alerta Ética</div>
+            <p class="personaje-desc">Investigadora que puso bajo la lupa los sesgos y riesgos de la IA a gran escala. Demostró que cuestionar al sistema también es una forma fundamental de hacer ciencia.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 05 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_05</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">El Sistema que Aprende</div>
+          <div class="nodo-subtitulo">Educación, IA y Decisión Humana</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Aquí el sistema deja de ejecutar instrucciones y comienza a aprender de sus propios datos.
+          Pero aprender no es lo mismo que comprender.
+          Este nodo lanza una pregunta incómoda: ¿Quién decide realmente cuando la máquina "aprende"?
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Seymour Papert</div>
+            <div class="personaje-rol">El Arquitecto del Aprender Haciendo</div>
+            <p class="personaje-desc">Introdujo una idea radical: la computadora no debe enseñar contenidos, sino potenciar el pensamiento. Programar es, en realidad, una forma de "pensar sobre el propio pensar".</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Benjamin Bloom</div>
+            <div class="personaje-rol">El Cartógrafo de la Cognición</div>
+            <p class="personaje-desc">Ordenó el aprendizaje en niveles, dejando claro que recordar no es comprender. Su taxonomía es el mapa silencioso detrás de toda IA educativa bien diseñada.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Fei-Fei Li</div>
+            <div class="personaje-rol">La Humanista de la IA</div>
+            <p class="personaje-desc">Recordó al mundo que la IA no es solo ingeniería, sino una decisión cultural. Su visión de una "IA centrada en lo humano" es la frontera ética que define nuestro presente.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Sal Khan</div>
+            <div class="personaje-rol">El Democratizador del Acceso</div>
+            <p class="personaje-desc">Impulsó la idea de que el aprendizaje puede escalar globalmente. Pero nos dejó una advertencia vital: la plataforma más avanzada jamás reemplazará el criterio y la guía de un docente.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 06 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_06</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">Gobernar el Sistema</div>
+          <div class="nodo-subtitulo">Poder, Regulación y Decisión Colectiva</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Aquí el sistema deja de crecer solo y empieza a ser gobernado.
+          No por líneas de código, sino por decisiones colectivas y marcos normativos.
+          No hablamos solo de tecnología; hablamos de sociedad.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">Elinor Ostrom</div>
+            <div class="personaje-rol">La Arquitecta de lo Común</div>
+            <p class="personaje-desc">Demostró que los sistemas complejos pueden autogobernarse. Su visión es clave para entender que los datos y el conocimiento son "bienes comunes digitales" que debemos proteger entre todos.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">Unión Europea</div>
+            <div class="personaje-rol">El Laboratorio Normativo</div>
+            <p class="personaje-desc">Con el AI Act, asumió que la tecnología necesita límites democráticos. Clasificar riesgos es aprender a gobernar con anticipación, no con miedo.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver nodo completo ↗</a>
+      </div>
+    </div>
+
+    <!-- NODO 07 -->
+    <div class="nodo-card" onclick="toggleNodo(this)">
+      <div class="nodo-header">
+        <span class="nodo-num-badge">nodo_07</span>
+        <div class="nodo-titulo-wrap">
+          <div class="nodo-titulo">El Sistema que Elegimos</div>
+          <div class="nodo-subtitulo">Futuro y Responsabilidad · escrito en tiempo humano</div>
+        </div>
+        <span class="nodo-toggle">▶</span>
+      </div>
+      <div class="nodo-body">
+        <p style="font-size:13px;color:var(--texto3);margin-bottom:16px;font-style:italic">
+          Este nodo no tiene ancestros. Tiene decisiones en curso.
+          Aquí el sistema deja de preguntarse qué puede hacer y empieza a enfrentar lo inevitable:
+          qué debería hacer. No se escribe en pasado; se escribe en tiempo humano.
+        </p>
+        <div class="personajes-grid">
+          <div class="personaje-item">
+            <div class="personaje-nombre">La Docencia</div>
+            <div class="personaje-rol">El Último Filtro Ético</div>
+            <p class="personaje-desc">Antes de que un sistema decida, alguien lo enseña. La educación no prepara para usar tecnología, prepara para no obedecerla ciegamente. El aula es el primer lugar donde se decide si el sistema será herramienta, tutor… o amo.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">La Ciudadanía Digital</div>
+            <div class="personaje-rol">El Sujeto del Sistema</div>
+            <p class="personaje-desc">El usuario pasivo es funcional al sistema; el ciudadano crítico lo transforma. La alfabetización que importa no es solo saber usar, sino saber cuestionar, auditar y decidir.</p>
+          </div>
+          <div class="personaje-item">
+            <div class="personaje-nombre">La Inteligencia Artificial</div>
+            <div class="personaje-rol">El Espejo Incómodo</div>
+            <p class="personaje-desc">La IA no inventa valores, los hereda. Amplifica lo que encuentra. La pregunta no es si la IA reemplazará tareas, sino qué tipo de humanidad estamos entrenando en ella.</p>
+          </div>
+        </div>
+        <a href="https://sites.google.com/view/profe-danfer/los-ancestros-del-sistema" target="_blank" class="nodo-enlace">Ver sitio completo ↗</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ MANIFIESTO ══════ -->
+<div id="tab-manifiesto" class="tab-panel" id="manifiesto">
+  <div class="manifiesto-section">
+
+    <div class="manifiesto-hero">
+      <div class="manifiesto-char-wrap">
+        <img src="img/gatiel_accion.png" alt="Gatiel en acción">
+      </div>
+      <div class="manifiesto-intro-texto">
+        <span class="kicker violeta">// Manifiesto del Sistema</span>
+        <h2>Para quien no quiere usar la tecnología sin pensarla</h2>
+        <p class="manifiesto-sub">profe.DanFer · BATIN · CEDMR · 2026</p>
+        <p class="desc">Un texto de posición explícita sobre tecnología, educación y responsabilidad social. No es un reglamento — es una declaración de principios que guía cada decisión pedagógica de este espacio.</p>
+      </div>
+    </div>
+
+    <div class="manifiesto-texto-completo">
+      <p class="manifiesto-parrafo">
+        No creemos que la tecnología sea neutral. Tampoco creemos que el progreso sea automático.
+      </p>
+      <p class="manifiesto-parrafo">
+        Creemos que <strong>todo sistema educa</strong>, incluso cuando dice que solo optimiza.
+        Que todo algoritmo evalúa, aunque no lo declare.
+        Y que <strong>toda decisión técnica es, en el fondo, una decisión humana</strong>.
+      </p>
+      <p class="manifiesto-parrafo">
+        No aceptamos sistemas que funcionen bien si producen exclusión, opacidad o dependencia.
+        No confundimos innovación con velocidad, ni aprendizaje con acumulación de datos,
+        ni eficiencia con justicia.
+      </p>
+      <p class="manifiesto-parrafo">
+        Defendemos una educación que forme criterio, una evaluación que mida impacto real
+        y una inteligencia artificial que <strong>amplíe lo mejor de lo humano</strong>,
+        no sus atajos ni sus sesgos.
+      </p>
+      <p class="manifiesto-parrafo">
+        Elegimos docentes que piensan, estudiantes que preguntan,
+        y sistemas que pueden ser auditados, explicados y corregidos.
+      </p>
+      <p class="manifiesto-parrafo cierre">
+        Porque el futuro no se programa solo. <strong>Se enseña, se evalúa y se decide.</strong><br>
+        Y si el sistema va a aprender de nosotros, más nos vale estar a la altura de lo que le estamos enseñando.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ HARDWARE ══════ -->
+<div id="tab-hardware" class="tab-panel" id="hardware">
+  <div class="hw-section">
+
+    <div class="hw-intro">
+      <div>
+        <span class="kicker azul">// Misión Hardware · serie narrativa</span>
+        <h2 class="titulo-h2 mt-8">Misión Hardware</h2>
+        <p class="desc mt-12">
+          No es una asignatura — es una exploración. Una serie de microhistorias
+          que explican cómo funciona el sistema por dentro.
+          Periféricos, CPU, RAM, placas madre, redes y conexiones,
+          narradas con IA generativa para que tengan vida propia.
+        </p>
+        <div class="char-guia azul mt-24" style="border-left-color:var(--azul)">
+          <img src="img/bit_idea.png" alt="Bit con idea" class="char-guia-img">
+          <div class="char-guia-body">
+            <div class="char-guia-name bit">BIT</div>
+            <p class="char-guia-texto">"Cada componente de una computadora tiene su historia. Antes de programar un sistema, hay que entender la máquina que lo va a ejecutar. Missión aceptada."</p>
+          </div>
+        </div>
+      </div>
+      <div class="hw-char">
+        <img src="img/bit_explicando.png" alt="Bit explicando">
+      </div>
+    </div>
+
+    <!-- T1 -->
+    <div class="temporada-label t1">// Temporada 1 — Componentes y ensamblaje</div>
+    <div class="eps-grid">
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-01</div>
+        <div class="ep-name">Los Periféricos</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-02</div>
+        <div class="ep-name">La placa madre</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-03</div>
+        <div class="ep-name">La memoria</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-04</div>
+        <div class="ep-name">La CPU</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-05</div>
+        <div class="ep-name">Más allá de la RAM</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-06</div>
+        <div class="ep-name">Memorias de almacenamiento</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-07</div>
+        <div class="ep-name">Fuentes de poder</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-08</div>
+        <div class="ep-name">Tarjetas gráficas y de sonido</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T1-09</div>
+        <div class="ep-name">Armemos una PC</div>
+      </a>
+    </div>
+
+    <!-- T2 -->
+    <div class="temporada-label t2">// Temporada 2 — Redes y conexiones</div>
+    <div class="eps-grid">
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T2-01</div>
+        <div class="ep-name">¿Qué es una red?</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T2-02</div>
+        <div class="ep-name">Topologías clásicas y modernas</div>
+      </a>
+      <a href="https://sites.google.com/view/profe-danfer/2do-batin/hardware" target="_blank" class="ep-card">
+        <div class="ep-num">T2-03</div>
+        <div class="ep-name">Conexiones cableadas</div>
+      </a>
+      <div class="ep-card pronto">
+        <div class="ep-num">T2-04</div>
+        <div class="ep-name">Conexiones inalámbricas</div>
+        <div class="ep-pronto-label">próximamente</div>
+      </div>
+      <div class="ep-card pronto">
+        <div class="ep-num">T2-05</div>
+        <div class="ep-name">Direcciones y Protocolos</div>
+        <div class="ep-pronto-label">próximamente</div>
+      </div>
+      <div class="ep-card pronto">
+        <div class="ep-num">T2-06</div>
+        <div class="ep-name">Seguridad en Redes</div>
+        <div class="ep-pronto-label">próximamente</div>
+      </div>
+      <div class="ep-card pronto">
+        <div class="ep-num">T2-07</div>
+        <div class="ep-name">Infraestructura de Red</div>
+        <div class="ep-pronto-label">próximamente</div>
+      </div>
+      <div class="ep-card pronto">
+        <div class="ep-num">T2-08</div>
+        <div class="ep-name">El Gran Desafío Final</div>
+        <div class="ep-pronto-label">próximamente</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ IA CRÍTICA ══════ -->
+<div id="tab-ia" class="tab-panel" id="ia-critica">
+  <div class="ia-section">
+
+    <div class="ia-intro">
+      <div class="ia-char">
+        <img src="img/gatiel_trabajando.png" alt="Gatiel trabajando">
+      </div>
+      <div>
+        <span class="kicker violeta">// IA aplicada · transversal a los 3 cursos</span>
+        <h2 class="titulo-h2 mt-8">Inteligencia Artificial — con criterio</h2>
+        <p class="desc mt-12">
+          La IA no es magia. Es un sistema entrenado con datos humanos.
+          Antes de usarla, hay que entenderla. Antes de copiar su respuesta, hay que cuestionarla.
+          Tres años, tres niveles de profundidad.
+        </p>
+      </div>
+    </div>
+
+    <div class="ia-niveles">
+
+      <div class="ia-nivel">
+        <div class="ia-nivel-curso">
+          <div class="ia-nivel-badge">1er curso</div>
+          <div class="ia-nivel-año">Alfabetización</div>
+        </div>
+        <div>
+          <div class="ia-nivel-titulo">¿Qué es la IA y cuáles son sus límites?</div>
+          <p class="ia-nivel-desc">
+            La IA usa mucho, pero muchas veces pide mal y obtiene respuestas incorrectas
+            que presenta como válidas sin verificar. Este nivel enseña a usar la IA con criterio:
+            escribir prompts efectivos, conocer sus limitaciones, curar la información antes de usarla.
+          </p>
+          <div class="ia-nivel-temas">
+            <span class="ia-nivel-tema">Cómo funciona la IA</span>
+            <span class="ia-nivel-tema">Alucinaciones y sesgos</span>
+            <span class="ia-nivel-tema">Escritura de prompts</span>
+            <span class="ia-nivel-tema">Roles y contexto</span>
+            <span class="ia-nivel-tema">Público objetivo</span>
+            <span class="ia-nivel-tema">Verificar antes de copiar</span>
+            <span class="ia-nivel-tema">Curación de información</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ia-nivel">
+        <div class="ia-nivel-curso">
+          <div class="ia-nivel-badge">2do curso</div>
+          <div class="ia-nivel-año">IA aplicada</div>
+        </div>
+        <div>
+          <div class="ia-nivel-titulo">IA como herramienta de desarrollo</div>
+          <p class="ia-nivel-desc">
+            Con la base del primer año, ahora la IA se convierte en compañera de código.
+            Copilot, Claude, ChatGPT para generar, depurar y documentar.
+            Se aprende cuándo usarla y cuándo no — especialmente en el contexto de ICIENTEC.
+          </p>
+          <div class="ia-nivel-temas">
+            <span class="ia-nivel-tema">IA para código</span>
+            <span class="ia-nivel-tema">Copilot y asistentes</span>
+            <span class="ia-nivel-tema">Depuración asistida</span>
+            <span class="ia-nivel-tema">Documentación automática</span>
+            <span class="ia-nivel-tema">IA + Python</span>
+            <span class="ia-nivel-tema">Límites del asistente</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ia-nivel">
+        <div class="ia-nivel-curso">
+          <div class="ia-nivel-badge">3er curso</div>
+          <div class="ia-nivel-año">IA crítica</div>
+        </div>
+        <div>
+          <div class="ia-nivel-titulo">IA crítica — sesgos, impacto y decisión</div>
+          <p class="ia-nivel-desc">
+            El nivel más profundo. Conecta directamente con el Manifiesto y los Ancestros.
+            ¿Qué le estamos enseñando al sistema? ¿Qué valores hereda?
+            El técnico en formación como responsable de las decisiones que toma el código que escribe.
+          </p>
+          <div class="ia-nivel-temas">
+            <span class="ia-nivel-tema">Sesgos en datasets</span>
+            <span class="ia-nivel-tema">Decisiones técnicas éticas</span>
+            <span class="ia-nivel-tema">Impacto social del código</span>
+            <span class="ia-nivel-tema">IA y educación</span>
+            <span class="ia-nivel-tema">Auditoría de algoritmos</span>
+            <span class="ia-nivel-tema">El técnico como responsable</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ia-proximamente">
+      <img src="img/bit_motivando.png" alt="Bit motivando">
+      <p><strong>Material en construcción.</strong><br>
+      Los recursos de IA aplicada se irán incorporando a lo largo del ciclo lectivo 2026.<br>
+      Mientras tanto, el punto de partida es siempre el mismo: <strong>preguntarse antes de copiar.</strong></p>
+    </div>
+
+  </div>
+</div>
+
+<div id="batin-footer"></div>
+<script src="batin.js"></script>
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('act'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('act'));
+  btn.classList.add('act');
+  document.getElementById('tab-' + id).classList.add('act');
+  // Scroll suave al panel
+  document.getElementById('tab-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleNodo(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.nodo-card.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+// Activar tab por hash
+const hash = window.location.hash;
+if (hash === '#manifiesto') showTab('manifiesto', document.querySelector('[data-tab-btn="manifiesto"]'));
+if (hash === '#hardware')   showTab('hardware',   document.querySelector('[data-tab-btn="hardware"]'));
+if (hash === '#ia-critica') showTab('ia',         document.querySelector('[data-tab-btn="ia"]'));
+</script>
+</body>
+</html>

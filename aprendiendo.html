@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estoy aprendiendo · BATIN · profe.DanFer</title>
+<meta name="description" content="5 rutas de aprendizaje organizadas por tema. Algorítmica, Laboratorio, Programación, Sistemas y BD, Web e IA.">
+<link rel="stylesheet" href="batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.aprendiendo-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 56px 56px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.aprendiendo-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, var(--azul-s) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, var(--naranja-s) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-char img {
+  width: 210px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 24px var(--azul-s));
+  animation: floatBit 4s ease-in-out infinite;
+}
+
+@keyframes floatBit {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ══════════════════════════════════════
+   RUTAS NAV
+══════════════════════════════════════ */
+.rutas-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 0 56px;
+  display: flex;
+  gap: 0;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+  overflow-x: auto;
+}
+
+.ruta-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 14px 18px;
+  color: var(--texto3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.ruta-btn:hover { color: var(--texto); }
+.ruta-btn.act   { color: var(--naranja); border-bottom-color: var(--naranja); }
+
+.ruta-panel { display: none; }
+.ruta-panel.act { display: block; }
+
+/* ══════════════════════════════════════
+   RUTA INTRO
+══════════════════════════════════════ */
+.ruta-intro {
+  padding: 40px 56px 28px;
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 32px;
+  align-items: center;
+}
+
+.ruta-intro-char img {
+  width: 160px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.3));
+}
+
+/* ══════════════════════════════════════
+   TEMAS
+══════════════════════════════════════ */
+.temas-container {
+  padding: 0 56px 64px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.tema-grupo {
+  margin-bottom: 40px;
+}
+
+.tema-grupo-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--texto3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tema-grupo-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+.tema-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 16px;
+  align-items: start;
+  transition: border-color .15s;
+}
+
+.tema-card:hover { border-color: var(--borde3); }
+
+.tema-card-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.tema-curso-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--borde2);
+  color: var(--texto3);
+  background: var(--bg4);
+}
+
+.tema-card-body h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.tema-card-body p {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.tema-recursos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.rec-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 11px;
+  border-radius: 5px;
+  border: 1px solid;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rec-btn.pdf    { color: var(--naranja);  border-color: var(--naranja-b);  }
+.rec-btn.pdf:hover { background: var(--naranja-s); }
+.rec-btn.web    { color: var(--azul);     border-color: var(--azul-b);     }
+.rec-btn.web:hover { background: var(--azul-s); }
+.rec-btn.yt     { color: #e87050;         border-color: rgba(232,112,80,.3); }
+.rec-btn.yt:hover  { background: rgba(232,112,80,.08); }
+.rec-btn.soon   { color: var(--texto3);   border-color: var(--borde2);     pointer-events: none; opacity: .6; }
+
+/* Bloom en esquina */
+.tema-card-right { padding-top: 2px; }
+
+/* ══════════════════════════════════════
+   TUNING BADGE
+══════════════════════════════════════ */
+.tuning {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(80,200,160,.3);
+  background: rgba(80,200,160,.07);
+  color: #50c8a0;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.tuning-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+/* ══════════════════════════════════════
+   MALLA CURRICULAR
+══════════════════════════════════════ */
+.malla-section {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 48px 56px;
+}
+
+.malla-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.malla-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--azul);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--azul-b);
+  background: var(--azul-s);
+  padding: 8px 18px;
+  border-radius: 6px;
+  margin-top: 16px;
+  transition: all .15s;
+}
+
+.malla-toggle-btn:hover { background: var(--azul-m); }
+
+.malla-toggle-btn .arrow {
+  transition: transform .2s;
+  font-size: 10px;
+}
+
+.malla-toggle-btn.open .arrow { transform: rotate(90deg); }
+
+.malla-tabla-wrap {
+  display: none;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.malla-tabla-wrap.open { display: block; }
+
+.malla-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.malla-tabla th {
+  background: var(--bg4);
+  color: var(--texto2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde2);
+}
+
+.malla-tabla th:not(:first-child) { text-align: center; }
+
+.malla-tabla td {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto2);
+}
+
+.malla-tabla td:not(:first-child) {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto3);
+}
+
+.malla-tabla tr:hover td { background: var(--bg3); }
+
+.malla-tabla .area-row td {
+  background: var(--bg3);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--texto3);
+  font-family: var(--font-mono);
+  padding: 6px 16px;
+  border-top: 1px solid var(--borde2);
+}
+
+.malla-tabla tr.destacado td:first-child {
+  color: var(--naranja);
+  font-weight: 600;
+  position: relative;
+  padding-left: 24px;
+}
+
+.malla-tabla tr.destacado td:first-child::before {
+  content: '★';
+  position: absolute;
+  left: 8px;
+  color: var(--naranja);
+  font-size: 10px;
+}
+
+.malla-tabla tr.destacado td:not(:first-child) {
+  color: var(--naranja);
+  font-weight: 700;
+}
+
+.malla-tabla .total-row td {
+  background: var(--bg4);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--texto);
+  border-top: 1px solid var(--borde2);
+}
+
+.malla-tabla .total-row td:not(:first-child) {
+  color: var(--azul);
+}
+
+.malla-nota {
+  font-size: 12px;
+  color: var(--texto3);
+  margin-top: 12px;
+  font-family: var(--font-mono);
+}
+
+/* ══════════════════════════════════════
+   TUNING LEYENDA
+══════════════════════════════════════ */
+.tuning-leyenda {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 0 56px 0;
+  max-width: calc(1080px - 112px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+.tuning-leyenda-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #50c8a0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.tuning-leyenda-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px;
+}
+
+.tl-item-leyenda {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.5;
+}
+
+.tl-item-leyenda .tuning {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ══════════════════════════════════════
+   BLOOM LEYENDA
+══════════════════════════════════════ */
+.bloom-leyenda {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 0 56px 32px;
+  max-width: calc(1080px - 112px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bloom-leyenda-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.bloom-leyenda-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 800px) {
+  .aprendiendo-hero { padding: 40px 20px 32px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-char { display: none; }
+  .rutas-nav { padding: 0 16px; }
+  .ruta-intro { grid-template-columns: 1fr; padding: 28px 20px 16px; }
+  .ruta-intro-char { display: none; }
+  .temas-container { padding: 0 20px 48px; }
+  .bloom-leyenda { margin: 0 20px 24px; max-width: none; }
+  .tema-card { grid-template-columns: 1fr; gap: 10px; }
+  .tema-card-right { order: -1; }
+  .tema-card-left { flex-direction: row; align-items: center; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="aprendiendo-hero">
+  <div class="hero-inner">
+    <div>
+      <span class="kicker azul">// zona 02 · rutas de aprendizaje</span>
+      <h1 class="titulo-h1 mt-8">Estoy aprendiendo</h1>
+      <p class="desc mt-12">
+        El material organizado por <strong style="color:var(--texto)">tema</strong>, no por número de clase.
+        Cada tema muestra su nivel Bloom, los recursos disponibles y el curso al que corresponde.
+        Elige la ruta que necesites hoy.
+      </p>
+      <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
+        <span class="tag tag-naranja">★ Algorítmica 2 y 3</span>
+        <span class="tag tag-naranja">★ Laboratorio 1, 2 y 3</span>
+        <span class="tag tag-azul">Lenguajes</span>
+        <span class="tag tag-azul">Presencia Web</span>
+        <span class="tag tag-violeta">IA aplicada</span>
+      </div>
+    </div>
+    <div class="hero-char">
+      <img src="img/bit_trabajando.png" alt="Bit trabajando">
+    </div>
+  </div>
+</div>
+
+<!-- MALLA CURRICULAR -->
+<div class="malla-section">
+  <div class="malla-inner">
+    <span class="kicker azul">// Plan de estudios oficial · Mayo 2026</span>
+    <h2 class="titulo-h2 mt-8">Malla curricular del BATIN</h2>
+    <p class="desc mt-8">Bachillerato Técnico en Servicios — Especialidad Informática. Las asignaturas marcadas con ★ tienen material disponible en este sitio.</p>
+    <button class="malla-toggle-btn" id="malla-btn" onclick="toggleMalla()">
+      <span>Ver / ocultar plan de estudios completo</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="malla-tabla-wrap" id="malla-tabla">
+      <table class="malla-tabla">
+        <thead>
+          <tr>
+            <th>Disciplina</th>
+            <th>1.er Curso</th>
+            <th>2.do Curso</th>
+            <th>3.er Curso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="area-row"><td colspan="4">Lengua y Literatura y sus Tecnologías</td></tr>
+          <tr><td>Lengua Castellana y Literatura</td><td>5</td><td>5</td><td>4</td></tr>
+          <tr><td>Guaraní Ñe'ẽ</td><td>2</td><td>4</td><td>—</td></tr>
+          <tr><td>Lengua Extranjera</td><td>2</td><td>4</td><td>—</td></tr>
+          <tr class="area-row"><td colspan="4">Ciencias Básicas y sus Tecnologías</td></tr>
+          <tr><td>Ciencias Naturales y Salud</td><td>2</td><td>2</td><td>2</td></tr>
+          <tr><td>Física</td><td>2</td><td>4</td><td>—</td></tr>
+          <tr><td>Química</td><td>2</td><td>4</td><td>—</td></tr>
+          <tr class="area-row"><td colspan="4">Matemática y sus Tecnologías</td></tr>
+          <tr><td>Matemática</td><td>3</td><td>3</td><td>3</td></tr>
+          <tr class="area-row"><td colspan="4">Ciencias Sociales y sus Tecnologías</td></tr>
+          <tr><td>Historia y Geografía</td><td>2</td><td>2</td><td>2</td></tr>
+          <tr><td>Economía y Gestión</td><td>—</td><td>—</td><td>4</td></tr>
+          <tr><td>Formación Ética y Ciudadana</td><td>2</td><td>—</td><td>—</td></tr>
+          <tr><td>Educación para la Seguridad Vial</td><td>—</td><td>2</td><td>—</td></tr>
+          <tr><td>Psicología</td><td>—</td><td>—</td><td>4</td></tr>
+          <tr><td>Sociología y Antropología Cultural</td><td>2</td><td>—</td><td>—</td></tr>
+          <tr class="area-row"><td colspan="4">Educación Física y sus Tecnologías</td></tr>
+          <tr><td>Educación Física</td><td>2</td><td>2</td><td>2</td></tr>
+          <tr class="area-row"><td colspan="4">Desarrollo Personal y Social</td></tr>
+          <tr><td>Orientación Educacional y Sociolaboral</td><td>2</td><td>—</td><td>2</td></tr>
+          <tr class="area-row"><td colspan="4">Técnica y Tecnológica ★</td></tr>
+          <tr><td>Dibujo Técnico</td><td>2</td><td>—</td><td>—</td></tr>
+          <tr class="destacado"><td>Gabinete de Informática — Laboratorio</td><td>8</td><td>6</td><td>12</td></tr>
+          <tr><td>Gabinete de Informática — Software</td><td>2</td><td>2</td><td>—</td></tr>
+          <tr class="destacado"><td>Gabinete de Informática — Hardware</td><td>—</td><td>4</td><td>—</td></tr>
+          <tr class="destacado"><td>Algorítmica</td><td>4</td><td>4</td><td>4</td></tr>
+          <tr><td>Administración Financiera</td><td>—</td><td>2</td><td>4</td></tr>
+          <tr><td>Matemática Aplicada a la Informática</td><td>3</td><td>3</td><td>3</td></tr>
+          <tr class="area-row"><td colspan="4">Plan Optativo</td></tr>
+          <tr><td>Abiertos a la decisión de los actores locales</td><td>—</td><td>—</td><td>5</td></tr>
+          <tr class="total-row">
+            <td>TOTAL horas semanales</td>
+            <td>47</td><td>53</td><td>51</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="malla-nota">★ Asignaturas con material disponible en este sitio · Resolución N.º 2141/2016 · Actualización Mayo 2026 · MEC Paraguay</p>
+    </div>
+  </div>
+</div>
+
+<!-- TUNING LEYENDA -->
+<div class="tuning-leyenda" style="margin-top:28px">
+  <div class="tuning-leyenda-titulo">// Competencias Tuning — Informática · las verás en cada tema</div>
+  <div class="tuning-leyenda-grid">
+    <div class="tl-item-leyenda"><span class="tuning">T1</span> Aplicar conocimiento de ciencias de la computación y TI</div>
+    <div class="tl-item-leyenda"><span class="tuning">T2</span> Concebir, diseñar, desarrollar y operar soluciones informáticas</div>
+    <div class="tl-item-leyenda"><span class="tuning">T3</span> Aplicar enfoque sistémico en análisis y resolución de problemas</div>
+    <div class="tl-item-leyenda"><span class="tuning">T4</span> Aplicar fundamentos matemáticos y principios algorítmicos</div>
+    <div class="tl-item-leyenda"><span class="tuning">T5</span> Desempeñar roles en proyectos informáticos multidisciplinarios</div>
+    <div class="tl-item-leyenda"><span class="tuning">T6</span> Aplicar conocimiento en forma independiente e innovadora</div>
+    <div class="tl-item-leyenda"><span class="tuning">T7</span> Identificar oportunidades de mejora en organizaciones con TI</div>
+    <div class="tl-item-leyenda"><span class="tuning">T8</span> Liderar procesos de incorporación y adaptación de soluciones</div>
+    <div class="tl-item-leyenda"><span class="tuning">T9</span> Aplicar estándares de calidad en desarrollo de soluciones</div>
+    <div class="tl-item-leyenda"><span class="tuning">T10</span> Comprender conceptos éticos, legales, económicos y financieros</div>
+    <div class="tl-item-leyenda"><span class="tuning">T11</span> Liderar emprendimientos en productos y servicios informáticos</div>
+    <div class="tl-item-leyenda"><span class="tuning">T12</span> Aplicar metodologías de investigación en soluciones informáticas</div>
+  </div>
+</div>
+
+<!-- BLOOM LEYENDA -->
+<div class="bloom-leyenda" style="margin-top:12px">
+  <div class="bloom-leyenda-titulo">// Taxonomía de Bloom — niveles cognitivos</div>
+  <div class="bloom-leyenda-items">
+    <span class="bloom bloom-n1">N1 · Recordar</span>
+    <span class="bloom bloom-n2">N2 · Comprender</span>
+    <span class="bloom bloom-n3">N3 · Aplicar</span>
+    <span class="bloom bloom-n4">N4 · Analizar</span>
+    <span class="bloom bloom-n5">N5 · Evaluar</span>
+    <span class="bloom bloom-n6">N6 · Crear</span>
+  </div>
+</div>
+
+<!-- RUTAS NAV -->
+<div class="rutas-nav">
+  <button class="ruta-btn act" onclick="showRuta('algoritmica',this)">📐 Ruta Algorítmica</button>
+  <button class="ruta-btn" onclick="showRuta('ofimatica',this)">📊 Ruta Ofimática y Datos</button>
+  <button class="ruta-btn" onclick="showRuta('programacion',this)">💻 Ruta Programación</button>
+  <button class="ruta-btn" onclick="showRuta('sistemas',this)">🗄️ Ruta Sistemas y BD</button>
+  <button class="ruta-btn" onclick="showRuta('web',this)">🌐 Ruta Web e IA</button>
+</div>
+
+<!-- ══════ RUTA ALGORÍTMICA ══════ -->
+<div id="ruta-algoritmica" class="ruta-panel act">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker">// Algorítmica · 2do y 3er curso · 4 h/sem</span>
+      <h2 class="titulo-h2 mt-8">Ruta Algorítmica</h2>
+      <p class="desc mt-8">
+        El eje central de la especialidad. Desarrolla el pensamiento lógico-matemático
+        para la resolución de problemas. Se profundiza progresivamente:
+        pseudocódigo y diagramas en 2do, estructuras de datos avanzadas en 3ro.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/gatiel_idea.png" alt="Gatiel con idea">
+    </div>
+  </div>
+
+  <div class="temas-container">
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Algorítmica 2 — fundamentos y estructuras básicas</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Primeros pasos — lógica estructurada</h4>
+          <p>Variables, tipos de datos, operadores aritméticos y relacionales. El punto de partida de todo pensamiento algorítmico.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1LXhSeOfziwVc_k00RjEgCrs-YVX4p4Tu/preview" target="_blank" class="rec-btn pdf">📄 Primeros pasos</a>
+            <a href="https://drive.google.com/file/d/1RaRRRw3Mn45E63kLd6Ky401PLRlxOaF_/preview" target="_blank" class="rec-btn pdf">📄 Operadores</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Algoritmos — pseudocódigo y diagramas de flujo</h4>
+          <p>Concepto de algoritmo. Escritura en pseudocódigo. Representación visual con diagramas de flujo. Símbolos y flujo lógico.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1n_l-UJLAyCKDZCDLS7Cm94GjfJw4PdZV/preview" target="_blank" class="rec-btn pdf">📄 Algoritmos</a>
+            <a href="https://drive.google.com/file/d/1hH636d7stnKI7AYa24ya7PItSlSFpGaL/preview" target="_blank" class="rec-btn pdf">📄 Arquitectura algorítmica</a>
+            <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank" class="rec-btn pdf">📄 Diagramas p1</a>
+            <a href="https://drive.google.com/file/d/1V7KSg9f8xDEkn37jNAFy78ORLX3nJPz9/preview" target="_blank" class="rec-btn pdf">📄 Diagramas p2</a>
+            <a href="https://pseint.sourceforge.net/" target="_blank" class="rec-btn web">🔗 PseInt</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Estructuras condicionales</h4>
+          <p>IF-ELSE simple, compuesto y múltiple. Operadores lógicos AND, OR, NOT. Detección de errores lógicos en condiciones.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1eOU5-eI_gYp7oNXsfzMiBDpWXKUGqLiG/preview" target="_blank" class="rec-btn pdf">📄 Condiciones p1</a>
+            <a href="https://drive.google.com/file/d/1fCUQL6HqnucszsGeTylLjOwxSoITZz66/preview" target="_blank" class="rec-btn pdf">📄 Condiciones p2</a>
+            <a href="https://drive.google.com/file/d/1Xc0pyooywWTcUR4Jv8iXbL4n21JO6dWZ/preview" target="_blank" class="rec-btn pdf">📄 Pseudocódigos</a>
+            <a href="https://drive.google.com/file/d/16ZFhlpOvSRgEsiHxiAd9ILibNHB8RL35/preview" target="_blank" class="rec-btn pdf">📄 Ejercicios repaso</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Ciclos repetitivos — FOR y WHILE</h4>
+          <p>Estructuras repetitivas. Contadores y acumuladores. Banderas. Control de condición de salida. Ciclo MIENTRAS especial.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1R4kVD-LceQfR26dAZ4PD1aUGoVGG9IfX/preview" target="_blank" class="rec-btn pdf">📄 Ciclos repetitivos</a>
+            <a href="https://drive.google.com/file/d/1UABe7A0M-WDxHYZknQqvLdD5UyN8DaaE/preview" target="_blank" class="rec-btn pdf">📄 Ciclo Mientras</a>
+            <a href="https://drive.google.com/file/d/1fwQ1UI49GJFpwjsbB9p0Z-xEY2ANa-23/preview" target="_blank" class="rec-btn pdf">📄 Repaso</a>
+            <a href="ejercicios/lab2-mientras-ejercicios.html" target="_blank" class="rec-btn web">⚡ Ejercicios interactivos</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Arreglos — vectores y matrices</h4>
+          <p>Arrays unidimensionales: declaración, recorrido, búsqueda. Arrays bidimensionales: tablas, diagonales, posiciones especiales.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1v_w7oDJYDME3dUZbL3dyr5-aHn6w7sCM/preview" target="_blank" class="rec-btn pdf">📄 Arreglos</a>
+            <a href="https://drive.google.com/file/d/1RY9hp3LHY-ZuWDVu8OzGrKt_Ldn1745f/preview" target="_blank" class="rec-btn pdf">📄 Matrices</a>
+            <a href="https://drive.google.com/file/d/1MKvMRqYxMxuEDl3RxrwZErl37-e86gGw/preview" target="_blank" class="rec-btn pdf">📄 Matriz cuadrada</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Algorítmica 3 — estructuras de datos avanzadas</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Estructuras de datos — introducción y clasificación</h4>
+          <p>Tipos de datos estructurados. Diferencia entre estructuras estáticas y dinámicas. Costo de operaciones. Introducción a Java como lenguaje de implementación.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Estructura de Datos</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Intro Java + Pseudocódigo</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Arrays en Java — uni y multidimensionales</h4>
+          <p>Arreglos en Java. Recorridos, búsqueda, validación de límites. La lógica no cambia — cambia la sintaxis.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Mastering Arrays</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Soluciones</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Array Java</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Estructura lógica Java</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Listas enlazadas, Pilas y Colas</h4>
+          <p>Estructuras dinámicas: nodos, punteros, encadenamiento. Comportamiento LIFO (Pila) y FIFO (Cola). Aplicaciones prácticas y ejercicios de fijación.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Listas enlazadas</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Ejercicios fijación</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Repaso pre-parcial</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Grafos — estructuras no lineales</h4>
+          <p>Conceptos iniciales. Tipos de grafos. Representaciones: matriz de adyacencia y lista de adyacencias. Aplicaciones en redes y mapas.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Grafos p1</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Grafos p2</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Lista adyacencias</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Aplicar enfoque sistémico en análisis y resolución de problemas">T3</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n5">N4→N6</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Árboles — generales, binarios y de búsqueda (ABB)</h4>
+          <p>Árbol como grafo conexo y acíclico. Árboles binarios: recorridos inorden, preorden, postorden. ABB: inserción y búsqueda. Transformación árbol general → binario.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Árboles generales</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Árboles binarios</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 ABB búsqueda</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Inserción en ABB</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n5">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Calendarización de proyectos de software</h4>
+          <p>Técnicas para estimar y planificar tiempos. PERT/CPM. Cálculo de fechas de finalización. Credibilidad y cumplimiento en el desarrollo de sistemas.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Calendarización</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Desempeñar roles en proyectos informáticos multidisciplinarios">T5</span>
+            <span class="tuning" title="Aplicar estándares de calidad en desarrollo de soluciones">T9</span>
+            <span class="tuning" title="Identificar oportunidades de mejora con TI">T7</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════ RUTA OFIMÁTICA Y DATOS ══════ -->
+<div id="ruta-ofimatica" class="ruta-panel">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker">// Laboratorio 1 · 1er curso · 8 h/sem</span>
+      <h2 class="titulo-h2 mt-8">Ruta Ofimática y Datos</h2>
+      <p class="desc mt-8">
+        Herramientas digitales con propósito real. Planillas electrónicas, procesador de textos
+        y presentaciones — usadas como un técnico en informática, no como un usuario casual.
+        Una empresa puede ir a la quiebra si alguien presenta mal sus datos.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/techi_estudiando.png" alt="Techi estudiando">
+    </div>
+  </div>
+
+  <div class="temas-container">
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Planillas electrónicas — Excel / Google Sheets</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Estructura y organización de datos</h4>
+          <p>Interfaz, celdas, filas, columnas. Organización de datos en tablas. Tipos de datos. Formato básico.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1fGGypFhQ-FhFrwL3sDOdSycVIrV5bXaG/preview" target="_blank" class="rec-btn pdf">📄 Planillas</a>
+            <a href="https://drive.google.com/file/d/1onDLHjQ92sZguy_Ts7M8fqxmcnL5ZoCt/preview" target="_blank" class="rec-btn pdf">📄 Material apoyo teórico</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+            <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Fórmulas y operadores</h4>
+          <p>Operadores aritméticos, relacionales y lógicos. SUMA, PROMEDIO, MAX, MIN. Referencias relativas y absolutas. Regla de 3.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1RLT6semQwQdAGT1bEdiAVTCoCHLfpiWu/preview" target="_blank" class="rec-btn pdf">📄 Operadores aritméticos</a>
+            <a href="https://drive.google.com/file/d/1hqWnAbHBxu9GCt83cizRZetGAfVPKYex/preview" target="_blank" class="rec-btn pdf">📄 Operadores relación</a>
+            <a href="https://drive.google.com/file/d/1_OtNFHU3xEh0PVrdw_G1vnLf3YPZJRqH/preview" target="_blank" class="rec-btn pdf">📄 Funciones resumen</a>
+            <a href="https://drive.google.com/file/d/1ZrKz_gtuhBYr4qeBQ-ydALuJ7AkTeH44/preview" target="_blank" class="rec-btn pdf">📄 Función CONTAR</a>
+            <a href="https://drive.google.com/file/d/1-Pfev-XG0HCu3aLm8qB1rYpLghIXsDqh/preview" target="_blank" class="rec-btn pdf">📄 Regla de 3</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Función SI y condiciones lógicas</h4>
+          <p>Función SI simple y anidada. CONTAR.SI, SUMAR.SI. Automatización de decisiones con condiciones lógicas.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/12bxloGoT_JHIWsd6m3At4xjYixzmrRtS/preview" target="_blank" class="rec-btn pdf">📄 Condiciones lógicas</a>
+            <a href="https://drive.google.com/file/d/1WM08xz5VhIPdxwTYlA8hcwioG6W_IrPj/preview" target="_blank" class="rec-btn pdf">📄 Material repaso</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N4→N5</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Ejercicios integradores — casos reales</h4>
+          <p>Planilla de RR.HH. Presupuestos. Casos que combinan múltiples funciones. La diferencia entre usar Excel y dominar Excel.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1iqXaa9cqciBcLwFwTXYCqfhQZkofPR8E/preview" target="_blank" class="rec-btn pdf">📄 Consigna EG1</a>
+            <a href="https://drive.google.com/file/d/107qCqs-PCeJWLO86Ex6teoxrt1XWecSX/preview" target="_blank" class="rec-btn pdf">📄 Planilla RRHH</a>
+            <a href="https://drive.google.com/file/d/1HRzA2_gQv0uHjaFW3nioi8GYPgzZWXWi/preview" target="_blank" class="rec-btn pdf">📄 Ejercicios integradores</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Procesador de textos — Word / Google Docs</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Word — documentos con estructura profesional</h4>
+          <p>Estilos de texto, plantillas, encabezados y pies de página. Tablas, columnas, índice automático. Documentos que se leen y se entienden.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1lIutOHCDML4f70qrfnWClW1cQmBf24wf/preview" target="_blank" class="rec-btn pdf">📄 MS Word</a>
+            <a href="https://drive.google.com/file/d/1xX-5Noe_pnnKQ7PRdYRaM50oaWhjMUGS/preview" target="_blank" class="rec-btn pdf">📄 Plantillas Word</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N2→N4</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Presentaciones digitales efectivas</h4>
+          <p>Diseño de diapositivas. Jerarquía visual. Uso correcto de gráficos e imágenes. La diferencia entre una presentación que informa y una que confunde.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1JmLGbpYyA29LIHc-fJ0PbeAo-ekEbJ_O/preview" target="_blank" class="rec-btn pdf">📄 Presentaciones</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Identidad digital y seguridad</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Identidad digital y peligros de Internet</h4>
+          <p>Qué es la identidad digital. Huella digital. Peligros reales en la red. Responsabilidad como técnico en informática desde el primer día.</p>
+          <div class="tema-recursos">
+            <a href="https://drive.google.com/file/d/1j6AGq8zLGBvL0bPHNGbcGvhyscSZ30fE/preview" target="_blank" class="rec-btn pdf">📄 Identidad digital</a>
+            <a href="https://drive.google.com/file/d/1UBeJ64OiP3sUxM9E2f2xgYYXgjl149rG/preview" target="_blank" class="rec-btn pdf">📄 Peligros de Internet</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ RUTA PROGRAMACIÓN ══════ -->
+<div id="ruta-programacion" class="ruta-panel">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker">// Laboratorio 2 · 2do curso · Python → Java</span>
+      <h2 class="titulo-h2 mt-8">Ruta Programación</h2>
+      <p class="desc mt-8">
+        De la lógica al código. Primero Python para construir intuición algorítmica —
+        un lenguaje que perdona errores y permite pensar. Luego Java para implementar
+        sistemas reales con orientación a objetos.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/techi_trabajando.png" alt="Techi programando">
+    </div>
+  </div>
+
+  <div class="temas-container">
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Lenguajes y paradigmas</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Lenguajes de programación — ¿cuál y por qué?</h4>
+          <p>Clasificación de lenguajes. Compilado vs. interpretado. Paradigmas: imperativo, declarativo, orientado a objetos, funcional. Cómo elegir el lenguaje correcto para cada tarea.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/laboratorio-2" target="_blank" class="rec-btn pdf">📄 Lenguajes · Serie 2026</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/laboratorio-2" target="_blank" class="rec-btn pdf">📄 Infografías paradigmas</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Python — intuición algorítmica</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Python — fundamentos del lenguaje</h4>
+          <p>Variables, tipos de datos, operadores. Entrada y salida. Primeros programas. ¿Por qué Python antes que Java?</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 ¿Con qué lenguaje empezar?</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Nivel 1 · Python</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Condicionales y bucles en Python</h4>
+          <p>IF-ELIF-ELSE en Python. Bucles FOR y WHILE. Diferencias sintácticas con el pseudocódigo. Ejercitarios progresivos.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Nivel 2 · Condicionales</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Nivel 3 · Bucles FOR</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Nivel 3 · Bucles WHILE</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Ejercitario 1</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Ejercitario 2</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N4→N5</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Python avanzado — misiones y estructuras</h4>
+          <p>Funciones, listas, diccionarios. Misiones gamificadas con propósito real. De teorías a códigos. Proyecto ICIENTEC como destino.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Misiones Mágicas</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 De teorías a códigos</a>
+            <a href="https://sites.google.com/view/profe-danfer/2do-batin/python" target="_blank" class="rec-btn pdf">📄 Nivel 5 · Estructuras</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Java — el puente y la llegada</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">2do→3ro</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>De Python a Java — la traducción</h4>
+          <p>La lógica no cambia — cambia la sintaxis. Traducción de pseudocódigo y Python a Java. Tipos estáticos, llaves, punto y coma. Primeros programas en Java.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Introd. Java · Traducción</a>
+            <a href="https://netbeans.apache.org/" target="_blank" class="rec-btn web">🔗 NetBeans IDE</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Java — estructuras, condicionales y métodos</h4>
+          <p>IF-ELSE, FOR, WHILE en Java. Arrays unidimensionales y bidimensionales. Funciones con parámetros y retorno. Sintaxis específica y atajos del lenguaje.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Java parte 1</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Java parte 2</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Java parte 3</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Matrices en Java</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ RUTA SISTEMAS Y BD ══════ -->
+<div id="ruta-sistemas" class="ruta-panel">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker">// Laboratorio 3 · 3er curso · 12 h/sem</span>
+      <h2 class="titulo-h2 mt-8">Ruta Sistemas y Bases de Datos</h2>
+      <p class="desc mt-8">
+        El nivel más avanzado. Aquí se diseñan y construyen sistemas reales:
+        modelado de datos, normalización, SQL, POO con Java y conexión a base de datos.
+        El resultado es un sistema que funciona, no solo un ejercicio.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/bit_explicando.png" alt="Bit explicando">
+    </div>
+  </div>
+
+  <div class="temas-container">
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Ciclo de vida y análisis de sistemas</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Ciclo de vida del software y sistemas de información</h4>
+          <p>Qué es un sistema informático. Etapas del ciclo de vida. Datos vs. información. Sistemas de información en organizaciones reales.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Repaso + Datos</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Cómo crear BD en Excel</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Sistema de Información</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Ciclo de vida</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Calendarización proyectos</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Modelado y normalización</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n5">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Modelado de datos — Entidad Relación</h4>
+          <p>Entidades, atributos, relaciones. Claves primarias y foráneas. DER completo. Integridad referencial. Del mundo real al sistema.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Modelado: Entidades</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Arquitectura datos</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Data Blueprint</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 MER-DER</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 DB Modeling Essentials</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n5">N4→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Normalización — 1FN, 2FN, 3FN</h4>
+          <p>Dependencias funcionales. Proceso de normalización hasta tercera forma normal. Sin redundancias, sin anomalías, sin inconsistencias.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Solo normalización · teoría</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Normalización · fijemos</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Revisión tareas C2 y C3</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Bases de datos relacionales y SQL</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N3→N4</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Bases de datos relacionales — fundamentos</h4>
+          <p>Modelo relacional. Tablas, registros, campos. Relaciones entre tablas. Herramienta SQLite para práctica. Manual de referencia MySQL.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 BD relacionales</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Libro intro BD</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Ref. MySQL</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>SQL — DDL y DML completo</h4>
+          <p>CREATE TABLE, ALTER, DROP. INSERT, UPDATE, DELETE. SELECT con WHERE, JOIN, GROUP BY. SQLite portable para práctica sin instalación.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 SQL: Crear, Insertar, Consultar</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 SQL UPDATE</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 SQL DELETE</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Misión SQL Comic</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Ejercicios SQLite</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Lab SQL SQLite Portable</a>
+            <a href="ejercicios/lab-sql-sqlite-2026.html" target="_blank" class="rec-btn web">⚡ Lab SQLite interactivo</a>
+            <a href="ejercicios/lab-sql-biblioteca.html" target="_blank" class="rec-btn web">🗄️ Lab SQL Biblioteca</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+            <span class="tuning" title="Aplicar estándares de calidad en desarrollo de soluciones">T9</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">POO con Java y proyecto integrador</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n6">N5→N6</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Programación Orientada a Objetos — POO</h4>
+          <p>Clases, objetos, encapsulamiento, abstracción, herencia, polimorfismo. Manejo de excepciones. Diseño orientado a objetos en Java.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Introducción Java</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Java p2</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Java p3</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Matrices Java</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+            <span class="tuning" title="Aplicar estándares de calidad en desarrollo de soluciones">T9</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n6">N5→N6</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Caso integrador — Java + Base de datos</h4>
+          <p>Proyecto completo: normalización → DER → SQL → Java. Caso ICIENTEC 2025 como referencia. El sistema que construye el técnico.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Caso ICIENTEC BD 2025</a>
+            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/laboratorio-3" target="_blank" class="rec-btn pdf">📄 Ejercicios fijación SQL</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar estándares de calidad en desarrollo de soluciones">T9</span>
+            <span class="tuning" title="Desempeñar roles en proyectos informáticos multidisciplinarios">T5</span>
+            <span class="tuning" title="Aplicar metodologías de investigación en soluciones">T12</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ RUTA WEB E IA ══════ -->
+<div id="ruta-web" class="ruta-panel">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker">// Presencia Web · IA aplicada · 1ro, 2do y 3ro</span>
+      <h2 class="titulo-h2 mt-8">Ruta Web e IA</h2>
+      <p class="desc mt-8">
+        Dos tecnologías que definen el presente: la web como espacio de presencia profesional,
+        y la IA como herramienta que hay que saber usar con criterio.
+        Juntas forman al técnico del siglo XXI.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/techi_idea.png" alt="Techi con idea">
+    </div>
+  </div>
+
+  <div class="temas-container">
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Presencia Web — HTML, CSS y publicación</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N1→N3</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>HTML — estructura de páginas web</h4>
+          <p>Lenguaje de marcación. Etiquetas, atributos, estructura semántica. Hipervínculos, imágenes, tablas, formularios, marcos.</p>
+          <div class="tema-recursos">
+            <a href="https://developer.mozilla.org/es/docs/Web/HTML" target="_blank" class="rec-btn web">🔗 MDN Web Docs</a>
+            <a href="https://www.w3schools.com/html/" target="_blank" class="rec-btn web">🔗 W3Schools HTML</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
+            <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
+            <span class="tuning" title="Identificar oportunidades de mejora con TI">T7</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n3">N2→N4</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>CSS — estilo, diseño y presentación</h4>
+          <p>Selectores, modelo de cajas, posicionamiento, flexbox, colores y tipografía. Hacer que las páginas comuniquen, no solo que funcionen.</p>
+          <div class="tema-recursos">
+            <a href="https://developer.mozilla.org/es/docs/Web/CSS" target="_blank" class="rec-btn web">🔗 MDN CSS</a>
+            <a href="https://www.w3schools.com/css/" target="_blank" class="rec-btn web">🔗 W3Schools CSS</a>
+            <a href="https://flexboxfroggy.com/#es" target="_blank" class="rec-btn web">🔗 Flexbox Froggy (práctica)</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Hosting y publicación web</h4>
+          <p>Qué es el hosting. Referencias absolutas y relativas. Publicar un sitio web real. Estándares, mantenimiento y responsabilidad del técnico.</p>
+          <div class="tema-recursos">
+            <a href="https://sites.google.com/view/profe-danfer/1ro-batin" target="_blank" class="rec-btn pdf">📄 Ver material en sitio</a>
+            <a href="https://pages.github.com/" target="_blank" class="rec-btn web">🔗 GitHub Pages</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">IA aplicada — tres niveles progresivos</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n2">N2→N3</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>Alfabetización en IA — límites y criterio</h4>
+          <p>Cómo funciona la IA. Alucinaciones, sesgos, limitaciones. Escritura de prompts efectivos: roles, contexto, público objetivo, formato. Curación de información antes de usarla.</p>
+          <div class="tema-recursos">
+            <span class="rec-btn soon">🕐 En construcción · 2026</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">2do curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>IA como herramienta de desarrollo</h4>
+          <p>Copilot, Claude y ChatGPT para código. Generar, depurar y documentar. Cuándo usarla y cuándo no. Integración con proyectos ICIENTEC.</p>
+          <div class="tema-recursos">
+            <span class="rec-btn soon">🕐 En construcción · 2026</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n5">N5→N6</span>
+          <span class="tema-curso-badge">3er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>IA crítica — sesgos, impacto y responsabilidad</h4>
+          <p>¿Qué le estamos enseñando al sistema? Decisiones técnicas con consecuencias éticas. El técnico como responsable de lo que su código produce.</p>
+          <div class="tema-recursos">
+            <a href="el-sistema.html#ia-critica" class="rec-btn pdf">📄 Ver en El Sistema</a>
+          </div>
+          <div class="tuning-grupo">
+            <span class="tuning" title="Comprender conceptos éticos, legales, económicos y financieros">T10</span>
+            <span class="tuning" title="Aplicar metodologías de investigación en soluciones">T12</span>
+            <span class="tuning" title="Aplicar conocimiento en forma independiente e innovadora">T6</span>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="batin-footer"></div>
+<script src="batin.js"></script>
+<script>
+function showRuta(id, btn) {
+  document.querySelectorAll('.ruta-btn').forEach(b => b.classList.remove('act'));
+  document.querySelectorAll('.ruta-panel').forEach(p => p.classList.remove('act'));
+  btn.classList.add('act');
+  document.getElementById('ruta-' + id).classList.add('act');
+  window.scrollTo({ top: document.querySelector('.rutas-nav').offsetTop - 60, behavior: 'smooth' });
+}
+
+function toggleMalla() {
+  const tabla = document.getElementById('malla-tabla');
+  const btn   = document.getElementById('malla-btn');
+  tabla.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+</script>
+</body>
+</html>

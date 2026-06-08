@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estoy dejando huella · BATIN · profe.DanFer</title>
+<meta name="description" content="Producciones destacadas, defensas, galería de proyectos y legado de promociones. Este espacio está esperando tu proyecto.">
+<link rel="stylesheet" href="batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.huella-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 56px 56px 48px;
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+}
+
+.huella-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(155,107,255,.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 80%, var(--naranja-s) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 20%, var(--azul-s) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Partículas decorativas */
+.huella-hero::after {
+  content: '★ ★ ★ ★ ★';
+  position: absolute;
+  bottom: 20px;
+  right: 56px;
+  font-size: 11px;
+  color: var(--naranja-b);
+  letter-spacing: 8px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-char img {
+  width: 240px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 28px var(--naranja-s));
+  animation: floatHero 5s ease-in-out infinite;
+}
+
+@keyframes floatHero {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.01); }
+}
+
+/* Frase eje grande */
+.hero-frase-grande {
+  font-family: var(--font-title);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--naranja);
+  margin-top: 20px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--naranja);
+  padding-left: 18px;
+}
+
+.hero-frase-sub {
+  font-size: 14px;
+  color: var(--texto3);
+  padding-left: 21px;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════
+   SECCIÓN VACÍA — PLACEHOLDER ELEGANTE
+══════════════════════════════════════ */
+.huella-section {
+  padding: 56px 56px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* Card de espacio vacío esperando contenido */
+.espacio-vacio {
+  background: var(--bg3);
+  border: 1.5px dashed var(--borde2);
+  border-radius: var(--r2);
+  padding: 48px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s;
+  margin-bottom: 20px;
+}
+
+.espacio-vacio::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, var(--naranja-s) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+
+.espacio-vacio:hover { border-color: var(--naranja-b); }
+.espacio-vacio:hover::before { opacity: 1; }
+
+.ev-char {
+  margin-bottom: 16px;
+}
+
+.ev-char img {
+  width: 100px;
+  object-fit: contain;
+  opacity: .85;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+}
+
+.ev-titulo {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texto2);
+  margin-bottom: 10px;
+}
+
+.ev-desc {
+  font-size: 14px;
+  color: var(--texto3);
+  max-width: 520px;
+  margin: 0 auto 20px;
+  line-height: 1.75;
+}
+
+.ev-desc strong { color: var(--naranja); }
+
+.ev-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px dashed var(--borde3);
+  color: var(--texto3);
+  display: inline-block;
+}
+
+/* ══════════════════════════════════════
+   GRID DE PLACEHOLDERS
+══════════════════════════════════════ */
+.huella-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.huella-card-vacia {
+  background: var(--bg3);
+  border: 1.5px dashed var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 22px;
+  text-align: center;
+  transition: all .2s;
+  position: relative;
+}
+
+.huella-card-vacia:hover {
+  border-color: var(--naranja-b);
+  background: var(--bg4);
+}
+
+.hcv-icon { font-size: 28px; margin-bottom: 12px; opacity: .5; }
+
+.hcv-titulo {
+  font-family: var(--font-title);
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--texto3);
+  margin-bottom: 6px;
+}
+
+.hcv-desc {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.6;
+  opacity: .7;
+}
+
+.hcv-año {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--borde3);
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+
+/* Badge "próximamente" */
+.badge-pronto {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg4);
+  border: 1px solid var(--borde2);
+  color: var(--texto3);
+}
+
+/* ══════════════════════════════════════
+   MENSAJE DE LA PROFE
+══════════════════════════════════════ */
+.mensaje-profe {
+  background: var(--bg2);
+  border-top: 1px solid var(--borde);
+  border-bottom: 1px solid var(--borde);
+  padding: 56px 56px;
+}
+
+.mensaje-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.mensaje-char {
+  text-align: center;
+}
+
+.mensaje-char img {
+  width: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px var(--naranja-s));
+}
+
+.mensaje-char p {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  margin-top: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.mensaje-texto blockquote {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--texto2);
+  line-height: 1.9;
+  border-left: 3px solid var(--naranja);
+  padding-left: 24px;
+  margin-bottom: 20px;
+}
+
+.mensaje-texto blockquote strong {
+  color: var(--texto);
+  font-weight: 500;
+}
+
+.mensaje-firma {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto3);
+}
+
+.mensaje-firma span {
+  color: var(--naranja);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════
+   CÓMO DEJAR HUELLA — GUÍA
+══════════════════════════════════════ */
+.como-section {
+  padding: 56px 56px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.como-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.como-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 20px;
+  transition: border-color .15s, transform .15s;
+}
+
+.como-item:hover {
+  border-color: var(--naranja-b);
+  transform: translateY(-2px);
+}
+
+.como-num {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--naranja-b);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.como-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.como-desc {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.65;
+}
+
+/* ══════════════════════════════════════
+   SERRES CIERRE
+══════════════════════════════════════ */
+.serres-cierre {
+  background: var(--bg2);
+  border-top: 1px solid var(--borde);
+  padding: 48px 56px;
+}
+
+.serres-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.serres-inner blockquote {
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--texto2);
+  line-height: 1.9;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.serres-inner blockquote strong {
+  color: var(--texto);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.serres-inner cite {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--violeta);
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .huella-hero { padding: 40px 20px 36px; min-height: auto; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-char { display: none; }
+  .huella-section, .como-section { padding: 36px 20px; }
+  .mensaje-profe { padding: 40px 20px; }
+  .mensaje-inner { grid-template-columns: 1fr; gap: 24px; }
+  .mensaje-char { display: none; }
+  .serres-cierre { padding: 40px 20px; }
+  .huella-hero::after { display: none; }
+}
+</style>
+</head>
+<body data-page="huella">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="huella-hero">
+  <div class="hero-inner">
+    <div>
+      <span class="kicker">// zona 04 · legado</span>
+      <h1 class="titulo-h1 mt-8">Estoy dejando<br><em class="naranja">huella</em></h1>
+      <p class="hero-frase-grande">
+        "Este espacio está esperando tu proyecto.
+        Los que vengan después van a aprender de lo que tú construyas hoy."
+      </p>
+      <p class="hero-frase-sub">— profe.DanFer · BATIN · CEDMR</p>
+    </div>
+    <div class="hero-char">
+      <img src="img/techi_accion.png" alt="Techi dejando huella">
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SECCIONES VACÍAS — ESPERANDO ══════ -->
+<section class="huella-section">
+
+  <span class="kicker">// producciones destacadas · 2026</span>
+  <h2 class="titulo-h2 mt-8 mb-16">Proyectos que inspiran</h2>
+
+  <!-- Placeholder principal -->
+  <div class="espacio-vacio">
+    <div class="ev-char">
+      <img src="img/bit_motivando.png" alt="Bit motivando">
+    </div>
+    <div class="ev-titulo">Aquí van los proyectos destacados del año</div>
+    <p class="ev-desc">
+      A medida que los equipos avancen en sus proyectos ICIENTEC y de Promoción,
+      los mejores trabajos van a aparecer en este espacio.
+      <strong>El primer proyecto en llegar aquí puede ser el tuyo.</strong>
+    </p>
+    <span class="ev-tag">// en construcción · ciclo lectivo 2026</span>
+  </div>
+
+  <!-- Grid de cards vacías por categoría -->
+  <div class="huella-grid">
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">🔬</div>
+      <div class="hcv-titulo">Mejor proyecto ICIENTEC 1ro</div>
+      <p class="hcv-desc">El proyecto de investigación más destacado del 1er curso. Datos reales, propuesta ejecutable.</p>
+      <div class="hcv-año">// ICIENTEC 2026</div>
+    </div>
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">🧪</div>
+      <div class="hcv-titulo">Mejor proyecto ICIENTEC 2do</div>
+      <p class="hcv-desc">Investigación con prototipo funcional. Python, código real, solución implementada.</p>
+      <div class="hcv-año">// ICIENTEC 2026</div>
+    </div>
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">🚀</div>
+      <div class="hcv-titulo">Sistema de Promoción destacado</div>
+      <p class="hcv-desc">El sistema más completo defendido en 3ro. BD relacional, POO, documentación técnica.</p>
+      <div class="hcv-año">// Proyecto de Promoción 2026</div>
+    </div>
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">💡</div>
+      <div class="hcv-titulo">Mejor prototipo con IA</div>
+      <p class="hcv-desc">El prototipo que mejor integre IA aplicada como herramienta de desarrollo.</p>
+      <div class="hcv-año">// IA aplicada 2026</div>
+    </div>
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">🌐</div>
+      <div class="hcv-titulo">Mejor sitio web</div>
+      <p class="hcv-desc">El sitio web más completo y original creado en Presencia Web. HTML + CSS + publicación real.</p>
+      <div class="hcv-año">// Presencia Web 2026</div>
+    </div>
+
+    <div class="huella-card-vacia">
+      <span class="badge-pronto">próximamente</span>
+      <div class="hcv-icon">🏆</div>
+      <div class="hcv-titulo">Legado de promociones anteriores</div>
+      <p class="hcv-desc">Los proyectos de las generaciones que pasaron por el BATIN. Lo que construyeron y lo que dejaron.</p>
+      <div class="hcv-año">// Historial · en crecimiento</div>
+    </div>
+
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ══════ CÓMO DEJAR HUELLA ══════ -->
+<section class="como-section">
+  <span class="kicker">// guía</span>
+  <h2 class="titulo-h2 mt-8">¿Cómo llega tu proyecto aquí?</h2>
+  <p class="desc mt-8">No es automático. Requiere esfuerzo, consistencia y ganas de construir algo real. Estos son los pasos.</p>
+
+  <div class="char-guia techi mt-24 mb-8">
+    <img src="img/techi_explicando.png" alt="Techi explicando" class="char-guia-img">
+    <div class="char-guia-body">
+      <div class="char-guia-name techi">TECHI</div>
+      <p class="char-guia-texto">
+        "Yo también fui estudiante que dudaba si su proyecto era suficientemente bueno.
+        La respuesta siempre es la misma: si es tuyo, si tiene datos reales y si resuelve algo verdadero —
+        <strong style="color:var(--texto)">ya es suficientemente bueno para estar aquí.</strong>"
+      </p>
+    </div>
+  </div>
+
+  <div class="como-grid">
+    <div class="como-item">
+      <div class="como-num">01</div>
+      <div class="como-titulo">Elige un problema real</div>
+      <p class="como-desc">No un tema bonito — un problema que alguien tenga hoy y que puedas investigar o resolver con tus herramientas técnicas.</p>
+    </div>
+    <div class="como-item">
+      <div class="como-num">02</div>
+      <div class="como-titulo">Construye con datos propios</div>
+      <p class="como-desc">Encuestas, mediciones, registros. Datos que recolectaste tú — no bajados de internet. Eso es investigación real.</p>
+    </div>
+    <div class="como-item">
+      <div class="como-num">03</div>
+      <div class="como-titulo">Aplica lo que aprendiste</div>
+      <p class="como-desc">Excel, Python, Java, SQL, HTML — cada herramienta que dominaste es una pieza de tu proyecto. Úsalas todas.</p>
+    </div>
+    <div class="como-item">
+      <div class="como-num">04</div>
+      <div class="como-titulo">Documenta el proceso</div>
+      <p class="como-desc">Un proyecto sin documentación es como un código sin comentarios. Escribe qué hiciste, por qué y qué aprendiste.</p>
+    </div>
+    <div class="como-item">
+      <div class="como-num">05</div>
+      <div class="como-titulo">Defiéndelo con argumentos</div>
+      <p class="como-desc">No alcanza con que funcione — hay que saber explicarlo. Un técnico que no puede explicar su sistema, no terminó el trabajo.</p>
+    </div>
+    <div class="como-item">
+      <div class="como-num">06</div>
+      <div class="como-titulo">Compártelo con los que vienen</div>
+      <p class="como-desc">El conocimiento compartido no se pierde — se multiplica. Tu proyecto puede ser el punto de partida del proyecto de alguien más.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════ MENSAJE DE LA PROFE ══════ -->
+<div class="mensaje-profe">
+  <div class="mensaje-inner">
+    <div class="mensaje-char">
+      <img src="img/gatiel_leyendo.png" alt="Gatiel leyendo">
+      <p>Daniela Ferreira<br>profe.DanFer</p>
+    </div>
+    <div class="mensaje-texto">
+      <span class="kicker violeta">// mensaje de la profe</span>
+      <blockquote>
+        Creo firmemente que <strong>cada docente da siempre lo mejor de sí</strong>
+        para que cada encuentro con otra persona sea una oportunidad de aprendizaje.<br><br>
+        Este espacio fue creado con ese mismo propósito: compartir materiales que acompañaron
+        el desarrollo de clases en distintas asignaturas del Bachillerato Técnico en Informática,
+        según la malla curricular vigente.<br><br>
+        Pero más que los materiales, lo que queda es lo que ustedes construyen.
+        <strong>Cada proyecto, cada sistema, cada línea de código que escribieron con criterio
+        — eso es lo que hace que este bachillerato tenga sentido.</strong><br><br>
+        Esa es la huella que importa.
+      </blockquote>
+      <p class="mensaje-firma">
+        — <span>Daniela Ferreira</span> · profe.DanFer<br>
+        Centro Educativo Departamental Miguela Rodríguez · Asunción, Paraguay
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SERRES CIERRE ══════ -->
+<div class="serres-cierre">
+  <div class="serres-inner">
+    <span class="kicker violeta" style="text-align:center;display:block">// Michel Serres</span>
+    <blockquote>
+      "Si usted tiene un pan y yo tengo un euro, y yo voy y le compro el pan,
+      yo tendré un pan y usted un euro. Hay equilibrio. Eso es mercancía.<br><br>
+      Pero si usted tiene un soneto de Verlaine, y yo no tengo nada,
+      y usted me lo enseña, al final yo tendré el soneto y usted lo habrá conservado.
+      <strong>En el segundo caso, hay crecimiento. Eso es cultura.</strong>"
+    </blockquote>
+    <cite>— Michel Serres · filósofo y matemático</cite>
+  </div>
+</div>
+
+<div id="batin-footer"></div>
+<script src="batin.js"></script>
+</body>
+</html>
