@@ -1,0 +1,308 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.w{padding:1rem 0}
+.stitle{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin:1.4rem 0 .5rem}
+.schema{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.tbox{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.thead{background:var(--color-background-secondary);padding:7px 11px;font-size:12px;font-weight:500;color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.cr{padding:5px 11px;font-size:11px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.cr:last-child{border-bottom:none}
+.cn{color:var(--color-text-primary);font-weight:500;font-family:var(--font-mono);font-size:11px}
+.ct{font-size:10px;color:var(--color-text-secondary);font-family:var(--font-mono)}
+.b{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500}
+.bpk{background:#E6F1FB;color:#0C447C}.bfk{background:#FAEEDA;color:#633806}.ba{background:#F1EFE8;color:#5F5E5A}
+.rn{font-size:12px;color:var(--color-text-secondary);font-family:var(--font-sans);margin-bottom:.9rem;padding:7px 11px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border-left:3px solid #378ADD}
+.sqlite-note{font-size:11px;color:#085041;font-family:var(--font-sans);margin-bottom:.9rem;padding:7px 11px;background:#E1F5EE;border-radius:var(--border-radius-md);border-left:3px solid #1D9E75;display:flex;align-items:center;gap:6px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.eall{font-size:11px;padding:4px 11px;cursor:pointer;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);font-family:var(--font-sans)}
+.eall:hover{background:var(--color-background-secondary)}
+.ec{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:6px;overflow:hidden}
+.eh{padding:8px 13px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.eh:hover,.ec.open .eh{background:var(--color-background-secondary)}
+.etag{font-size:9px;font-weight:500;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.tddl{background:#E1F5EE;color:#085041}.tsel{background:#E6F1FB;color:#0C447C}
+.twhr{background:#FAEEDA;color:#633806}.tord{background:#EEEDFE;color:#3C3489}
+.tgrp{background:#FAECE7;color:#993C1D}.tjoi{background:#EAF3DE;color:#3B6D11}
+.tmix{background:#F1EFE8;color:#5F5E5A}
+.enum{font-size:11px;font-weight:500;color:var(--color-text-secondary);min-width:18px;font-family:var(--font-mono)}
+.etit{font-size:13px;color:var(--color-text-primary);flex:1}
+.ech{font-size:14px;color:var(--color-text-secondary);transition:transform .2s;flex-shrink:0}
+.ec.open .ech{transform:rotate(180deg)}
+.eb{display:none;padding:11px 13px;flex-direction:column;gap:8px;border-top:0.5px solid var(--color-border-tertiary)}
+.ec.open .eb{display:flex}
+.eq{font-size:12px;color:var(--color-text-secondary);font-family:var(--font-sans);line-height:1.5}
+.sl{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em}
+pre{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 11px;font-size:11px;color:var(--color-text-primary);overflow-x:auto;white-space:pre;font-family:var(--font-mono);border:0.5px solid var(--color-border-tertiary);line-height:1.6}
+.rb{align-self:flex-start;font-size:11px;padding:4px 11px;cursor:pointer;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);font-family:var(--font-mono);display:flex;align-items:center;gap:5px}
+.rb:hover{background:var(--color-background-secondary)}
+.rtab{width:100%;border-collapse:collapse;font-size:11px}
+.rtab th{background:var(--color-background-secondary);padding:4px 9px;text-align:left;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);font-family:var(--font-mono)}
+.rtab td{padding:4px 9px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+.rtab tr:last-child td{border-bottom:none}
+.rw{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:auto;max-height:240px}
+.nt{font-size:11px;color:var(--color-text-secondary);font-family:var(--font-sans);font-style:italic}
+</style>
+
+<div class="w">
+<h2 style="position:absolute;left:-9999px">Ejercitario SQL SQLite</h2>
+
+<div class="stitle">Esquema</div>
+<div class="schema">
+  <div class="tbox">
+    <div class="thead">Departamentos</div>
+    <div class="cr"><span class="b bpk">PK</span><span class="cn">idDpto</span><span class="ct">INTEGER</span><span class="b ba">AI</span><span class="b ba">NN</span><span class="b ba">UQ</span></div>
+    <div class="cr"><span class="cn">nombre</span><span class="ct">TEXT</span><span class="b ba">NN</span></div>
+    <div class="cr"><span class="cn">presupuesto</span><span class="ct">INTEGER</span><span class="b ba">NN</span></div>
+  </div>
+  <div class="tbox">
+    <div class="thead">Empleados</div>
+    <div class="cr"><span class="b bpk">PK</span><span class="cn">idEmpleado</span><span class="ct">INTEGER</span><span class="b ba">AI</span><span class="b ba">NN</span><span class="b ba">UQ</span></div>
+    <div class="cr"><span class="b bfk">FK</span><span class="cn">idDpto</span><span class="ct">INTEGER</span><span class="b ba">NN</span></div>
+    <div class="cr"><span class="cn">nombre</span><span class="ct">TEXT</span><span class="b ba">NN</span></div>
+    <div class="cr"><span class="cn">apellido</span><span class="ct">TEXT</span><span class="b ba">NN</span></div>
+    <div class="cr"><span class="cn">salario</span><span class="ct">INTEGER</span><span class="b ba">NN</span></div>
+    <div class="cr"><span class="cn">fechaIngreso</span><span class="ct">TEXT</span><span class="b ba">NN</span></div>
+  </div>
+</div>
+<div class="rn"><strong>Relación:</strong> Empleados.idDpto → Departamentos.idDpto &nbsp;·&nbsp; un departamento tiene muchos empleados</div>
+<div class="sqlite-note"><i class="ti ti-device-mobile" aria-hidden="true" style="font-size:14px;flex-shrink:0"></i> SQLite (SQLPhone Android) — sin VARCHAR ni AUTO_INCREMENT; se usa TEXT, INTEGER y AUTOINCREMENT</div>
+
+<div class="topbar">
+  <div class="stitle" style="margin:0">Ejercicios</div>
+  <button class="eall" id="tog">Expandir todos</button>
+</div>
+<div id="el"></div>
+</div>
+
+<script>
+const D=[
+  {idDpto:1,nombre:'IT',presupuesto:15000000},
+  {idDpto:2,nombre:'Ventas',presupuesto:12000000},
+  {idDpto:3,nombre:'Contabilidad',presupuesto:8000000},
+  {idDpto:4,nombre:'RRHH',presupuesto:6000000}
+];
+const E=[
+  {idEmpleado:1,idDpto:1,nombre:'Ana',   apellido:'García', salario:3500000,fechaIngreso:'2021-03-15'},
+  {idEmpleado:2,idDpto:1,nombre:'Luis',  apellido:'Rojas',  salario:2800000,fechaIngreso:'2020-07-01'},
+  {idEmpleado:3,idDpto:1,nombre:'Diego', apellido:'Torres', salario:5000000,fechaIngreso:'2018-01-10'},
+  {idEmpleado:4,idDpto:2,nombre:'María', apellido:'López',  salario:2500000,fechaIngreso:'2022-05-20'},
+  {idEmpleado:5,idDpto:2,nombre:'Carlos',apellido:'Peña',   salario:2600000,fechaIngreso:'2024-03-01'},
+  {idEmpleado:6,idDpto:2,nombre:'Sofía', apellido:'Benítez',salario:4800000,fechaIngreso:'2019-08-14'},
+  {idEmpleado:7,idDpto:3,nombre:'Laura', apellido:'Núñez',  salario:3200000,fechaIngreso:'2024-07-15'},
+  {idEmpleado:8,idDpto:3,nombre:'Javier',apellido:'Vera',   salario:2200000,fechaIngreso:'2023-01-09'},
+  {idEmpleado:9,idDpto:4,nombre:'Paula', apellido:'Sosa',   salario:2900000,fechaIngreso:'2024-11-20'}
+];
+const f=n=>Number(n).toLocaleString('es-PY');
+const dn=id=>D.find(d=>d.idDpto===id).nombre;
+
+const X=[
+  {tag:'DDL',cls:'tddl',n:'01',t:'Crear las tablas con PK y FK',
+   q:'En SQLite se usa <code>INTEGER PRIMARY KEY AUTOINCREMENT</code> en lugar de AUTO_INCREMENT. La FK se declara al final.',
+   sql:`CREATE TABLE Departamentos (
+  idDpto      INTEGER NOT NULL UNIQUE,
+  nombre      TEXT    NOT NULL,
+  presupuesto INTEGER NOT NULL,
+  PRIMARY KEY (idDpto AUTOINCREMENT)
+);
+
+CREATE TABLE Empleados (
+  idEmpleado   INTEGER NOT NULL UNIQUE,
+  idDpto       INTEGER NOT NULL,
+  nombre       TEXT    NOT NULL,
+  apellido     TEXT    NOT NULL,
+  salario      INTEGER NOT NULL,
+  fechaIngreso TEXT    NOT NULL,
+  PRIMARY KEY (idEmpleado AUTOINCREMENT),
+  FOREIGN KEY (idDpto) REFERENCES Departamentos(idDpto)
+);`,run:null},
+
+  {tag:'INSERT',cls:'tddl',n:'02',t:'Insertar datos en ambas tablas',
+   q:'Insertá primero los departamentos (tabla padre) y luego los empleados (tabla hija). Sin idDpto/idEmpleado porque son AUTOINCREMENT.',
+   sql:`INSERT INTO Departamentos (nombre, presupuesto) VALUES
+  ('IT',           15000000),
+  ('Ventas',       12000000),
+  ('Contabilidad',  8000000),
+  ('RRHH',          6000000);
+
+INSERT INTO Empleados (idDpto,nombre,apellido,salario,fechaIngreso) VALUES
+  (1,'Ana',   'García', 3500000,'2021-03-15'),
+  (1,'Luis',  'Rojas',  2800000,'2020-07-01'),
+  (1,'Diego', 'Torres', 5000000,'2018-01-10'),
+  (2,'María', 'López',  2500000,'2022-05-20'),
+  (2,'Carlos','Peña',   2600000,'2024-03-01'),
+  (2,'Sofía', 'Benítez',4800000,'2019-08-14'),
+  (3,'Laura', 'Núñez',  3200000,'2024-07-15'),
+  (3,'Javier','Vera',   2200000,'2023-01-09'),
+  (4,'Paula', 'Sosa',   2900000,'2024-11-20');`,run:null},
+
+  {tag:'SELECT',cls:'tsel',n:'03',t:'Todos los empleados',
+   q:'Seleccioná todos los campos de la tabla Empleados.',
+   sql:`SELECT * FROM Empleados;`,
+   run:()=>E.map(e=>({...e}))},
+
+  {tag:'SELECT',cls:'tsel',n:'04',t:'Nombre, departamento y salario de todos los empleados',
+   q:'Listá el nombre, el nombre del departamento y el salario. Requiere JOIN para obtener el nombre del departamento.',
+   sql:`SELECT e.nombre, e.apellido,
+       d.nombre AS departamento,
+       e.salario
+FROM Empleados e
+JOIN Departamentos d ON e.idDpto = d.idDpto;`,
+   run:()=>E.map(e=>({nombre:e.nombre,apellido:e.apellido,departamento:dn(e.idDpto),salario:f(e.salario)}))},
+
+  {tag:'SELECT',cls:'tsel',n:'05',t:'Columna calculada — nombre completo',
+   q:'En SQLite se concatena con <code>||</code> en lugar de CONCAT().',
+   sql:`SELECT nombre || ' ' || apellido AS nombreCompleto,
+       salario, fechaIngreso
+FROM Empleados;`,
+   run:()=>E.map(e=>({nombreCompleto:e.nombre+' '+e.apellido,salario:f(e.salario),fechaIngreso:e.fechaIngreso}))},
+
+  {tag:'WHERE',cls:'twhr',n:'06',t:'Empleados de IT (idDpto = 1)',
+   q:'Filtrá los empleados que pertenecen al departamento IT.',
+   sql:`SELECT nombre, apellido, salario
+FROM Empleados
+WHERE idDpto = 1;`,
+   run:()=>E.filter(e=>e.idDpto===1).map(({nombre,apellido,salario})=>({nombre,apellido,salario:f(salario)}))},
+
+  {tag:'WHERE',cls:'twhr',n:'07',t:'Salario mayor a 3.000.000',
+   q:'¿Qué empleados tienen salario mayor a 3.000.000?',
+   sql:`SELECT nombre, apellido, salario
+FROM Empleados
+WHERE salario > 3000000;`,
+   run:()=>E.filter(e=>e.salario>3000000).map(({nombre,apellido,salario})=>({nombre,apellido,salario:f(salario)}))},
+
+  {tag:'WHERE',cls:'twhr',n:'08',t:'Empleados con ingreso a partir del 2024',
+   q:'Listá todos los empleados con fechaIngreso mayor o igual al 01/01/2024. En SQLite las fechas se comparan como texto en formato YYYY-MM-DD.',
+   sql:`SELECT nombre, apellido, fechaIngreso
+FROM Empleados
+WHERE fechaIngreso >= '2024-01-01';`,
+   run:()=>E.filter(e=>e.fechaIngreso>='2024-01-01').map(({nombre,apellido,fechaIngreso})=>({nombre,apellido,fechaIngreso}))},
+
+  {tag:'WHERE',cls:'twhr',n:'09',t:'Filtro con LIKE sobre apellido',
+   q:'Buscá empleados cuyo apellido empiece con la letra "R".',
+   sql:`SELECT nombre, apellido
+FROM Empleados
+WHERE apellido LIKE 'R%';`,
+   run:()=>E.filter(e=>e.apellido.startsWith('R')).map(({nombre,apellido})=>({nombre,apellido}))},
+
+  {tag:'ORDER BY',cls:'tord',n:'10',t:'Ordenar por salario descendente',
+   q:'Listá todos los empleados de mayor a menor salario.',
+   sql:`SELECT nombre, apellido, salario
+FROM Empleados
+ORDER BY salario DESC;`,
+   run:()=>[...E].sort((a,b)=>b.salario-a.salario).map(({nombre,apellido,salario})=>({nombre,apellido,salario:f(salario)}))},
+
+  {tag:'ORDER BY',cls:'tord',n:'11',t:'Ordenar por apellido alfabéticamente',
+   q:'Mostrá los empleados ordenados de A a Z por apellido.',
+   sql:`SELECT nombre, apellido
+FROM Empleados
+ORDER BY apellido ASC;`,
+   run:()=>[...E].sort((a,b)=>a.apellido.localeCompare(b.apellido)).map(({nombre,apellido})=>({nombre,apellido}))},
+
+  {tag:'ORDER BY',cls:'tord',n:'12',t:'Ordenar por dos criterios',
+   q:'Ordená por departamento (ASC) y dentro de cada uno por salario (DESC).',
+   sql:`SELECT nombre, apellido, idDpto, salario
+FROM Empleados
+ORDER BY idDpto ASC, salario DESC;`,
+   run:()=>[...E].sort((a,b)=>a.idDpto-b.idDpto||b.salario-a.salario)
+     .map(({nombre,apellido,idDpto,salario})=>({nombre,apellido,idDpto,salario:f(salario)}))},
+
+  {tag:'GROUP BY',cls:'tgrp',n:'13',t:'COUNT — empleados por departamento',
+   q:'¿Cuántos empleados hay en cada departamento?',
+   sql:`SELECT idDpto, COUNT(*) AS totalEmpleados
+FROM Empleados
+GROUP BY idDpto;`,
+   run:()=>{const g={};E.forEach(e=>{g[e.idDpto]=(g[e.idDpto]||0)+1});
+     return Object.entries(g).map(([id,tot])=>({idDpto:+id,totalEmpleados:tot}))}},
+
+  {tag:'GROUP BY',cls:'tgrp',n:'14',t:'AVG — salario promedio por departamento',
+   q:'Calculá el salario promedio de cada departamento.',
+   sql:`SELECT idDpto,
+       COUNT(*)     AS empleados,
+       AVG(salario) AS salarioPromedio
+FROM Empleados
+GROUP BY idDpto;`,
+   run:()=>{const g={};E.forEach(e=>{if(!g[e.idDpto])g[e.idDpto]={idDpto:e.idDpto,emp:0,s:0};g[e.idDpto].emp++;g[e.idDpto].s+=e.salario});
+     return Object.values(g).map(r=>({idDpto:r.idDpto,empleados:r.emp,salarioPromedio:f(Math.round(r.s/r.emp))}))}},
+
+  {tag:'HAVING',cls:'tgrp',n:'15',t:'Departamentos con más de 2 empleados',
+   q:'HAVING filtra los grupos después del GROUP BY. ¿Qué departamentos tienen más de 2 empleados?',
+   sql:`SELECT idDpto, COUNT(*) AS total
+FROM Empleados
+GROUP BY idDpto
+HAVING COUNT(*) > 2;`,
+   run:()=>{const g={};E.forEach(e=>{g[e.idDpto]=(g[e.idDpto]||0)+1});
+     return Object.entries(g).filter(([,c])=>c>2).map(([id,total])=>({idDpto:+id,total}))}},
+
+  {tag:'JOIN',cls:'tjoi',n:'16',t:'INNER JOIN — nombre del departamento',
+   q:'Combiná ambas tablas para ver el nombre del departamento en lugar del idDpto.',
+   sql:`SELECT e.nombre, e.apellido, e.salario,
+       d.nombre AS departamento
+FROM Empleados e
+JOIN Departamentos d ON e.idDpto = d.idDpto;`,
+   run:()=>E.map(e=>({nombre:e.nombre,apellido:e.apellido,salario:f(e.salario),departamento:dn(e.idDpto)}))},
+
+  {tag:'JOIN + WHERE',cls:'tjoi',n:'17',t:'JOIN filtrado — solo IT y Contabilidad',
+   q:'Mostrá solo empleados de IT y Contabilidad con el nombre de su departamento.',
+   sql:`SELECT e.nombre, e.apellido, e.salario,
+       d.nombre AS departamento
+FROM Empleados e
+JOIN Departamentos d ON e.idDpto = d.idDpto
+WHERE d.nombre IN ('IT','Contabilidad');`,
+   run:()=>E.filter(e=>e.idDpto===1||e.idDpto===3)
+     .map(e=>({nombre:e.nombre,apellido:e.apellido,salario:f(e.salario),departamento:dn(e.idDpto)}))},
+
+  {tag:'JOIN + ORDER BY',cls:'tjoi',n:'18',t:'Ranking de salarios con departamento',
+   q:'Listá todos los empleados con su departamento, ordenados de mayor a menor salario.',
+   sql:`SELECT e.nombre, e.apellido,
+       d.nombre AS departamento,
+       e.salario
+FROM Empleados e
+JOIN Departamentos d ON e.idDpto = d.idDpto
+ORDER BY e.salario DESC;`,
+   run:()=>[...E].sort((a,b)=>b.salario-a.salario)
+     .map(e=>({nombre:e.nombre,apellido:e.apellido,departamento:dn(e.idDpto),salario:f(e.salario)}))},
+
+  {tag:'Completa',cls:'tmix',n:'19',t:'Resumen ejecutivo por departamento',
+   q:'JOIN + GROUP BY + COUNT + SUM + AVG + ORDER BY en una sola consulta.',
+   sql:`SELECT d.nombre          AS departamento,
+       d.presupuesto,
+       COUNT(e.idEmpleado)  AS empleados,
+       SUM(e.salario)       AS masaSalarial,
+       AVG(e.salario)       AS salarioPromedio,
+       MAX(e.salario)       AS salarioMax
+FROM Departamentos d
+JOIN Empleados e ON d.idDpto = e.idDpto
+GROUP BY d.idDpto
+ORDER BY masaSalarial DESC;`,
+   run:()=>{const g={};E.forEach(e=>{const d=D.find(d=>d.idDpto===e.idDpto);
+     if(!g[d.nombre])g[d.nombre]={dep:d.nombre,pre:d.presupuesto,emp:0,s:0,mx:0};
+     g[d.nombre].emp++;g[d.nombre].s+=e.salario;g[d.nombre].mx=Math.max(g[d.nombre].mx,e.salario)});
+     return Object.values(g).sort((a,b)=>b.s-a.s).map(r=>({
+       departamento:r.dep,presupuesto:f(r.pre),empleados:r.emp,
+       masaSalarial:f(r.s),salarioPromedio:f(Math.round(r.s/r.emp)),salarioMax:f(r.mx)}))}}
+];
+
+function rT(rows){
+  if(!rows||!rows.length)return'<p style="font-size:11px;color:var(--color-text-secondary);font-style:italic">Sin resultados</p>';
+  const cols=Object.keys(rows[0]);
+  return`<div class="rw"><table class="rtab"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]??''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+const el=document.getElementById('el');
+X.forEach((x,i)=>{
+  const c=document.createElement('div');c.className='ec';
+  c.innerHTML=`<div class="eh"><span class="enum">${x.n}</span><span class="etag ${x.cls}">${x.tag}</span><span class="etit">${x.t}</span><i class="ti ti-chevron-down ech" aria-hidden="true"></i></div>
+  <div class="eb"><p class="eq">${x.q}</p><span class="sl">Solución</span><pre>${x.sql}</pre>${x.run?`<button class="rb"><i class="ti ti-player-play" aria-hidden="true"></i> Ejecutar</button><div class="rs"></div>`:'<p class="nt">DDL — copiá y pegá en SQLPhone</p>'}</div>`;
+  c.querySelector('.eh').addEventListener('click',()=>c.classList.toggle('open'));
+  if(x.run)c.querySelector('.rb').addEventListener('click',ev=>{ev.stopPropagation();c.querySelector('.rs').innerHTML=rT(x.run())});
+  el.appendChild(c);
+});
+
+let exp=false;
+document.getElementById('tog').addEventListener('click',function(){
+  exp=!exp;
+  document.querySelectorAll('.ec').forEach(c=>c.classList.toggle('open',exp));
+  this.textContent=exp?'Colapsar todos':'Expandir todos';
+});
+</script>

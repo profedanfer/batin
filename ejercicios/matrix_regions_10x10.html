@@ -1,0 +1,132 @@
+
+<style>
+.mr-wrap { padding: 1rem 0; font-family: var(--font-sans); }
+.mr-title { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px; }
+.mr-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.mr-btn {
+  padding: 5px 11px; border-radius: 20px; font-size: 12px; cursor: pointer;
+  border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary);
+  color: var(--color-text-primary); transition: all 0.15s; font-family: var(--font-sans);
+}
+.mr-btn:hover { background: var(--color-background-secondary); }
+.mr-btn.active { color: white; border-color: transparent; }
+.mr-grid { display: inline-grid; grid-template-columns: repeat(10, 36px); gap: 2px; }
+.mr-cell {
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 10px; border-radius: 4px;
+  background: var(--color-background-secondary);
+  color: var(--color-text-tertiary); transition: background 0.15s, color 0.15s;
+}
+.mr-cell.lit { color: white; }
+.mr-desc {
+  margin-top: 14px; font-size: 13px; color: var(--color-text-secondary);
+  line-height: 1.6; max-width: 520px;
+}
+.mr-cond {
+  margin-top: 6px; font-family: var(--font-mono); font-size: 12px;
+  color: var(--color-text-secondary); padding: 6px 10px;
+  background: var(--color-background-secondary); border-radius: 6px; display: inline-block;
+}
+.mr-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--color-text-secondary); }
+.mr-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+</style>
+
+<div class="mr-wrap">
+  <h2 class="sr-only">Visualización interactiva de regiones en una matriz 10×10</h2>
+  <div class="mr-title">Seleccioná una región para ver cómo se resalta en la matriz 10×10</div>
+  <div class="mr-btns" id="btns"></div>
+  <div class="mr-grid" id="grid"></div>
+  <div class="mr-legend" id="legend"></div>
+  <div class="mr-desc" id="desc"></div>
+  <div class="mr-cond" id="cond"></div>
+</div>
+
+<script>
+const N = 10;
+
+const regions = [
+  { key:'dp',  label:'a) Diag. principal',       color:'#c0392b',
+    cond:(i,j)=> i===j,
+    desc:'Elementos donde i = j. Va de la esquina superior izquierda a la inferior derecha.',
+    formula:'i == j' },
+  { key:'ds',  label:'b) Diag. secundaria',       color:'#1a6b8a',
+    cond:(i,j)=> i+j===N-1,
+    desc:'Elementos donde i + j = N−1. Va de la esquina superior derecha a la inferior izquierda.',
+    formula:'i + j == N−1' },
+  { key:'adp', label:'c) Arriba diag. principal', color:'#b8770a',
+    cond:(i,j)=> j>i,
+    desc:'Elementos por encima de la diagonal principal (sin incluirla): columna mayor que fila.',
+    formula:'j > i' },
+  { key:'bdp', label:'d) Debajo diag. principal', color:'#7c3a00',
+    cond:(i,j)=> i>j,
+    desc:'Elementos por debajo de la diagonal principal (sin incluirla): fila mayor que columna.',
+    formula:'i > j' },
+  { key:'ads', label:'e) Arriba diag. secundaria',color:'#5b1a8a',
+    cond:(i,j)=> i+j<N-1,
+    desc:'Elementos donde i + j < N−1. Zona superior izquierda respecto a la diagonal secundaria.',
+    formula:'i + j < N−1' },
+  { key:'bds', label:'f) Debajo diag. secundaria',color:'#145232',
+    cond:(i,j)=> i+j>N-1,
+    desc:'Elementos donde i + j > N−1. Zona inferior derecha respecto a la diagonal secundaria.',
+    formula:'i + j > N−1' },
+  { key:'ts',  label:'g) Triángulo superior',     color:'#0a4a7a',
+    cond:(i,j)=> j>i && i+j<N-1,
+    desc:'Arriba de la diagonal principal Y arriba de la diagonal secundaria. Zona superior central (vértice arriba).',
+    formula:'j > i  AND  i + j < N−1' },
+  { key:'ti',  label:'h) Triángulo inferior',     color:'#8a1a2a',
+    cond:(i,j)=> i>j && i+j>N-1,
+    desc:'Abajo de la diagonal principal Y abajo de la diagonal secundaria. Zona inferior central (vértice abajo).',
+    formula:'i > j  AND  i + j > N−1' },
+  { key:'tiz', label:'i) Triángulo izquierdo',    color:'#0f4a1a',
+    cond:(i,j)=> i>j && i+j<N-1,
+    desc:'Abajo de la diagonal principal Y arriba de la diagonal secundaria. Zona lateral izquierda (vértice izquierdo).',
+    formula:'i > j  AND  i + j < N−1' },
+  { key:'td',  label:'j) Triángulo derecho',      color:'#6b1050',
+    cond:(i,j)=> j>i && i+j>N-1,
+    desc:'Arriba de la diagonal principal Y abajo de la diagonal secundaria. Zona lateral derecha (vértice derecho).',
+    formula:'j > i  AND  i + j > N−1' },
+];
+
+let active = 'dp';
+
+function render(key) {
+  active = key;
+  const r = regions.find(x=>x.key===key);
+
+  document.querySelectorAll('.mr-btn').forEach(b=>{
+    const on = b.dataset.key===key;
+    b.classList.toggle('active', on);
+    b.style.background = on ? r.color : '';
+  });
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    const c = document.createElement('div');
+    c.className = 'mr-cell';
+    c.textContent = `${i}${j}`;
+    if(r.cond(i,j)){
+      c.style.background = r.color;
+      c.classList.add('lit');
+    }
+    grid.appendChild(c);
+  }
+
+  document.getElementById('legend').innerHTML =
+    `<div class="mr-legend-dot" style="background:${r.color}"></div><span>${r.label} (celdas resaltadas)</span>`;
+  document.getElementById('desc').textContent = r.desc;
+  document.getElementById('cond').textContent = 'Condición: ' + r.formula;
+}
+
+const btnsEl = document.getElementById('btns');
+regions.forEach(r=>{
+  const b = document.createElement('button');
+  b.className = 'mr-btn';
+  b.dataset.key = r.key;
+  b.textContent = r.label;
+  b.onclick = ()=> render(r.key);
+  btnsEl.appendChild(b);
+});
+
+render('dp');
+</script>
