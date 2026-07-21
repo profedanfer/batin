@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciclos con Condición · Ejercicios · Algorítmica 2 · BATIN</title>
+<meta name="description" content="Ejercicios de práctica: Ciclo Desde con condición, contador, acumulador y búsqueda de máximo.">
+<link rel="stylesheet" href="../batin.css">
+<style>
+body { background: var(--bg); }
+.ciclos-ruta {
+  max-width: 720px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto3);
+}
+.ciclos-ruta a { color: var(--texto3); text-decoration: none; }
+.ciclos-ruta a:hover { color: var(--naranja); text-decoration: underline; }
+.ciclos-contenedor {
+  max-width: 720px;
+  margin: 20px auto 60px;
+  padding: 0 24px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=swap');
+
+:root {
+--naranja: #E8611A;
+--naranja-oscuro: #B84A10;
+--naranja-claro: #FFF0E8;
+--naranja-medio: #FAD5BC;
+--carbon: #1C1C1C;
+--gris-suave: #F7F4F1;
+--gris-borde: #E0D9D3;
+--blanco: #FFFFFF;
+--verde-aprobado: #2D7A3A;
+--verde-fondo: #EBF5EC;
+--azul-info: #1A5E9E;
+--azul-fondo: #EAF2FB;
+}
+
+.wrap { font-family: 'Syne', sans-serif; color: var(--carbon); background: transparent; padding: 0 0 2rem; max-width: 680px; margin: 0 auto; }
+
+.header-banda {
+background: var(--naranja);
+padding: 1.5rem 1.75rem 1.25rem;
+border-radius: 12px 12px 0 0;
+margin-bottom: 0;
+}
+.header-banda .curso-label {
+font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+color: rgba(255,255,255,0.75); margin-bottom: 6px;
+}
+.header-banda h1 { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 4px; }
+.header-banda .subtitulo { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 400; }
+
+.header-meta {
+background: var(--naranja-oscuro); padding: 0.6rem 1.75rem;
+display: flex; gap: 1.5rem; flex-wrap: wrap;
+border-radius: 0 0 12px 12px; margin-bottom: 1.5rem;
+}
+.header-meta span { font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 400; }
+.header-meta span strong { color: #fff; font-weight: 500; }
+
+.intro-box {
+background: var(--naranja-claro); border-left: 4px solid var(--naranja);
+border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+font-size: 14px; line-height: 1.65; color: #4A2800;
+}
+.intro-box strong { color: var(--naranja-oscuro); font-weight: 500; }
+
+.conceptos-barra {
+display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.75rem;
+padding: 0.75rem 1rem; background: var(--gris-suave); border-radius: 8px;
+border: 0.5px solid var(--gris-borde);
+}
+.concepto-pill {
+font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
+background: var(--naranja-medio); color: var(--naranja-oscuro); letter-spacing: 0.04em;
+}
+.concepto-pill.acumulado { background: #E8F0FD; color: #1A4A9E; }
+
+.nivel-section { margin-bottom: 1.25rem; }
+.nivel-card { border-radius: 10px; border: 0.5px solid var(--gris-borde); background: var(--blanco); overflow: hidden; }
+.nivel-header {
+display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem;
+cursor: pointer; user-select: none; transition: background 0.15s;
+}
+.nivel-header:hover { background: var(--gris-suave); }
+.nivel-badge {
+font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+}
+.badge-facil { background: var(--verde-fondo); color: var(--verde-aprobado); }
+.badge-medio { background: #FFF8E0; color: #7A5500; }
+.badge-complejo { background: #FDEAE0; color: #8A3000; }
+.badge-desafio { background: #EDE8FD; color: #4A2A9E; }
+.badge-extra { background: #1C1C1C; color: #F5F5F5; }
+.nivel-titulo { font-size: 15px; font-weight: 500; flex: 1; color: var(--carbon); }
+.nivel-conceptos-mini { display: flex; gap: 5px; flex-wrap: wrap; }
+.mini-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--gris-suave); color: #666; border: 0.5px solid var(--gris-borde); }
+.chevron { font-size: 18px; color: var(--naranja); transition: transform 0.2s; flex-shrink: 0; }
+.nivel-body { display: none; padding: 0 1.25rem 1.25rem; border-top: 0.5px solid var(--gris-borde); }
+.nivel-body.abierto { display: block; }
+.enunciado { font-size: 14px; line-height: 1.7; color: #2A2A2A; padding: 1rem 0 0.75rem; }
+.conceptos-lista {
+margin: 0.75rem 0; padding: 0.75rem 1rem; background: var(--gris-suave); border-radius: 8px;
+display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+}
+.conceptos-lista .etiqueta { font-size: 11px; color: #888; font-weight: 500; margin-right: 4px; }
+.hint-trigger {
+margin-top: 1rem; padding: 0.6rem 1rem; background: transparent; border: 0.5px solid var(--gris-borde);
+border-radius: 8px; font-size: 13px; color: #888; cursor: pointer; text-align: left; width: 100%;
+font-family: 'Syne', sans-serif; transition: border-color 0.15s, color 0.15s;
+}
+.hint-trigger:hover { border-color: var(--naranja); color: var(--naranja-oscuro); }
+.hint-trigger .ojo { font-size: 12px; font-weight: 700; color: var(--naranja); margin-right: 4px; }
+.hint-body {
+display: none; margin-top: 0.75rem; padding: 1rem 1.1rem; background: var(--azul-fondo);
+border-radius: 8px; border-left: 3px solid var(--azul-info); font-size: 13px; line-height: 1.7; color: #1A2A3A;
+}
+.hint-body.visible { display: block; }
+.hint-body ol { padding-left: 1.25rem; margin-top: 0.5rem; }
+.hint-body ol li { margin-bottom: 0.4rem; }
+.hint-body .hint-titulo { font-weight: 500; font-size: 13px; color: var(--azul-info); margin-bottom: 0.5rem; }
+.nota-docente {
+margin-top: 1.5rem; padding: 1rem 1.25rem; background: #FFF8E0; border-radius: 10px;
+border: 0.5px solid #E8D080; font-size: 13px; line-height: 1.65; color: #4A3800;
+}
+.nota-docente strong { color: #7A5500; font-weight: 500; }
+.tag-bloom {
+font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--naranja-medio);
+color: var(--naranja-oscuro); font-weight: 500; margin-left: 6px; vertical-align: middle;
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="ciclos-ruta">
+  <a href="../aprendiendo.html">Estoy aprendiendo</a>
+  <span style="color:var(--borde3)">/</span>
+  <a href="../aprendiendo.html">Ruta Algorítmica</a>
+  <span style="color:var(--borde3)">/</span>
+  <span>Ciclos con Condición — Ejercicios</span>
+</div>
+
+<div class="ciclos-contenedor">
+<div class="wrap">
+
+<div class="header-banda">
+<div class="curso-label">Bachillerato Técnico en Informática · 2do curso</div>
+<h1>Clase 13 — Ciclos con condición</h1>
+<div class="subtitulo">Algorítmica · Estructura Desde + condición, contador y acumulador</div>
+</div>
+<div class="header-meta">
+<span><strong>Materia:</strong> Algorítmica</span>
+<span><strong>Nivel Bloom:</strong> N3 → N4</span>
+<span><strong>Ejercicios:</strong> 5 niveles</span>
+</div>
+
+<div class="intro-box">
+En estos ejercicios practicas combinar el <strong>ciclo Desde</strong> con condiciones, contadores y acumuladores.
+Lee cada enunciado con atención antes de escribir cualquier línea.
+Si no tienes ni idea de cómo empezar, despliega la sección <strong>"¿Por dónde empiezo?"</strong> que aparece al final de cada ejercicio.
+</div>
+
+<div class="conceptos-barra">
+<span style="font-size:11px;color:#888;font-weight:500;margin-right:4px;">Conceptos de la clase:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición simple</span>
+<span class="concepto-pill">Condición compuesta</span>
+<span class="concepto-pill">Contador</span>
+<span class="concepto-pill acumulado">Acumulador</span>
+<span class="concepto-pill acumulado">Búsqueda de máximo</span>
+</div>
+
+<!-- NIVEL FÁCIL -->
+<div class="nivel-section">
+<div class="nivel-card">
+<div class="nivel-header" onclick="toggle('n1')">
+<span class="nivel-badge badge-facil">Fácil</span>
+<span class="nivel-titulo">Aprobado o reprobado <span class="tag-bloom">N3</span></span>
+<div class="nivel-conceptos-mini">
+<span class="mini-pill">Desde</span>
+<span class="mini-pill">Condición</span>
+</div>
+<span class="chevron" id="ch-n1">›</span>
+</div>
+<div class="nivel-body" id="n1">
+<div class="enunciado">
+En una clase de Algorítmica, la docente registra las calificaciones obtenidas por <strong>28 estudiantes</strong>.
+Realiza un sistema que indique si cada estudiante está <strong>Aprobado</strong> o <strong>Reprobado</strong>,
+considerando que la nota mínima de aprobación es <strong>2</strong>.
+</div>
+<div class="conceptos-lista">
+<span class="etiqueta">Usa:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición simple</span>
+</div>
+<button class="hint-trigger" onclick="toggleHint('h1', event)">
+<span class="ojo">¡Ojo!</span> Solo si no tienes ni idea de cómo resolver el problema, despliega — <strong>¿Por dónde empiezo?</strong> — para orientar tu razonamiento.
+</button>
+<div class="hint-body" id="h1">
+<div class="hint-titulo">¿Cómo pienso este problema?</div>
+Antes de escribir código, respóndete estas preguntas en papel:
+<ol>
+<li>¿Cuántas veces necesito repetir la acción? ¿Ese número lo conozco de antemano o no?</li>
+<li>¿Qué dato ingresa el usuario en cada vuelta del ciclo?</li>
+<li>¿Qué tengo que comparar para decidir si está aprobado? ¿Con qué valor y con qué operador?</li>
+<li>¿Qué debo mostrar como resultado: algo acumulado al final, o una respuesta por cada estudiante?</li>
+</ol>
+Si respondiste esas cuatro preguntas, ya tienes la estructura del algoritmo. Ahora escríbelo.
+</div>
+</div>
+</div>
+</div>
+
+<!-- NIVEL MEDIO -->
+<div class="nivel-section">
+<div class="nivel-card">
+<div class="nivel-header" onclick="toggle('n2')">
+<span class="nivel-badge badge-medio">Medio</span>
+<span class="nivel-titulo">Selección para competencia académica <span class="tag-bloom">N3</span></span>
+<div class="nivel-conceptos-mini">
+<span class="mini-pill">Desde</span>
+<span class="mini-pill">AND</span>
+<span class="mini-pill">2 contadores</span>
+</div>
+<span class="chevron" id="ch-n2">›</span>
+</div>
+<div class="nivel-body" id="n2">
+<div class="enunciado">
+Para representar al colegio en una competencia académica, cada estudiante debe cumplir <strong>dos requisitos</strong>:
+tener promedio mínimo de <strong>4</strong> y una asistencia igual o superior al <strong>80%</strong>.
+El sistema debe determinar cuántos estudiantes cumplen los requisitos para postularse y cuántos no.
+</div>
+<div class="conceptos-lista">
+<span class="etiqueta">Usa:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición compuesta (AND)</span>
+<span class="concepto-pill">Contador postulantes válidos</span>
+<span class="concepto-pill">Contador no válidos</span>
+</div>
+<button class="hint-trigger" onclick="toggleHint('h2', event)">
+<span class="ojo">¡Ojo!</span> Solo si no tienes ni idea de cómo resolver el problema, despliega — <strong>¿Por dónde empiezo?</strong> — para orientar tu razonamiento.
+</button>
+<div class="hint-body" id="h2">
+<div class="hint-titulo">¿Cómo pienso este problema?</div>
+<ol>
+<li>¿Cuántos datos ingresa el usuario por cada estudiante? ¿Uno o dos?</li>
+<li>La condición tiene dos partes. ¿Ambas deben cumplirse al mismo tiempo o basta con una sola?</li>
+<li>¿Cuántos contadores necesito? Piensa: ¿qué cosas distintas estoy contando?</li>
+<li>¿Cuándo muestro los resultados: dentro del ciclo o después de que termina?</li>
+</ol>
+Tip: cuando dos condiciones deben cumplirse juntas, el operador es <strong>AND</strong>. Si falla alguna, el estudiante no clasifica.
+</div>
+</div>
+</div>
+</div>
+
+<!-- NIVEL COMPLEJO -->
+<div class="nivel-section">
+<div class="nivel-card">
+<div class="nivel-header" onclick="toggle('n3')">
+<span class="nivel-badge badge-complejo">Complejo</span>
+<span class="nivel-titulo">Registro de ventas de 15 días <span class="tag-bloom">N4</span></span>
+<div class="nivel-conceptos-mini">
+<span class="mini-pill">Desde</span>
+<span class="mini-pill">Contador</span>
+<span class="mini-pill">Acumulador</span>
+</div>
+<span class="chevron" id="ch-n3">›</span>
+</div>
+<div class="nivel-body" id="n3">
+<div class="enunciado">
+Una empresa registra las ventas realizadas durante <strong>15 días</strong>. Por cada día se ingresa el monto vendido.
+El sistema debe calcular el <strong>total acumulado</strong> de las ventas y además indicar cuántos días se superó
+una venta de <strong>500.000 guaraníes</strong>. Al finalizar debe mostrar el total vendido y la cantidad de días
+con ventas superiores a ese monto.
+</div>
+<div class="conceptos-lista">
+<span class="etiqueta">Usa:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición</span>
+<span class="concepto-pill">Contador</span>
+<span class="concepto-pill acumulado">Acumulador</span>
+</div>
+<button class="hint-trigger" onclick="toggleHint('h3', event)">
+<span class="ojo">¡Ojo!</span> Solo si no tienes ni idea de cómo resolver el problema, despliega — <strong>¿Por dónde empiezo?</strong> — para orientar tu razonamiento.
+</button>
+<div class="hint-body" id="h3">
+<div class="hint-titulo">¿Cómo pienso este problema?</div>
+<ol>
+<li>¿Qué necesito guardar que va <em>creciendo</em> con cada vuelta del ciclo? Eso es un acumulador. ¿En qué valor inicia?</li>
+<li>¿Qué necesito guardar que va <em>contando</em> solo cuando se cumple algo? Eso es un contador.</li>
+<li>¿El acumulador y el contador se actualizan siempre, o solo bajo alguna condición?</li>
+<li>¿Qué muestro al final? ¿Hay algún cálculo extra necesario?</li>
+</ol>
+Truco: antes de escribir código, dibuja en papel qué pasa con tus variables en el día 1, en el día 2 y en el día 3. Si eso sale bien, el resto es repetición.
+</div>
+</div>
+</div>
+</div>
+
+<!-- NIVEL DESAFÍO -->
+<div class="nivel-section">
+<div class="nivel-card">
+<div class="nivel-header" onclick="toggle('n4')">
+<span class="nivel-badge badge-desafio">Desafío</span>
+<span class="nivel-titulo">Calificaciones finales con promedio <span class="tag-bloom">N4</span></span>
+<div class="nivel-conceptos-mini">
+<span class="mini-pill">Desde</span>
+<span class="mini-pill">2 contadores</span>
+<span class="mini-pill">Acumulador</span>
+<span class="mini-pill">Promedio</span>
+</div>
+<span class="chevron" id="ch-n4">›</span>
+</div>
+<div class="nivel-body" id="n4">
+<div class="enunciado">
+Un centro educativo registra las calificaciones finales de un grupo de estudiantes. Por cada estudiante
+se ingresa un puntaje entre <strong>1 y 100</strong>.
+El sistema debe calcular e imprimir: cuántos estudiantes <strong>aprobaron</strong> (mínimo 60 puntos),
+cuántos <strong>reprobaron</strong> y el <strong>promedio general</strong> del grupo.
+</div>
+<div class="conceptos-lista">
+<span class="etiqueta">Usa:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición</span>
+<span class="concepto-pill">Contador aprobados</span>
+<span class="concepto-pill">Contador reprobados</span>
+<span class="concepto-pill acumulado">Acumulador</span>
+<span class="concepto-pill acumulado">Cálculo de promedio</span>
+</div>
+<button class="hint-trigger" onclick="toggleHint('h4', event)">
+<span class="ojo">¡Ojo!</span> Solo si no tienes ni idea de cómo resolver el problema, despliega — <strong>¿Por dónde empiezo?</strong> — para orientar tu razonamiento.
+</button>
+<div class="hint-body" id="h4">
+<div class="hint-titulo">¿Cómo pienso este problema?</div>
+<ol>
+<li>¿Cuántas variables necesito antes de entrar al ciclo? Anótalas todas con su valor inicial.</li>
+<li>¿El acumulador y los dos contadores se actualizan en el mismo momento o en momentos distintos?</li>
+<li>El promedio se calcula <em>después</em> del ciclo. ¿Qué dos datos necesitas para calcularlo?</li>
+<li>¿Es posible que el grupo tenga cero estudiantes? Si sí, ¿qué pasaría al calcular el promedio?</li>
+</ol>
+Este ejercicio combina todo lo visto hasta ahora. Si te trabas, resuelve primero solo el conteo de aprobados y después agrega el acumulador.
+</div>
+</div>
+</div>
+</div>
+
+<!-- DESAFÍO EXTRA BATIN -->
+<div class="nivel-section">
+<div class="nivel-card">
+<div class="nivel-header" onclick="toggle('n5')">
+<span class="nivel-badge badge-extra">Extra BATIN</span>
+<span class="nivel-titulo">Campaña de mantenimiento técnico <span class="tag-bloom">N4</span></span>
+<div class="nivel-conceptos-mini">
+<span class="mini-pill">Desde</span>
+<span class="mini-pill">Contador</span>
+<span class="mini-pill">Acumulador</span>
+<span class="mini-pill">Máximo</span>
+</div>
+<span class="chevron" id="ch-n5">›</span>
+</div>
+<div class="nivel-body" id="n5">
+<div class="enunciado">
+Durante una campaña de mantenimiento, se registran las horas dedicadas por <strong>25 estudiantes</strong>
+a distintas tareas técnicas. El sistema debe: acumular el total de horas trabajadas, contar cuántos
+estudiantes trabajaron más de <strong>5 horas</strong> e identificar la <strong>mayor cantidad de horas</strong> registrada.
+Al finalizar debe mostrar el total de horas, la cantidad de estudiantes con más de 5 horas y la mayor
+cantidad de horas registrada.
+</div>
+<div class="conceptos-lista">
+<span class="etiqueta">Usa:</span>
+<span class="concepto-pill">Ciclo Desde</span>
+<span class="concepto-pill">Condición</span>
+<span class="concepto-pill">Contador</span>
+<span class="concepto-pill acumulado">Acumulador</span>
+<span class="concepto-pill acumulado">Búsqueda de máximo</span>
+</div>
+<div style="margin-top:0.75rem; padding:0.6rem 1rem; background:#F5F5F5; border-radius:8px; font-size:12px; color:#555; border:0.5px solid #E0E0E0;">
+<strong style="color:#1C1C1C;">Aviso:</strong> Este ejercicio agrega el patrón de <strong>búsqueda de máximo</strong>, que aún no fue trabajado formalmente. Solo inténtalo si dominas bien los cuatro anteriores.
+</div>
+<button class="hint-trigger" onclick="toggleHint('h5', event)">
+<span class="ojo">¡Ojo!</span> Solo si no tienes ni idea de cómo resolver el problema, despliega — <strong>¿Por dónde empiezo?</strong> — para orientar tu razonamiento.
+</button>
+<div class="hint-body" id="h5">
+<div class="hint-titulo">¿Cómo pienso este problema?</div>
+<ol>
+<li>Ya conoces el acumulador y el contador. Esas partes son iguales a los ejercicios anteriores.</li>
+<li>El máximo es una variable especial. ¿Con qué valor la inicializas antes del ciclo? Piensa: ¿qué valor garantiza que el primer dato ingresado siempre lo supere?</li>
+<li>Dentro del ciclo, ¿cuándo actualizas el máximo? Solo cuando el dato actual es mayor que el máximo guardado hasta ese momento.</li>
+<li>¿El máximo se actualiza dentro de la misma condición que el contador, o de forma independiente?</li>
+</ol>
+Tip: el patrón es siempre <em>"Si el dato actual es mayor que el máximo guardado, actualiza el máximo"</em>. Nada más.
+</div>
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+function toggle(id) {
+const body = document.getElementById(id);
+const ch = document.getElementById('ch-' + id);
+const open = body.classList.toggle('abierto');
+ch.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
+ch.style.transition = 'transform 0.2s';
+}
+
+function toggleHint(id, e) {
+e.stopPropagation();
+const el = document.getElementById(id);
+el.classList.toggle('visible');
+const btn = e.currentTarget;
+if (el.classList.contains('visible')) {
+btn.style.borderColor = 'var(--naranja)';
+btn.style.color = 'var(--naranja-oscuro)';
+} else {
+btn.style.borderColor = 'var(--gris-borde)';
+btn.style.color = '#888';
+}
+}
+</script>
+</body>
+</html>

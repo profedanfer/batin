@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables y Tipos de Datos · Algorítmica 2 · BATIN</title>
+<meta name="description" content="Material interactivo: variables, tipos de datos, nombres válidos, constantes, ámbito y conversión de tipos.">
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.vt-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 56px 24px 48px;
+}
+.vt-hero-inner { max-width: 900px; margin: 0 auto; }
+.vt-ruta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto3);
+  margin-bottom: 20px;
+}
+.vt-ruta a { color: var(--texto3); text-decoration: none; }
+.vt-ruta a:hover { color: var(--naranja); text-decoration: underline; }
+.vt-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--naranja);
+  background: var(--naranja-s);
+  border: 1px solid var(--naranja-b);
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+.vt-hero h1 {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--texto);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.vt-hero p { color: var(--texto2); font-size: 16px; max-width: 620px; line-height: 1.7; }
+
+/* ── LA CAJA (elemento firma) ── */
+.vt-caja-demo {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.vt-caja {
+  font-family: var(--font-mono);
+  background: var(--bg3);
+  border: 2px solid var(--naranja-b);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  min-width: 180px;
+  position: relative;
+}
+.vt-caja-etiqueta {
+  position: absolute;
+  top: -11px;
+  left: 14px;
+  background: var(--naranja);
+  color: #1a0f00;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: .5px;
+}
+.vt-caja-tipo { font-size: 11px; color: var(--texto3); margin-bottom: 6px; }
+.vt-caja-valor { font-size: 22px; color: var(--texto); font-weight: 600; }
+.vt-caja-flecha { color: var(--texto3); font-size: 22px; }
+.vt-caja-nota { font-size: 13px; color: var(--texto2); max-width: 260px; line-height: 1.6; }
+
+/* ══════════════════════════════════════
+   SECCIONES
+══════════════════════════════════════ */
+.vt-main { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+.vt-seccion { margin-bottom: 56px; }
+.vt-seccion-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.vt-seccion h2 {
+  font-family: var(--font-title);
+  font-size: 24px;
+  color: var(--texto);
+  margin-bottom: 12px;
+}
+.vt-seccion > p.vt-intro {
+  color: var(--texto2);
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 24px;
+  max-width: 680px;
+}
+
+/* ── TARJETAS DE TIPOS (clickeables) ── */
+.vt-tipos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.vt-tipo-card {
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r2);
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+}
+.vt-tipo-card:hover { border-color: var(--naranja-b); background: var(--naranja-s); }
+.vt-tipo-card.act { border-color: var(--naranja); background: var(--naranja-s); }
+.vt-tipo-icono { font-size: 26px; margin-bottom: 8px; }
+.vt-tipo-nombre { font-family: var(--font-mono); font-size: 13px; color: var(--texto); font-weight: 600; }
+.vt-tipo-detalle {
+  margin-top: 18px;
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r2);
+  padding: 22px 24px;
+  display: none;
+}
+.vt-tipo-detalle.act { display: block; }
+.vt-tipo-detalle h3 { font-family: var(--font-mono); color: var(--naranja); font-size: 16px; margin-bottom: 10px; }
+.vt-tipo-detalle p { color: var(--texto2); font-size: 14px; line-height: 1.7; margin-bottom: 10px; }
+.vt-tipo-ejemplos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.vt-ejemplo-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg3);
+  border: 1px solid var(--borde2);
+  color: var(--texto);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* ── VALIDADOR DE NOMBRES ── */
+.vt-validador {
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r2);
+  padding: 24px;
+}
+.vt-validador input {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--borde2);
+  color: var(--texto);
+  padding: 12px 14px;
+  border-radius: var(--r);
+  margin-bottom: 14px;
+}
+.vt-validador input:focus { outline: none; border-color: var(--naranja-b); }
+.vt-resultado {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: var(--r);
+  border: 1px solid var(--borde2);
+  color: var(--texto3);
+  min-height: 20px;
+}
+.vt-resultado.ok { color: #6fcf7c; border-color: rgba(111,207,124,.35); background: rgba(111,207,124,.08); }
+.vt-resultado.err { color: #ff6b6b; border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.08); }
+.vt-reglas { margin-top: 18px; }
+.vt-regla { font-size: 13px; color: var(--texto2); padding: 4px 0; }
+.vt-regla b { color: var(--texto); }
+
+/* ── TABS (constantes / ámbito / conversión) ── */
+.vt-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.vt-tab-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  color: var(--texto2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.vt-tab-btn:hover { border-color: var(--naranja-b); }
+.vt-tab-btn.act { background: var(--naranja); border-color: var(--naranja); color: #1a0f00; font-weight: 600; }
+.vt-tab-panel { display: none; }
+.vt-tab-panel.act { display: block; }
+
+.vt-codigo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg3);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  color: var(--texto);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  margin: 12px 0;
+}
+.vt-codigo .cm { color: var(--texto3); }
+.vt-codigo .kw { color: var(--violeta2); }
+.vt-codigo .st { color: var(--naranja3); }
+
+/* ── CONVERSOR INTERACTIVO ── */
+.vt-conversor {
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r2);
+  padding: 24px;
+}
+.vt-conversor-fila { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.vt-conversor input, .vt-conversor select {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--borde2);
+  color: var(--texto);
+  padding: 9px 12px;
+  border-radius: var(--r);
+}
+.vt-conversor input { flex: 1; min-width: 140px; }
+
+/* ── FEEDBACK BOX GENERICO ── */
+.vt-info { font-size: 13px; color: var(--texto2); margin-top: 10px; line-height: 1.6; }
+.vt-info b { color: var(--naranja3); }
+
+@media (max-width: 640px) {
+  .vt-hero { padding: 40px 18px 36px; }
+  .vt-main { padding: 36px 18px 60px; }
+  .vt-caja-demo { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<section class="vt-hero">
+  <div class="vt-hero-inner">
+    <div class="vt-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span style="color:var(--borde3)">/</span>
+      <a href="../aprendiendo.html">Ruta Algorítmica</a>
+      <span style="color:var(--borde3)">/</span>
+      <span>Variables y Tipos de Datos</span>
+    </div>
+    <span class="vt-badge">// Algorítmica 2 · Material interactivo</span>
+    <h1>Toda variable es una caja<br>con una etiqueta y un tipo de contenido permitido.</h1>
+    <p>Antes de escribir el primer algoritmo, hay que entender dónde vive la información mientras el programa se ejecuta. Eso son las variables — y cada una acepta solo un tipo de dato.</p>
+
+    <div class="vt-caja-demo">
+      <div class="vt-caja">
+        <span class="vt-caja-etiqueta">edad</span>
+        <div class="vt-caja-tipo">tipo: Entero</div>
+        <div class="vt-caja-valor">17</div>
+      </div>
+      <span class="vt-caja-flecha">→</span>
+      <p class="vt-caja-nota"><b>edad</b> es el nombre de la variable, <b>Entero</b> es su tipo de dato, y <b>17</b> es el valor que guarda ahora mismo — mañana podría guardar otro número, pero siempre un Entero.</p>
+    </div>
+  </div>
+</section>
+
+<main class="vt-main">
+
+  <!-- ══════ 1. QUÉ ES UNA VARIABLE ══════ -->
+  <div class="vt-seccion">
+    <div class="vt-seccion-num">// 01</div>
+    <h2>¿Qué es una variable?</h2>
+    <p class="vt-intro">Una <b style="color:var(--texto)">variable</b> es un espacio con nombre donde un algoritmo guarda un dato mientras se ejecuta. El valor adentro puede cambiar — por eso se llama "variable" — pero el <b style="color:var(--texto)">tipo de dato</b> que acepta esa caja queda fijo desde que se declara.</p>
+    <p class="vt-intro">Una <b style="color:var(--texto)">constante</b>, en cambio, es una caja que se sella después de guardar el valor una única vez: no se puede volver a abrir para cambiarlo.</p>
+  </div>
+
+  <!-- ══════ 2. TIPOS DE DATOS ══════ -->
+  <div class="vt-seccion">
+    <div class="vt-seccion-num">// 02</div>
+    <h2>Tipos de datos primitivos</h2>
+    <p class="vt-intro">Hacé clic en cada tipo para ver su definición y ejemplos.</p>
+
+    <div class="vt-tipos-grid" id="tipos-grid">
+      <div class="vt-tipo-card" data-tipo="entero">
+        <div class="vt-tipo-icono">🔢</div>
+        <div class="vt-tipo-nombre">Entero</div>
+      </div>
+      <div class="vt-tipo-card" data-tipo="real">
+        <div class="vt-tipo-icono">📏</div>
+        <div class="vt-tipo-nombre">Real</div>
+      </div>
+      <div class="vt-tipo-card" data-tipo="caracter">
+        <div class="vt-tipo-icono">🔤</div>
+        <div class="vt-tipo-nombre">Carácter</div>
+      </div>
+      <div class="vt-tipo-card" data-tipo="cadena">
+        <div class="vt-tipo-icono">📝</div>
+        <div class="vt-tipo-nombre">Cadena</div>
+      </div>
+      <div class="vt-tipo-card" data-tipo="booleano">
+        <div class="vt-tipo-icono">✓✗</div>
+        <div class="vt-tipo-nombre">Booleano</div>
+      </div>
+    </div>
+
+    <div class="vt-tipo-detalle" id="detalle-entero">
+      <h3>Entero</h3>
+      <p>Números sin parte decimal, positivos, negativos o cero. Se usan para contar cosas: cantidad de alumnos, número de intentos, un índice.</p>
+      <div class="vt-tipo-ejemplos">
+        <span class="vt-ejemplo-chip">17</span>
+        <span class="vt-ejemplo-chip">-4</span>
+        <span class="vt-ejemplo-chip">0</span>
+        <span class="vt-ejemplo-chip">1000</span>
+      </div>
+    </div>
+    <div class="vt-tipo-detalle" id="detalle-real">
+      <h3>Real</h3>
+      <p>Números con parte decimal. Se usan cuando el valor necesita precisión: un promedio, un precio, una altura.</p>
+      <div class="vt-tipo-ejemplos">
+        <span class="vt-ejemplo-chip">3.14</span>
+        <span class="vt-ejemplo-chip">-0.5</span>
+        <span class="vt-ejemplo-chip">100.0</span>
+        <span class="vt-ejemplo-chip">7.25</span>
+      </div>
+    </div>
+    <div class="vt-tipo-detalle" id="detalle-caracter">
+      <h3>Carácter</h3>
+      <p>Un único símbolo: una letra, un dígito o un carácter especial. Va entre comillas simples.</p>
+      <div class="vt-tipo-ejemplos">
+        <span class="vt-ejemplo-chip">'A'</span>
+        <span class="vt-ejemplo-chip">'7'</span>
+        <span class="vt-ejemplo-chip">'@'</span>
+        <span class="vt-ejemplo-chip">'ñ'</span>
+      </div>
+    </div>
+    <div class="vt-tipo-detalle" id="detalle-cadena">
+      <h3>Cadena (String)</h3>
+      <p>Una secuencia de caracteres — texto. Va entre comillas dobles. Internamente se construye a partir del tipo Carácter.</p>
+      <div class="vt-tipo-ejemplos">
+        <span class="vt-ejemplo-chip">"Daniela"</span>
+        <span class="vt-ejemplo-chip">"BATIN 2026"</span>
+        <span class="vt-ejemplo-chip">""</span>
+      </div>
+    </div>
+    <div class="vt-tipo-detalle" id="detalle-booleano">
+      <h3>Booleano</h3>
+      <p>Solo tiene dos valores posibles: Verdadero o Falso. Es el resultado natural de una comparación (==, &gt;, &lt;, etc.) o de una expresión lógica (AND, OR, NOT).</p>
+      <div class="vt-tipo-ejemplos">
+        <span class="vt-ejemplo-chip">Verdadero</span>
+        <span class="vt-ejemplo-chip">Falso</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ 3. NOMBRES VÁLIDOS ══════ -->
+  <div class="vt-seccion">
+    <div class="vt-seccion-num">// 03</div>
+    <h2>Nombres válidos para variables</h2>
+    <p class="vt-intro">Escribí un nombre de variable y comprobá si es válido según las reglas estándar de algorítmica.</p>
+
+    <div class="vt-validador">
+      <input type="text" id="nombre-input" placeholder="Escribí un nombre de variable, ej: contador_1" autocomplete="off">
+      <div class="vt-resultado" id="nombre-resultado">Escribí algo arriba para validar ↑</div>
+      <div class="vt-reglas">
+        <div class="vt-regla">• Debe empezar con una <b>letra</b> (no con número ni símbolo)</div>
+        <div class="vt-regla">• Solo puede contener <b>letras, números y guion bajo (_)</b> — sin espacios ni tildes</div>
+        <div class="vt-regla">• No puede ser una <b>palabra reservada</b> del lenguaje (si, entonces, mientras, para, etc.)</div>
+        <div class="vt-regla">• Es sensible a mayúsculas: <b>nota</b> y <b>Nota</b> son variables distintas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ 4. TABS: CONSTANTES / ÁMBITO / CONVERSIÓN ══════ -->
+  <div class="vt-seccion">
+    <div class="vt-seccion-num">// 04</div>
+    <h2>Constantes, ámbito y conversión de tipos</h2>
+
+    <div class="vt-tabs" id="vt-tabs">
+      <button class="vt-tab-btn act" data-tab="constantes">Constantes</button>
+      <button class="vt-tab-btn" data-tab="ambito">Ámbito de variables</button>
+      <button class="vt-tab-btn" data-tab="conversion">Conversión de tipos</button>
+    </div>
+
+    <div class="vt-tab-panel act" data-panel="constantes">
+      <p class="vt-intro">Una <b style="color:var(--texto)">constante</b> se declara una sola vez y su valor no puede cambiar durante toda la ejecución del algoritmo. Se usan para valores que no deberían modificarse por error: un IVA, un límite máximo, un valor de PI.</p>
+      <div class="vt-codigo"><span class="cm">// Variable: el valor puede cambiar</span>
+<span class="kw">Definir</span> edad <span class="kw">Como</span> Entero
+edad ← 17
+edad ← 18  <span class="cm">// válido</span>
+
+<span class="cm">// Constante: el valor queda fijo</span>
+<span class="kw">Definir</span> IVA <span class="kw">Como</span> Constante Real
+IVA ← <span class="st">0.10</span>
+IVA ← <span class="st">0.15</span>  <span class="cm">// ERROR: no se puede reasignar</span></div>
+      <p class="vt-info">💡 Usar constantes para valores fijos evita errores silenciosos: si alguien intenta cambiar el IVA por accidente en medio del código, el algoritmo directamente no compila.</p>
+    </div>
+
+    <div class="vt-tab-panel" data-panel="ambito">
+      <p class="vt-intro">El <b style="color:var(--texto)">ámbito</b> (o alcance) de una variable define en qué parte del algoritmo esa variable existe y puede usarse.</p>
+      <div class="vt-codigo"><span class="kw">Definir</span> total <span class="kw">Como</span> Entero  <span class="cm">// ámbito GLOBAL</span>
+total ← <span class="st">0</span>
+
+<span class="kw">SubProceso</span> sumarNota(nota)
+    <span class="kw">Definir</span> bonus <span class="kw">Como</span> Real  <span class="cm">// ámbito LOCAL</span>
+    bonus ← <span class="st">0.5</span>
+    total ← total + nota + bonus
+<span class="kw">FinSubProceso</span>
+
+<span class="cm">// "bonus" NO existe fuera del SubProceso.
+// "total" sí, porque es global.</span></div>
+      <p class="vt-info"><b>Global</b>: declarada fuera de cualquier función/subproceso — visible en todo el algoritmo. &nbsp; <b>Local</b>: declarada dentro de una función/subproceso — solo existe mientras esa parte se ejecuta.</p>
+    </div>
+
+    <div class="vt-tab-panel" data-panel="conversion">
+      <p class="vt-intro">A veces un dato de un tipo necesita usarse como si fuera de otro tipo. Probá el conversor:</p>
+      <div class="vt-conversor">
+        <div class="vt-conversor-fila">
+          <input type="text" id="conv-valor" placeholder="Escribí un valor, ej: 42 o 3.14 o Hola">
+          <select id="conv-tipo">
+            <option value="entero">a Entero</option>
+            <option value="real">a Real</option>
+            <option value="cadena">a Cadena</option>
+          </select>
+        </div>
+        <div class="vt-resultado" id="conv-resultado">El resultado de la conversión aparece acá →</div>
+      </div>
+      <p class="vt-info" style="margin-top:16px"><b>Conversión implícita</b>: el lenguaje la hace solo (ej: sumar un Entero con un Real da un Real automáticamente). <b>Conversión explícita</b>: la pedís vos a propósito, por ejemplo para mostrar un número dentro de un mensaje de texto (convertir un Entero a Cadena).</p>
+    </div>
+  </div>
+
+</main>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+// ── Tipos de datos: mostrar detalle al hacer clic ──
+document.querySelectorAll('.vt-tipo-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const tipo = card.dataset.tipo;
+    const yaActivo = card.classList.contains('act');
+    document.querySelectorAll('.vt-tipo-card').forEach(c => c.classList.remove('act'));
+    document.querySelectorAll('.vt-tipo-detalle').forEach(d => d.classList.remove('act'));
+    if (!yaActivo) {
+      card.classList.add('act');
+      document.getElementById('detalle-' + tipo).classList.add('act');
+    }
+  });
+});
+// Abrir "Entero" por defecto
+document.querySelector('[data-tipo="entero"]').click();
+
+// ── Validador de nombres de variables ──
+const RESERVADAS = ['si','entonces','sino','finsi','mientras','finmientras','para','finpara',
+  'segun','fin','proceso','finproceso','subproceso','finsubproceso','definir','como','constante',
+  'entero','real','caracter','cadena','logico','booleano','verdadero','falso','and','or','not',
+  'repetir','hasta','escribir','leer','segun','caso'];
+
+const nombreInput = document.getElementById('nombre-input');
+const nombreResultado = document.getElementById('nombre-resultado');
+
+function validarNombre(nombre) {
+  if (!nombre) return { ok: null, msg: 'Escribí algo arriba para validar ↑' };
+  if (!/^[a-zA-ZÀ-ÿ]/.test(nombre)) {
+    return { ok: false, msg: '✗ Inválido — debe empezar con una letra, no con "' + nombre[0] + '".' };
+  }
+  if (/\s/.test(nombre)) {
+    return { ok: false, msg: '✗ Inválido — no puede contener espacios.' };
+  }
+  if (!/^[a-zA-ZÀ-ÿ][a-zA-Z0-9_À-ÿ]*$/.test(nombre)) {
+    return { ok: false, msg: '✗ Inválido — solo se permiten letras, números y guion bajo (_).' };
+  }
+  if (RESERVADAS.includes(nombre.toLowerCase())) {
+    return { ok: false, msg: '✗ Inválido — "' + nombre + '" es una palabra reservada del lenguaje.' };
+  }
+  return { ok: true, msg: '✓ "' + nombre + '" es un nombre de variable válido.' };
+}
+
+nombreInput.addEventListener('input', () => {
+  const r = validarNombre(nombreInput.value.trim());
+  nombreResultado.textContent = r.msg;
+  nombreResultado.className = 'vt-resultado' + (r.ok === true ? ' ok' : r.ok === false ? ' err' : '');
+});
+
+// ── Tabs: Constantes / Ámbito / Conversión ──
+document.querySelectorAll('#vt-tabs .vt-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('#vt-tabs .vt-tab-btn').forEach(b => b.classList.remove('act'));
+    document.querySelectorAll('.vt-tab-panel').forEach(p => p.classList.remove('act'));
+    btn.classList.add('act');
+    document.querySelector(`[data-panel="${tab}"]`).classList.add('act');
+  });
+});
+
+// ── Conversor de tipos ──
+const convValor = document.getElementById('conv-valor');
+const convTipo = document.getElementById('conv-tipo');
+const convResultado = document.getElementById('conv-resultado');
+
+function actualizarConversor() {
+  const val = convValor.value.trim();
+  const tipo = convTipo.value;
+  if (!val) {
+    convResultado.textContent = 'El resultado de la conversión aparece acá →';
+    convResultado.className = 'vt-resultado';
+    return;
+  }
+  let resultado, ok;
+  if (tipo === 'entero') {
+    const n = parseInt(val, 10);
+    if (isNaN(n)) { resultado = `✗ "${val}" no se puede convertir a Entero.`; ok = false; }
+    else { resultado = `✓ a Entero → ${n}` + (val.includes('.') ? ' (se pierde la parte decimal)' : ''); ok = true; }
+  } else if (tipo === 'real') {
+    const n = parseFloat(val);
+    if (isNaN(n)) { resultado = `✗ "${val}" no se puede convertir a Real.`; ok = false; }
+    else { resultado = `✓ a Real → ${n.toFixed(2)}`; ok = true; }
+  } else {
+    resultado = `✓ a Cadena → "${val}"`; ok = true;
+  }
+  convResultado.textContent = resultado;
+  convResultado.className = 'vt-resultado' + (ok ? ' ok' : ' err');
+}
+convValor.addEventListener('input', actualizarConversor);
+convTipo.addEventListener('change', actualizarConversor);
+</script>
+</body>
+</html>
