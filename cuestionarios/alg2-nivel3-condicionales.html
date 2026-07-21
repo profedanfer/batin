@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorítmica 2 · Nivel 3 · Condicionales · Cuestionario · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html">Ruta Algorítmica</a>
+      <span class="sep">/</span>
+      <span>Algorítmica 2 · Nivel 3</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/bit_idea.png" alt="Bit con idea">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Algorítmica 2 · Nivel 3</span>
+        <h1 class="quiz-titulo">Evaluación Formativa<br>Estructuras Condicionales</h1>
+        <p class="quiz-subtitulo">No es para calificar — es para que sepas dónde estás y qué sigue.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 10 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~5 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🤖</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Bit dice:</strong> Leé cada pregunta con calma. Seleccioná la opción que consideres correcta y hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para ver el resultado al instante. Cuando termines, vas a recibir tu diagnóstico.</p>
+      <p>Este cuestionario es formativo — el objetivo es que identifiques qué entendiste bien y qué necesita refuerzo antes de avanzar al Nivel 2.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 10</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 01</div>
+        <div class="pregunta-texto">Según la simbología de diagramas de flujo, de la figura de <strong>CONDICIÓN</strong> salen dos caminos posibles. ¿Cómo se llaman?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Inicio y Fin</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">V (Verdadero) y F (Falso)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Entrada y Salida</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Proceso e Impresión</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <div class="pregunta-dots" id="mini-dots"></div>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','De la condición siempre salen dos caminos: V (Verdadero) hacia un grupo de instrucciones, y F (Falso) hacia otro.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 02</div>
+        <div class="pregunta-texto">Para armar una condición, la clase la resume en tres preguntas: "¿Con qué comparo?", "¿Cómo comparo?" y "¿Qué comparo?". ¿A cuál corresponde el operador de relación (&gt;, &lt;, ==, etc.)?</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">¿Con qué comparo?</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">¿Cómo comparo?</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">¿Qué comparo?</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">A ninguna de las tres.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'b','\u00bfCon qu\u00e9 comparo? = variable/constante. \u00bfC\u00f3mo comparo? = el operador de relaci\u00f3n (>, <, ==...). \u00bfQu\u00e9 comparo? = el valor o f\u00f3rmula del otro lado.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 03</div>
+        <div class="pregunta-texto">Según el ejemplo visto en clase (donde Verdadero equivale a 1 y Falso a 0), al operador lógico <strong>AND</strong> se lo compara con:</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La suma («sumador»)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">La multiplicación («multiplicador»)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">La resta</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">La división</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'b','AND es el \u00abmultiplicador\u00bb: 1*1=1 (V), pero si cualquiera de los dos es 0 (F), el resultado es 0 (F). Igual que multiplicar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 04</div>
+        <div class="pregunta-texto">Y al operador lógico <strong>OR</strong>, ¿con qué operación se lo compara?</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La multiplicación («multiplicador»)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">La suma («sumador»)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">La resta</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">La división</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','OR es el \u00absumador\u00bb: basta con que uno de los dos sea 1 (V) para que el resultado sea Verdadero.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 05</div>
+        <div class="pregunta-texto">Con <strong>A1 = Verdadero, B1 = Falso, C1 = Verdadero</strong>, ¿cuál es el resultado de <strong>F = A1 AND B1</strong>?</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Verdadero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Falso</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','A1 AND B1 = Verdadero * Falso = 1 * 0 = 0 = Falso.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 06</div>
+        <div class="pregunta-texto">Con los mismos valores (<strong>A1 = Verdadero, B1 = Falso, C1 = Verdadero</strong>), ¿cuál es el resultado de <strong>Z = B1 OR NOT(C1)</strong>?</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Verdadero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Falso</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','NOT(C1) = NOT(Verdadero) = Falso. Entonces Z = B1 OR NOT(C1) = Falso + Falso = 0+0 = 0 = Falso.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 07</div>
+        <div class="pregunta-texto">Según la tabla de verdad vista en clase, si <strong>A = Falso</strong> y <strong>B = Verdadero</strong>, ¿cuál es el resultado de <strong>A OR B</strong>?</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Verdadero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Falso</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'a','En la tabla de verdad, Falso OR Verdadero = Verdadero. El OR solo da Falso cuando AMBOS son Falso.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 08</div>
+        <div class="pregunta-texto">¿Cómo se clasifican las estructuras condicionales según lo visto en clase?</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Simples, Dobles y Anidadas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Cortas, Medias y Largas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Lineales y Circulares</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Primarias y Secundarias</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'a','Simples (solo un camino de acción), Dobles (V y F con acciones distintas) y Anidadas (una condición dentro de otra).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 09</div>
+        <div class="pregunta-texto">En la sintaxis de pseudocódigo vista en clase, ¿cómo se estructura una condición?</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">IF (condición) { instrucciones }</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">SI [condición] ENTONCES [instrucciones]; ELSE [instrucciones]; FIN SI</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">CUANDO [condición] HACER [instrucciones]</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">CONDICION: [instrucciones]</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','La sintaxis vista en clase es: SI [condición] ENTONCES [instrucciones]; ELSE [instrucciones]; FIN SI.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 10 · Verdadero o Falso</div>
+        <div class="pregunta-texto">En el pseudocódigo visto en clase, todas las instrucciones terminan con punto y coma (;), excepto las palabras INICIO y FIN de una estructura.</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'v','Correcto. Como dice la diapositiva: \u00abTodas las instrucciones que no sean INICIO o FIN de una ESTRUCTURA terminan con punto y coma\u00bb.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+
+
+
+
+
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+// ══════════════════════════════════════
+// DATOS
+// ══════════════════════════════════════
+const TOTAL = 10;
+const CORRECTAS = { 1:'b', 2:'b', 3:'b', 4:'b', 5:'b', 6:'b', 7:'a', 8:'a', 9:'b', 10:'v' };
+const TEXTOS_CORRECTAS = {
+  1: 'V (Verdadero) y F (Falso)',
+  2: '¿Cómo comparo?',
+  3: 'La multiplicación («multiplicador»)',
+  4: 'La suma («sumador»)',
+  5: 'Falso',
+  6: 'Falso',
+  7: 'Verdadero',
+  8: 'Simples, Dobles y Anidadas',
+  9: 'SI [condición] ENTONCES...; ELSE...; FIN SI',
+  10: 'Verdadero'
+};
+const PREGUNTAS_TEXTO = {
+  1: '¿Cómo se llaman los dos caminos de una CONDICIÓN?',
+  2: '¿A qué pregunta corresponde el operador de relación?',
+  3: '¿AND se compara con qué operación?',
+  4: '¿OR se compara con qué operación?',
+  5: 'A1=V, B1=F — F = A1 AND B1 — ¿resultado?',
+  6: 'Z = B1 OR NOT(C1) — ¿resultado?',
+  7: 'A=Falso, B=Verdadero — A OR B — ¿resultado?',
+  8: '¿Cómo se clasifican las estructuras condicionales?',
+  9: '¿Cuál es la sintaxis de una condición en pseudocódigo?',
+  10: '¿Todas las instrucciones terminan en punto y coma?'
+};
+
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let preguntaActual = 1;
+let seleccionActual = {};  // { nro: opcion }
+let respondidas = {};       // { nro: { seleccion, correcto } }
+
+// ══════════════════════════════════════
+// INICIALIZAR DOTS
+// ══════════════════════════════════════
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+// ══════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════
+// SELECCIONAR OPCIÓN
+// ══════════════════════════════════════
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return; // ya respondida
+  // Limpiar selección previa
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  // Habilitar botón
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+// ══════════════════════════════════════
+// RESPONDER Y AVANZAR
+// ══════════════════════════════════════
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  // Marcar opciones
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta || letra === (correcta === 'v' ? '✓' : correcta === 'f' ? '✗' : correcta)) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  // Feedback
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  // Dot
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 800);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 900);
+}
+
+// ══════════════════════════════════════
+// RESULTADO FINAL
+// ══════════════════════════════════════
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    // 🟢 DOMINADO
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Demostraste que dominás los conectores lógicos (AND/OR/NOT), la clasificación de condicionales y la sintaxis del SI...ENTONCES. ¡Estás listo para avanzar a Ciclos Repetitivos!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Avanza al siguiente tema: Ciclos repetitivos — FOR y WHILE!</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como repaso opcional, revisá <a href="https://drive.google.com/file/d/16ZFhlpOvSRgEsiHxiAd9ILibNHB8RL35/preview" target="_blank">Ejercicios de Repaso</a></div>
+    `;
+  } else if (pct >= 60) {
+    // 🟡 EN DESARROLLO
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Vas bien en algunos conceptos, pero hay temas que conviene repasar antes de avanzar. ¡No te preocupes, es parte del proceso!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá: <a href="https://drive.google.com/file/d/1eOU5-eI_gYp7oNXsfzMiBDpWXKUGqLiG/preview" target="_blank">Condiciones parte 1</a> (simbología, cómo armar una condición)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá: <a href="https://drive.google.com/file/d/1fCUQL6HqnucszsGeTylLjOwxSoITZz66/preview" target="_blank">Conectores Lógicos (Condiciones parte 2)</a> — AND/OR/NOT, tabla de verdad, clasificación</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Repasá: <a href="https://drive.google.com/file/d/1Xc0pyooywWTcUR4Jv8iXbL4n21JO6dWZ/preview" target="_blank">Pseudocódigos</a> — sintaxis SI...ENTONCES...FIN SI</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
+    `;
+  } else {
+    // 🔴 NECESITA REFUERZO
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Los conceptos de este nivel todavía no están afianzados — eso es normal al principio. Con el recorrido correcto vas a dominarlo.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📄 Archivos para repasar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1eOU5-eI_gYp7oNXsfzMiBDpWXKUGqLiG/preview" target="_blank">Condiciones parte 1</a> — empezá por acá (simbología y estructura de una condición)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="https://drive.google.com/file/d/1fCUQL6HqnucszsGeTylLjOwxSoITZz66/preview" target="_blank">Conectores Lógicos</a> — prestá especial atención a la diapositiva 11 (AND/OR/NOT como multiplicador/sumador/negador) y la 12 (tabla de verdad)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> <a href="https://drive.google.com/file/d/1Xc0pyooywWTcUR4Jv8iXbL4n21JO6dWZ/preview" target="_blank">Pseudocódigos</a> — sintaxis de SI...ENTONCES...ELSE...FIN SI</div>
+      <div class="ruta-subtitulo">📝 Ejercicios para volver a realizar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Resolvé de nuevo los 4 ejercicios de la diapositiva 5 de "Condiciones parte 1"</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">05</span> Hacé el <a href="https://drive.google.com/file/d/16ZFhlpOvSRgEsiHxiAd9ILibNHB8RL35/preview" target="_blank">Repaso de Ejercicios</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">06</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 3 · Estructuras Condicionales';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% — eso habla de comprensión real, no de suerte. Los fundamentos están claros. Avanzá con confianza al Nivel 2."`,
+    amarillo: `"Hay conceptos que ya entendiste bien. Los que fallaste tienen un patrón — revisalos con calma y volvé. El aprendizaje no es lineal."`,
+    rojo:     `"A mí también me costó al principio. Lo que importa no es el primer intento — es el recorrido que haces después. Sigue la ruta y vuelve a intentarlo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  // Construir revisión
+  construirRevision();
+
+  // Scroll al resultado
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ══════════════════════════════════════
+// REVISIÓN DETALLADA
+// ══════════════════════════════════════
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ══════════════════════════════════════
+// REINICIAR
+// ══════════════════════════════════════
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  // Resetear UI
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  // Resetear preguntas
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════
+// ARRANCAR
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>
