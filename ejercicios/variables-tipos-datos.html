@@ -476,13 +476,13 @@ const nombreResultado = document.getElementById('nombre-resultado');
 
 function validarNombre(nombre) {
   if (!nombre) return { ok: null, msg: 'Escribí algo arriba para validar ↑' };
-  if (!/^[a-zA-ZÀ-ÿ]/.test(nombre)) {
+  if (!/^[a-zA-Z]/.test(nombre)) {
     return { ok: false, msg: '✗ Inválido — debe empezar con una letra, no con "' + nombre[0] + '".' };
   }
   if (/\s/.test(nombre)) {
     return { ok: false, msg: '✗ Inválido — no puede contener espacios.' };
   }
-  if (!/^[a-zA-ZÀ-ÿ][a-zA-Z0-9_À-ÿ]*$/.test(nombre)) {
+  if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(nombre)) {
     return { ok: false, msg: '✗ Inválido — solo se permiten letras, números y guion bajo (_).' };
   }
   if (RESERVADAS.includes(nombre.toLowerCase())) {
