@@ -216,6 +216,8 @@
 .rec-btn.web:hover { background: var(--azul-s); }
 .rec-btn.yt     { color: #e87050;         border-color: rgba(232,112,80,.3); }
 .rec-btn.yt:hover  { background: rgba(232,112,80,.08); }
+.rec-btn.quiz   { color: var(--violeta);  border-color: var(--violeta-b);  font-weight: 600; }
+.rec-btn.quiz:hover { background: var(--violeta-s); }
 .rec-btn.soon   { color: var(--texto3);   border-color: var(--borde2);     pointer-events: none; opacity: .6; }
 
 /* Bloom en esquina */
@@ -484,7 +486,7 @@
         Elige la ruta que necesites hoy.
       </p>
       <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
-        <span class="tag tag-naranja">★ Algorítmica 2 y 3</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('algoritmica', document.querySelector('.ruta-btn'))">★ Algorítmica 2 y 3</span>
         <span class="tag tag-naranja">★ Laboratorio 1, 2 y 3</span>
         <span class="tag tag-azul">Lenguajes</span>
         <span class="tag tag-azul">Presencia Web</span>
@@ -657,6 +659,7 @@
             <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank" class="rec-btn pdf">📄 Diagramas p1</a>
             <a href="https://drive.google.com/file/d/1V7KSg9f8xDEkn37jNAFy78ORLX3nJPz9/preview" target="_blank" class="rec-btn pdf">📄 Diagramas p2</a>
             <a href="https://pseint.sourceforge.net/" target="_blank" class="rec-btn web">🔗 PseInt</a>
+            <a href="cuestionarios/alg2-nivel1.html" class="rec-btn quiz">🎯 Autoevaluación Nivel 1</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
@@ -749,8 +752,9 @@
           <h4>Estructuras de datos — introducción y clasificación</h4>
           <p>Tipos de datos estructurados. Diferencia entre estructuras estáticas y dinámicas. Costo de operaciones. Introducción a Java como lenguaje de implementación.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Estructura de Datos</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Intro Java + Pseudocódigo</a>
+            <a href="https://drive.google.com/file/d/1_H_Hc8F7I4b58zRTKHTjZKUH61rUTCpi/preview" target="_blank" class="rec-btn pdf">📄 Estructura de Datos</a>
+            <a href="https://drive.google.com/file/d/1VrfxPgJLAdOZOgInsKRBa1xr8Z9H0Y0q/preview" target="_blank" class="rec-btn pdf">📄 Intro Java + Pseudocódigo</a>
+            <a href="https://drive.google.com/file/d/11fAwfO640rS1YdHQljYiGzndOUt0nDGY/preview" target="_blank" class="rec-btn pdf">📖 Manual completo Algorítmica 3</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar conocimiento de ciencias de la computación y TI">T1</span>
@@ -770,10 +774,12 @@
           <h4>Arrays en Java — uni y multidimensionales</h4>
           <p>Arreglos en Java. Recorridos, búsqueda, validación de límites. La lógica no cambia — cambia la sintaxis.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Mastering Arrays</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Soluciones</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Array Java</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Estructura lógica Java</a>
+            <a href="https://drive.google.com/file/d/1nKHFFHB0p7KbCrfQBh3plCm8LQccK7Sb/preview" target="_blank" class="rec-btn pdf">📄 Mastering Arrays</a>
+            <a href="https://drive.google.com/file/d/1OMyRPMr1tpoO7f3_5D5bvSNHTHRIG0QT/preview" target="_blank" class="rec-btn pdf">📄 Soluciones</a>
+            <a href="https://drive.google.com/file/d/1WqYtdUhQFiynElxrUQKzssRwMf4leFq0/preview" target="_blank" class="rec-btn pdf">📄 Array Java</a>
+            <a href="https://drive.google.com/file/d/1VrfxPgJLAdOZOgInsKRBa1xr8Z9H0Y0q/preview" target="_blank" class="rec-btn pdf">📄 Estructura lógica Java</a>
+            <a href="https://youtu.be/MwSgXVOYJFo" target="_blank" class="rec-btn yt">▶️ Video: Introducción a los Arreglos</a>
+            <a href="cuestionarios/alg3-nivel1.html" class="rec-btn quiz">🎯 Autoevaluación Nivel 1</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
@@ -793,9 +799,15 @@
           <h4>Listas enlazadas, Pilas y Colas</h4>
           <p>Estructuras dinámicas: nodos, punteros, encadenamiento. Comportamiento LIFO (Pila) y FIFO (Cola). Aplicaciones prácticas y ejercicios de fijación.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Listas enlazadas</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Ejercicios fijación</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Repaso pre-parcial</a>
+            <a href="https://drive.google.com/file/d/1PtIxVX7x62l16rmNHXG5Leee3yXSjm5n/preview" target="_blank" class="rec-btn pdf">📄 Listas enlazadas</a>
+            <a href="materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank" class="rec-btn pdf">📄 Pilas y Colas</a>
+            <a href="https://drive.google.com/file/d/10NszRE83TmAQGhJ3tUZE7Qo6_tNBae0U/preview" target="_blank" class="rec-btn pdf">📄 Ejercicios fijación</a>
+            <a href="materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank" class="rec-btn pdf">📄 Pilas y Colas</a>
+            <a href="materiales/A3.C07%20Colas%20Circulares.pdf" target="_blank" class="rec-btn pdf">📄 Colas Circulares</a>
+            <a href="https://profedanfer.github.io/sitio/1-ejercicios_fijacion_algor%C3%ADtmica3.html" target="_blank" class="rec-btn web">⚡ Repaso pre-parcial</a>
+            <a href="cuestionarios/alg3-nivel2-pilas.html" class="rec-btn quiz">🎯 Autoevaluación · Pilas</a>
+            <a href="cuestionarios/alg3-nivel3-colas.html" class="rec-btn quiz">🎯 Autoevaluación · Colas</a>
+            <a href="cuestionarios/alg3-nivel4-listas.html" class="rec-btn quiz">🎯 Autoevaluación · Listas Enlazadas</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
@@ -815,9 +827,10 @@
           <h4>Grafos — estructuras no lineales</h4>
           <p>Conceptos iniciales. Tipos de grafos. Representaciones: matriz de adyacencia y lista de adyacencias. Aplicaciones en redes y mapas.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Grafos p1</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Grafos p2</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Lista adyacencias</a>
+            <a href="https://drive.google.com/file/d/1lg0kbR8DWfORRkS7OL67ZLcKmI5Xz24Y/preview" target="_blank" class="rec-btn pdf">📄 Grafos p1</a>
+            <a href="https://drive.google.com/file/d/1dhy0E-qD9WR3IBOLZnpY6ZWkPDW6qXm8/preview" target="_blank" class="rec-btn pdf">📄 Grafos p2</a>
+            <a href="https://drive.google.com/file/d/1m4QfnqtEZw6cgRBOARL7ls4dOdmA1a6s/preview" target="_blank" class="rec-btn pdf">📄 Lista adyacencias</a>
+            <a href="cuestionarios/alg3-nivel5-grafos.html" class="rec-btn quiz">🎯 Autoevaluación · Grafos</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
@@ -837,10 +850,11 @@
           <h4>Árboles — generales, binarios y de búsqueda (ABB)</h4>
           <p>Árbol como grafo conexo y acíclico. Árboles binarios: recorridos inorden, preorden, postorden. ABB: inserción y búsqueda. Transformación árbol general → binario.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Árboles generales</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Árboles binarios</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 ABB búsqueda</a>
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Inserción en ABB</a>
+            <a href="https://drive.google.com/file/d/1bOml7urEX3e-YW4ClrqJNeb5pPW5LsG4/preview" target="_blank" class="rec-btn pdf">📄 Árboles generales</a>
+            <a href="https://drive.google.com/file/d/16O3fmdG05JIUmGYCkfdTid8XbDOz4gia/preview" target="_blank" class="rec-btn pdf">📄 Árboles binarios</a>
+            <a href="https://drive.google.com/file/d/1-gl0kTaqAqaBY7aSWAGfoYMy9lzYJbbD/preview" target="_blank" class="rec-btn pdf">📄 ABB búsqueda</a>
+            <a href="https://drive.google.com/file/d/15cLFdTjTGVZiyBYSMjGeHlaqWZbYtJGL/preview" target="_blank" class="rec-btn pdf">📄 Inserción en ABB</a>
+            <a href="cuestionarios/alg3-nivel6-arboles.html" class="rec-btn quiz">🎯 Autoevaluación · Árboles</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Aplicar fundamentos matemáticos y principios algorítmicos">T4</span>
@@ -860,7 +874,7 @@
           <h4>Calendarización de proyectos de software</h4>
           <p>Técnicas para estimar y planificar tiempos. PERT/CPM. Cálculo de fechas de finalización. Credibilidad y cumplimiento en el desarrollo de sistemas.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Calendarización</a>
+            <a href="https://drive.google.com/file/d/1EDFVNGx4O8TnOCgSBaze001bdxnvaiZB/preview" target="_blank" class="rec-btn pdf">📄 Calendarización</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Desempeñar roles en proyectos informáticos multidisciplinarios">T5</span>
@@ -1132,7 +1146,7 @@
           <h4>De Python a Java — la traducción</h4>
           <p>La lógica no cambia — cambia la sintaxis. Traducción de pseudocódigo y Python a Java. Tipos estáticos, llaves, punto y coma. Primeros programas en Java.</p>
           <div class="tema-recursos">
-            <a href="https://sites.google.com/view/profe-danfer/3ro-batin/algorítmica-3" target="_blank" class="rec-btn pdf">📄 Introd. Java · Traducción</a>
+            <a href="https://youtu.be/gJscx8vyg4I" target="_blank" class="rec-btn yt">▶️ Video: Traducción Pseudocódigo → Java</a>
             <a href="https://netbeans.apache.org/" target="_blank" class="rec-btn web">🔗 NetBeans IDE</a>
           </div>
         </div>
