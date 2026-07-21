@@ -3,19 +3,28 @@
    Componentes compartidos: nav, footer, utils
 ═══════════════════════════════════════════ */
 
+// ── BASE: se calcula según desde dónde se cargó este script ──
+// En páginas de raíz: <script src="batin.js">        → BASE = ''
+// En páginas de subcarpeta: <script src="../batin.js"> → BASE = '../'
+const BATIN_BASE = (() => {
+  const scriptEl = document.currentScript;
+  const srcAttr = scriptEl ? scriptEl.getAttribute('src') : 'batin.js';
+  return srcAttr.replace(/batin\.js(\?.*)?$/, '');
+})();
+
 // ── NAV HTML ──
 const NAV_HTML = `
 <nav class="batin-nav">
-  <a href="index.html" class="nav-logo">
+  <a href="${BATIN_BASE}index.html" class="nav-logo">
     <span class="nav-logo-badge">BATIN</span>
     <span class="nav-logo-text">profe.DanFer</span>
   </a>
   <div class="nav-links">
-    <a href="index.html"        data-page="index">🏠 Inicio</a>
-    <a href="el-sistema.html"   data-page="sistema">El Sistema</a>
-    <a href="aprendiendo.html"  data-page="aprendiendo">Estoy aprendiendo</a>
-    <a href="construyendo.html" data-page="construyendo">Estoy construyendo</a>
-    <a href="huella.html"       data-page="huella">Estoy dejando huella</a>
+    <a href="${BATIN_BASE}index.html"        data-page="index">🏠 Inicio</a>
+    <a href="${BATIN_BASE}el-sistema.html"   data-page="sistema">El Sistema</a>
+    <a href="${BATIN_BASE}aprendiendo.html"  data-page="aprendiendo">Estoy aprendiendo</a>
+    <a href="${BATIN_BASE}construyendo.html" data-page="construyendo">Estoy construyendo</a>
+    <a href="${BATIN_BASE}huella.html"       data-page="huella">Estoy dejando huella</a>
   </div>
   <div class="nav-right">
     <div class="nav-chars">
@@ -39,11 +48,11 @@ const FOOTER_HTML = `
     </div>
     <div class="footer-col">
       <h5>Navegación</h5>
-      <a href="index.html">Inicio · Soy BATIN</a>
-      <a href="el-sistema.html">El Sistema</a>
-      <a href="aprendiendo.html">Estoy aprendiendo</a>
-      <a href="construyendo.html">Estoy construyendo</a>
-      <a href="huella.html">Estoy dejando huella</a>
+      <a href="${BATIN_BASE}index.html">Inicio · Soy BATIN</a>
+      <a href="${BATIN_BASE}el-sistema.html">El Sistema</a>
+      <a href="${BATIN_BASE}aprendiendo.html">Estoy aprendiendo</a>
+      <a href="${BATIN_BASE}construyendo.html">Estoy construyendo</a>
+      <a href="${BATIN_BASE}huella.html">Estoy dejando huella</a>
     </div>
     <div class="footer-col">
       <h5>Contacto</h5>
