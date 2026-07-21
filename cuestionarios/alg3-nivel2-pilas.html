@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Algorítmica 2 · Nivel 1 · Cuestionario · BATIN</title>
+<title>Algorítmica 3 · Nivel 2 · Pilas · Cuestionario · BATIN</title>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -747,15 +747,15 @@
       <span class="sep">/</span>
       <a href="../aprendiendo.html">Ruta Algorítmica</a>
       <span class="sep">/</span>
-      <span>Algorítmica 2 · Nivel 1</span>
+      <span>Algorítmica 3 · Nivel 2</span>
     </div>
     <div class="quiz-hero-header">
       <div class="quiz-hero-char">
         <img src="../img/bit_idea.png" alt="Bit con idea">
       </div>
       <div>
-        <span class="quiz-nivel-badge">// Algorítmica 2 · Nivel 1</span>
-        <h1 class="quiz-titulo">Evaluación Formativa<br>Algoritmos y Diagramas de Flujo</h1>
+        <span class="quiz-nivel-badge">// Algorítmica 3 · Nivel 2</span>
+        <h1 class="quiz-titulo">Evaluación Formativa<br>Pilas (Stacks)</h1>
         <p class="quiz-subtitulo">No es para calificar — es para que sepas dónde estás y qué sigue.</p>
         <div class="quiz-meta">
           <span class="quiz-meta-item">📝 10 preguntas</span>
@@ -769,16 +769,6 @@
 
 <!-- MAIN -->
 <div class="quiz-main">
-
-  <!-- Link formulario Google (opcional) -->
-  <div class="google-form-link">
-    <span style="font-size:22px">📋</span>
-    <div class="gfl-texto">
-      <strong>¿Preferís hacer la evaluación en Google Forms?</strong>
-      El formulario registra tus respuestas y las comparte con la profe.
-    </div>
-    <a href="#" class="btn btn-azul btn-sm" id="google-form-btn" target="_blank">Abrir formulario ↗</a>
-  </div>
 
   <!-- Instrucciones -->
   <div class="instrucciones">
@@ -805,32 +795,31 @@
 
   <!-- ══════ PREGUNTAS ══════ -->
   <div id="preguntas-container">
-
     <!-- P1 -->
     <div class="pregunta-panel" id="p1">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 01</div>
-        <div class="pregunta-texto">¿Cuál de las siguientes opciones describe mejor un algoritmo?</div>
+        <div class="pregunta-texto">¿Qué significa que una pila tenga comportamiento LIFO?</div>
         <div class="opciones" id="ops-1">
           <label class="opcion-label" onclick="seleccionar(this,1,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Un programa ejecutándose en una computadora.</span>
+            <span class="opcion-texto">First In, First Out — el primero en entrar es el primero en salir.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Una secuencia ordenada de pasos para resolver un problema.</span>
+            <span class="opcion-texto">Last In, First Out — el último en entrar es el primero en salir.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Un lenguaje de programación.</span>
+            <span class="opcion-texto">Los elementos se ordenan alfabéticamente.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Un conjunto de componentes electrónicos.</span>
+            <span class="opcion-texto">El orden de salida es aleatorio.</span>
           </label>
         </div>
         <div class="feedback" id="fb-1"></div>
@@ -838,42 +827,32 @@
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
         <div class="pregunta-dots" id="mini-dots"></div>
-        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Una secuencia ordenada de pasos para resolver un problema.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','LIFO: Last In, First Out — el último en entrar es el primero en salir.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P2 -->
     <div class="pregunta-panel" id="p2">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 02</div>
-        <div class="pregunta-texto">¿Cuál de los siguientes NO es un símbolo estándar de un diagrama de flujo?</div>
+        <div class="pregunta-num">// Pregunta 02 · Verdadero o Falso</div>
+        <div class="pregunta-texto">En una pila, el único elemento directamente accesible es el que está en la CIMA.</div>
         <div class="opciones" id="ops-2">
-          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+          <label class="opcion-label" onclick="seleccionar(this,2,'v')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Óvalo → Inicio/Fin</span>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+          <label class="opcion-label" onclick="seleccionar(this,2,'f')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Rectángulo → Proceso</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo → Decisión</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Triángulo → Repetición</span>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso</span>
           </label>
         </div>
         <div class="feedback" id="fb-2"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'d','El triángulo no es un símbolo estándar en diagramas de flujo.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'v','Correcto. No se puede acceder al medio ni al fondo de la pila — solo se opera por la CIMA.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -881,34 +860,34 @@
     <div class="pregunta-panel" id="p3">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 03</div>
-        <div class="pregunta-texto">¿Qué símbolo se utiliza normalmente para representar una decisión?</div>
+        <div class="pregunta-texto">¿Cómo se llama la operación que agrega un elemento a la pila?</div>
         <div class="opciones" id="ops-3">
           <label class="opcion-label" onclick="seleccionar(this,3,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Rectángulo</span>
+            <span class="opcion-texto">Pop</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Óvalo</span>
+            <span class="opcion-texto">Push</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo</span>
+            <span class="opcion-texto">Enqueue</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Flecha</span>
+            <span class="opcion-texto">Dequeue</span>
           </label>
         </div>
         <div class="feedback" id="fb-3"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'c','El rombo representa una condición o decisión: ¿Sí o No?')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'b','Push (Insertar) agrega un elemento en la cima de la pila. Enqueue y Dequeue son operaciones de colas.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -916,34 +895,34 @@
     <div class="pregunta-panel" id="p4">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 04</div>
-        <div class="pregunta-texto">¿Qué símbolo se utiliza para representar una entrada o salida de datos?</div>
+        <div class="pregunta-texto">¿Cómo se llama la operación que quita el elemento de la cima de la pila?</div>
         <div class="opciones" id="ops-4">
           <label class="opcion-label" onclick="seleccionar(this,4,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Paralelogramo</span>
+            <span class="opcion-texto">Push</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Rectángulo</span>
+            <span class="opcion-texto">Pop</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo</span>
+            <span class="opcion-texto">Dequeue</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Óvalo</span>
+            <span class="opcion-texto">Enqueue</span>
           </label>
         </div>
         <div class="feedback" id="fb-4"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'a','El paralelogramo representa Entrada/Salida: Leer o Escribir datos.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','Pop (Quitar) elimina el elemento que está en la cima.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -951,35 +930,34 @@
     <div class="pregunta-panel" id="p5">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 05</div>
-        <div class="pregunta-texto">Observa el siguiente pseudocódigo. ¿Qué realiza este algoritmo?</div>
-        <div class="pregunta-codigo">Inicio<br>&nbsp;&nbsp;Leer edad<br>&nbsp;&nbsp;Escribir edad<br>Fin</div>
+        <div class="pregunta-texto">Si PilaA está vacía, ¿qué valor tiene el <strong>PunteroPila</strong>?</div>
         <div class="opciones" id="ops-5">
           <label class="opcion-label" onclick="seleccionar(this,5,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Calcula la edad.</span>
+            <span class="opcion-texto">0</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Solicita una edad y luego la muestra.</span>
+            <span class="opcion-texto">-1</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Compara edades.</span>
+            <span class="opcion-texto">null</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Almacena varias edades.</span>
+            <span class="opcion-texto">MAX</span>
           </label>
         </div>
         <div class="feedback" id="fb-5"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','Leer = entrada de datos. Escribir = salida. El algoritmo pide un valor y lo muestra.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','Cuando la pila está vacía: PunteroPila = -1 y Cima = null.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -987,95 +965,94 @@
     <div class="pregunta-panel" id="p6">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 06</div>
-        <div class="pregunta-texto">¿Cuál es el orden correcto para construir un algoritmo?</div>
+        <div class="pregunta-texto">¿Cuándo se produce un <strong>Overflow</strong> en una pila?</div>
         <div class="opciones" id="ops-6">
           <label class="opcion-label" onclick="seleccionar(this,6,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Resolver → Analizar → Probar</span>
+            <span class="opcion-texto">Al intentar hacer pop en una pila vacía.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Analizar → Diseñar → Probar</span>
+            <span class="opcion-texto">Al intentar hacer push en una pila que ya está llena.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Programar → Analizar → Diseñar</span>
+            <span class="opcion-texto">Al hacer push correctamente en una pila con espacio.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Dibujar → Programar → Ejecutar</span>
+            <span class="opcion-texto">Nunca — las pilas no tienen límite de capacidad.</span>
           </label>
         </div>
         <div class="feedback" id="fb-6"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Primero entender el problema, luego diseñar la solución, finalmente probarla.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Overflow: error al intentar insertar (push) en una pila que ya está llena.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P7 -->
     <div class="pregunta-panel" id="p7">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 07 · Verdadero o Falso</div>
-        <div class="pregunta-texto">Todo diagrama de flujo debe tener un punto de inicio y un punto de fin.</div>
+        <div class="pregunta-num">// Pregunta 07</div>
+        <div class="pregunta-texto">Partiendo de una PilaA vacía (capacidad 4), se ejecutan en orden: <strong>push(10), push(20), push(30), pop(), push(40)</strong>. ¿Cuáles son los valores finales de PunteroPila y Cima?</div>
         <div class="opciones" id="ops-7">
-          <label class="opcion-label" onclick="seleccionar(this,7,'v')">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">✓</span>
-            <span class="opcion-texto">Verdadero</span>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">PunteroPila = 2, Cima = 40</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,7,'f')">
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">✗</span>
-            <span class="opcion-texto">Falso</span>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">PunteroPila = 1, Cima = 20</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">PunteroPila = 3, Cima = 40</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">PunteroPila = 2, Cima = 30</span>
           </label>
         </div>
         <div class="feedback" id="fb-7"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'v','Correcto. Todo diagrama de flujo comienza con un óvalo de Inicio y termina con uno de Fin.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'a','push(10)→ptr0, push(20)→ptr1, push(30)→ptr2, pop()→ptr1 (sale 30), push(40)→ptr2. PunteroPila=2, Cima=40.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P8 -->
     <div class="pregunta-panel" id="p8">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 08</div>
-        <div class="pregunta-texto">Observa el siguiente fragmento. ¿Qué muestra el algoritmo?</div>
-        <div class="pregunta-codigo">Inicio<br>&nbsp;&nbsp;Leer A<br>&nbsp;&nbsp;Leer B<br>&nbsp;&nbsp;Suma ← A + B<br>&nbsp;&nbsp;Escribir Suma<br>Fin</div>
+        <div class="pregunta-num">// Pregunta 08 · Verdadero o Falso</div>
+        <div class="pregunta-texto">El <strong>Underflow</strong> ocurre al intentar hacer pop() en una pila vacía.</div>
         <div class="opciones" id="ops-8">
-          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+          <label class="opcion-label" onclick="seleccionar(this,8,'v')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">El número mayor.</span>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+          <label class="opcion-label" onclick="seleccionar(this,8,'f')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">La suma de dos valores ingresados.</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El promedio de dos valores.</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El producto de dos valores.</span>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso</span>
           </label>
         </div>
         <div class="feedback" id="fb-8"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','A + B es suma. Para promedio sería (A+B)/2, para producto A*B.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'v','Correcto. Underflow: error al intentar quitar (pop) de una pila vacía.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -1083,34 +1060,34 @@
     <div class="pregunta-panel" id="p9">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 09</div>
-        <div class="pregunta-texto">¿Qué función cumplen las flechas en un diagrama de flujo?</div>
+        <div class="pregunta-texto">¿Cuál de estas afirmaciones sobre la pila es correcta?</div>
         <div class="opciones" id="ops-9">
           <label class="opcion-label" onclick="seleccionar(this,9,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Decorar el diagrama.</span>
+            <span class="opcion-texto">Se puede acceder directamente a cualquier elemento, no solo a la cima.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Mostrar el orden o dirección del proceso.</span>
+            <span class="opcion-texto">Solo se puede operar por la cima — no se puede acceder al medio ni al fondo.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Representar variables.</span>
+            <span class="opcion-texto">La cima siempre es el primer elemento que se insertó.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Identificar errores.</span>
+            <span class="opcion-texto">La pila no tiene restricciones de acceso.</span>
           </label>
         </div>
         <div class="feedback" id="fb-9"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','Las flechas son conectores que indican el flujo y la secuencia de ejecución del algoritmo.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','Esa es justamente la restricción que define a la pila: solo se opera por la cima.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -1118,38 +1095,40 @@
     <div class="pregunta-panel" id="p10">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 10</div>
-        <div class="pregunta-texto">¿Cuál de los siguientes problemas podría resolverse mediante un algoritmo?</div>
+        <div class="pregunta-texto">Una pila de platos: si agregás un plato va arriba; si sacás uno, sale el de arriba. ¿Qué comportamiento ejemplifica esto?</div>
         <div class="opciones" id="ops-10">
           <label class="opcion-label" onclick="seleccionar(this,10,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Calcular el promedio de notas de un estudiante.</span>
+            <span class="opcion-texto">FIFO</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Decidir cuál es la mejor canción del mundo.</span>
+            <span class="opcion-texto">LIFO</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Elegir el color más bonito.</span>
+            <span class="opcion-texto">Orden aleatorio</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Determinar cuál es la comida más rica.</span>
+            <span class="opcion-texto">Orden alfabético</span>
           </label>
         </div>
         <div class="feedback" id="fb-10"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
-        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'a','Un algoritmo necesita un proceso lógico definido. El promedio tiene pasos claros; los otros son subjetivos.')" disabled>Finalizar evaluación ✓</button>
+        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'b','Exacto — es el ejemplo cotidiano de LIFO que vimos en clase: el último plato que ponés es el primero que sacás.')" disabled>Finalizar evaluación ✓</button>
       </div>
     </div>
 
   </div><!-- fin preguntas-container -->
+
+
 
   <!-- ══════ RESULTADO ══════ -->
   <div id="resultado-panel">
@@ -1208,30 +1187,30 @@
 // DATOS
 // ══════════════════════════════════════
 const TOTAL = 10;
-const CORRECTAS = { 1:'b', 2:'d', 3:'c', 4:'a', 5:'b', 6:'b', 7:'v', 8:'b', 9:'b', 10:'a' };
+const CORRECTAS = { 1:'b', 2:'v', 3:'b', 4:'b', 5:'b', 6:'b', 7:'a', 8:'v', 9:'b', 10:'b' };
 const TEXTOS_CORRECTAS = {
-  1: 'Una secuencia ordenada de pasos para resolver un problema.',
-  2: 'Triángulo → Repetición (no existe en diagramas de flujo estándar)',
-  3: 'Rombo',
-  4: 'Paralelogramo',
-  5: 'Solicita una edad y luego la muestra.',
-  6: 'Analizar → Diseñar → Probar',
-  7: 'Verdadero',
-  8: 'La suma de dos valores ingresados.',
-  9: 'Mostrar el orden o dirección del proceso.',
-  10: 'Calcular el promedio de notas de un estudiante.'
+  1: 'LIFO — el último en entrar es el primero en salir.',
+  2: 'Verdadero',
+  3: 'Push',
+  4: 'Pop',
+  5: '-1',
+  6: 'Al hacer push en una pila llena.',
+  7: 'PunteroPila = 2, Cima = 40',
+  8: 'Verdadero',
+  9: 'Solo se puede operar por la cima.',
+  10: 'LIFO'
 };
 const PREGUNTAS_TEXTO = {
-  1: '¿Cuál describe mejor un algoritmo?',
-  2: '¿Cuál NO es símbolo estándar en diagramas de flujo?',
-  3: '¿Qué símbolo representa una decisión?',
-  4: '¿Qué símbolo representa entrada/salida?',
-  5: 'Pseudocódigo Leer/Escribir edad — ¿qué hace?',
-  6: '¿Cuál es el orden correcto para construir un algoritmo?',
-  7: '¿Todo diagrama debe tener inicio y fin?',
-  8: 'Pseudocódigo suma A+B — ¿qué muestra?',
-  9: '¿Qué función cumplen las flechas?',
-  10: '¿Qué problema resuelve un algoritmo?'
+  1: '¿Qué significa LIFO?',
+  2: '¿Solo se accede por la CIMA?',
+  3: '¿Cómo se llama agregar un elemento?',
+  4: '¿Cómo se llama quitar el elemento de la cima?',
+  5: 'PilaA vacía — ¿valor de PunteroPila?',
+  6: '¿Cuándo se produce Overflow?',
+  7: 'push(10,20,30), pop(), push(40) — ¿PunteroPila y Cima finales?',
+  8: '¿Underflow es error al hacer pop en pila vacía?',
+  9: '¿Qué restricción de acceso tiene la pila?',
+  10: 'Pila de platos — ¿qué comportamiento ejemplifica?'
 };
 
 // ══════════════════════════════════════
@@ -1349,7 +1328,6 @@ function mostrarResultado() {
   document.getElementById('dots-container').style.display = 'none';
   document.querySelector('.quiz-progreso').style.display = 'none';
   document.querySelector('.instrucciones').style.display = 'none';
-  document.querySelector('.google-form-link').style.display = 'none';
   document.getElementById('resultado-panel').style.display = 'block';
 
   const correctas = Object.values(respondidas).filter(r => r.correcto).length;
@@ -1368,10 +1346,10 @@ function mostrarResultado() {
     colorClass = 'verde';
     charImg = '../img/bit_motivando.png';
     charNombre = 'BIT';
-    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Demostraste que comprendes los fundamentos de algoritmos y diagramas de flujo. ¡Estás listo para avanzar al Nivel 2!`;
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Demostraste que comprendés el comportamiento LIFO, la CIMA, el PunteroPila y las operaciones Push/Pop. ¡Estás listo para avanzar a Colas y colas circulares!`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Avanza al Nivel 2: Variables y Operadores!</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como refuerzo opcional, revisá <a href="../aprendiendo.html">las presentaciones de Algorítmica 2</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Avanza al siguiente tema: Colas y colas circulares!</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como refuerzo opcional, revisá la <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">presentación de Pilas y Colas</a></div>
     `;
   } else if (pct >= 60) {
     // 🟡 EN DESARROLLO
@@ -1381,10 +1359,9 @@ function mostrarResultado() {
     charNombre = 'GATIEL';
     mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Vas bien en algunos conceptos, pero hay temas que conviene repasar antes de avanzar. ¡No te preocupes, es parte del proceso!`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Revisá el material: <a href="https://drive.google.com/file/d/1n_l-UJLAyCKDZCDLS7Cm94GjfJw4PdZV/preview" target="_blank">Algoritmos — conceptos</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Revisá los diagramas: <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank">Diagramas de Flujo parte 1</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Practicá con: <a href="https://pseint.sourceforge.net/" target="_blank">PseInt</a> — escribí los pseudocódigos de las preguntas que erraste</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá: <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">Pilas y Colas — presentación de clase</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá atención a: CIMA, PunteroPila, y las condiciones de Overflow/Underflow (diapositivas 4 y 5)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
     `;
   } else {
     // 🔴 NECESITA REFUERZO
@@ -1395,12 +1372,11 @@ function mostrarResultado() {
     mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Los conceptos de este nivel todavía no están afianzados — eso es normal al principio. Con el recorrido correcto vas a dominarlo.`;
     rutaHTML = `
       <div class="ruta-subtitulo">📄 Archivos para repasar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1LXhSeOfziwVc_k00RjEgCrs-YVX4p4Tu/preview" target="_blank">Primeros pasos en Algorítmica</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="https://drive.google.com/file/d/1n_l-UJLAyCKDZCDLS7Cm94GjfJw4PdZV/preview" target="_blank">Algoritmos — conceptos y arquitectura</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Diagramas de flujo: <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank">parte 1</a> y <a href="https://drive.google.com/file/d/1V7KSg9f8xDEkn37jNAFy78ORLX3nJPz9/preview" target="_blank">parte 2</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">Pilas y Colas — presentación de clase</a> (diapositivas 3 a 6)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá bien: definición de CIMA, PunteroPila, y la tabla comparativa Push/Pop (diapositiva 5)</div>
       <div class="ruta-subtitulo">📝 Ejercicios para volver a realizar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Instalá <a href="https://pseint.sourceforge.net/" target="_blank">PseInt</a> y volvé a escribir el pseudocódigo de las preguntas 5 y 8</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">05</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Rehacé a mano el <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">ejemplo guiado paso a paso de PilaA</a> (diapositiva 6) — antes de mirar la solución</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
     `;
   }
 
@@ -1411,7 +1387,7 @@ function mostrarResultado() {
   document.getElementById('resultado-char-img').src = charImg;
   document.getElementById('resultado-char-img').alt = charNombre;
   document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
-  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 1 · Algoritmos y Diagramas de Flujo';
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 2 · Pilas';
   document.getElementById('diag-char-img').src = charImg;
   document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
   document.getElementById('diag-char-nombre').textContent = charNombre;
@@ -1478,7 +1454,6 @@ function reiniciar() {
   document.getElementById('preguntas-container').style.display = 'block';
   document.querySelector('.quiz-progreso').style.display = 'block';
   document.querySelector('.instrucciones').style.display = 'flex';
-  document.querySelector('.google-form-link').style.display = 'flex';
   document.getElementById('dots-container').style.display = 'flex';
 
   // Resetear preguntas

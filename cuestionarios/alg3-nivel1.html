@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Algorítmica 2 · Nivel 1 · Cuestionario · BATIN</title>
+<title>Algorítmica 3 · Nivel 1 · Cuestionario · BATIN</title>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -747,15 +747,15 @@
       <span class="sep">/</span>
       <a href="../aprendiendo.html">Ruta Algorítmica</a>
       <span class="sep">/</span>
-      <span>Algorítmica 2 · Nivel 1</span>
+      <span>Algorítmica 3 · Nivel 1</span>
     </div>
     <div class="quiz-hero-header">
       <div class="quiz-hero-char">
         <img src="../img/bit_idea.png" alt="Bit con idea">
       </div>
       <div>
-        <span class="quiz-nivel-badge">// Algorítmica 2 · Nivel 1</span>
-        <h1 class="quiz-titulo">Evaluación Formativa<br>Algoritmos y Diagramas de Flujo</h1>
+        <span class="quiz-nivel-badge">// Algorítmica 3 · Nivel 1</span>
+        <h1 class="quiz-titulo">Evaluación Formativa<br>Estructura de Datos y Arrays en Java</h1>
         <p class="quiz-subtitulo">No es para calificar — es para que sepas dónde estás y qué sigue.</p>
         <div class="quiz-meta">
           <span class="quiz-meta-item">📝 10 preguntas</span>
@@ -769,16 +769,6 @@
 
 <!-- MAIN -->
 <div class="quiz-main">
-
-  <!-- Link formulario Google (opcional) -->
-  <div class="google-form-link">
-    <span style="font-size:22px">📋</span>
-    <div class="gfl-texto">
-      <strong>¿Preferís hacer la evaluación en Google Forms?</strong>
-      El formulario registra tus respuestas y las comparte con la profe.
-    </div>
-    <a href="#" class="btn btn-azul btn-sm" id="google-form-btn" target="_blank">Abrir formulario ↗</a>
-  </div>
 
   <!-- Instrucciones -->
   <div class="instrucciones">
@@ -810,27 +800,27 @@
     <div class="pregunta-panel" id="p1">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 01</div>
-        <div class="pregunta-texto">¿Cuál de las siguientes opciones describe mejor un algoritmo?</div>
+        <div class="pregunta-texto">¿Cuál es la definición más precisa de una estructura de datos?</div>
         <div class="opciones" id="ops-1">
           <label class="opcion-label" onclick="seleccionar(this,1,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Un programa ejecutándose en una computadora.</span>
+            <span class="opcion-texto">Un tipo de dato que ocupa poca memoria.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Una secuencia ordenada de pasos para resolver un problema.</span>
+            <span class="opcion-texto">Una clase de datos caracterizada por su organización y las operaciones definidas sobre ella.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Un lenguaje de programación.</span>
+            <span class="opcion-texto">Un algoritmo para ordenar datos.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Un conjunto de componentes electrónicos.</span>
+            <span class="opcion-texto">Una variable declarada con tipo estático.</span>
           </label>
         </div>
         <div class="feedback" id="fb-1"></div>
@@ -838,42 +828,32 @@
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
         <div class="pregunta-dots" id="mini-dots"></div>
-        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Una secuencia ordenada de pasos para resolver un problema.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Una estructura de datos se define por cómo organiza los datos y qué operaciones permite realizar sobre ellos.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P2 -->
     <div class="pregunta-panel" id="p2">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 02</div>
-        <div class="pregunta-texto">¿Cuál de los siguientes NO es un símbolo estándar de un diagrama de flujo?</div>
+        <div class="pregunta-num">// Pregunta 02 · Verdadero o Falso</div>
+        <div class="pregunta-texto">Las estructuras de datos estáticas pueden cambiar de tamaño durante la ejecución del programa.</div>
         <div class="opciones" id="ops-2">
-          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+          <label class="opcion-label" onclick="seleccionar(this,2,'v')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Óvalo → Inicio/Fin</span>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+          <label class="opcion-label" onclick="seleccionar(this,2,'f')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Rectángulo → Proceso</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo → Decisión</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Triángulo → Repetición</span>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso</span>
           </label>
         </div>
         <div class="feedback" id="fb-2"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'d','El triángulo no es un símbolo estándar en diagramas de flujo.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'f','Las estructuras estáticas (como los arreglos) tienen tamaño fijo definido de antemano. Las que sí cambian de tamaño en ejecución son las dinámicas: listas, pilas, colas.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -881,34 +861,34 @@
     <div class="pregunta-panel" id="p3">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 03</div>
-        <div class="pregunta-texto">¿Qué símbolo se utiliza normalmente para representar una decisión?</div>
+        <div class="pregunta-texto">¿Por qué es importante considerar el "costo de las operaciones" al elegir una estructura de datos?</div>
         <div class="opciones" id="ops-3">
           <label class="opcion-label" onclick="seleccionar(this,3,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Rectángulo</span>
+            <span class="opcion-texto">Porque determina el color con el que se muestra en pantalla.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Óvalo</span>
+            <span class="opcion-texto">Porque cada operación (insertar, buscar, eliminar) consume tiempo y recursos distintos según la estructura elegida.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo</span>
+            <span class="opcion-texto">Porque todas las estructuras tienen exactamente el mismo rendimiento.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Flecha</span>
+            <span class="opcion-texto">Porque solo afecta a programas con interfaz gráfica.</span>
           </label>
         </div>
         <div class="feedback" id="fb-3"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'c','El rombo representa una condición o decisión: ¿Sí o No?')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'b','Elegir bien la estructura significa elegir la que resuelve tus operaciones más frecuentes con el menor costo posible.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -916,34 +896,34 @@
     <div class="pregunta-panel" id="p4">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 04</div>
-        <div class="pregunta-texto">¿Qué símbolo se utiliza para representar una entrada o salida de datos?</div>
+        <div class="pregunta-texto">¿Cuáles son ejemplos de estructuras de datos primitivas?</div>
         <div class="opciones" id="ops-4">
           <label class="opcion-label" onclick="seleccionar(this,4,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Paralelogramo</span>
+            <span class="opcion-texto">Arreglos, registros y cadenas.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Rectángulo</span>
+            <span class="opcion-texto">Pilas, colas y listas ligadas.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Rombo</span>
+            <span class="opcion-texto">Enteros, booleanos y caracteres.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Óvalo</span>
+            <span class="opcion-texto">Árboles y grafos.</span>
           </label>
         </div>
         <div class="feedback" id="fb-4"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'a','El paralelogramo representa Entrada/Salida: Leer o Escribir datos.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'c','Las primitivas no se construyen a partir de otras estructuras. Cadenas, arreglos y registros son estructuras simples que sí se construyen a partir de primitivas.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -951,35 +931,34 @@
     <div class="pregunta-panel" id="p5">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 05</div>
-        <div class="pregunta-texto">Observa el siguiente pseudocódigo. ¿Qué realiza este algoritmo?</div>
-        <div class="pregunta-codigo">Inicio<br>&nbsp;&nbsp;Leer edad<br>&nbsp;&nbsp;Escribir edad<br>Fin</div>
+        <div class="pregunta-texto">Si la variable booleana PRIMERO tiene el valor Verdadero y SEGUNDO tiene el valor Falso, ¿cuál es el resultado de <strong>PRIMERO and SEGUNDO</strong>?</div>
         <div class="opciones" id="ops-5">
           <label class="opcion-label" onclick="seleccionar(this,5,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Calcula la edad.</span>
+            <span class="opcion-texto">Verdadero</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Solicita una edad y luego la muestra.</span>
+            <span class="opcion-texto">Falso</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Compara edades.</span>
+            <span class="opcion-texto">Indefinido</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Almacena varias edades.</span>
+            <span class="opcion-texto">Depende del lenguaje de programación.</span>
           </label>
         </div>
         <div class="feedback" id="fb-5"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','Leer = entrada de datos. Escribir = salida. El algoritmo pide un valor y lo muestra.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','El operador AND solo da Verdadero cuando AMBOS operandos son Verdaderos. Como SEGUNDO es Falso, el resultado es Falso.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -987,59 +966,70 @@
     <div class="pregunta-panel" id="p6">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 06</div>
-        <div class="pregunta-texto">¿Cuál es el orden correcto para construir un algoritmo?</div>
+        <div class="pregunta-texto">¿Qué caracteriza a un arreglo (array)?</div>
         <div class="opciones" id="ops-6">
           <label class="opcion-label" onclick="seleccionar(this,6,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Resolver → Analizar → Probar</span>
+            <span class="opcion-texto">Es un conjunto desordenado de elementos de distintos tipos.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Analizar → Diseñar → Probar</span>
+            <span class="opcion-texto">Es un conjunto finito y ordenado de elementos homogéneos, donde se puede identificar el primero, segundo, ..., enésimo elemento.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Programar → Analizar → Diseñar</span>
+            <span class="opcion-texto">Solo puede almacenar números enteros.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Dibujar → Programar → Ejecutar</span>
+            <span class="opcion-texto">Cambia de tamaño automáticamente cada vez que agregás un elemento.</span>
           </label>
         </div>
         <div class="feedback" id="fb-6"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Primero entender el problema, luego diseñar la solución, finalmente probarla.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Un arreglo es finito, ordenado y homogéneo — todos sus elementos son del mismo tipo, y cada uno tiene una posición identificable.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P7 -->
     <div class="pregunta-panel" id="p7">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 07 · Verdadero o Falso</div>
-        <div class="pregunta-texto">Todo diagrama de flujo debe tener un punto de inicio y un punto de fin.</div>
+        <div class="pregunta-num">// Pregunta 07</div>
+        <div class="pregunta-texto">Observa el siguiente fragmento de código Java. ¿Qué tipo de arreglo declara?</div>
+        <div class="pregunta-codigo">int[][] matriz = new int[3][4];</div>
         <div class="opciones" id="ops-7">
-          <label class="opcion-label" onclick="seleccionar(this,7,'v')">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">✓</span>
-            <span class="opcion-texto">Verdadero</span>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Un arreglo unidimensional de 3 elementos.</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,7,'f')">
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">✗</span>
-            <span class="opcion-texto">Falso</span>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Un arreglo bidimensional (matriz) de 3 filas y 4 columnas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Un arreglo de 4 elementos de tipo entero.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Una variable entera simple.</span>
           </label>
         </div>
         <div class="feedback" id="fb-7"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'v','Correcto. Todo diagrama de flujo comienza con un óvalo de Inicio y termina con uno de Fin.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'b','La doble llave [][] indica dos dimensiones — en este caso 3 filas y 4 columnas, como una matriz o tablero.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -1047,70 +1037,59 @@
     <div class="pregunta-panel" id="p8">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 08</div>
-        <div class="pregunta-texto">Observa el siguiente fragmento. ¿Qué muestra el algoritmo?</div>
-        <div class="pregunta-codigo">Inicio<br>&nbsp;&nbsp;Leer A<br>&nbsp;&nbsp;Leer B<br>&nbsp;&nbsp;Suma ← A + B<br>&nbsp;&nbsp;Escribir Suma<br>Fin</div>
+        <div class="pregunta-texto">En Java, ¿qué ocurre si intentás acceder a un índice fuera del rango válido de un arreglo (por ejemplo, <code>arr[10]</code> en un arreglo de tamaño 5)?</div>
         <div class="opciones" id="ops-8">
           <label class="opcion-label" onclick="seleccionar(this,8,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">El número mayor.</span>
+            <span class="opcion-texto">Java devuelve automáticamente null.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">La suma de dos valores ingresados.</span>
+            <span class="opcion-texto">Se produce un error en tiempo de compilación.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El promedio de dos valores.</span>
+            <span class="opcion-texto">Se lanza una excepción ArrayIndexOutOfBoundsException en tiempo de ejecución.</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El producto de dos valores.</span>
+            <span class="opcion-texto">El programa ignora el acceso y continúa normalmente.</span>
           </label>
         </div>
         <div class="feedback" id="fb-8"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','A + B es suma. Para promedio sería (A+B)/2, para producto A*B.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'c','Java valida los límites del arreglo en tiempo de ejecución. Acceder a un índice inválido lanza ArrayIndexOutOfBoundsException — por eso siempre hay que validar los límites antes de recorrer.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P9 -->
     <div class="pregunta-panel" id="p9">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Pregunta 09</div>
-        <div class="pregunta-texto">¿Qué función cumplen las flechas en un diagrama de flujo?</div>
+        <div class="pregunta-num">// Pregunta 09 · Verdadero o Falso</div>
+        <div class="pregunta-texto">"La lógica no cambia — cambia la sintaxis" resume la idea de que traducir un algoritmo de pseudocódigo a Java requiere aprender una nueva forma de escribirlo, pero el razonamiento detrás sigue siendo el mismo.</div>
         <div class="opciones" id="ops-9">
-          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+          <label class="opcion-label" onclick="seleccionar(this,9,'v')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Decorar el diagrama.</span>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero</span>
           </label>
-          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+          <label class="opcion-label" onclick="seleccionar(this,9,'f')">
             <div class="opcion-circulo"></div>
-            <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Mostrar el orden o dirección del proceso.</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Representar variables.</span>
-          </label>
-          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
-            <div class="opcion-circulo"></div>
-            <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Identificar errores.</span>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso</span>
           </label>
         </div>
         <div class="feedback" id="fb-9"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','Las flechas son conectores que indican el flujo y la secuencia de ejecución del algoritmo.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'v','Exacto. Un condicional o un bucle piensan igual en pseudocódigo que en Java — lo que cambia son las llaves, el punto y coma, y los tipos estáticos.')" disabled>Responder →</button>
       </div>
     </div>
 
@@ -1118,34 +1097,35 @@
     <div class="pregunta-panel" id="p10">
       <div class="pregunta-card">
         <div class="pregunta-num">// Pregunta 10</div>
-        <div class="pregunta-texto">¿Cuál de los siguientes problemas podría resolverse mediante un algoritmo?</div>
+        <div class="pregunta-texto">¿Cuál es la traducción correcta a Java del siguiente pseudocódigo?</div>
+        <div class="pregunta-codigo">Leer A<br>Leer B<br>Suma ← A + B<br>Escribir Suma</div>
         <div class="opciones" id="ops-10">
           <label class="opcion-label" onclick="seleccionar(this,10,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Calcular el promedio de notas de un estudiante.</span>
+            <span class="opcion-texto">int suma = a + b; int a = sc.nextInt(); int b = sc.nextInt(); System.out.println(suma);</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Decidir cuál es la mejor canción del mundo.</span>
+            <span class="opcion-texto">suma = a + b System.out.println(suma)</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Elegir el color más bonito.</span>
+            <span class="opcion-texto">int a = sc.nextInt(); int b = sc.nextInt(); int suma = a + b; System.out.println(suma);</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Determinar cuál es la comida más rica.</span>
+            <span class="opcion-texto">int a, b, suma; suma = a + b; leer(a); leer(b); imprimir(suma);</span>
           </label>
         </div>
         <div class="feedback" id="fb-10"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
-        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'a','Un algoritmo necesita un proceso lógico definido. El promedio tiene pasos claros; los otros son subjetivos.')" disabled>Finalizar evaluación ✓</button>
+        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'c','El orden importa: primero se leen A y B, después se calcula la suma con esos valores, y recién ahí se imprime el resultado.')" disabled>Finalizar evaluación ✓</button>
       </div>
     </div>
 
@@ -1208,30 +1188,30 @@
 // DATOS
 // ══════════════════════════════════════
 const TOTAL = 10;
-const CORRECTAS = { 1:'b', 2:'d', 3:'c', 4:'a', 5:'b', 6:'b', 7:'v', 8:'b', 9:'b', 10:'a' };
+const CORRECTAS = { 1:'b', 2:'f', 3:'b', 4:'c', 5:'b', 6:'b', 7:'b', 8:'c', 9:'v', 10:'c' };
 const TEXTOS_CORRECTAS = {
-  1: 'Una secuencia ordenada de pasos para resolver un problema.',
-  2: 'Triángulo → Repetición (no existe en diagramas de flujo estándar)',
-  3: 'Rombo',
-  4: 'Paralelogramo',
-  5: 'Solicita una edad y luego la muestra.',
-  6: 'Analizar → Diseñar → Probar',
-  7: 'Verdadero',
-  8: 'La suma de dos valores ingresados.',
-  9: 'Mostrar el orden o dirección del proceso.',
-  10: 'Calcular el promedio de notas de un estudiante.'
+  1: 'Una clase de datos caracterizada por su organización y las operaciones definidas sobre ella.',
+  2: 'Falso — las estáticas tienen tamaño fijo.',
+  3: 'Cada operación consume tiempo y recursos distintos según la estructura.',
+  4: 'Enteros, booleanos y caracteres.',
+  5: 'Falso (b)',
+  6: 'Es finito, ordenado y homogéneo.',
+  7: 'Arreglo bidimensional (matriz) de 3 filas y 4 columnas.',
+  8: 'Se lanza ArrayIndexOutOfBoundsException.',
+  9: 'Verdadero',
+  10: 'int a = sc.nextInt(); int b = sc.nextInt(); int suma = a + b; System.out.println(suma);'
 };
 const PREGUNTAS_TEXTO = {
-  1: '¿Cuál describe mejor un algoritmo?',
-  2: '¿Cuál NO es símbolo estándar en diagramas de flujo?',
-  3: '¿Qué símbolo representa una decisión?',
-  4: '¿Qué símbolo representa entrada/salida?',
-  5: 'Pseudocódigo Leer/Escribir edad — ¿qué hace?',
-  6: '¿Cuál es el orden correcto para construir un algoritmo?',
-  7: '¿Todo diagrama debe tener inicio y fin?',
-  8: 'Pseudocódigo suma A+B — ¿qué muestra?',
-  9: '¿Qué función cumplen las flechas?',
-  10: '¿Qué problema resuelve un algoritmo?'
+  1: '¿Qué es una estructura de datos?',
+  2: '¿Las estructuras estáticas cambian de tamaño en ejecución?',
+  3: '¿Por qué importa el costo de las operaciones?',
+  4: '¿Cuáles son estructuras primitivas?',
+  5: 'PRIMERO and SEGUNDO — ¿resultado?',
+  6: '¿Qué caracteriza a un arreglo?',
+  7: 'int[][] matriz = new int[3][4]; — ¿qué declara?',
+  8: '¿Qué pasa al acceder a un índice fuera de rango?',
+  9: '"La lógica no cambia, cambia la sintaxis" — ¿verdadero?',
+  10: 'Traducción de pseudocódigo (Leer A, B, Suma) a Java'
 };
 
 // ══════════════════════════════════════
@@ -1349,7 +1329,6 @@ function mostrarResultado() {
   document.getElementById('dots-container').style.display = 'none';
   document.querySelector('.quiz-progreso').style.display = 'none';
   document.querySelector('.instrucciones').style.display = 'none';
-  document.querySelector('.google-form-link').style.display = 'none';
   document.getElementById('resultado-panel').style.display = 'block';
 
   const correctas = Object.values(respondidas).filter(r => r.correcto).length;
@@ -1368,10 +1347,10 @@ function mostrarResultado() {
     colorClass = 'verde';
     charImg = '../img/bit_motivando.png';
     charNombre = 'BIT';
-    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Demostraste que comprendes los fundamentos de algoritmos y diagramas de flujo. ¡Estás listo para avanzar al Nivel 2!`;
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Demostraste que comprendes la clasificación de estructuras de datos y el manejo de arrays en Java. ¡Estás listo para avanzar a Listas enlazadas, Pilas y Colas!`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Avanza al Nivel 2: Variables y Operadores!</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como refuerzo opcional, revisá <a href="../aprendiendo.html">las presentaciones de Algorítmica 2</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Avanza al siguiente tema: Listas enlazadas, Pilas y Colas!</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como refuerzo opcional, mirá el <a href="https://youtu.be/MwSgXVOYJFo" target="_blank">video de Introducción a los Arreglos</a></div>
     `;
   } else if (pct >= 60) {
     // 🟡 EN DESARROLLO
@@ -1381,9 +1360,9 @@ function mostrarResultado() {
     charNombre = 'GATIEL';
     mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Vas bien en algunos conceptos, pero hay temas que conviene repasar antes de avanzar. ¡No te preocupes, es parte del proceso!`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Revisá el material: <a href="https://drive.google.com/file/d/1n_l-UJLAyCKDZCDLS7Cm94GjfJw4PdZV/preview" target="_blank">Algoritmos — conceptos</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Revisá los diagramas: <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank">Diagramas de Flujo parte 1</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Practicá con: <a href="https://pseint.sourceforge.net/" target="_blank">PseInt</a> — escribí los pseudocódigos de las preguntas que erraste</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá: <a href="https://drive.google.com/file/d/1_H_Hc8F7I4b58zRTKHTjZKUH61rUTCpi/preview" target="_blank">Estructura de Datos — introducción</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Reforzá arrays con: <a href="https://drive.google.com/file/d/1nKHFFHB0p7KbCrfQBh3plCm8LQccK7Sb/preview" target="_blank">Mastering Arrays</a> y su <a href="https://drive.google.com/file/d/1OMyRPMr1tpoO7f3_5D5bvSNHTHRIG0QT/preview" target="_blank">hoja de soluciones</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Mirá el <a href="https://youtu.be/MwSgXVOYJFo" target="_blank">video de Introducción a los Arreglos</a></div>
       <div class="ruta-paso"><span class="ruta-paso-num">04</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
     `;
   } else {
@@ -1395,12 +1374,14 @@ function mostrarResultado() {
     mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Los conceptos de este nivel todavía no están afianzados — eso es normal al principio. Con el recorrido correcto vas a dominarlo.`;
     rutaHTML = `
       <div class="ruta-subtitulo">📄 Archivos para repasar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1LXhSeOfziwVc_k00RjEgCrs-YVX4p4Tu/preview" target="_blank">Primeros pasos en Algorítmica</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="https://drive.google.com/file/d/1n_l-UJLAyCKDZCDLS7Cm94GjfJw4PdZV/preview" target="_blank">Algoritmos — conceptos y arquitectura</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Diagramas de flujo: <a href="https://drive.google.com/file/d/1D5s7_LBm_ADOunX4weWunz7-KZszRH8o/preview" target="_blank">parte 1</a> y <a href="https://drive.google.com/file/d/1V7KSg9f8xDEkn37jNAFy78ORLX3nJPz9/preview" target="_blank">parte 2</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/11fAwfO640rS1YdHQljYiGzndOUt0nDGY/preview" target="_blank">Manual completo de Algorítmica 3</a> — Unidad I</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="https://drive.google.com/file/d/1_H_Hc8F7I4b58zRTKHTjZKUH61rUTCpi/preview" target="_blank">Estructura de Datos — introducción y clasificación</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> <a href="https://drive.google.com/file/d/1VrfxPgJLAdOZOgInsKRBa1xr8Z9H0Y0q/preview" target="_blank">Estructura lógica Java</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">▶</span> Video: <a href="https://youtu.be/gJscx8vyg4I" target="_blank">Traducción Pseudocódigo → Java</a></div>
       <div class="ruta-subtitulo">📝 Ejercicios para volver a realizar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Instalá <a href="https://pseint.sourceforge.net/" target="_blank">PseInt</a> y volvé a escribir el pseudocódigo de las preguntas 5 y 8</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">05</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Resolvé de nuevo los ejercicios de <a href="https://drive.google.com/file/d/1nKHFFHB0p7KbCrfQBh3plCm8LQccK7Sb/preview" target="_blank">Mastering Arrays</a> — recorrido, búsqueda y validación de límites</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">05</span> Corregite solo con la <a href="https://drive.google.com/file/d/1OMyRPMr1tpoO7f3_5D5bvSNHTHRIG0QT/preview" target="_blank">hoja de soluciones</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">06</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
     `;
   }
 
@@ -1411,7 +1392,7 @@ function mostrarResultado() {
   document.getElementById('resultado-char-img').src = charImg;
   document.getElementById('resultado-char-img').alt = charNombre;
   document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
-  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 1 · Algoritmos y Diagramas de Flujo';
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 1 · Estructura de Datos y Arrays en Java';
   document.getElementById('diag-char-img').src = charImg;
   document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
   document.getElementById('diag-char-nombre').textContent = charNombre;
@@ -1478,7 +1459,6 @@ function reiniciar() {
   document.getElementById('preguntas-container').style.display = 'block';
   document.querySelector('.quiz-progreso').style.display = 'block';
   document.querySelector('.instrucciones').style.display = 'flex';
-  document.querySelector('.google-form-link').style.display = 'flex';
   document.getElementById('dots-container').style.display = 'flex';
 
   // Resetear preguntas
