@@ -402,6 +402,35 @@
   line-height: 1.4;
 }
 
+.ep-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.ep-link {
+  font-size: 10.5px;
+  color: var(--texto2);
+  text-decoration: none;
+  padding: 3px 8px;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.ep-link:hover {
+  border-color: var(--azul-b);
+  color: var(--azul2);
+  background: var(--azul-s);
+}
+
+.ep-link.video:hover {
+  border-color: rgba(230,60,60,.35);
+  color: #ff5c5c;
+  background: rgba(230,60,60,.10);
+}
+
 .ep-pronto-label {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -955,42 +984,78 @@
     <!-- T1 -->
     <div class="temporada-label t1">// Temporada 1 — Componentes y ensamblaje</div>
     <div class="eps-grid">
-      <a href="https://drive.google.com/file/d/1AjsuqUlHehdA8pQ-5BNDB_fL-08HMLYo/preview" target="_blank" class="ep-card">
+      <div class="ep-card">
         <div class="ep-num">T1-01</div>
         <div class="ep-name">Los Periféricos</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1T91IhdTI5QOfk_Zc05rvCE8VhwV22tVU/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1AjsuqUlHehdA8pQ-5BNDB_fL-08HMLYo/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=x80CAavwFG0" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-02</div>
         <div class="ep-name">La placa madre</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1FTC57DlSGhN6Y3s7bm6j9Wxt76e1rVo3/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1T91IhdTI5QOfk_Zc05rvCE8VhwV22tVU/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=3nWs3ACCmoI" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-03</div>
         <div class="ep-name">La memoria</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1_x_MvX8Mj81MhvRZB8MQTHB34elKhaMi/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1FTC57DlSGhN6Y3s7bm6j9Wxt76e1rVo3/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=4n69Gesc3uk" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-04</div>
         <div class="ep-name">La CPU</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1Wj00HlujbH5aNXNqf1qH0Jj2PdSD5iax/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1_x_MvX8Mj81MhvRZB8MQTHB34elKhaMi/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=rKUyay9ImAU" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-05</div>
         <div class="ep-name">Más allá de la RAM</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1qog002MMkOhc4icjwFzDNBXbqzSgoQus/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1Wj00HlujbH5aNXNqf1qH0Jj2PdSD5iax/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=Lry1lFSQsKE" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-06</div>
         <div class="ep-name">Memorias de almacenamiento</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1ND0AK2LuFQPvlLGDDz4thJPrxvtg4aEa/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1qog002MMkOhc4icjwFzDNBXbqzSgoQus/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=vsK2hicPcxw" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-07</div>
         <div class="ep-name">Fuentes de poder</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1KnqzBC8uvXkK2BmdwjtazYYDKK-yNdSV/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1ND0AK2LuFQPvlLGDDz4thJPrxvtg4aEa/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=AuLm5SjiET8" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-08</div>
         <div class="ep-name">Tarjetas gráficas y de sonido</div>
-      </a>
-      <a href="https://drive.google.com/file/d/1txmW0BM6HAdXnbog39hCQCFNcy5dT37e/preview" target="_blank" class="ep-card">
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1KnqzBC8uvXkK2BmdwjtazYYDKK-yNdSV/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=wrdlR5WfpIk" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
+      <div class="ep-card">
         <div class="ep-num">T1-09</div>
         <div class="ep-name">Armemos una PC</div>
-      </a>
+        <div class="ep-actions">
+          <a href="https://drive.google.com/file/d/1txmW0BM6HAdXnbog39hCQCFNcy5dT37e/preview" target="_blank" class="ep-link">📄 Libro</a>
+          <a href="https://www.youtube.com/watch?v=zLKZVLcBqgA" target="_blank" class="ep-link video">🎬 Video</a>
+        </div>
+      </div>
     </div>
 
     <!-- T2 -->
