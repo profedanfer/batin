@@ -486,8 +486,11 @@
         Elige la ruta que necesites hoy.
       </p>
       <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
-        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('algoritmica', document.querySelector('.ruta-btn'))">★ Algorítmica 2 y 3</span>
-        <span class="tag tag-naranja">★ Laboratorio 1, 2 y 3</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('algoritmica', document.querySelector('.ruta-btn[data-ruta=\'algoritmica\']'))">📐 Ruta Algorítmica</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('ofimatica', document.querySelector('.ruta-btn[data-ruta=\'ofimatica\']'))">📊 Ruta Ofimática y Datos</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('programacion', document.querySelector('.ruta-btn[data-ruta=\'programacion\']'))">💻 Ruta Programación</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('sistemas', document.querySelector('.ruta-btn[data-ruta=\'sistemas\']'))">🗄️ Ruta Sistemas y BD</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('web', document.querySelector('.ruta-btn[data-ruta=\'web\']'))">🌐 Ruta Web e IA</span>
         <span class="tag tag-azul">Lenguajes</span>
         <span class="tag tag-azul">Presencia Web</span>
         <span class="tag tag-violeta">IA aplicada</span>
@@ -596,11 +599,11 @@
 
 <!-- RUTAS NAV -->
 <div class="rutas-nav">
-  <button class="ruta-btn act" onclick="showRuta('algoritmica',this)">📐 Ruta Algorítmica</button>
-  <button class="ruta-btn" onclick="showRuta('ofimatica',this)">📊 Ruta Ofimática y Datos</button>
-  <button class="ruta-btn" onclick="showRuta('programacion',this)">💻 Ruta Programación</button>
-  <button class="ruta-btn" onclick="showRuta('sistemas',this)">🗄️ Ruta Sistemas y BD</button>
-  <button class="ruta-btn" onclick="showRuta('web',this)">🌐 Ruta Web e IA</button>
+  <button class="ruta-btn act" data-ruta="algoritmica" onclick="showRuta('algoritmica',this)">📐 Ruta Algorítmica</button>
+  <button class="ruta-btn" data-ruta="ofimatica" onclick="showRuta('ofimatica',this)">📊 Ruta Ofimática y Datos</button>
+  <button class="ruta-btn" data-ruta="programacion" onclick="showRuta('programacion',this)">💻 Ruta Programación</button>
+  <button class="ruta-btn" data-ruta="sistemas" onclick="showRuta('sistemas',this)">🗄️ Ruta Sistemas y BD</button>
+  <button class="ruta-btn" data-ruta="web" onclick="showRuta('web',this)">🌐 Ruta Web e IA</button>
 </div>
 
 <!-- ══════ RUTA ALGORÍTMICA ══════ -->
@@ -1513,6 +1516,17 @@ function toggleMalla() {
   tabla.classList.toggle('open');
   btn.classList.toggle('open');
 }
+
+// Activa la ruta indicada en el hash de la URL (ej. aprendiendo.html#programacion)
+function initRutaFromHash() {
+  const validIds = ['algoritmica', 'ofimatica', 'programacion', 'sistemas', 'web'];
+  const hash = window.location.hash.replace('#', '');
+  if (validIds.includes(hash)) {
+    const btn = document.querySelector('.ruta-btn[data-ruta="' + hash + '"]');
+    if (btn) showRuta(hash, btn);
+  }
+}
+document.addEventListener('DOMContentLoaded', initRutaFromHash);
 </script>
 </body>
 </html>
