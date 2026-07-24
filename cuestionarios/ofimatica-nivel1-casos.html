@@ -215,31 +215,6 @@
   margin-bottom: 20px;
 }
 
-.caso-dialogo {
-  background: var(--bg3);
-  border: 1px solid var(--borde);
-  border-radius: var(--r2);
-  padding: 16px 18px;
-  margin-bottom: 18px;
-}
-.caso-linea {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--texto2);
-  line-height: 1.6;
-  margin-bottom: 8px;
-}
-.caso-linea:last-child { margin-bottom: 0; }
-.caso-linea b { font-weight: 700; }
-.caso-nombre-bit    { color: var(--azul); }
-.caso-nombre-gatiel { color: var(--violeta); }
-.caso-nombre-techi  { color: var(--naranja); }
-.caso-pregunta {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-}
-
 .pregunta-codigo {
   background: var(--bg);
   border: 1px solid var(--borde2);
@@ -772,19 +747,19 @@
       <span class="sep">/</span>
       <a href="../aprendiendo.html#ofimatica">Ruta Ofimática y Datos</a>
       <span class="sep">/</span>
-      <span>Nivel 2 · Análisis de situaciones</span>
+      <span>Nivel 1 · Casos</span>
     </div>
     <div class="quiz-hero-header">
       <div class="quiz-hero-char">
-        <img src="../img/techi_trabajando.png" alt="Bit, Gatiel y Techi">
+        <img src="../img/gatiel_idea.png" alt="Gatiel pensando">
       </div>
       <div>
-        <span class="quiz-nivel-badge">// Ofimática y Datos · Análisis de situaciones</span>
-        <h1 class="quiz-titulo">Análisis de Situaciones · Nivel 2</h1>
-        <p class="quiz-subtitulo">Cuatro situaciones nuevas. La misma pregunta de siempre: ¿qué sé, qué quiero saber, y cómo llego de uno a otro?</p>
+        <span class="quiz-nivel-badge">// Ofimática y Datos · Nivel 1 · Casos</span>
+        <h1 class="quiz-titulo">Los Errores de Gatiel<br>en la Planilla</h1>
+        <p class="quiz-subtitulo">Gatiel se equivocó en cada una de estas fórmulas. Encontrá el error antes que él lo repita.</p>
         <div class="quiz-meta">
           <span class="quiz-meta-item">📝 10 preguntas</span>
-          <span class="quiz-meta-item">⏱ ~8 minutos</span>
+          <span class="quiz-meta-item">⏱ ~6 minutos</span>
           <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
         </div>
       </div>
@@ -797,10 +772,10 @@
 
   <!-- Instrucciones -->
   <div class="instrucciones">
-    <div class="instrucciones-ico">🔎</div>
+    <div class="instrucciones-ico">🐱</div>
     <div class="instrucciones-texto">
-      <p><strong style="color:var(--texto)">Techi dice:</strong> En cada caso vas a ver una charla entre Bit, Gatiel y yo, analizando una situación de la vida real. Leé el diálogo con calma antes de responder.</p>
-      <p>No se trata de saber fórmulas de memoria — se trata de identificar qué datos ya tenés (entrada), qué querés averiguar (salida), qué operación hace falta (proceso) y cómo organizarías la planilla (columnas).</p>
+      <p><strong style="color:var(--texto)">Gatiel dice:</strong> En cada situación cometí un error en mi fórmula de Excel. Leé con calma qué intenté hacer y elegí qué salió mal. Hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para ver el resultado al instante.</p>
+      <p>Este cuestionario es formativo — practicá reconociendo errores típicos de sintaxis antes de que te pasen a vos.</p>
     </div>
   </div>
 
@@ -823,33 +798,28 @@
     <!-- P1 -->
     <div class="pregunta-panel" id="p1">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
-        <div class="caso-dialogo">
-          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "El micro escolar cobra según los kilómetros que recorre cada alumno hasta el colegio."</p>
-          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Entonces hace falta la distancia de cada alumno y el precio que se cobra por kilómetro."</p>
-          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Y calculamos multiplicando esos dos datos, ¿no?"</p>
-        </div>
-        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de esta situación?</div>
+        <div class="pregunta-num">// Caso 01</div>
+        <div class="pregunta-texto">Gatiel quiere calcular el precio final de una remera estampada con esta fórmula: <code>=8000+3*1500</code>, pero el resultado no fue el esperado. ¿Qué operación resuelve primero Excel?</div>
         <div class="opciones" id="ops-1">
           <label class="opcion-label" onclick="seleccionar(this,1,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">La cuota mensual a pagar</span>
+            <span class="opcion-texto">La suma, porque está a la izquierda</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">La distancia de cada alumno y el precio por kilómetro</span>
+            <span class="opcion-texto">La multiplicación, por jerarquía de operadores</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El nombre del chofer</span>
+            <span class="opcion-texto">La suma y la multiplicación al mismo tiempo</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,1,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">La cantidad de alumnos que suben al micro</span>
+            <span class="opcion-texto">Depende del orden en que se escriban los números</span>
           </label>
         </div>
         <div class="feedback" id="fb-1"></div>
@@ -857,337 +827,322 @@
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
         <div class="pregunta-dots" id="mini-dots"></div>
-        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Son los datos que ya se conocen antes de calcular: cuántos kilómetros recorre cada alumno, y cuánto se cobra por cada uno.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Excel respeta la jerarquía matemática: multiplicación y división se resuelven antes que suma y resta. =8000+3*1500 primero calcula 3*1500=4500, y después suma 8000 → 12.500, no 34.500.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P2 -->
     <div class="pregunta-panel" id="p2">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
-        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que la planilla debe calcular?</div>
+        <div class="pregunta-num">// Caso 02</div>
+        <div class="pregunta-texto">Gatiel escribió <code>=PROMEDIO A2:A6</code> para calcular el promedio de sus ventas, pero Excel le mostró un error. ¿Qué le faltó a la fórmula?</div>
         <div class="opciones" id="ops-2">
           <label class="opcion-label" onclick="seleccionar(this,2,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">La distancia recorrida</span>
+            <span class="opcion-texto">Separar con comas en lugar de dos puntos</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,2,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">El precio por kilómetro</span>
+            <span class="opcion-texto">Escribir la palabra PROMEDIO en minúscula</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,2,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">La cuota mensual que paga cada alumno</span>
+            <span class="opcion-texto">Agregar paréntesis a los argumentos</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,2,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El nombre de la empresa de transporte</span>
+            <span class="opcion-texto">Sacar la palabra PROMEDIO</span>
           </label>
         </div>
         <div class="feedback" id="fb-2"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'c','El resultado que se busca es la cuota mensual — se obtiene multiplicando la distancia de cada alumno por el precio por kilómetro.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'c','Toda función necesita paréntesis que encierren sus argumentos: la forma correcta es =PROMEDIO(A2:A6). Sin los paréntesis, Excel no sabe sobre qué rango tiene que operar.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P3 -->
     <div class="pregunta-panel" id="p3">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
-        <div class="pregunta-texto caso-pregunta">¿Qué <b>columnas</b> debería tener esta planilla como mínimo?</div>
+        <div class="pregunta-num">// Caso 03</div>
+        <div class="pregunta-texto">Gatiel controla el stock de su local y quiere marcar en rojo los productos con 5 unidades o menos. Escribió: <code>=B2 menor o igual que 5</code>. ¿Qué operador relacional debe usar?</div>
         <div class="opciones" id="ops-3">
           <label class="opcion-label" onclick="seleccionar(this,3,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Alumno, Distancia (km), Precio por km, Cuota</span>
+            <span class="opcion-texto"><=</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Alumno, Curso, Dirección, Teléfono</span>
+            <span class="opcion-texto"><</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Distancia, Chofer, Patente del micro</span>
+            <span class="opcion-texto">=<</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,3,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Precio por km, Vuelto, Propina</span>
+            <span class="opcion-texto">!=</span>
           </label>
         </div>
         <div class="feedback" id="fb-3"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'a','Cada columna corresponde a un dato de entrada (Distancia, Precio por km) o al dato de salida calculado (Cuota), identificado por Alumno.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'a','El operador &quot;<=&quot; (menor o igual que) compara si el valor de la izquierda es menor o igual al de la derecha: =B2<=5. El signo siempre va primero el símbolo de comparación y después el igual — nunca al revés (=<).')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P4 -->
     <div class="pregunta-panel" id="p4">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
-        <div class="caso-dialogo">
-          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Para armar la tabla de posiciones necesitamos saber cuántos partidos ganó, empató y perdió cada equipo."</p>
-          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Y con eso calculamos los puntos: 3 por ganar, 1 por empate, 0 por perder."</p>
-          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "¡Y así vemos quién va primero!"</p>
-        </div>
-        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de este caso?</div>
+        <div class="pregunta-num">// Caso 04</div>
+        <div class="pregunta-texto">Gatiel quiere clasificar a sus clientes: si compran 50 unidades o más son "Mayorista", si no, "Minorista" (la cantidad está en B2). Escribió: <code>=SI( B2>=50; Mayorista ; Minorista )</code>, pero Excel no le acepta la fórmula. ¿Qué puede estar haciendo mal?</div>
         <div class="opciones" id="ops-4">
           <label class="opcion-label" onclick="seleccionar(this,4,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Los puntos totales de cada equipo</span>
+            <span class="opcion-texto">No usó los paréntesis correctamente</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">La posición en la tabla</span>
+            <span class="opcion-texto">Le faltan las comillas para "Mayorista" y "Minorista"</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Los partidos ganados, empatados y perdidos de cada equipo</span>
+            <span class="opcion-texto">Le falta un punto y coma final</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,4,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El nombre del árbitro</span>
+            <span class="opcion-texto">La función SI no se usa con texto</span>
           </label>
         </div>
         <div class="feedback" id="fb-4"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'c','Son los datos que ya se registran partido a partido: cuántos ganó, empató y perdió cada equipo.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','Todo texto dentro de una fórmula debe ir entre comillas: =SI(B2>=50;&quot;Mayorista&quot;;&quot;Minorista&quot;). Sin las comillas, Excel interpreta esas palabras como si fueran nombres de celdas o funciones, y da error.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P5 -->
     <div class="pregunta-panel" id="p5">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
-        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que arma la tabla de posiciones?</div>
+        <div class="pregunta-num">// Caso 05</div>
+        <div class="pregunta-texto">Gatiel quiere calcular cuánto representa el 25% de 480.000 Gs de ventas del mes. Escribió en la celda: <code>=25%480000</code>, pero Excel le muestra error. ¿Cuál sería la forma correcta de calcularlo?</div>
         <div class="opciones" id="ops-5">
           <label class="opcion-label" onclick="seleccionar(this,5,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">La cantidad de partidos jugados</span>
+            <span class="opcion-texto">=25*480000%</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Los puntos totales de cada equipo</span>
+            <span class="opcion-texto">=480000*25%</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El nombre de los jugadores</span>
+            <span class="opcion-texto">=25/480000%</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,5,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">La fecha del próximo partido</span>
+            <span class="opcion-texto">=PORCENTAJE(25;480000)</span>
           </label>
         </div>
         <div class="feedback" id="fb-5"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','Los puntos totales son el resultado que permite ordenar la tabla de posiciones — se calculan a partir de ganados, empatados y perdidos.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','En Excel, el signo % no es un operador matemático de división — convierte el número en una fracción de 100 (25% = 0,25). Por eso hay que multiplicar: =480000*25% da 120.000, el 25% de 480.000.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P6 -->
     <div class="pregunta-panel" id="p6">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
-        <div class="pregunta-texto caso-pregunta">¿Qué <b>proceso</b> hace falta para calcular los puntos totales de un equipo?</div>
+        <div class="pregunta-num">// Caso 06</div>
+        <div class="pregunta-texto">Gatiel quiere saber el gasto máximo de sus últimos 20 clientes, registrados desde la celda C3 hasta la C22. Escribió: <code>=MAX(C3 … C22)</code>. ¿Qué error cometió?</div>
         <div class="opciones" id="ops-6">
           <label class="opcion-label" onclick="seleccionar(this,6,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Sumar ganados + empatados + perdidos</span>
+            <span class="opcion-texto">Usó una función que no existe</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Multiplicar ganados por 3, empatados por 1, y sumar ambos resultados</span>
+            <span class="opcion-texto">Le faltan comillas al rango</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Contar cuántos partidos jugó en total</span>
+            <span class="opcion-texto">Le faltan los puntos y coma entre los argumentos</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,6,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Restar los partidos perdidos de los ganados</span>
+            <span class="opcion-texto">En lugar de los puntos suspensivos (…) debe colocar dos puntos (:)</span>
           </label>
         </div>
         <div class="feedback" id="fb-6"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Cada partido ganado suma 3 puntos y cada empate suma 1 — hay que multiplicar cada cantidad por su valor y sumar los resultados: (ganados×3) + (empatados×1).')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'d','Los dos puntos (:) son el operador que define un rango continuo de celdas en Excel. La forma correcta es =MAX(C3:C22) — los puntos suspensivos no son un símbolo que Excel reconozca.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P7 -->
     <div class="pregunta-panel" id="p7">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 3 · El minimarket</div>
-        <div class="caso-dialogo">
-          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Quiero que la planilla me avise cuándo tengo que reponer un producto en el minimarket."</p>
-          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Entonces necesitás el stock actual de cada producto y el stock mínimo que vos definiste."</p>
-          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Con eso podés comparar: si el stock actual es menor al mínimo, la planilla muestra "Reponer"."</p>
-        </div>
-        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de este caso?</div>
+        <div class="pregunta-num">// Caso 07</div>
+        <div class="pregunta-texto">Gatiel quiere avisar cuando el stock actual (celda D2) sea distinto al stock mínimo (celda D3), pero escribió: <code>=D2 ≠ D3</code>, y Excel le da error. ¿Qué operador debe usar para expresar "distinto de"?</div>
         <div class="opciones" id="ops-7">
           <label class="opcion-label" onclick="seleccionar(this,7,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">El aviso de "Reponer" o "OK"</span>
+            <span class="opcion-texto"><></span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,7,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">El stock actual y el stock mínimo de cada producto</span>
+            <span class="opcion-texto">!=</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,7,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El nombre del proveedor</span>
+            <span class="opcion-texto">=/=</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,7,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El precio de venta de cada producto</span>
+            <span class="opcion-texto">=0</span>
           </label>
         </div>
         <div class="feedback" id="fb-7"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'b','Techi lo señala directamente: hace falta el stock actual (lo que hay ahora) y el stock mínimo (el límite que definió Gatiel) para poder comparar.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'a','En Excel el operador de &quot;distinto de&quot; se escribe <> — no != (eso es de otros lenguajes como Python o Java). La fórmula correcta es =D2<>D3.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P8 -->
     <div class="pregunta-panel" id="p8">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 3 · El minimarket</div>
-        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que Gatiel necesita ver en la planilla?</div>
+        <div class="pregunta-num">// Caso 08</div>
+        <div class="pregunta-texto">Gatiel registró en la columna E los colores de cuadernos que vendió en la semana. Quiere saber cuántos fueron de color azul, así que escribió: <code>=CONTAR.SI("Azul";E2:E30)</code>. ¿Por qué Excel le muestra error?</div>
         <div class="opciones" id="ops-8">
           <label class="opcion-label" onclick="seleccionar(this,8,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">El stock actual</span>
+            <span class="opcion-texto">Invirtió los argumentos, lo correcto es =CONTAR.SI(E2:E30;"Azul")</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">El stock mínimo</span>
+            <span class="opcion-texto">Esa función no existe</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">El aviso de si hay que reponer el producto o no</span>
+            <span class="opcion-texto">El rango está mal escrito, debe ir E2…E30</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,8,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">El nombre del producto</span>
+            <span class="opcion-texto">La función que debe utilizar es =SUMAR.SI("Azul";E2:E30)</span>
           </label>
         </div>
         <div class="feedback" id="fb-8"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'c','Eso es justo lo que Gatiel pidió al principio: que la planilla le avise cuándo reponer — ese aviso (&quot;Reponer&quot; / &quot;OK&quot;) es el dato de salida.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'a','CONTAR.SI(rango;condición) siempre recibe primero el rango donde buscar, y después la condición a cumplir. Gatiel escribió los argumentos al revés.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P9 -->
     <div class="pregunta-panel" id="p9">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 3 · El minimarket</div>
-        <div class="pregunta-texto caso-pregunta">¿Qué <b>columnas</b> debería tener esta planilla como mínimo?</div>
+        <div class="pregunta-num">// Caso 09</div>
+        <div class="pregunta-texto">Gatiel vende pulseras tejidas a 15.000 Gs. Por el Día del Amigo hay 20% de descuento, así que escribió la fórmula: <code>=15000 - 20%</code>. Pero Excel no le da el resultado correcto. ¿Cuál es la fórmula correcta?</div>
         <div class="opciones" id="ops-9">
           <label class="opcion-label" onclick="seleccionar(this,9,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">Producto, Stock actual, Stock mínimo, Estado</span>
+            <span class="opcion-texto">=15000-15000*20% (o =15000*80%)</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">Producto, Proveedor, Fecha de compra</span>
+            <span class="opcion-texto">=15000-20</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">Stock actual, Precio de venta, Ganancia</span>
+            <span class="opcion-texto">=15000*20%</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,9,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">Stock mínimo, Vuelto, Propina</span>
+            <span class="opcion-texto">=20%-15000</span>
           </label>
         </div>
         <div class="feedback" id="fb-9"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
-        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'a','Cada columna corresponde a un dato de entrada (Stock actual, Stock mínimo) o al dato de salida calculado (Estado), identificado por Producto.')" disabled>Responder →</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'a','Gatiel restó &quot;20%&quot; directamente del precio, pero 20% no vale 20 Gs — hay que calcular primero el 20% DE 15.000 y después restarlo: =15000-15000*20% = 12.000 Gs. También se puede calcular directo como =15000*80%.')" disabled>Responder →</button>
       </div>
     </div>
 
     <!-- P10 -->
     <div class="pregunta-panel" id="p10">
       <div class="pregunta-card">
-        <div class="pregunta-num">// Caso 4 · El presupuesto del cumpleaños</div>
-        <div class="caso-dialogo">
-          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Estoy organizando mi cumple y quiero saber cuánto me va a costar todo."</p>
-          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Anotá cada gasto por separado: torta, decoración, comida — con su precio."</p>
-          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Y sumando todo, sabés el total del presupuesto."</p>
-        </div>
-        <div class="pregunta-texto caso-pregunta">Techi anotó cada gasto en una fila distinta de la columna "Costo". ¿Qué función usaría para saber el <b>total del presupuesto</b>?</div>
+        <div class="pregunta-num">// Caso 10</div>
+        <div class="pregunta-texto">Gatiel actualiza cada semana el precio de sus productos y tiene que recalcular todos los totales. Un compañero le sugiere usar fórmulas en vez de calcular cada total a mano con la calculadora. ¿Cuál es la razón MÁS importante para seguir ese consejo?</div>
         <div class="opciones" id="ops-10">
           <label class="opcion-label" onclick="seleccionar(this,10,'a')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">a)</span>
-            <span class="opcion-texto">=PROMEDIO(rango de costos)</span>
+            <span class="opcion-texto">Porque usar Excel queda más profesional</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'b')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">b)</span>
-            <span class="opcion-texto">=CONTAR(rango de costos)</span>
+            <span class="opcion-texto">Porque al cambiar el precio, todos los totales se recalculan solos sin tocar la fórmula</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'c')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">c)</span>
-            <span class="opcion-texto">=SUMA(rango de costos)</span>
+            <span class="opcion-texto">Porque la calculadora funciona sin electricidad</span>
           </label>
           <label class="opcion-label" onclick="seleccionar(this,10,'d')">
             <div class="opcion-circulo"></div>
             <span class="opcion-letra">d)</span>
-            <span class="opcion-texto">=MAX(rango de costos)</span>
+            <span class="opcion-texto">Porque las planillas nunca tienen errores</span>
           </label>
         </div>
         <div class="feedback" id="fb-10"></div>
       </div>
       <div class="pregunta-nav">
         <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
-        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'c','Para obtener el total del presupuesto hay que sumar todos los gastos registrados: =SUMA(rango de costos). PROMEDIO daría un valor medio, CONTAR solo cuenta filas, y MAX buscaría el gasto más caro — ninguno da el total.')" disabled>Finalizar evaluación ✓</button>
+        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'b','Esa es la verdadera ventaja de una planilla: la fórmula queda fija y depende de las celdas, no de números escritos a mano. Con solo cambiar el precio, todos los totales se actualizan automáticamente — ideal para tareas que se repiten todas las semanas.')" disabled>Finalizar evaluación ✓</button>
       </div>
     </div>
 
@@ -1252,30 +1207,30 @@
 // DATOS
 // ══════════════════════════════════════
 const TOTAL = 10;
-const CORRECTAS = { 1:'b', 2:'c', 3:'a', 4:'c', 5:'b', 6:'b', 7:'b', 8:'c', 9:'a', 10:'c' };
+const CORRECTAS = { 1:'b', 2:'c', 3:'a', 4:'b', 5:'b', 6:'d', 7:'a', 8:'a', 9:'a', 10:'b' };
 const TEXTOS_CORRECTAS = {
-  1: 'La distancia de cada alumno y el precio por kilómetro',
-  2: 'La cuota mensual que paga cada alumno',
-  3: 'Alumno, Distancia (km), Precio por km, Cuota',
-  4: 'Los partidos ganados, empatados y perdidos de cada equipo',
-  5: 'Los puntos totales de cada equipo',
-  6: 'Multiplicar ganados por 3, empatados por 1, y sumar ambos resultados',
-  7: 'El stock actual y el stock mínimo de cada producto',
-  8: 'El aviso de si hay que reponer el producto o no',
-  9: 'Producto, Stock actual, Stock mínimo, Estado',
-  10: '=SUMA(rango de costos)'
+  1: 'La multiplicación, por jerarquía de operadores',
+  2: 'Agregar paréntesis a los argumentos',
+  3: '<=',
+  4: 'Le faltan las comillas para "Mayorista" y "Minorista"',
+  5: '=480000*25%',
+  6: 'En lugar de los puntos suspensivos (…) debe colocar dos puntos (:)',
+  7: '<>',
+  8: 'Invirtió los argumentos, lo correcto es =CONTAR.SI(E2:E30;"Azul")',
+  9: '=15000-15000*20% (o =15000*80%)',
+  10: 'Porque al cambiar el precio, todos los totales se recalculan solos sin tocar la fórmula'
 };
 const PREGUNTAS_TEXTO = {
-  1: 'Transporte escolar: datos de entrada',
-  2: 'Transporte escolar: dato de salida',
-  3: 'Transporte escolar: columnas de la planilla',
-  4: 'Torneo de fútbol: datos de entrada',
-  5: 'Torneo de fútbol: dato de salida',
-  6: 'Torneo de fútbol: proceso necesario',
-  7: 'Minimarket: datos de entrada',
-  8: 'Minimarket: dato de salida',
-  9: 'Minimarket: columnas de la planilla',
-  10: 'Cumpleaños: proceso necesario'
+  1: 'Caso 01: error en la fórmula de Gatiel',
+  2: 'Caso 02: error en la fórmula de Gatiel',
+  3: 'Caso 03: error en la fórmula de Gatiel',
+  4: 'Caso 04: error en la fórmula de Gatiel',
+  5: 'Caso 05: error en la fórmula de Gatiel',
+  6: 'Caso 06: error en la fórmula de Gatiel',
+  7: 'Caso 07: error en la fórmula de Gatiel',
+  8: 'Caso 08: error en la fórmula de Gatiel',
+  9: 'Caso 09: error en la fórmula de Gatiel',
+  10: 'Caso 10: error en la fórmula de Gatiel'
 };
 
 // ══════════════════════════════════════
@@ -1393,20 +1348,20 @@ function mostrarResultado() {
     colorClass = 'verde';
     charImg = '../img/bit_motivando.png';
     charNombre = 'BIT';
-    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Identificaste con claridad los datos de entrada, salida, el proceso necesario y las columnas en cada situación. Ese es el paso más importante antes de tocar Excel.`;
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Detectaste los errores de Gatiel como un verdadero técnico — sintaxis, jerarquía de operadores, referencias y funciones lógicas bajo control.`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Excelente análisis! Ya distinguís con claridad entrada, salida, proceso y estructura de una planilla.</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como desafío extra, elegí una situación de tu propia vida diaria y analizala del mismo modo: ¿qué datos necesitás, qué querés obtener, y qué columnas armarías?</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Excelente! Ya podés ayudar a Gatiel a revisar sus planillas. Seguí con los ejercicios integradores.</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como desafío extra, probá las fórmulas de este cuestionario directamente en una planilla real</div>
     `;
   } else if (pct >= 60) {
     nivel = '🟡 En desarrollo';
     colorClass = 'amarillo';
     charImg = '../img/gatiel_idea.png';
     charNombre = 'GATIEL';
-    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Reconocés varias partes del análisis, pero todavía se mezclan entrada, salida y proceso en algunos casos. Con más práctica se vuelve automático.`;
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Vas reconociendo varios errores típicos, pero todavía hay patrones que se te escapan. ¡Es parte de aprender, como a mí!`;
     rutaHTML = `
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá la diferencia entre <b>dato de entrada</b> (lo que ya sabés) y <b>dato de salida</b> (lo que querés calcular)</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Antes de armar una planilla, preguntate siempre: "¿qué necesito saber ANTES?" y "¿qué quiero saber DESPUÉS?"</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá: <a href="https://drive.google.com/file/d/1RLT6semQwQdAGT1bEdiAVTCoCHLfpiWu/preview" target="_blank">Operadores aritméticos</a> y <a href="https://drive.google.com/file/d/1hqWnAbHBxu9GCt83cizRZetGAfVPKYex/preview" target="_blank">operadores de relación</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá especial atención a la sintaxis exacta: paréntesis, comillas para texto, y los dos puntos (:) para rangos</div>
       <div class="ruta-paso"><span class="ruta-paso-num">03</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
     `;
   } else {
@@ -1414,13 +1369,13 @@ function mostrarResultado() {
     colorClass = 'rojo';
     charImg = '../img/techi_estudiando.png';
     charNombre = 'TECHI';
-    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Diferenciar datos de entrada, salida y proceso todavía cuesta — y es normal, es la habilidad más difícil de Laboratorio 1. Vamos paso a paso.`;
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Los errores de sintaxis todavía cuestan reconocerlos — y eso es normal al principio. Con práctica, vas a detectarlos de un vistazo.`;
     rutaHTML = `
       <div class="ruta-subtitulo">📄 Archivos para repasar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1fGGypFhQ-FhFrwL3sDOdSycVIrV5bXaG/preview" target="_blank">Planillas — estructura y organización de datos</a></div>
-      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá con la profe o un compañero qué es un dato de entrada, un dato de salida y un proceso — con ejemplos de tu vida diaria</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1RLT6semQwQdAGT1bEdiAVTCoCHLfpiWu/preview" target="_blank">Operadores aritméticos</a>, <a href="https://drive.google.com/file/d/1hqWnAbHBxu9GCt83cizRZetGAfVPKYex/preview" target="_blank">operadores de relación</a> y <a href="https://drive.google.com/file/d/12bxloGoT_JHIWsd6m3At4xjYixzmrRtS/preview" target="_blank">condiciones lógicas (SI)</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá también: <a href="https://drive.google.com/file/d/1_OtNFHU3xEh0PVrdw_G1vnLf3YPZJRqH/preview" target="_blank">funciones resumen</a> y <a href="https://drive.google.com/file/d/1ZrKz_gtuhBYr4qeBQ-ydALuJ7AkTeH44/preview" target="_blank">función CONTAR</a></div>
       <div class="ruta-subtitulo">📝 Ejercicios para volver a realizar</div>
-      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a leer cada caso de este cuestionario y, en un cuaderno, escribí a mano: entrada, salida, proceso y columnas — sin mirar las opciones</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Abrí una planilla real y probá escribir cada fórmula de este cuestionario — la corregida y la incorrecta — para ver la diferencia con tus propios ojos</div>
       <div class="ruta-paso"><span class="ruta-paso-num">04</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
     `;
   }
@@ -1432,16 +1387,16 @@ function mostrarResultado() {
   document.getElementById('resultado-char-img').src = charImg;
   document.getElementById('resultado-char-img').alt = charNombre;
   document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
-  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 2 · Análisis de Situaciones';
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 1 · Casos';
   document.getElementById('diag-char-img').src = charImg;
   document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
   document.getElementById('diag-char-nombre').textContent = charNombre;
   document.getElementById('ruta-pasos').innerHTML = rutaHTML;
 
   const diagTextos = {
-    verde:    `"Antes de escribir una sola fórmula, ya sabés qué necesita el problema. Eso es pensar como técnico."`,
-    amarillo: `"El análisis no es instantáneo — con cada situación que revisás, se va afilando. Volvé a leer los casos que fallaste."`,
-    rojo:     `"A mí también me costó separar entrada, salida y proceso al principio. Practicá con situaciones de tu propia vida diaria — ahí se entiende mejor."`
+    verde:    `"${pct}% — encontraste cada error como un técnico de verdad. Los fundamentos están sólidos. ¡Seguí así!"`,
+    amarillo: `"Ya reconocés varios patrones de error. Los que fallaste tienen algo en común — revisalos con calma y volvé a intentarlo."`,
+    rojo:     `"Yo cometí TODOS estos errores antes de aprenderlos bien — literalmente son mis propios errores. Lo importante es seguir practicando."`
   };
 
   document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
