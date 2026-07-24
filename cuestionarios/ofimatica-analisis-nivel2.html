@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ofimática y Datos · Nivel 1 · Cuestionario · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.caso-dialogo {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.caso-linea {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--texto2);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.caso-linea:last-child { margin-bottom: 0; }
+.caso-linea b { font-weight: 700; }
+.caso-nombre-bit    { color: var(--azul); }
+.caso-nombre-gatiel { color: var(--violeta); }
+.caso-nombre-techi  { color: var(--naranja); }
+.caso-pregunta {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ofimatica">Ruta Ofimática y Datos</a>
+      <span class="sep">/</span>
+      <span>Nivel 2 · Análisis de situaciones</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/techi_trabajando.png" alt="Bit, Gatiel y Techi">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Ofimática y Datos · Análisis de situaciones</span>
+        <h1 class="quiz-titulo">Análisis de Situaciones · Nivel 2</h1>
+        <p class="quiz-subtitulo">Cuatro situaciones nuevas. La misma pregunta de siempre: ¿qué sé, qué quiero saber, y cómo llego de uno a otro?</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 10 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~8 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🔎</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Techi dice:</strong> En cada caso vas a ver una charla entre Bit, Gatiel y yo, analizando una situación de la vida real. Leé el diálogo con calma antes de responder.</p>
+      <p>No se trata de saber fórmulas de memoria — se trata de identificar qué datos ya tenés (entrada), qué querés averiguar (salida), qué operación hace falta (proceso) y cómo organizarías la planilla (columnas).</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 10</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
+        <div class="caso-dialogo">
+          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "El micro escolar cobra según los kilómetros que recorre cada alumno hasta el colegio."</p>
+          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Entonces hace falta la distancia de cada alumno y el precio que se cobra por kilómetro."</p>
+          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Y calculamos multiplicando esos dos datos, ¿no?"</p>
+        </div>
+        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de esta situación?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La cuota mensual a pagar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">La distancia de cada alumno y el precio por kilómetro</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El nombre del chofer</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">La cantidad de alumnos que suben al micro</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <div class="pregunta-dots" id="mini-dots"></div>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Son los datos que ya se conocen antes de calcular: cuántos kilómetros recorre cada alumno, y cuánto se cobra por cada uno.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
+        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que la planilla debe calcular?</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La distancia recorrida</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El precio por kilómetro</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">La cuota mensual que paga cada alumno</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El nombre de la empresa de transporte</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'c','El resultado que se busca es la cuota mensual — se obtiene multiplicando la distancia de cada alumno por el precio por kilómetro.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 1 · El transporte escolar</div>
+        <div class="pregunta-texto caso-pregunta">¿Qué <b>columnas</b> debería tener esta planilla como mínimo?</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Alumno, Distancia (km), Precio por km, Cuota</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Alumno, Curso, Dirección, Teléfono</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Distancia, Chofer, Patente del micro</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Precio por km, Vuelto, Propina</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'a','Cada columna corresponde a un dato de entrada (Distancia, Precio por km) o al dato de salida calculado (Cuota), identificado por Alumno.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
+        <div class="caso-dialogo">
+          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Para armar la tabla de posiciones necesitamos saber cuántos partidos ganó, empató y perdió cada equipo."</p>
+          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Y con eso calculamos los puntos: 3 por ganar, 1 por empate, 0 por perder."</p>
+          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "¡Y así vemos quién va primero!"</p>
+        </div>
+        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de este caso?</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Los puntos totales de cada equipo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">La posición en la tabla</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Los partidos ganados, empatados y perdidos de cada equipo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El nombre del árbitro</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'c','Son los datos que ya se registran partido a partido: cuántos ganó, empató y perdió cada equipo.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
+        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que arma la tabla de posiciones?</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La cantidad de partidos jugados</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Los puntos totales de cada equipo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El nombre de los jugadores</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">La fecha del próximo partido</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','Los puntos totales son el resultado que permite ordenar la tabla de posiciones — se calculan a partir de ganados, empatados y perdidos.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 2 · El torneo de fútbol</div>
+        <div class="pregunta-texto caso-pregunta">¿Qué <b>proceso</b> hace falta para calcular los puntos totales de un equipo?</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Sumar ganados + empatados + perdidos</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Multiplicar ganados por 3, empatados por 1, y sumar ambos resultados</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Contar cuántos partidos jugó en total</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Restar los partidos perdidos de los ganados</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','Cada partido ganado suma 3 puntos y cada empate suma 1 — hay que multiplicar cada cantidad por su valor y sumar los resultados: (ganados×3) + (empatados×1).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 3 · El minimarket</div>
+        <div class="caso-dialogo">
+          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Quiero que la planilla me avise cuándo tengo que reponer un producto en el minimarket."</p>
+          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Entonces necesitás el stock actual de cada producto y el stock mínimo que vos definiste."</p>
+          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Con eso podés comparar: si el stock actual es menor al mínimo, la planilla muestra "Reponer"."</p>
+        </div>
+        <div class="pregunta-texto caso-pregunta">¿Cuáles son los <b>datos de entrada</b> de este caso?</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">El aviso de "Reponer" o "OK"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El stock actual y el stock mínimo de cada producto</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El nombre del proveedor</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El precio de venta de cada producto</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'b','Techi lo señala directamente: hace falta el stock actual (lo que hay ahora) y el stock mínimo (el límite que definió Gatiel) para poder comparar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 3 · El minimarket</div>
+        <div class="pregunta-texto caso-pregunta">¿Cuál es el <b>dato de salida</b> que Gatiel necesita ver en la planilla?</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">El stock actual</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El stock mínimo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El aviso de si hay que reponer el producto o no</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El nombre del producto</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'c','Eso es justo lo que Gatiel pidió al principio: que la planilla le avise cuándo reponer — ese aviso ("Reponer" / "OK") es el dato de salida.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 3 · El minimarket</div>
+        <div class="pregunta-texto caso-pregunta">¿Qué <b>columnas</b> debería tener esta planilla como mínimo?</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Producto, Stock actual, Stock mínimo, Estado</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Producto, Proveedor, Fecha de compra</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Stock actual, Precio de venta, Ganancia</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Stock mínimo, Vuelto, Propina</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'a','Cada columna corresponde a un dato de entrada (Stock actual, Stock mínimo) o al dato de salida calculado (Estado), identificado por Producto.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Caso 4 · El presupuesto del cumpleaños</div>
+        <div class="caso-dialogo">
+          <p class="caso-linea">👩‍💻 <b class="caso-nombre-techi">Techi:</b> "Estoy organizando mi cumple y quiero saber cuánto me va a costar todo."</p>
+          <p class="caso-linea">🤖 <b class="caso-nombre-bit">Bit:</b> "Anotá cada gasto por separado: torta, decoración, comida — con su precio."</p>
+          <p class="caso-linea">🐱 <b class="caso-nombre-gatiel">Gatiel:</b> "Y sumando todo, sabés el total del presupuesto."</p>
+        </div>
+        <div class="pregunta-texto caso-pregunta">Techi anotó cada gasto en una fila distinta de la columna "Costo". ¿Qué función usaría para saber el <b>total del presupuesto</b>?</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=PROMEDIO(rango de costos)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=CONTAR(rango de costos)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=SUMA(rango de costos)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=MAX(rango de costos)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-10" onclick="responderYFinalizar(10,'c','Para obtener el total del presupuesto hay que sumar todos los gastos registrados: =SUMA(rango de costos). PROMEDIO daría un valor medio, CONTAR solo cuenta filas, y MAX buscaría el gasto más caro — ninguno da el total.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+// ══════════════════════════════════════
+// DATOS
+// ══════════════════════════════════════
+const TOTAL = 10;
+const CORRECTAS = { 1:'b', 2:'c', 3:'a', 4:'c', 5:'b', 6:'b', 7:'b', 8:'c', 9:'a', 10:'c' };
+const TEXTOS_CORRECTAS = {
+  1: 'La distancia de cada alumno y el precio por kilómetro',
+  2: 'La cuota mensual que paga cada alumno',
+  3: 'Alumno, Distancia (km), Precio por km, Cuota',
+  4: 'Los partidos ganados, empatados y perdidos de cada equipo',
+  5: 'Los puntos totales de cada equipo',
+  6: 'Multiplicar ganados por 3, empatados por 1, y sumar ambos resultados',
+  7: 'El stock actual y el stock mínimo de cada producto',
+  8: 'El aviso de si hay que reponer el producto o no',
+  9: 'Producto, Stock actual, Stock mínimo, Estado',
+  10: '=SUMA(rango de costos)'
+};
+const PREGUNTAS_TEXTO = {
+  1: 'Transporte escolar: datos de entrada',
+  2: 'Transporte escolar: dato de salida',
+  3: 'Transporte escolar: columnas de la planilla',
+  4: 'Torneo de fútbol: datos de entrada',
+  5: 'Torneo de fútbol: dato de salida',
+  6: 'Torneo de fútbol: proceso necesario',
+  7: 'Minimarket: datos de entrada',
+  8: 'Minimarket: dato de salida',
+  9: 'Minimarket: columnas de la planilla',
+  10: 'Cumpleaños: proceso necesario'
+};
+
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 800);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 900);
+}
+
+// ══════════════════════════════════════
+// RESULTADO FINAL
+// ══════════════════════════════════════
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Identificaste con claridad los datos de entrada, salida, el proceso necesario y las columnas en cada situación. Ese es el paso más importante antes de tocar Excel.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> ¡Excelente análisis! Ya distinguís con claridad entrada, salida, proceso y estructura de una planilla.</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Como desafío extra, elegí una situación de tu propia vida diaria y analizala del mismo modo: ¿qué datos necesitás, qué querés obtener, y qué columnas armarías?</div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Reconocés varias partes del análisis, pero todavía se mezclan entrada, salida y proceso en algunos casos. Con más práctica se vuelve automático.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá la diferencia entre <b>dato de entrada</b> (lo que ya sabés) y <b>dato de salida</b> (lo que querés calcular)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Antes de armar una planilla, preguntate siempre: "¿qué necesito saber ANTES?" y "¿qué quiero saber DESPUÉS?"</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 10 respuestas correctas</strong>. Diferenciar datos de entrada, salida y proceso todavía cuesta — y es normal, es la habilidad más difícil de Laboratorio 1. Vamos paso a paso.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📄 Archivos para repasar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="https://drive.google.com/file/d/1fGGypFhQ-FhFrwL3sDOdSycVIrV5bXaG/preview" target="_blank">Planillas — estructura y organización de datos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá con la profe o un compañero qué es un dato de entrada, un dato de salida y un proceso — con ejemplos de tu vida diaria</div>
+      <div class="ruta-subtitulo">📝 Ejercicios para volver a realizar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a leer cada caso de este cuestionario y, en un cuaderno, escribí a mano: entrada, salida, proceso y columnas — sin mirar las opciones</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Nivel 2 · Análisis de Situaciones';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"Antes de escribir una sola fórmula, ya sabés qué necesita el problema. Eso es pensar como técnico."`,
+    amarillo: `"El análisis no es instantáneo — con cada situación que revisás, se va afilando. Volvé a leer los casos que fallaste."`,
+    rojo:     `"A mí también me costó separar entrada, salida y proceso al principio. Practicá con situaciones de tu propia vida diaria — ahí se entiende mejor."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>
