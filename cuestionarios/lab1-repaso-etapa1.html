@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio 1 · Repaso Autónomo · Cierre 1ª Etapa · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+
+.pregunta-codigo, code {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+}
+code { padding: 2px 6px; }
+.pregunta-codigo { padding: 14px 18px; margin: 12px 0 20px; line-height: 1.8; }
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html">Ruta Ofimática y Datos</a>
+      <span class="sep">/</span>
+      <span>Laboratorio 1 · Repaso Autónomo</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/techi_idea.png" alt="Techi, Bit y Gatiel">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Laboratorio 1 · 1er Curso BATIN</span>
+        <h1 class="quiz-titulo">Repaso Autónomo<br>Cierre de la Primera Etapa</h1>
+        <p class="quiz-subtitulo">Planillas, fórmulas, funciones, BUSCARV, formato condicional y gráficos — con Techi, Bit y Gatiel.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 24 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~15 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🤖</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Bit dice:</strong> Cada bloque viene protagonizado por Techi, Bit o Gatiel — a veces tienen razón, a veces no. Analizá cada caso y hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para corregir al instante.</p>
+      <p>Esta versión digital cubre los ítems de opción múltiple, verdadero/falso, relacionar y corrección de fórmulas del cuadernillo original, incluidos los dos Casos Prácticos. Las consignas de justificación abierta, el Cierre Integrador (la kermés) y el Desafío Extra de Gatiel quedan para resolver en el cuaderno, tal como indica la guía original.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 24</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 01 · Bloque 1 · Ítem 1.1</div>
+        <div class="pregunta-texto">El kiosco "La Ñandutí" registra ventas: los encabezados (Producto, Cantidad, Precio) están en la fila 4, hay una fila vacía entre el lunes y el martes, y en la columna de precios se mezcló "gratis" con números. Techi dice: "Da lo mismo dónde pongo los encabezados, con que estén en algún lado ya funciona". ¿Está de acuerdo?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero — da lo mismo dónde estén</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso — deben estar en la fila 1, sin filas vacías ni tipos mezclados</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'f','Excel identifica el rango de datos de forma continua desde la fila 1: encabezados corridos, filas vacías en medio o datos de distinto tipo en una misma columna rompen el reconocimiento del rango para fórmulas, filtros y gráficos.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 02 · Bloque 1 · Ítem 1.2</div>
+        <div class="pregunta-texto">¿Cuál de las siguientes estructuras es la más adecuada para organizar los datos de venta semanal del kiosco?</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Encabezados en la fila 1, un producto por fila, sin filas ni columnas vacías.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Encabezados en la fila que quede más cómoda a la vista, agrupando productos similares con espacio de por medio.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Un dato por celda combinada, para que ocupe menos espacio en la pantalla.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Los precios en texto (con el signo Gs.) para que se entiendan mejor al leer.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'a','Esa es la estructura tabular estándar que permite que fórmulas, filtros y gráficos reconozcan el rango completo sin errores.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 03 · Bloque 1 · Ítem 1.3</div>
+        <div class="pregunta-texto">¿Cuál es el orden correcto para armar una tabla de datos coherente desde cero?</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">1) Definir los encabezados en la fila 1 · 2) Ingresar los datos de cada encabezado · 3) Verificar que no haya filas ni columnas vacías · 4) Aplicar formato funcional</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">1) Ingresar los datos · 2) Definir los encabezados · 3) Aplicar formato · 4) Verificar filas vacías</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">1) Aplicar formato funcional · 2) Definir encabezados · 3) Ingresar datos · 4) Verificar filas vacías</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">1) Verificar filas vacías · 2) Aplicar formato · 3) Definir encabezados · 4) Ingresar datos</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'a','Primero se define la estructura (encabezados en fila 1), después se cargan los datos, luego se verifica que el rango quedó continuo (sin huecos), y por último se aplica el formato visual/numérico.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 04 · Bloque 2 · Ítem 2.1</div>
+        <div class="pregunta-texto">Bit necesita calcular la ganancia (Precio Venta − Precio Costo) de cada producto y dice: "Puedo escribir el número directamente en la fórmula, como =150-90, así es más rápido que andar señalando celdas". ¿Por qué escribir =B2-C2 es mejor que escribir =150-90 directamente?</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">No hay diferencia real, ambas dan el mismo resultado siempre.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Porque con referencias de celda (=B2-C2), si el precio de costo cambia la semana siguiente, la fórmula recalcula sola; con números fijos habría que reescribir la fórmula cada vez.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Porque Excel no permite escribir números dentro de una fórmula.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Porque =150-90 tarda más en calcularse que =B2-C2.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','Usar referencias de celda es lo que hace &quot;vivas&quot; a las fórmulas: si el precio de costo del llavero cambia, =B2-C2 se actualiza solo. Con =150-90 habría que reescribir la fórmula a mano cada vez, con más riesgo de error.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 05 · Bloque 2 · Ítem 2.2 (Fila 2)</div>
+        <div class="pregunta-texto">En la planilla de Bit, la fórmula de la fila 2 (Llavero) para la Ganancia es <code>=150-90</code>. ¿Es correcta?</div>
+        <div class="pregunta-codigo">Fila 2: Llavero | Venta 15.000 | Costo 9.000 | Ganancia (D2) = 150-90<br>Fila 3: Atrapasueños | Venta 35.000 | Costo 20.000 | Ganancia (D3) = C3/B3<br>Fila 4: Pulsera | Venta 8.000 | Costo 5.000 | Ganancia (D4) = D4-C4<br>Fila 5: Aros | Venta 12.000 | Costo 0 | Ganancia (D5) = B5/C5</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Sí, es correcta.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">No: usó números fijos en vez de referencias de celda. Debería ser =B2-C2.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">No: debería ser una división, =B2/C2.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No: le falta el signo "=" al principio.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','El resultado numérico coincide (150-90 = 60), pero la fórmula no se actualiza si cambian los precios. La versión correcta usa referencias: =B2-C2.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 06 · Bloque 2 · Ítem 2.2 (Fila 3)</div>
+        <div class="pregunta-texto">En la fila 3 (Atrapasueños), la fórmula de Ganancia es <code>=C3/B3</code>. ¿Es correcta?</div>
+        <div class="pregunta-codigo">Fila 2: Llavero | Venta 15.000 | Costo 9.000 | Ganancia (D2) = 150-90<br>Fila 3: Atrapasueños | Venta 35.000 | Costo 20.000 | Ganancia (D3) = C3/B3<br>Fila 4: Pulsera | Venta 8.000 | Costo 5.000 | Ganancia (D4) = D4-C4<br>Fila 5: Aros | Venta 12.000 | Costo 0 | Ganancia (D5) = B5/C5</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Sí, es correcta.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">No: usó división en vez de resta. Debería ser =B3-C3.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">No: las columnas están invertidas, debería ser =B3/C3.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No: falta multiplicar por 100.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','La ganancia es Precio de Venta menos Precio de Costo, no una división. La fórmula correcta es =B3-C3.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 07 · Bloque 2 · Ítem 2.2 (Fila 4)</div>
+        <div class="pregunta-texto">En la fila 4 (Pulsera), la fórmula de Ganancia es <code>=D4-C4</code>. ¿Es correcta?</div>
+        <div class="pregunta-codigo">Fila 2: Llavero | Venta 15.000 | Costo 9.000 | Ganancia (D2) = 150-90<br>Fila 3: Atrapasueños | Venta 35.000 | Costo 20.000 | Ganancia (D3) = C3/B3<br>Fila 4: Pulsera | Venta 8.000 | Costo 5.000 | Ganancia (D4) = D4-C4<br>Fila 5: Aros | Venta 12.000 | Costo 0 | Ganancia (D5) = B5/C5</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Sí, es correcta.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">No: restó la propia columna de Ganancia (D4) en vez del Precio Venta (B4). Debería ser =B4-C4.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">No: debería sumar en vez de restar.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No: le falta el paréntesis.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'b','D4 es la celda de Ganancia, no de Precio de Venta — la fórmula se está restando a sí misma. La correcta es =B4-C4 (Precio Venta menos Precio Costo).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 08 · Bloque 2 · Ítem 2.2 (Fila 5)</div>
+        <div class="pregunta-texto">En la fila 5 (Aros, con Precio Costo = 0), la fórmula de Ganancia es <code>=B5/C5</code>. ¿Qué pasa con esta fórmula?</div>
+        <div class="pregunta-codigo">Fila 2: Llavero | Venta 15.000 | Costo 9.000 | Ganancia (D2) = 150-90<br>Fila 3: Atrapasueños | Venta 35.000 | Costo 20.000 | Ganancia (D3) = C3/B3<br>Fila 4: Pulsera | Venta 8.000 | Costo 5.000 | Ganancia (D4) = D4-C4<br>Fila 5: Aros | Venta 12.000 | Costo 0 | Ganancia (D5) = B5/C5</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Funciona bien y da la ganancia correcta.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Da error #DIV/0! porque divide por C5, que vale 0; además la operación debería ser resta (=B5-C5), no división.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Da error porque B5 no tiene datos.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Funciona, pero muestra 0 en vez de la ganancia.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','Dividir por una celda que vale 0 produce el error #DIV/0! en Excel. Además, la operación conceptualmente equivocada: la ganancia es una resta, no una división. La fórmula correcta es =B5-C5.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 09 · Bloque 2 · Ítem 2.3</div>
+        <div class="pregunta-texto">El puesto vendió durante 4 días, con las ventas diarias en las celdas B2 a B5. ¿Cuál fórmula calcula correctamente el total de la semana?</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=B2+B3+B4+B5</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=SUMA(B2:B5)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Ambas están correctas y dan el mismo resultado.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Ninguna, porque SUMA no acepta rangos de celdas.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'c','Las dos fórmulas suman los mismos valores y dan el mismo resultado. =SUMA(rango) es más eficiente cuando hay muchas celdas para sumar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 10 · Bloque 3 · Ítem 3.1</div>
+        <div class="pregunta-texto">La cooperativa escolar registra cuánto ahorró cada curso durante el mes (celdas B2 a B9). Gatiel dice: "Para saber el ahorro típico de un curso, uso la función MAX, así veo directamente el número más importante". ¿Está de acuerdo?</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero — MAX muestra el ahorro típico</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso — MAX muestra el mayor valor, no el típico</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-10" onclick="responderYSiguiente(10,'f','MAX devuelve el valor más alto del rango, no el típico. Para responder &quot;¿cuánto ahorra un curso típicamente?&quot; corresponde PROMEDIO.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P11 -->
+    <div class="pregunta-panel" id="p11">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 11 · Bloque 3 · Ítem 3.2</div>
+        <div class="pregunta-texto">Relacioná cada pregunta con la función que la responde: (1) ¿Cuál es el mayor ahorro registrado? · (2) ¿Cuál es el ahorro típico entre todos los cursos? · (3) ¿Cuál es el menor ahorro registrado? · (4) ¿Cuánto ahorró la cooperativa en total?</div>
+        <div class="opciones" id="ops-11">
+          <label class="opcion-label" onclick="seleccionar(this,11,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">(1) MAX · (2) PROMEDIO · (3) MIN · (4) SUMA</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">(1) PROMEDIO · (2) MAX · (3) SUMA · (4) MIN</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">(1) MAX · (2) MIN · (3) PROMEDIO · (4) SUMA</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">(1) SUMA · (2) PROMEDIO · (3) MAX · (4) MIN</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(10)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-11" onclick="responderYSiguiente(11,'a','MAX = mayor valor, PROMEDIO = valor típico, MIN = menor valor, SUMA = total acumulado. Cada función de resumen responde una pregunta distinta.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P12 -->
+    <div class="pregunta-panel" id="p12">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 12 · Bloque 4 · Ítem 4.1</div>
+        <div class="pregunta-texto">El colectivo interno tiene una lista de precios según tipo de pase, con 40 filas de pasajeros. Gatiel dice: "Para buscar el precio de cada pase en una lista de 40 filas, reviso fila por fila. Así no me arriesgo con fórmulas raras que capaz uso mal". ¿Por qué BUSCARV es mejor que revisar fila por fila?</div>
+        <div class="opciones" id="ops-12">
+          <label class="opcion-label" onclick="seleccionar(this,12,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">No es mejor, revisar a mano siempre es más seguro.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">BUSCARV es más rápido y reduce el error humano: revisar 40 filas a mano lleva tiempo y es fácil equivocarse al copiar un precio; la fórmula, una vez bien construida, se aplica igual a todas las filas y se actualiza sola si cambia la lista de precios.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">BUSCARV solo sirve para menos de 10 filas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No hay diferencia de tiempo entre ambos métodos.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(11)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-12" onclick="responderYSiguiente(12,'b','Con 40 filas, revisar y copiar precios a mano es lento y propenso a errores. BUSCARV, bien construida una vez, se replica en todas las filas y se actualiza sola si cambia la lista de precios.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P13 -->
+    <div class="pregunta-panel" id="p13">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 13 · Bloque 4 · Ítem 4.2</div>
+        <div class="pregunta-texto">Esta fórmula intenta clasificar si un pasajero pagó al día o no, comparando C2 (monto pagado) con D2 (monto que corresponde), pero no funciona. ¿Cuál es el error de sintaxis?</div>
+        <div class="pregunta-codigo">=SI(C2&gt;D2,"Al día"<strong>;</strong>"Debe")</div>
+        <div class="opciones" id="ops-13">
+          <label class="opcion-label" onclick="seleccionar(this,13,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Mezcló separadores de argumentos: usó coma (,) y luego punto y coma (;) en la misma fórmula, en vez de usar uno solo de forma consistente.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El operador > no existe en Excel.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Le falta un paréntesis de cierre.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">SI no acepta texto como resultado.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-13"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(12)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-13" onclick="responderYSiguiente(13,'a','El error está en el separador de argumentos: se usó coma y punto y coma mezclados en la misma fórmula. Según la configuración regional (coma decimal, como en español), la versión corregida es: =SI(C2&gt;D2;&quot;Al día&quot;;&quot;Debe&quot;)')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P14 -->
+    <div class="pregunta-panel" id="p14">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 14 · Bloque 4 · Ítem 4.3</div>
+        <div class="pregunta-texto">¿Cuál es la sintaxis correcta para buscar, en la tabla de precios del rango E2:F4, el precio que corresponde al tipo de pase escrito en la celda A2, trayendo el dato de la segunda columna de esa tabla?</div>
+        <div class="opciones" id="ops-14">
+          <label class="opcion-label" onclick="seleccionar(this,14,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=BUSCARV(A2;E2:F4;2;FALSO)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=BUSCARV(E2:F4;A2;2;FALSO)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=BUSCARV(A2;2;E2:F4;FALSO)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=SI(A2;E2:F4;2)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-14"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(13)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-14" onclick="responderYSiguiente(14,'a','El orden correcto de BUSCARV es: valor a buscar, rango de la tabla, número de columna a devolver, y FALSO para coincidencia exacta.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P15 -->
+    <div class="pregunta-panel" id="p15">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 15 · Bloque 5 · Ítem 5.1</div>
+        <div class="pregunta-texto">Una vendedora de chipá registra cuántas unidades vendió cada día durante un mes. Gatiel dice: "Para mostrar cómo cambiaron las ventas día a día, lo mejor es un gráfico de torta. Se ve más colorido y llama más la atención". ¿Está de acuerdo?</div>
+        <div class="opciones" id="ops-15">
+          <label class="opcion-label" onclick="seleccionar(this,15,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Verdadero — torta es lo mejor para evolución diaria</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">Falso — para evolución en el tiempo conviene un gráfico de líneas</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-15"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(14)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-15" onclick="responderYSiguiente(15,'f','Para mostrar una evolución en el tiempo (día a día) conviene un gráfico de líneas, porque permite ver la tendencia. El gráfico de torta sirve para mostrar proporciones de un total, no cambios en el tiempo.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P16 -->
+    <div class="pregunta-panel" id="p16">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 16 · Bloque 5 · Ítem 5.2</div>
+        <div class="pregunta-texto">Relacioná cada necesidad con el tipo de gráfico más adecuado: (1) Mostrar la evolución de ventas día a día durante el mes · (2) Comparar las ventas totales entre 4 productos distintos · (3) Mostrar qué porcentaje de las ventas representa cada producto sobre el total</div>
+        <div class="opciones" id="ops-16">
+          <label class="opcion-label" onclick="seleccionar(this,16,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">(1) Líneas · (2) Barras/columnas · (3) Torta</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">(1) Torta · (2) Líneas · (3) Barras/columnas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">(1) Barras/columnas · (2) Torta · (3) Líneas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">(1) Líneas · (2) Torta · (3) Barras/columnas</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-16"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(15)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-16" onclick="responderYSiguiente(16,'a','Líneas para evolución en el tiempo, barras/columnas para comparar categorías entre sí, y torta para proporciones de un total.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P17 -->
+    <div class="pregunta-panel" id="p17">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 17 · Bloque 5 · Ítem 5.3</div>
+        <div class="pregunta-texto">Las ventas diarias de chipá durante diez días fueron: 24, 18, 31, 15, 22, 12, 27, 19, 30, 9. Si se aplica un formato condicional que resalta los días con menos de 20 unidades vendidas, ¿cuántos días quedarían marcados?</div>
+        <div class="pregunta-codigo">Día 1-10: 24, 18, 31, 15, 22, 12, 27, 19, 30, 9</div>
+        <div class="opciones" id="ops-17">
+          <label class="opcion-label" onclick="seleccionar(this,17,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">3 días</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">4 días</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">5 días</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">6 días</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-17"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(16)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-17" onclick="responderYSiguiente(17,'c','Los días con menos de 20 unidades son: día 2 (18), día 4 (15), día 6 (12), día 8 (19) y día 10 (9) — cinco en total. La regla equivale, en Excel, a &quot;resaltar reglas de celdas → menor que → 20&quot;.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P18 -->
+    <div class="pregunta-panel" id="p18">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 18 · Bloque 6 · Ítem 6.1</div>
+        <div class="pregunta-texto">El kiosco quiere saber, sobre el total de productos vendidos en la semana: (1) ¿Cuántos productos se vendieron en total, sin importar el tipo? · (2) ¿Cuántos de los productos vendidos fueron golosinas? · (3) ¿Cuánto dinero se recaudó solamente por bebidas? Relacioná cada pregunta con la función correspondiente.</div>
+        <div class="opciones" id="ops-18">
+          <label class="opcion-label" onclick="seleccionar(this,18,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">(1) CONTAR · (2) CONTAR.SI · (3) SUMAR.SI</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">(1) SUMAR.SI · (2) CONTAR · (3) CONTAR.SI</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">(1) CONTAR.SI · (2) SUMAR.SI · (3) CONTAR</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">(1) CONTAR · (2) SUMAR.SI · (3) CONTAR.SI</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-18"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(17)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-18" onclick="responderYSiguiente(18,'a','CONTAR cuenta todas las celdas con datos numéricos; CONTAR.SI cuenta solo las que cumplen una condición (ser golosina); SUMAR.SI suma solo los valores que cumplen una condición (ser bebida).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P19 -->
+    <div class="pregunta-panel" id="p19">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 19 · Bloque 6 · Ítem 6.2</div>
+        <div class="pregunta-texto">Esta fórmula intenta contar cuántas ventas superaron los 10.000 Gs., en el rango B2:B30: <code>=CONTAR.SI(B2:B30,10000)</code>. ¿Qué está mal?</div>
+        <div class="opciones" id="ops-19">
+          <label class="opcion-label" onclick="seleccionar(this,19,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Nada, la fórmula ya cuenta correctamente los valores mayores a 10.000.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El criterio "10000" busca coincidencias exactas (solo cuenta los que valen exactamente 10.000). Para contar los que superan ese valor, el criterio debe escribirse como texto con el operador: ">10000".</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">CONTAR.SI no acepta rangos, solo celdas individuales.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Debería usarse SUMAR.SI en vez de CONTAR.SI.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-19"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(18)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-19" onclick="responderYSiguiente(19,'b','Sin el operador, CONTAR.SI busca coincidencias exactas con 10000. Para contar los que superan ese valor, el criterio se escribe como texto: =CONTAR.SI(B2:B30,&quot;>10000&quot;)')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P20 -->
+    <div class="pregunta-panel" id="p20">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 20 · Prácticos · Caso 1 — Kiosco</div>
+        <div class="pregunta-texto">En la planilla de ventas del kiosco, la columna Total debe calcular Cantidad × Precio Unitario. ¿Cuál es la fórmula correcta para la fila 2 (columna D)?</div>
+        <div class="opciones" id="ops-20">
+          <label class="opcion-label" onclick="seleccionar(this,20,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=B2*C2</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=B2+C2</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=SUMA(B2:C2)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=C2/B2</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-20"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(19)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-20" onclick="responderYSiguiente(20,'a','El Total es Cantidad multiplicada por Precio Unitario, usando referencias de celda: =B2*C2. La misma lógica se repite en cada fila.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P21 -->
+    <div class="pregunta-panel" id="p21">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 21 · Prácticos · Caso 1 — Kiosco</div>
+        <div class="pregunta-texto">¿Cuál es la fórmula correcta para calcular el TOTAL DE LA SEMANA, sumando toda la columna Total (filas 2 a 5)?</div>
+        <div class="opciones" id="ops-21">
+          <label class="opcion-label" onclick="seleccionar(this,21,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=SUMA(D2:D5)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=PROMEDIO(D2:D5)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=CONTAR(D2:D5)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=D2*D3*D4*D5</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-21"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(20)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-21" onclick="responderYSiguiente(21,'a','Para sumar toda la columna Total del rango de filas con datos, se usa =SUMA(D2:D5).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P22 -->
+    <div class="pregunta-panel" id="p22">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 22 · Prácticos · Caso 2 — Cooperativa</div>
+        <div class="pregunta-texto">La meta de ahorro es 50.000 Gs. por curso. ¿Cuál es la fórmula con función SI correcta para la columna Estado, que muestre "Meta cumplida" si el monto ahorrado alcanza o supera la meta, y "No cumplida" si no?</div>
+        <div class="opciones" id="ops-22">
+          <label class="opcion-label" onclick="seleccionar(this,22,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=SI(B2>=C2,"Meta cumplida","No cumplida")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,22,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=SI(B2>C2,"Meta cumplida","No cumplida")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,22,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=SI(B2=C2,"Meta cumplida","No cumplida")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,22,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=BUSCARV(B2,C2,1,FALSO)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-22"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(21)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-22" onclick="responderYSiguiente(22,'a','&quot;Alcanza o supera&quot; incluye la igualdad — por eso hace falta >= y no solo >. Con >, un curso que ahorró justo 50.000 quedaría marcado como &quot;No cumplida&quot; por error.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P23 -->
+    <div class="pregunta-panel" id="p23">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 23 · Prácticos · Caso 2 — Cooperativa</div>
+        <div class="pregunta-texto">¿Cuál es la fórmula correcta para contar, en la última fila, cuántos cursos cumplieron la meta (columna Estado, rango D2:D6)?</div>
+        <div class="opciones" id="ops-23">
+          <label class="opcion-label" onclick="seleccionar(this,23,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">=CONTAR.SI(D2:D6,"Meta cumplida")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,23,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">=SUMAR.SI(D2:D6,"Meta cumplida")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,23,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">=CONTAR(D2:D6)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,23,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">=SUMA(D2:D6)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-23"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(22)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-23" onclick="responderYSiguiente(23,'a','CONTAR.SI cuenta cuántas celdas del rango cumplen la condición de texto &quot;Meta cumplida&quot;. Con los datos del caso, el resultado es 3 (2°, 3° y 5°).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P24 -->
+    <div class="pregunta-panel" id="p24">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 24 · Prácticos · Caso 2 — Cooperativa</div>
+        <div class="pregunta-texto">El curso 3° ahorró exactamente 50.000 Gs. (igual a la meta). Si la meta fuera 50.001 en vez de 50.000, ¿qué pasaría con el resultado de la fila del curso 3°?</div>
+        <div class="opciones" id="ops-24">
+          <label class="opcion-label" onclick="seleccionar(this,24,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Seguiría mostrando "Meta cumplida", no cambia nada.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,24,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Pasaría de "Meta cumplida" a "No cumplida", porque 50.000 ya no sería mayor o igual a 50.001.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,24,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">La fórmula daría error.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,24,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Pasaría a mostrar un número en vez de texto.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-24"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(23)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-24" onclick="responderYFinalizar(24,'b','Con la fórmula =SI(B2>=C2,...), si la meta sube a 50.001 y el curso ahorró exactamente 50.000, la condición B2>=C2 deja de cumplirse — el resultado cambia a &quot;No cumplida&quot;.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+const TOTAL = 24;
+const CORRECTAS = { 1:'f', 2:'a', 3:'a', 4:'b', 5:'b', 6:'b', 7:'b', 8:'b', 9:'c', 10:'f', 11:'a', 12:'b', 13:'a', 14:'a', 15:'f', 16:'a', 17:'c', 18:'a', 19:'b', 20:'a', 21:'a', 22:'a', 23:'a', 24:'b' };
+const TEXTOS_CORRECTAS = {
+  1: 'Falso',
+  2: 'Encabezados en fila 1, sin filas/columnas vacías.',
+  3: 'Definir encabezados → Ingresar datos → Verificar → Formato.',
+  4: 'La referencia de celda permite recalcular automáticamente si el dato cambia.',
+  5: 'No — debería ser =B2-C2 (referencias, no números fijos).',
+  6: 'No — debería ser =B3-C3 (resta, no división).',
+  7: 'No — restó D4 (su propia columna) en vez de B4.',
+  8: 'Error #DIV/0! — división por cero, y además la operación debería ser resta.',
+  9: 'Ambas son válidas y dan el mismo resultado.',
+  10: 'Falso',
+  11: '(1) MAX · (2) PROMEDIO · (3) MIN · (4) SUMA',
+  12: 'BUSCARV es más rápido y reduce el error humano.',
+  13: 'Mezcló separadores de argumentos (, y ;).',
+  14: '=BUSCARV(A2;E2:F4;2;FALSO)',
+  15: 'Falso',
+  16: '(1) Líneas · (2) Barras/columnas · (3) Torta',
+  17: '5 días',
+  18: '(1) CONTAR · (2) CONTAR.SI · (3) SUMAR.SI',
+  19: 'El criterio debe ser ">10000" (como texto), no 10000.',
+  20: '=B2*C2',
+  21: '=SUMA(D2:D5)',
+  22: '=SI(B2&gt;=C2,"Meta cumplida","No cumplida")',
+  23: '=CONTAR.SI(D2:D6,"Meta cumplida")',
+  24: 'Pasaría a "No cumplida".'
+};
+const PREGUNTAS_TEXTO = {
+  1: '¿Da lo mismo dónde van los encabezados?',
+  2: '¿Cuál estructura es la más adecuada para los datos del kiosco?',
+  3: '¿Cuál es el orden correcto para armar la tabla desde cero?',
+  4: '¿Por qué usar referencias de celda en vez de números fijos?',
+  5: 'Fila 2 (Llavero): ¿la fórmula =150-90 es correcta?',
+  6: 'Fila 3 (Atrapasueños): ¿la fórmula =C3/B3 es correcta?',
+  7: 'Fila 4 (Pulsera): ¿la fórmula =D4-C4 es correcta?',
+  8: 'Fila 5 (Aros, costo 0): ¿qué pasa con =B5/C5?',
+  9: 'Total semanal: ¿=B2+B3+B4+B5 o =SUMA(B2:B5)?',
+  10: '¿MAX muestra el ahorro "típico" de un curso?',
+  11: 'Relacionar preguntas con funciones: MAX/PROMEDIO/MIN/SUMA',
+  12: '¿Por qué BUSCARV es mejor que revisar fila por fila?',
+  13: 'Corrección de fórmula SI: ¿cuál es el error de sintaxis?',
+  14: '¿Cuál es la sintaxis correcta de BUSCARV?',
+  15: '¿El gráfico de torta es lo mejor para evolución día a día?',
+  16: 'Relacionar necesidad con tipo de gráfico',
+  17: 'Formato condicional "menor que 20": ¿cuántos días se marcan?',
+  18: 'Relacionar pregunta con función: CONTAR / CONTAR.SI / SUMAR.SI',
+  19: 'Corrección de CONTAR.SI: ¿qué está mal en el criterio 10000?',
+  20: 'Caso 1 (Kiosco): fórmula de Total = Cantidad × Precio',
+  21: 'Caso 1 (Kiosco): fórmula del total de la semana',
+  22: 'Caso 2 (Cooperativa): fórmula SI para Estado',
+  23: 'Caso 2 (Cooperativa): fórmula CONTAR.SI para contar metas cumplidas',
+  24: 'Si la meta sube a 50.001, ¿qué pasa con el curso que ahorró 50.000?'
+};
+
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta || letra === (correcta === 'v' ? '✓' : correcta === 'f' ? '✗' : correcta)) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 900);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 1000);
+}
+
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 24 respuestas correctas</strong>. Estructura de planillas, fórmulas, funciones de resumen, SI, BUSCARV, formato condicional y gráficos están firmes. ¡Terminá el Cierre Integrador (la kermés) en el cuaderno para redondear la etapa!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> Resolvé en el cuaderno el Bloque Cierre (La kermés del curso) y, si querés más desafío, el Bloque Extra de Gatiel</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Pedile a la profe que revise tu cuadernillo cuando termines</div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 24 respuestas correctas</strong>. Hay bloques firmes y otros con un patrón de error puntual — revisá la revisión detallada para identificar cuáles.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá tus apuntes del bloque donde más fallaste: estructura de datos, fórmulas y referencias, funciones de resumen, BUSCARV, gráficos, o funciones condicionales</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá atención especial a la diferencia entre referencias de celda y valores fijos, y a los separadores de argumentos (, vs ;)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a intentar este repaso cuando te sientas más seguro/a</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 24 respuestas correctas</strong>. Los contenidos de la Primera Etapa todavía no están afianzados — es normal al principio, y se resuelve con práctica guiada.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📝 Para reforzar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Volvé a resolver, con calma y con el cuaderno al lado, cada bloque del repaso original antes de mirar la Clave de Respuestas</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá especial atención a: referencias de celda vs. números fijos, funciones de resumen (MAX/MIN/PROMEDIO/SUMA), y la sintaxis de SI y BUSCARV</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar este repaso</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Repaso Autónomo · Laboratorio 1';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% resolviendo solo/a, sin nadie explicando en vivo — eso demuestra que entendiste de verdad, no que memorizaste. Vas más que listo/a para la Segunda Etapa."`,
+    amarillo: `"Hay conceptos que ya entendiste bien. Los que fallaste tienen un patrón — mirá cuál bloque falló más y volvé puntualmente a esa parte del apunte."`,
+    rojo:     `"Trabajar sin nadie explicando en vivo es exigente al principio. Lo que importa no es este primer intento, sino volver con calma a cada bloque y probar de nuevo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>

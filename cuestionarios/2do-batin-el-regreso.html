@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2do BATIN · El Regreso · Repaso de Reingreso · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+
+.pregunta-codigo, code {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+}
+code { padding: 2px 6px; }
+.pregunta-codigo { padding: 14px 18px; margin: 12px 0 20px; line-height: 1.8; }
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html">Ruta Algorítmica</a>
+      <span class="sep">/</span>
+      <span>2do BATIN · Repaso de Reingreso</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/gatiel_idea.png" alt="Gatiel, Bit y Techi">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// 2do BATIN · Repaso de Reingreso</span>
+        <h1 class="quiz-titulo">El Regreso<br>Casos de Gatiel, Bit y Techi</h1>
+        <p class="quiz-subtitulo">Segunda Etapa 2026 — repaso de Variable/Constante, Contador/Acumulador y For/While.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 21 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~15 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🐱</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Gatiel dice:</strong> Volvimos del receso y, como siempre, estamos discutiendo con Bit y Techi. Analizá cada caso y decidí quién tiene razón (o si ninguno la tiene). Hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para ver la corrección al instante.</p>
+      <p>Este repaso cubre los ítems de opción múltiple, verdadero/falso y corrección de código del cuadernillo original. Los tres casos de escritura de programa completo (Cierre Integrador · Caso 3, y los dos casos del Desafío Extra) quedan para resolver en el cuaderno — son los que más suman como evidencia de profundización.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 21</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 01 · Bloque 1 · Caso 1.1</div>
+        <div class="pregunta-texto">Gatiel programa el sistema de cobro del kiosco escolar y afirma que <code>precioChipa</code> es una constante porque "siempre vale 1500 en este programa". ¿Es correcto ese razonamiento?</div>
+        <div class="pregunta-codigo">precioChipa = 1500<br>descuentoSocios = 0.10<br>cantidad = int(input("Cantidad de chipas: "))<br>total = precioChipa * cantidad</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Sí, un valor que no cambia dentro del código es siempre una constante.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">No: en Python toda variable declarada con "=" sigue siendo variable aunque su valor no se modifique en el programa; una constante real no debería cambiar nunca, ni siquiera si el kiosco actualiza precios el próximo mes.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">No, porque las constantes solo existen en Java, no en Python.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Sí, porque cantidad es la única variable real del programa.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','Lo que define a una constante no es si cambió durante la ejecución, sino que fue pensada para no cambiar nunca — ni siquiera en una actualización futura del programa.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 02 · Bloque 1 · Caso 1.2</div>
+        <div class="pregunta-texto">Techi ayuda a calcular el área de una empanada gigante. Dice: "Acá sí tenemos una constante real: PI". ¿Por qué PI se comporta como una verdadera constante, a diferencia de precioChipa del caso anterior?</div>
+        <div class="pregunta-codigo">PI = 3.1416<br>radioEmpanada = float(input("Radio en cm: "))<br>area = PI * radioEmpanada ** 2</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Porque PI es una palabra reservada de Python que no se puede reasignar.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Porque su valor matemático es universal y no depende del contexto del programa ni de decisiones humanas, mientras que un precio sí puede cambiar por decisión del kiosco.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Porque está escrita en mayúsculas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Porque no se usa en ninguna operación.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'b','PI representa un valor matemático fijo por naturaleza. Un precio, en cambio, es una decisión humana que puede cambiar — por eso PI sí es una constante real y precioChipa no.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 03 · Bloque 1 · Caso 1.3</div>
+        <div class="pregunta-texto">La cooperativa calcula el interés simple sobre el ahorro de cada socio. ¿Cuál línea demuestra, sin ninguna duda, que <code>saldo</code> es una variable y no una constante?</div>
+        <div class="pregunta-codigo">tasaInteres = 0.02<br>saldo = float(input("Saldo actual: "))<br>saldo = saldo + (saldo * tasaInteres)</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">tasaInteres = 0.02</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">saldo = float(input("Saldo actual: "))</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">saldo = saldo + (saldo * tasaInteres)</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Ninguna línea lo demuestra.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'c','Esa línea reasigna saldo usando su propio valor anterior — solo una variable puede hacer eso. Es el principio de reasignación: el nuevo valor depende del valor previo.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 04 · Bloque 1 · Caso 1.4</div>
+        <div class="pregunta-texto">Bit programa el conteo del colectivo línea 4 y razona: "paradasRecorridas empieza en 0, así que es una constante hasta que cambie de valor". ¿Qué error de concepto comete Bit?</div>
+        <div class="pregunta-codigo">tarifaColectivo = 4300<br>paradasRecorridas = 0</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Ninguno: tiene razón, mientras no cambie es constante.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Confunde el valor inicial de una variable con su naturaleza; lo que define a una variable no es si cambió, sino que fue diseñada para poder cambiar durante la ejecución del programa.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El error es que 0 no es un valor válido para iniciar una variable.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El error es que tarifaColectivo debería llamarse TARIFA_COLECTIVO.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','El valor inicial (0) no define si algo es variable o constante. Lo que importa es el propósito: paradasRecorridas fue creada para cambiar a medida que el colectivo avanza.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 05 · Bloque 1 · Caso 1.5</div>
+        <div class="pregunta-texto">En el emprendimiento de Doña Ramona, una de las dos variables no respeta la convención camelCase que usamos en clase. ¿Cuál es y cómo debería escribirse?</div>
+        <div class="pregunta-codigo">nombreVendedora = "Doña Ramona"<br>GananciaDia = 0</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">nombreVendedora — debería ser NombreVendedora.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">GananciaDia — debería ser gananciaDia.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Las dos están mal escritas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Las dos están bien escritas.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','En camelCase, la primera palabra empieza siempre en minúscula. GananciaDia rompe la convención al empezar con mayúscula.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 06 · Bloque 1 · Caso 1.6</div>
+        <div class="pregunta-texto">Gatiel quiere fijar el precio del número de la rifa solidaria, pero el programa marca error antes de ejecutarse. ¿Cuál es el error de sintaxis y cómo se corrige?</div>
+        <div class="pregunta-codigo">precioNumeroRifa == 2000<br>totalRecaudado = 0</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Debería ser precioNumeroRifa <= 2000</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Debería ser precioNumeroRifa = 2000 (asignación con "=", no comparación con "==")</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Debería ser precioNumeroRifa != 2000</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No hay ningún error; el programa debería correr así.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','&quot;==&quot; es el operador de comparación (¿son iguales?), no de asignación. Para guardar un valor en una variable se usa &quot;=&quot;. La línea corregida es: precioNumeroRifa = 2000')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 07 · Bloque 2 · Caso 2.1</div>
+        <div class="pregunta-texto">El comedor escolar registra las raciones servidas durante 5 días. ¿Cuál de las dos variables funciona como <strong>acumulador</strong>?</div>
+        <div class="pregunta-codigo">totalRaciones = 0<br>diasServidos = 0<br>for dia in range(5):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raciones = int(input("Raciones de hoy: "))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalRaciones = totalRaciones + raciones<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diasServidos = diasServidos + 1</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">totalRaciones</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">diasServidos</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">dia</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">raciones</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'a','totalRaciones suma un valor que cambia en cada vuelta (las raciones de ese día) — esa es la marca distintiva de un acumulador.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 08 · Bloque 2 · Caso 2.1 (bis)</div>
+        <div class="pregunta-texto">En el mismo código del comedor escolar, ¿cuál de las dos variables funciona como <strong>contador</strong>?</div>
+        <div class="pregunta-codigo">totalRaciones = 0<br>diasServidos = 0<br>for dia in range(5):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raciones = int(input("Raciones de hoy: "))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalRaciones = totalRaciones + raciones<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diasServidos = diasServidos + 1</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">totalRaciones</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">diasServidos</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">dia</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">raciones</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','diasServidos suma siempre 1 en cada vuelta, sin importar cuántas raciones se sirvieron ese día — esa es la marca distintiva de un contador.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 09 · Bloque 2 · Caso 2.2</div>
+        <div class="pregunta-texto">La biblioteca registra devoluciones tardías. ¿Podrían intercambiarse las fórmulas de actualización de <code>librosTarde</code> y <code>multaTotal</code> sin cambiar la lógica del programa?</div>
+        <div class="pregunta-codigo">librosTarde = 0<br>multaTotal = 0<br>for i in range(10):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diasAtraso = int(input("Días de atraso: "))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if diasAtraso > 0:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;librosTarde = librosTarde + 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multaTotal = multaTotal + (diasAtraso * 500)</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Sí, se podrían intercambiar sin problema</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">No, se rompería la lógica del programa</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'f','librosTarde es un contador (suma siempre 1); multaTotal es un acumulador (suma un valor que cambia — los guaraníes de la multa). Intercambiar las fórmulas mezclaría cantidades fijas con variables y daría resultados incorrectos.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 10 · Bloque 2 · Caso 2.3</div>
+        <div class="pregunta-texto">Techi organiza un torneo de FIFA entre 8 estudiantes y quiere contar cuántos ganaron al menos 3 partidos. ¿Qué condición completa correctamente el espacio en blanco?</div>
+        <div class="pregunta-codigo">metaVictorias = 3<br>clasificados = 0<br>for jugador in range(8):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;victorias = int(input("Victorias del jugador: "))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ____________:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clasificados = clasificados + 1</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">victorias > 0</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">victorias == metaVictorias</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">victorias >= metaVictorias</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">metaVictorias >= 8</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-10" onclick="responderYSiguiente(10,'c','&quot;Al menos 3&quot; incluye 3 y más — por eso hace falta >= y no == (que excluiría a quien ganó 4 o 5).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P11 -->
+    <div class="pregunta-panel" id="p11">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 11 · Bloque 2 · Caso 2.4</div>
+        <div class="pregunta-texto">Bit programó el conteo de pasajeros de la terminal y defiende su código: "Esta línea es un acumulador, porque acumula pasajeros". Gatiel no está de acuerdo. ¿Quién tiene razón?</div>
+        <div class="pregunta-codigo">pasajerosSubidos = 0<br>pasajerosSubidos = pasajerosSubidos + 1</div>
+        <div class="opciones" id="ops-11">
+          <label class="opcion-label" onclick="seleccionar(this,11,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Bit tiene razón: cualquier suma dentro de un ciclo es un acumulador.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Gatiel tiene razón: sumar siempre la misma cantidad fija (en este caso, 1) es la marca distintiva de un contador; un acumulador suma cantidades que varían, como guaraníes, litros o piezas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Ninguno tiene razón: eso es una variable de tipo bandera.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Los dos tienen razón: contador y acumulador son sinónimos.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(10)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-11" onclick="responderYSiguiente(11,'b','Sumar siempre +1 es la firma de un contador, no de un acumulador. Un acumulador suma valores que cambian (dinero, litros, unidades), no siempre la misma cantidad fija.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P12 -->
+    <div class="pregunta-panel" id="p12">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 12 · Bloque 2 · Caso 2.5</div>
+        <div class="pregunta-texto">Este código del kiosco tiene errores de sintaxis y de sangría (indentación). ¿Qué correcciones hacen falta?</div>
+        <div class="pregunta-codigo">cantidadVentas = 0<br>totalRecaudado = 0<br>for i in range(10)<br>precioVenta = float(input("Monto de la venta: "))<br>cantidadVentas = cantidadVentas + 1<br>totalRecaudado = totalRecaudado + precioVenta<br>print "Ventas:", cantidadVentas, "Total:", totalRecaudado</div>
+        <div class="opciones" id="ops-12">
+          <label class="opcion-label" onclick="seleccionar(this,12,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Solo falta agregar ":" al final del for.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Agregar ":" al final del for, indentar las 4 líneas del bloque con el mismo nivel de sangría, y cambiar print "..." por print("...") — sintaxis de Python 2 en vez de Python 3.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El código está bien, solo hay que ejecutarlo.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Cambiar for por while, nada más.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(11)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-12" onclick="responderYSiguiente(12,'b','Son tres errores distintos combinados: falta el &quot;:&quot; del for, las líneas del bloque no están indentadas (por eso no pertenecen al ciclo), y print sin paréntesis es sintaxis de Python 2.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P13 -->
+    <div class="pregunta-panel" id="p13">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 13 · Bloque 2 · Caso 2.6</div>
+        <div class="pregunta-texto">Estas líneas calculan cuántos pedidos se hicieron y cuánto se recaudó en la feria de comidas, pero están desordenadas. ¿Cuál es el orden correcto?</div>
+        <div class="pregunta-codigo">A) totalRecaudado = 0<br>B) for i in range(15):<br>C)&nbsp;&nbsp;&nbsp;&nbsp;precioPedido = float(input("Monto del pedido: "))<br>D) cantidadPedidos = 0<br>E)&nbsp;&nbsp;&nbsp;&nbsp;totalRecaudado = totalRecaudado + precioPedido<br>F)&nbsp;&nbsp;&nbsp;&nbsp;cantidadPedidos = cantidadPedidos + 1</div>
+        <div class="opciones" id="ops-13">
+          <label class="opcion-label" onclick="seleccionar(this,13,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">D, A, B, C, F, E</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">B, A, D, C, E, F</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">A, B, D, C, E, F</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">D, A, B, E, F, C</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-13"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(12)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-13" onclick="responderYSiguiente(13,'a','Primero se inicializan las variables fuera del ciclo (D y A, en cualquier orden entre sí), luego el for (B), y dentro del ciclo: leer el pedido (C) antes de acumular (F y E).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P14 -->
+    <div class="pregunta-panel" id="p14">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 14 · Bloque 3 · Caso 3.1</div>
+        <div class="pregunta-texto">El equipo de la feria decidió que exactamente 20 estudiantes probarán el nuevo producto antes de venderlo al público. ¿Qué estructura conviene usar?</div>
+        <div class="opciones" id="ops-14">
+          <label class="opcion-label" onclick="seleccionar(this,14,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">for — la cantidad se conoce de antemano.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">while — la cantidad no se conoce de antemano.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-14"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(13)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-14" onclick="responderYSiguiente(14,'a','La cantidad (20) es fija y conocida antes de que el programa empiece a correr — el criterio clásico para usar for.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P15 -->
+    <div class="pregunta-panel" id="p15">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 15 · Bloque 3 · Caso 3.2</div>
+        <div class="pregunta-texto">El kiosco quiere seguir vendiendo chipas hasta que se acabe el stock, pero nadie sabe de antemano cuántas se van a vender antes de agotarse. ¿Qué estructura conviene usar?</div>
+        <div class="opciones" id="ops-15">
+          <label class="opcion-label" onclick="seleccionar(this,15,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">for — con range(stock).</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">while — con una condición de corte como stock > 0.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-15"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(14)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-15" onclick="responderYSiguiente(15,'b','La cantidad de ventas hasta agotar el stock no se conoce de antemano; la condición de corte sería stock > 0.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P16 -->
+    <div class="pregunta-panel" id="p16">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 16 · Bloque 3 · Caso 3.3</div>
+        <div class="pregunta-texto">El recorrido de la línea 4 tiene exactamente 8 paradas fijas, y el sistema debe registrar cuántos pasajeros suben en cada una. ¿Qué estructura conviene usar?</div>
+        <div class="opciones" id="ops-16">
+          <label class="opcion-label" onclick="seleccionar(this,16,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">for — el recorrido tiene siempre 8 paradas fijas.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">while — no se sabe cuántas paradas hay.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-16"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(15)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-16" onclick="responderYSiguiente(16,'a','El recorrido tiene siempre 8 paradas fijas, una cantidad conocida de antemano — corresponde for.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P17 -->
+    <div class="pregunta-panel" id="p17">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 17 · Bloque 3 · Caso 3.4</div>
+        <div class="pregunta-texto">El comedor quiere seguir sirviendo raciones hasta que un o una estudiante diga "no más", como el sistema centinela trabajado en la primera etapa. ¿Qué estructura conviene usar?</div>
+        <div class="opciones" id="ops-17">
+          <label class="opcion-label" onclick="seleccionar(this,17,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">for — con range fijo de raciones.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">while — con "no más" como variable centinela que corta el ciclo.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-17"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(16)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-17" onclick="responderYSiguiente(17,'b','No se sabe cuántas raciones se van a servir; &quot;no más&quot; funciona como variable centinela que corta el ciclo — corresponde while.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P18 -->
+    <div class="pregunta-panel" id="p18">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 18 · Bloque 3 · Caso 3.5</div>
+        <div class="pregunta-texto">Techi programó el sistema de la rifa solidaria así, pero algo no cierra: cada persona vende una cantidad distinta de números hasta agotar su talonario, y ese número no se conoce de antemano. ¿Qué estructura debería haber usado en vez de for?</div>
+        <div class="pregunta-codigo">for i in range(numeroDeVentas):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;venta = float(input("Monto de venta: "))</div>
+        <div class="opciones" id="ops-18">
+          <label class="opcion-label" onclick="seleccionar(this,18,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">for, con range fijo, tal como está.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">while, con una condición de corte — por ejemplo, una variable centinela que indique si hay más números para vender.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">No hace falta ninguna estructura de repetición.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Un for anidado dentro de otro for.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-18"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(17)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-18" onclick="responderYSiguiente(18,'b','numeroDeVentas no se conoce de antemano — el criterio para usar while, con una condición de corte (por ejemplo, seguir mientras la persona responda &quot;sí&quot; a &quot;¿hay más ventas?&quot;).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P19 -->
+    <div class="pregunta-panel" id="p19">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 19 · Bloque 3 · Caso 3.6</div>
+        <div class="pregunta-texto">Gatiel necesita convertir este ciclo for en un ciclo while equivalente. ¿Cuál es la traducción correcta?</div>
+        <div class="pregunta-codigo">total = 0<br>for i in range(6):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numero = int(input("Número: "))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total = total + numero</div>
+        <div class="opciones" id="ops-19">
+          <label class="opcion-label" onclick="seleccionar(this,19,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">total = 0 / i = 0 / while i &lt; 6: / &nbsp;&nbsp;numero = int(input("Número: ")) / &nbsp;&nbsp;total = total + numero / &nbsp;&nbsp;i = i + 1</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">total = 0 / while i &lt; 6: / &nbsp;&nbsp;numero = int(input("Número: ")) / &nbsp;&nbsp;total = total + numero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">total = 0 / for i in range(6): / &nbsp;&nbsp;numero = int(input("Número: ")) / &nbsp;&nbsp;total = total + numero / &nbsp;&nbsp;i = i + 1</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">i = 0 / while i &lt;= 6: / &nbsp;&nbsp;total = total + numero / &nbsp;&nbsp;i = i + 1</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-19"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(18)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-19" onclick="responderYSiguiente(19,'a','Un while equivalente a for necesita: el índice inicializado antes del ciclo (i = 0), la condición equivalente (i &lt; 6), y el incremento manual del índice al final de cada vuelta (i = i + 1) — algo que el for hace automáticamente.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P20 -->
+    <div class="pregunta-panel" id="p20">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 20 · Cierre Integrador · Caso 1</div>
+        <div class="pregunta-texto">Estas líneas arman el sistema de control de ventas de "La Feria del Plato", con corte por centinela. Están desordenadas. ¿Cuál es el orden correcto?</div>
+        <div class="pregunta-codigo">A) recaudacionTotal = 0<br>B) ventasRealizadas = 0<br>C) sigueVendiendo = "si"<br>D) while sigueVendiendo == "si":<br>E)&nbsp;&nbsp;&nbsp;&nbsp;montoVenta = float(input("Monto de la venta: "))<br>F)&nbsp;&nbsp;&nbsp;&nbsp;recaudacionTotal = recaudacionTotal + montoVenta<br>G)&nbsp;&nbsp;&nbsp;&nbsp;ventasRealizadas = ventasRealizadas + 1<br>H)&nbsp;&nbsp;&nbsp;&nbsp;sigueVendiendo = input("¿Hay más ventas? (si/no): ")</div>
+        <div class="opciones" id="ops-20">
+          <label class="opcion-label" onclick="seleccionar(this,20,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">C, A, B, D, E, F, G, H</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">A, B, C, D, E, F, G, H</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">D, C, A, B, E, F, G, H</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">C, D, A, B, E, F, G, H</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-20"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(19)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-20" onclick="responderYSiguiente(20,'a','La variable centinela (C) y los acumuladores/contadores (A, B) se inicializan antes del while (D). Dentro del ciclo: leer la venta (E), acumular y contar (F, G), y por último volver a preguntar si hay más ventas (H), que es lo que decide si el ciclo continúa.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P21 -->
+    <div class="pregunta-panel" id="p21">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 21 · Cierre Integrador · Caso 2</div>
+        <div class="pregunta-texto">El siguiente programa quiere calcular el promedio de gasto por venta de la feria, pero tiene errores de sintaxis y de sangría. ¿Qué correcciones hacen falta?</div>
+        <div class="pregunta-codigo">recaudacionTotal = 0<br>ventasRealizadas = 0<br>sigueVendiendo = "si"<br>while sigueVendiendo = "si"<br>montoVenta = float(input("Monto: "))<br>recaudacionTotal = recaudacionTotal + montoVenta<br>ventasRealizadas = ventasRealizadas + 1<br>sigueVendiendo = input("¿Hay más ventas?: ")<br>promedio = recaudacionTotal / ventasRealizadas<br>print("Promedio:, promedio)</div>
+        <div class="opciones" id="ops-21">
+          <label class="opcion-label" onclick="seleccionar(this,21,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Agregar "==" en la condición del while (comparación, no asignación), agregar ":" al final, corregir la indentación de las líneas del bloque, y cerrar la comilla en print("Promedio:", promedio).</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Solo falta agregar ":" al final del while.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El código está bien, solo falta ejecutarlo.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,21,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Cambiar while por for, nada más.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-21"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(20)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-21" onclick="responderYFinalizar(21,'a','Son varios errores juntos: &quot;=&quot; en vez de &quot;==&quot; en la condición, falta el &quot;:&quot; del while, las líneas del bloque no están indentadas, y falta cerrar la comilla antes de la coma en print(&quot;Promedio:&quot;, promedio).')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+const TOTAL = 21;
+const CORRECTAS = { 1:'b', 2:'b', 3:'c', 4:'b', 5:'b', 6:'b', 7:'a', 8:'b', 9:'f', 10:'c', 11:'b', 12:'b', 13:'a', 14:'a', 15:'b', 16:'a', 17:'b', 18:'b', 19:'a', 20:'a', 21:'a' };
+const TEXTOS_CORRECTAS = {
+  1: 'En Python, toda variable declarada con "=" sigue siendo variable.',
+  2: 'Su valor matemático es universal.',
+  3: 'saldo = saldo + (saldo * tasaInteres)',
+  4: 'Confunde el valor inicial con la naturaleza de la variable.',
+  5: 'GananciaDia debería ser gananciaDia.',
+  6: 'precioNumeroRifa = 2000 (asignación).',
+  7: 'totalRaciones',
+  8: 'diasServidos',
+  9: 'Falso',
+  10: 'victorias >= metaVictorias',
+  11: 'Gatiel tiene razón — es un contador.',
+  12: 'Agregar ":", indentar, y usar print(...) de Python 3.',
+  13: 'D, A, B, C, F, E',
+  14: 'for',
+  15: 'while',
+  16: 'for',
+  17: 'while',
+  18: 'while, con una condición de corte.',
+  19: 'Opción a: con i = 0 inicializado y i = i + 1 al final del bloque.',
+  20: 'C, A, B, D, E, F, G, H',
+  21: 'Cuatro correcciones combinadas (ver explicación).'
+};
+const PREGUNTAS_TEXTO = {
+  1: '¿precioChipa es realmente una constante?',
+  2: '¿Por qué PI sí es una constante real?',
+  3: '¿Qué línea demuestra que saldo es variable?',
+  4: '¿Qué error comete Bit sobre paradasRecorridas?',
+  5: '¿Cuál variable no respeta camelCase?',
+  6: '¿Cuál es el error de sintaxis con "=="?',
+  7: 'Comedor escolar: ¿cuál variable es el acumulador?',
+  8: 'Comedor escolar: ¿cuál variable es el contador?',
+  9: 'Biblioteca: ¿se pueden intercambiar contador y acumulador?',
+  10: 'Torneo FIFA: ¿qué condición clasifica "al menos 3 victorias"?',
+  11: 'Terminal de ómnibus: ¿contador o acumulador?',
+  12: 'Kiosco: ¿qué correcciones de sintaxis hacen falta?',
+  13: 'Feria de comidas: ¿cuál es el orden correcto de las líneas?',
+  14: 'Feria — degustación de 20 estudiantes: ¿for o while?',
+  15: 'Kiosco — fin de stock: ¿for o while?',
+  16: 'Colectivo línea 4 — 8 paradas fijas: ¿for o while?',
+  17: 'Comedor — sistema centinela: ¿for o while?',
+  18: 'Rifa solidaria: ¿qué estructura debería haber usado Techi?',
+  19: 'For → While: ¿cuál es la conversión correcta?',
+  20: 'Feria del Plato: ¿cuál es el orden correcto de las líneas?',
+  21: 'Feria del Plato: ¿qué correcciones necesita el cálculo del promedio?'
+};
+
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta || letra === (correcta === 'v' ? '✓' : correcta === 'f' ? '✗' : correcta)) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 900);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 1000);
+}
+
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 21 respuestas correctas</strong>. Variable/constante, contador/acumulador y for/while están firmes. ¡Arrancás la Segunda Etapa con el terreno preparado!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> Resolvé en el cuaderno el Cierre Integrador · Caso 3 y los dos casos del Desafío Extra — ahí es donde combinás todo lo repasado en un programa completo</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Pedile a la profe que revise tu cuadernillo cuando termines</div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 21 respuestas correctas</strong>. Hay bloques firmes y otros con un patrón de error puntual — revisá la revisión detallada para identificar cuál.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá tus apuntes de la Primera Etapa sobre el bloque donde más fallaste (Variable/Constante, Contador/Acumulador o For/While)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá atención a los errores de sintaxis más comunes: "=" vs "==", los ":" que faltan, y la indentación</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a intentar este repaso cuando te sientas más seguro/a</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 21 respuestas correctas</strong>. Los tres bloques de la Primera Etapa todavía necesitan repaso antes de avanzar con contenido nuevo — es normal después del receso, y se recupera con práctica.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📝 Para reforzar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Volvé a tus apuntes de la Primera Etapa: variable vs. constante, contador vs. acumulador, y for vs. while</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Practicá de nuevo, a mano en el cuaderno, la diferencia entre "=" (asignación) y "==" (comparación)</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar este repaso</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · El Regreso · 2do BATIN';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% después del receso de invierno — eso es tener las bases realmente afianzadas. Vas más que listo/a para lo nuevo."`,
+    amarillo: `"El receso hace que algunas cosas se aflojen un poco, es normal. Mirá qué bloque falló más en la revisión y volvé puntualmente a esa parte del apunte."`,
+    rojo:     `"A todos nos cuesta retomar después de un receso largo. Lo importante no es este primer intento, sino volver a las bases con calma y probar de nuevo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorítmica 3 · Repaso Integrador · Cierre 1ª Etapa · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+
+.pregunta-codigo, code {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html">Ruta Algorítmica</a>
+      <span class="sep">/</span>
+      <span>Algorítmica 3 · Repaso Integrador</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/bit_idea.png" alt="Bit y Techi">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Algorítmica 3 · Repaso Integrador</span>
+        <h1 class="quiz-titulo">Bit y Techi repasan<br>lo aprendido</h1>
+        <p class="quiz-subtitulo">Cierre de la 1ª Etapa — todo lo que trabajamos con estructuras de datos, en un solo repaso.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 16 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~10 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🐱</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Gatiel dice:</strong> Este repaso junta el kiosco, la feria, la cooperativa y el colectivo — los mismos casos que vimos en clase, ahora con corrección al instante. Elegí tu respuesta y hacé clic en <strong style="color:var(--violeta)">"Responder"</strong>.</p>
+      <p>Algunos ítems del repaso en papel piden redactar con tus palabras (justificaciones abiertas, bocetos, tablas para completar a mano) — esos quedan para resolver en el cuaderno, tal como indica la presentación. Acá están los ítems que se pueden autocorregir al instante.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 16</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 01 · Bloque 1 · Ítem 1.1</div>
+        <div class="pregunta-texto">¿Cuál de las siguientes situaciones representa mejor el principio "los datos deben protegerse y manejarse para que no pierdan su valor"?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Anotar el precio de cada producto en una lista.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Ordenar los productos por categoría (bebidas, golosinas, útiles).</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Hacer una copia de la lista de mercadería por si se rompe el cuaderno original.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Mostrar el total de ventas del día en un cartel.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'c','Proteger los datos significa resguardarlos ante pérdida o daño — un respaldo es exactamente eso. Anotar es representar, ordenar es organizar, y mostrar el total es procesar y presentar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 02 · Bloque 1 · Ítem 1.2a</div>
+        <div class="pregunta-texto">Bit "escribió cada producto con su precio en una libreta". ¿A qué principio corresponde esta acción?</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Representar y almacenar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Organizar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Procesar y presentar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Proteger y manejar</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'a','Registrar un dato (producto + precio) por primera vez es representarlo y guardarlo — el paso inicial de todo sistema de información.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 03 · Bloque 1 · Ítem 1.2b</div>
+        <div class="pregunta-texto">Bit "separó la libreta en secciones: bebidas, golosinas, útiles". ¿A qué principio corresponde?</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Representar y almacenar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Organizar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Procesar y presentar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Proteger y manejar</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'b','Agrupar y clasificar datos ya almacenados, para que sean más fáciles de ubicar y recorrer, es organizar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 04 · Bloque 1 · Ítem 1.2c</div>
+        <div class="pregunta-texto">Bit "sumó las ventas del día y le mostró el total a Doña Ramona". ¿A qué principio corresponde?</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Representar y almacenar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Organizar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Procesar y presentar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Proteger y manejar</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'c','Calcular un resultado a partir de los datos guardados (sumar) y comunicarlo (mostrar el total) es procesar y presentar información.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 05 · Bloque 1 · Ítem 1.2d</div>
+        <div class="pregunta-texto">Bit "guardó la libreta bajo llave para que nadie la manche o la pierda". ¿A qué principio corresponde?</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Representar y almacenar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Organizar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Procesar y presentar</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Proteger y manejar</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'d','Resguardar los datos de daños, pérdida o acceso indebido es proteger y manejar — el mismo principio del ítem 1.1.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 06 · Bloque 2 · Ítem 2.1</div>
+        <div class="pregunta-texto">¿Cuál de las siguientes operaciones corresponde a un dato de tipo entero?</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Verificar si el nombre del artesano empieza con mayúscula.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Calcular cuántas letras tiene el nombre del puesto.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Sumar el precio de dos piezas artesanales.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Unir el nombre del artesano con el nombre del puesto.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'c','Sumar precios es una operación aritmética entre enteros. Las otras tres son operaciones sobre cadenas de texto (booleana de verificación, conteo de caracteres y concatenación).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 07 · Bloque 2 · Ítem 2.2</div>
+        <div class="pregunta-texto">Techi escribió <code>Stock = 5</code> y luego <code>Mensaje = "Quedan " + Stock + " piezas"</code>, pero el programa marca error. ¿Cuál es el problema y cómo se corrige?</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Falta convertir Stock a texto: Mensaje = "Quedan " + str(Stock) + " piezas"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">El error es que Stock no puede valer 5.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Faltaría usar la función BUSCARV para traer el valor de Stock.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El operador + no existe en Python para unir texto.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'a','Python no permite concatenar directamente texto (str) con un número (int) usando +. Hay que convertir el número a texto primero con str().')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 08 · Bloque 2 · Ítem 2.4</div>
+        <div class="pregunta-texto">Dado <code>Puesto = "Ñandutí"</code> y <code>Saludo = Puesto + " te da la bienvenida"</code>, ¿qué tipo de operación se usó y qué queda guardado en Saludo?</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Operación aritmética; el resultado es un número.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Operación de concatenación (texto); Saludo = "Ñandutí te da la bienvenida"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Operación booleana; el resultado es True.</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Da error, porque no se puede sumar texto con texto.</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','El operador + entre dos cadenas de texto las une (concatena). Saludo queda con el texto completo &quot;Ñandutí te da la bienvenida&quot;.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 09 · Bloque 3 · Ítem 3.1</div>
+        <div class="pregunta-texto">¿Cuál de las siguientes estructuras NO tiene un número finito de elementos en su definición teórica?</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Arreglos</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Pilas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Colas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Listas enlazadas</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'d','Los arreglos, pilas y colas que trabajamos en clase se implementan con un tamaño MAX fijo. Una lista enlazada, en cambio, crece nodo por nodo sin un límite definido de antemano.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 10 · Bloque 3 · Ítem 3.3</div>
+        <div class="pregunta-texto">La cooperativa tiene dos situaciones: (a) un mostrador donde los socios esperan su turno para ser atendidos, y (b) un archivo donde el último comprobante guardado es el primero que se retira para revisar. ¿Qué combinación de estructuras corresponde a cada una?</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">(a) Cola — FIFO / (b) Pila — LIFO</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">(a) Pila — LIFO / (b) Cola — FIFO</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Ambas son colas — FIFO</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Ambas son pilas — LIFO</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-10" onclick="responderYSiguiente(10,'a','Un turno de atención respeta el orden de llegada: el primero que llega es el primero en ser atendido → Cola (FIFO). Los comprobantes apilados, donde el último guardado es el primero en salir, son una Pila (LIFO).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P11 -->
+    <div class="pregunta-panel" id="p11">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 11 · Bloque 3 · Ítem 3.4</div>
+        <div class="pregunta-texto">Pila de comprobantes con MAX = 4 (posiciones 0 a 3). PunteroPila inicia en −1. Se apilan en orden "Comp1", "Comp2", "Comp3". Luego se desapila uno. ¿Cuál es el estado final?</div>
+        <div class="opciones" id="ops-11">
+          <label class="opcion-label" onclick="seleccionar(this,11,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">PunteroPila = 2, Cima = "Comp3"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">PunteroPila = 1, Cima = "Comp2"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">PunteroPila = 0, Cima = "Comp1"</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">PunteroPila = −1, pila vacía</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(10)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-11" onclick="responderYSiguiente(11,'b','Apilar Comp1 (puntero 0), Comp2 (puntero 1), Comp3 (puntero 2). Al desapilar uno (pop de Comp3), el puntero retrocede a 1 y la nueva cima es &quot;Comp2&quot;.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P12 -->
+    <div class="pregunta-panel" id="p12">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 12 · Bloque 4 · Ítem 4.2</div>
+        <div class="pregunta-texto">La cola circular tiene MAX = 6 (posiciones 0 a 5). Actualmente Final = 4. Aplicando la fórmula (Final + 1) % MAX, ¿en qué posición se insertará el próximo pasajero?</div>
+        <div class="opciones" id="ops-12">
+          <label class="opcion-label" onclick="seleccionar(this,12,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">4</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">5</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">0</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">6</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(11)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-12" onclick="responderYSiguiente(12,'b','(Final + 1) % MAX = (4 + 1) % 6 = 5 % 6 = 5. Como todavía no se llegó al límite MAX, no hace falta &quot;dar la vuelta&quot; al 0.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P13 -->
+    <div class="pregunta-panel" id="p13">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 13 · Bloque 4 · Ítem 4.3</div>
+        <div class="pregunta-texto">Cola circular con MAX = 4 (posiciones 0 a 3), Frente y Fin inician en −1. Se hacen, en orden: Insertar A, Insertar B, Insertar C, Eliminar uno, Insertar D. ¿Cuál es el estado final de Frente y Fin?</div>
+        <div class="opciones" id="ops-13">
+          <label class="opcion-label" onclick="seleccionar(this,13,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Frente = 1, Fin = 3</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Frente = 0, Fin = 3</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Frente = 1, Fin = 2</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Frente = 2, Fin = 3</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-13"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(12)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-13" onclick="responderYSiguiente(13,'a','Insertar A,B,C deja Frente=0, Fin=2. Al eliminar uno, Frente avanza a 1 (se retira A). Al insertar D, Fin avanza a 3. Estado final: Frente=1, Fin=3 (quedan B, C, D en la cola).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P14 -->
+    <div class="pregunta-panel" id="p14">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 14 · Bloque 5 · Ítem 5.1</div>
+        <div class="pregunta-texto">Los puestos de la feria están anotados en este orden físico: Poncho, Ñandutí, Cerámica, Ao Poí. Si se arma un ordenamiento doblemente circular ascendente (alfabético) usando punteros sig/ant, sin mover los datos, ¿cuál queda como Cabecera (primer nodo del orden lógico)?</div>
+        <div class="opciones" id="ops-14">
+          <label class="opcion-label" onclick="seleccionar(this,14,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Poncho</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Ñandutí</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Cerámica</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Ao Poí</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-14"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(13)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-14" onclick="responderYSiguiente(14,'d','&quot;Ao Poí&quot; es el primero en orden alfabético (A antes que C, Ñ y P), así que es la Cabecera de la lista lógica, aunque físicamente esté en la última posición de la tabla.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P15 -->
+    <div class="pregunta-panel" id="p15">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 15 · Bloque 5 · Ítem 5.2</div>
+        <div class="pregunta-texto">Como resultado del ordenamiento con punteros sig/ant del ítem anterior, ¿la tabla se reordena físicamente?</div>
+        <div class="opciones" id="ops-15">
+          <label class="opcion-label" onclick="seleccionar(this,15,'v')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✓</span>
+            <span class="opcion-texto">Sí, se reordena físicamente</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'f')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">✗</span>
+            <span class="opcion-texto">No, solo se actualizan los punteros sig y ant</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-15"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(14)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-15" onclick="responderYSiguiente(15,'f','La gran ventaja del ordenamiento con punteros es que los datos no se mueven de su posición física en la tabla: solo cambian los valores de sig y ant de cada nodo para reflejar el nuevo orden lógico. Eso ahorra el costo de reescribir toda la tabla.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P16 -->
+    <div class="pregunta-panel" id="p16">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 16 · Bloque 5 · Ítem 5.3</div>
+        <div class="pregunta-texto">Si se agrega un nuevo puesto "Guarania" a la lista (Ao Poí → Cerámica → Ñandutí → Poncho → vuelve a Ao Poí), ¿entre qué dos puestos debe insertarse para mantener el orden alfabético ascendente?</div>
+        <div class="opciones" id="ops-16">
+          <label class="opcion-label" onclick="seleccionar(this,16,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Entre Ao Poí y Cerámica</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Entre Cerámica y Ñandutí</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Entre Ñandutí y Poncho</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Entre Poncho y Ao Poí (cierre circular)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-16"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(15)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-16" onclick="responderYFinalizar(16,'b','Alfabéticamente: Ao Poí < Cerámica < Guarania < Ñandutí < Poncho. &quot;Guarania&quot; cae entre Cerámica y Ñandutí, así que hay que actualizar Cerámica.sig y Ñandutí.ant para que apunten al nuevo nodo.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+// ══════════════════════════════════════
+// DATOS
+// ══════════════════════════════════════
+const TOTAL = 16;
+const CORRECTAS = { 1:'c', 2:'a', 3:'b', 4:'c', 5:'d', 6:'c', 7:'a', 8:'b', 9:'d', 10:'a', 11:'b', 12:'b', 13:'a', 14:'d', 15:'f', 16:'b' };
+const TEXTOS_CORRECTAS = {
+  1: 'Hacer una copia de la lista (respaldo).',
+  2: 'Representar y almacenar',
+  3: 'Organizar',
+  4: 'Procesar y presentar',
+  5: 'Proteger y manejar',
+  6: 'Sumar el precio de dos piezas artesanales.',
+  7: 'Convertir Stock con str(Stock).',
+  8: 'Concatenación de texto.',
+  9: 'Listas enlazadas',
+  10: '(a) Cola — FIFO / (b) Pila — LIFO',
+  11: 'PunteroPila = 1, Cima = "Comp2"',
+  12: '5',
+  13: 'Frente = 1, Fin = 3',
+  14: 'Ao Poí',
+  15: 'Falso',
+  16: 'Entre Cerámica y Ñandutí'
+};
+const PREGUNTAS_TEXTO = {
+  1: 'Proteger datos: ¿qué acción corresponde?',
+  2: '"Escribió cada producto con su precio" → ¿qué principio?',
+  3: '"Separó la libreta en secciones" → ¿qué principio?',
+  4: '"Sumó las ventas y mostró el total" → ¿qué principio?',
+  5: '"Guardó bajo llave" → ¿qué principio?',
+  6: '¿Qué operación es de tipo entero?',
+  7: 'Corrección de código: concatenar texto + número.',
+  8: '¿Qué tipo de operación es Puesto + " te da la bienvenida"?',
+  9: '¿Qué estructura no tiene tamaño finito en su definición teórica?',
+  10: 'Mostrador de turnos y archivo apilado → ¿qué estructuras?',
+  11: 'Traza de pila: apilar 3, desapilar 1 → ¿estado final?',
+  12: 'Fórmula de cola circular: (Final+1) % MAX',
+  13: 'Traza de cola circular: 3 inserciones, 1 eliminación, 1 inserción.',
+  14: 'Ordenamiento doblemente circular: ¿cuál es la Cabecera?',
+  15: '¿La tabla se reordena físicamente con punteros sig/ant?',
+  16: '¿Dónde se inserta "Guarania" en el orden alfabético?'
+};
+
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta || letra === (correcta === 'v' ? '✓' : correcta === 'f' ? '✗' : correcta)) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 900);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 1000);
+}
+
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 16 respuestas correctas</strong>. Dominás representar/organizar/procesar/proteger datos, tipos de datos, pilas, colas circulares y listas doblemente circulares. ¡Arrancás la 2ª Etapa con base sólida!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> Repasá también las diapositivas completas de <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">Pilas y Colas</a> y <a href="../materiales/A3.C07%20Colas%20Circulares.pdf" target="_blank">Colas Circulares</a> para no perder ritmo</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Resolvé en el cuaderno los ítems abiertos y de justificación del repaso original — ahí también hay contenido para la nota</div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 16 respuestas correctas</strong>. Hay temas firmes y otros que conviene repasar antes de seguir con listas y árboles. Revisá la revisión detallada para ver exactamente cuáles.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá: <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">Pilas y Colas</a> y <a href="../materiales/A3.C07%20Colas%20Circulares.pdf" target="_blank">Colas Circulares</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Prestá atención especial a las trazas (PunteroPila, Frente/Fin) y a la fórmula (Final+1) % MAX</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a intentar este repaso cuando te sientas más seguro/a</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 16 respuestas correctas</strong>. Varios conceptos de la 1ª Etapa todavía no están firmes — es momento de volver a las bases antes de avanzar.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📄 Archivos para repasar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="../materiales/A3.C05-C06%20Pilas%20y%20Colas.pdf" target="_blank">Pilas y Colas — presentación de clase</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="../materiales/A3.C07%20Colas%20Circulares.pdf" target="_blank">Colas Circulares — presentación de clase</a></div>
+      <div class="ruta-subtitulo">📝 Para practicar de nuevo</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Los cuestionarios por nivel: <a href="alg3-nivel2-pilas.html">Nivel 2 · Pilas</a> y <a href="alg3-nivel3-colas.html">Nivel 3 · Colas</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar este repaso</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Repaso Integrador · Algorítmica 3';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% en un repaso que junta cinco bloques distintos — eso es dominio real. Vas más que listo/a para la 2ª Etapa."`,
+    amarillo: `"Hay bloques que ya dominás y otros con un patrón de error puntual. Mirá la revisión detallada, identificá cuál bloque falló más, y volvé a esa parte del apunte."`,
+    rojo:     `"Cinco bloques juntos es exigente — es normal que cueste al principio. Andá de a un bloque por vez en el repaso original, con el apunte al lado, y volvé a intentarlo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>
