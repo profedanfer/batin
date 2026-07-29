@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab SQL · Clínica Veterinaria PataFeliz · BATIN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══ HERO ══ */
+.lab-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 36px 56px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.lab-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--verde-s, rgba(80,200,120,.12)) 0%, transparent 60%);
+  pointer-events: none;
+}
+.lab-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.lab-hero-char img {
+  width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.3));
+  animation: floatChar 4s ease-in-out infinite;
+}
+@keyframes floatChar {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.lab-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lab-ruta a { color: var(--naranja); text-decoration: none; }
+.lab-ruta a:hover { text-decoration: underline; }
+.lab-ruta .sep { color: var(--borde3); }
+
+.db-status-bar, .db-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 8px 14px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+}
+.db-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--borde2);
+  flex-shrink: 0;
+  transition: background .3s;
+}
+.db-dot.on { background: #50c878; box-shadow: 0 0 6px #50c878; }
+.db-info { color: var(--texto3); margin-left: 6px; }
+.btn-reset {
+  font-family: var(--font-mono); font-size: 10px; padding: 4px 12px; border-radius: 4px;
+  border: 1px solid var(--borde2); background: transparent; color: var(--texto3); cursor: pointer;
+  margin-left: auto;
+}
+.btn-reset:hover { color: var(--texto); border-color: var(--borde3); }
+
+/* ══ TABS ══ */
+.lab-tabs-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  padding: 0 56px;
+  gap: 0;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+  overflow-x: auto;
+}
+.lab-tabs-nav button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 13px 18px;
+  color: var(--texto3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.lab-tabs-nav button:hover { color: var(--texto); }
+.lab-tabs-nav button.activa { color: #50c878; border-bottom-color: #50c878; }
+
+.lab-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 56px 64px;
+}
+.tab-content { display: none; }
+.tab-content.activa { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.titulo-seccion {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  margin-top: 24px;
+}
+.titulo-seccion:first-child { margin-top: 0; }
+.subtitulo-seccion {
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  color: var(--texto3);
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+}
+
+.seccion-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #50c878;
+  margin: 20px 0 8px;
+}
+
+.tag-tabla {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: rgba(80,200,120,.1);
+  color: #50c878;
+  border: 1px solid rgba(80,200,120,.3);
+  margin-bottom: 6px;
+}
+pre.codigo-sql {
+  background: #0d1117;
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c9d1d9;
+  overflow-x: auto;
+  margin-bottom: 14px;
+  white-space: pre;
+}
+
+/* ══ MER / ESTRUCTURA ══ */
+.mer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.mer-tabla {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+.mer-tabla-header {
+  background: rgba(80,200,120,.1);
+  border-bottom: 1px solid rgba(80,200,120,.3);
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #50c878;
+}
+.mer-tabla-campo {
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--texto2);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mer-tabla-campo:last-child { border-bottom: none; }
+.mer-tabla-campo em { color: var(--texto3); font-size: 0.72rem; margin-left: auto; }
+
+.badge-pk, .badge-fk, .badge-nn, .badge-uq {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.badge-pk { background: rgba(255,193,7,.15); color: #ffc107; border: 1px solid rgba(255,193,7,.35); }
+.badge-fk { background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b); }
+.badge-nn { background: var(--bg4); color: var(--texto3); border: 1px solid var(--borde2); }
+.badge-uq { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
+
+.nota-importante, .advertencia {
+  border-radius: var(--r2);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.nota-importante {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  color: var(--texto2);
+}
+.advertencia {
+  background: rgba(224,167,80,.08);
+  border: 1px solid rgba(224,167,80,.25);
+  border-left: 3px solid var(--naranja, #e0a750);
+  color: var(--texto2);
+}
+
+/* ══ EDITOR SQL ══ */
+.chips-tablas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip-tabla {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(80,200,120,.1);
+  color: #50c878;
+  border: 1px solid rgba(80,200,120,.3);
+  cursor: pointer;
+  transition: all .15s;
+}
+.chip-tabla:hover { background: rgba(80,200,120,.2); }
+
+.editor-wrap {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg4);
+  border-bottom: 1px solid var(--borde);
+}
+.editor-header span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+}
+.btn-ejecutar {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 5px;
+  background: #50c878;
+  color: #06210f;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-ejecutar:hover { background: #6ed897; }
+
+textarea.editor-sql {
+  width: 100%;
+  min-height: 130px;
+  padding: 14px 18px;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  border: none;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+}
+
+/* ══ RESULTADO ══ */
+.resultado-area { border-top: 1px solid var(--borde); min-height: 40px; }
+.resultado-area.ok  { border-top: 2px solid #50c878; }
+.resultado-area.err { border-top: 2px solid #e05050; }
+.resultado-barra { padding: 10px 16px; font-family: var(--font-mono); font-size: 12px; }
+.resultado-barra.ok  { background: rgba(80,200,120,.1); color: #50c878; }
+.resultado-barra.err { background: rgba(224,80,80,.08); color: #e08080; }
+
+.tabla-resultado { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabla-resultado th {
+  background: var(--bg4); color: #50c878; font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700; padding: 8px 14px; text-align: left;
+  border-bottom: 1px solid var(--borde2);
+}
+.tabla-resultado td {
+  padding: 8px 14px; color: var(--texto2); border-bottom: 1px solid var(--borde);
+  font-family: var(--font-mono); font-size: 12px;
+}
+.tabla-resultado tr:last-child td { border-bottom: none; }
+.tabla-resultado tr:hover td { background: var(--bg3); }
+
+/* ══ EJERCICIOS ══ */
+.ejercicio-card {
+  background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2);
+  overflow: hidden; margin-bottom: 16px;
+}
+.ejercicio-card-header {
+  display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+  border-bottom: 1px solid var(--borde); background: var(--bg4);
+}
+.ejercicio-card-header h3 { font-size: 14px; font-weight: 600; color: #fff; flex: 1; }
+.ejercicio-card-body { padding: 16px 18px; }
+.ej-num {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 4px;
+  background: rgba(80,200,120,.12); color: #50c878; border: 1px solid rgba(80,200,120,.3);
+  flex-shrink: 0;
+}
+.consigna {
+  font-size: 13.5px; color: var(--texto2); line-height: 1.75; margin-bottom: 12px;
+}
+.consigna code {
+  background: var(--bg); border: 1px solid var(--borde2); border-radius: 4px;
+  padding: 1px 6px; font-family: var(--font-mono); font-size: 12px; color: var(--azul2);
+}
+.consigna ul, .consigna ol { padding-left: 1.4rem; margin: 6px 0; }
+.consigna li { margin-bottom: 3px; }
+.hint {
+  background: var(--bg4); border-left: 3px solid var(--naranja, #e0a750);
+  padding: 8px 14px; font-size: 12px; color: var(--texto3);
+  font-family: var(--font-mono); border-radius: 0 var(--r) var(--r) 0; margin-bottom: 14px;
+}
+
+/* ══ SOLUCIONES ══ */
+.sol-card {
+  background: var(--bg3); border: 1px solid rgba(80,200,120,.25); border-radius: var(--r2);
+  overflow: hidden; margin-bottom: 14px;
+}
+.sol-card-header {
+  padding: 10px 16px; background: rgba(80,200,120,.08);
+  border-bottom: 1px solid rgba(80,200,120,.2);
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #50c878;
+}
+.sol-explicacion {
+  padding: 12px 16px 0; font-size: 12.5px; color: var(--texto3); line-height: 1.7;
+}
+
+/* ══ GUÍA CHAR ══ */
+.char-guia {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--bg3); border: 1px solid var(--borde);
+  border-left: 3px solid #50c878; border-radius: var(--r2);
+  padding: 16px 18px; margin-bottom: 24px;
+}
+.char-guia img { width: 60px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+.char-guia-texto { font-size: 13px; color: var(--texto2); font-style: italic; line-height: 1.7; }
+.char-guia-nombre { font-family: var(--font-title); font-size: 10px; font-weight: 700; color: #50c878; margin-bottom: 4px; }
+
+.reflexion-card {
+  background: var(--bg3); border: 1px solid var(--violeta-b); border-radius: var(--r2);
+  padding: 20px 24px; margin-top: 24px;
+}
+.reflexion-card .seccion-titulo { color: var(--violeta); }
+.reflexion-card textarea {
+  width: 100%; min-height: 90px; background: var(--bg); border: 1px solid var(--borde2);
+  border-radius: var(--r); padding: 12px 14px; color: var(--texto); font-family: Arial, sans-serif;
+  font-size: 13px; resize: vertical; margin-top: 10px;
+}
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 800px) {
+  .lab-hero { padding: 32px 20px 28px; }
+  .lab-hero-inner { grid-template-columns: 1fr; }
+  .lab-hero-char { display: none; }
+  .lab-tabs-nav { padding: 0 16px; }
+  .lab-content { padding: 24px 20px 48px; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="lab-hero">
+  <div class="lab-hero-inner">
+    <div>
+      <div class="lab-ruta">
+        <a href="../aprendiendo.html">Estoy aprendiendo</a>
+        <span class="sep">/</span>
+        <a href="../aprendiendo.html">Ruta Sistemas y BD</a>
+        <span class="sep">/</span>
+        <span>Caso Práctico · Clínica Veterinaria PataFeliz</span>
+      </div>
+      <span class="kicker" style="color:#50c878">// Caso práctico · DDL y DML · SQLite en navegador</span>
+      <h1 class="titulo-h1 mt-8">Clínica Veterinaria <em style="color:#50c878">"PataFeliz"</em></h1>
+      <p class="desc mt-8">
+        Diseñe e implemente el sistema de registro de atenciones de la clínica: propietarios, mascotas,
+        veterinarios, especialidades y consultas. Practique DDL y DML con una base de datos real que corre
+        directamente en el navegador — no necesita instalar nada.
+      </p>
+      <div class="db-status-bar">
+        <div class="db-dot" id="dbDot"></div>
+        <span id="dbStatusTxt">Iniciando base de datos…</span>
+        <span class="db-info" id="dbInfoTxt"></span>
+        <button class="btn-reset" onclick="resetDB()">🔄 Reiniciar BD</button>
+      </div>
+    </div>
+    <div class="lab-hero-char">
+      <img src="../img/gatiel_trabajando.png" alt="Gatiel trabajando">
+    </div>
+  </div>
+</div>
+
+<!-- TABS NAV -->
+<div class="lab-tabs-nav">
+  <button class="activa" onclick="mostrarTab('contexto', this)">📋 Contexto y reglas</button>
+  <button onclick="mostrarTab('script', this)">📄 Script SQL</button>
+  <button onclick="mostrarTab('diagrama', this)">🗂️ Estructura</button>
+  <button onclick="mostrarTab('editor', this)">⌨️ Editor libre</button>
+  <button onclick="mostrarTab('ejercicios', this)">✏️ Ejercicios</button>
+  <button onclick="mostrarTab('soluciones', this)">✅ Soluciones</button>
+</div>
+
+<!-- CONTENIDO -->
+<div class="lab-content">
+
+<!-- ======================== TAB: CONTEXTO ======================== -->
+<div id="tab-contexto" class="tab-content activa">
+  <div class="char-guia">
+    <img src="../img/gatiel_explicando.png" alt="Gatiel explicando">
+    <div>
+      <div class="char-guia-nombre">GATIEL</div>
+      <p class="char-guia-texto">La Clínica Veterinaria "PataFeliz" necesita digitalizar el registro de sus atenciones. Todo se lleva en cuadernos, y eso genera problemas: pierden el historial de las mascotas, no saben qué veterinario atiende cada especialidad, y no pueden calcular fácilmente cuánto facturaron en un mes. Te toca a vos, como especialista en bases de datos, diseñar e implementar el sistema.</p>
+    </div>
+  </div>
+
+  <h2 class="titulo-seccion">Reglas del negocio</h2>
+  <p class="subtitulo-seccion">Leé con atención — de acá se desprenden las relaciones y restricciones que hay que implementar.</p>
+  <div class="consigna">
+    <ol>
+      <li>Cada <strong>propietario</strong> puede tener una o varias <strong>mascotas</strong> registradas. Toda mascota pertenece a un único propietario.</li>
+      <li>De cada mascota se registra su nombre, especie, raza y fecha de nacimiento.</li>
+      <li>Cada <strong>veterinario</strong> puede tener una o varias <strong>especialidades</strong> (cirugía, dermatología, odontología…), y cada especialidad puede ser ejercida por varios veterinarios.</li>
+      <li>Una <strong>consulta</strong> es la atención de una mascota puntual, en una fecha determinada, realizada por un único veterinario.</li>
+      <li>En cada consulta se registra el motivo, el diagnóstico y el costo.</li>
+      <li>No pueden existir dos especialidades con el mismo nombre.</li>
+      <li>El costo de una consulta no puede ser negativo.</li>
+      <li>Toda mascota debe tener un propietario asociado; no se permiten mascotas "huérfanas".</li>
+    </ol>
+  </div>
+
+  <h2 class="titulo-seccion">Modelo normalizado (3FN)</h2>
+  <p class="subtitulo-seccion">Este es el modelo que ya está implementado en el script SQL (pestaña "Script SQL"). Identificá en cada tabla la clave primaria (PK) y las claves foráneas (FK) antes de resolver los ejercicios — los vas a necesitar todo el tiempo.</p>
+  <div class="nota-importante">
+    <strong>Nota pedagógica:</strong> fijate que <code>Veterinario_Especialidad</code> tiene ambas columnas como FK, y que su clave primaria es la combinación de las dos (clave primaria compuesta) — así se resuelve una relación muchos a muchos (M:N).
+  </div>
+
+  <div class="advertencia">
+    <strong>Antes de escribir cualquier SQL:</strong> andá a la pestaña <strong>Estructura</strong> para ver las 6 tablas con sus PK/FK, y a <strong>Script SQL</strong> para ver el DDL completo con los datos de ejemplo ya cargados. Después pasá a <strong>Ejercicios</strong> para resolver las consignas de la guía original.
+  </div>
+</div>
+
+<!-- ======================== TAB: SCRIPT ======================== -->
+<div id="tab-script" class="tab-content">
+  <h2 class="titulo-seccion">Script de creación y carga inicial</h2>
+  <p class="subtitulo-seccion">Este es el script completo que inicializa la base de datos. Se ejecuta automáticamente al cargar la página — ya lo tenés disponible para consultar en el Editor libre y en los Ejercicios.</p>
+
+  <div class="seccion-titulo">Creación de tablas (DDL)</div>
+
+  <div class="tag-tabla">Propietarios</div>
+  <pre class="codigo-sql">CREATE TABLE Propietarios (
+    id_propietario INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    telefono VARCHAR(20),
+    direccion VARCHAR(60)
+);</pre>
+
+  <div class="tag-tabla">Mascotas</div>
+  <pre class="codigo-sql">CREATE TABLE Mascotas (
+    id_mascota INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    especie VARCHAR(20) NOT NULL,
+    raza VARCHAR(30),
+    fecha_nacimiento DATE,
+    id_propietario INTEGER NOT NULL,
+    FOREIGN KEY (id_propietario) REFERENCES Propietarios(id_propietario)
+);</pre>
+
+  <div class="tag-tabla">Veterinarios</div>
+  <pre class="codigo-sql">CREATE TABLE Veterinarios (
+    id_veterinario INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    matricula VARCHAR(20) NOT NULL UNIQUE
+);</pre>
+
+  <div class="tag-tabla">Especialidades</div>
+  <pre class="codigo-sql">CREATE TABLE Especialidades (
+    id_especialidad INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre_especialidad VARCHAR(30) NOT NULL UNIQUE
+);</pre>
+
+  <div class="tag-tabla">Veterinario_Especialidad</div>
+  <pre class="codigo-sql">CREATE TABLE Veterinario_Especialidad (
+    id_veterinario INTEGER NOT NULL,
+    id_especialidad INTEGER NOT NULL,
+    PRIMARY KEY (id_veterinario, id_especialidad),
+    FOREIGN KEY (id_veterinario) REFERENCES Veterinarios(id_veterinario),
+    FOREIGN KEY (id_especialidad) REFERENCES Especialidades(id_especialidad)
+);</pre>
+
+  <div class="tag-tabla">Consultas</div>
+  <pre class="codigo-sql">CREATE TABLE Consultas (
+    id_consulta INTEGER PRIMARY KEY AUTOINCREMENT,
+    fecha DATE NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    diagnostico VARCHAR(150),
+    costo DECIMAL(10,2) NOT NULL CHECK (costo &gt;= 0),
+    id_mascota INTEGER NOT NULL,
+    id_veterinario INTEGER NOT NULL,
+    FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota),
+    FOREIGN KEY (id_veterinario) REFERENCES Veterinarios(id_veterinario)
+);</pre>
+
+  <div class="seccion-titulo">Datos iniciales (DML)</div>
+
+  <div class="tag-tabla">INSERT – Propietarios</div>
+  <pre class="codigo-sql">INSERT INTO Propietarios VALUES (1, 'María', 'González', '0981-123456', 'Av. España 1234');
+INSERT INTO Propietarios VALUES (2, 'Carlos', 'Benítez', '0982-234567', 'Mcal. López 567');
+INSERT INTO Propietarios VALUES (3, 'Lucía', 'Ramírez', '0983-345678', 'Fernando de la Mora 89');</pre>
+
+  <div class="tag-tabla">INSERT – Mascotas</div>
+  <pre class="codigo-sql">INSERT INTO Mascotas VALUES (1, 'Rocky', 'Perro', 'Labrador', '2021-03-14', 1);
+INSERT INTO Mascotas VALUES (2, 'Michi', 'Gato', 'Siamés', '2022-07-02', 1);
+INSERT INTO Mascotas VALUES (3, 'Firulais', 'Perro', 'Criollo', '2019-11-20', 2);
+INSERT INTO Mascotas VALUES (4, 'Pelusa', 'Conejo', 'Belier', '2023-01-10', 3);</pre>
+
+  <div class="tag-tabla">INSERT – Veterinarios</div>
+  <pre class="codigo-sql">INSERT INTO Veterinarios VALUES (1, 'Andrés', 'Duarte', 'V-001');
+INSERT INTO Veterinarios VALUES (2, 'Patricia', 'Ovelar', 'V-002');
+INSERT INTO Veterinarios VALUES (3, 'Jorge', 'Insfrán', 'V-003');</pre>
+
+  <div class="tag-tabla">INSERT – Especialidades</div>
+  <pre class="codigo-sql">INSERT INTO Especialidades VALUES (1, 'Cirugía');
+INSERT INTO Especialidades VALUES (2, 'Dermatología');
+INSERT INTO Especialidades VALUES (3, 'Odontología');</pre>
+
+  <div class="tag-tabla">INSERT – Veterinario_Especialidad</div>
+  <pre class="codigo-sql">INSERT INTO Veterinario_Especialidad VALUES (1, 1);  -- Andrés: Cirugía
+INSERT INTO Veterinario_Especialidad VALUES (1, 3);  -- Andrés: Odontología (2 especialidades)
+INSERT INTO Veterinario_Especialidad VALUES (2, 2);  -- Patricia: Dermatología
+INSERT INTO Veterinario_Especialidad VALUES (3, 1);  -- Jorge: Cirugía</pre>
+
+  <div class="tag-tabla">INSERT – Consultas</div>
+  <pre class="codigo-sql">INSERT INTO Consultas VALUES (1, '2026-03-05', 'Control anual', 'Sano', 150000, 1, 1);
+INSERT INTO Consultas VALUES (2, '2026-03-10', 'Picazón en la piel', 'Dermatitis alérgica', 220000, 2, 2);
+INSERT INTO Consultas VALUES (3, '2026-04-02', 'Cirugía menor', 'Extracción de tumor benigno', 450000, 3, 3);
+INSERT INTO Consultas VALUES (4, '2026-04-15', 'Vacunación', 'Aplicación de vacuna antirrábica', 80000, 1, 1);
+INSERT INTO Consultas VALUES (5, '2026-05-01', 'Revisión dental', 'Sarro leve', 120000, 2, 1);</pre>
+
+  <div class="advertencia">
+    <strong>Fijate:</strong> "Pelusa" (mascota 4) no tiene ninguna consulta registrada — a propósito, para que puedas practicar el ejercicio de mascotas sin consultas con LEFT JOIN.
+  </div>
+</div>
+
+<!-- ======================== TAB: DIAGRAMA / ESTRUCTURA ======================== -->
+<div id="tab-diagrama" class="tab-content">
+  <h2 class="titulo-seccion">Estructura de la base de datos</h2>
+  <div class="mer-grid">
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Propietarios</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> id_propietario <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> nombre <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> apellido <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo">telefono <em>VARCHAR(20)</em></div>
+      <div class="mer-tabla-campo">direccion <em>VARCHAR(60)</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Mascotas</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> id_mascota <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> nombre <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> especie <em>VARCHAR(20)</em></div>
+      <div class="mer-tabla-campo">raza <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo">fecha_nacimiento <em>DATE</em></div>
+      <div class="mer-tabla-campo"><span class="badge-fk">FK</span><span class="badge-nn">NN</span> id_propietario <em>INTEGER</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Veterinarios</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> id_veterinario <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> nombre <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> apellido <em>VARCHAR(30)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span><span class="badge-uq">UQ</span> matricula <em>VARCHAR(20)</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Especialidades</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> id_especialidad <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span><span class="badge-uq">UQ</span> nombre_especialidad <em>VARCHAR(30)</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Veterinario_Especialidad</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-fk">FK</span><span class="badge-nn">NN</span> id_veterinario <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-fk">FK</span><span class="badge-nn">NN</span> id_especialidad <em>INTEGER</em></div>
+    </div>
+
+    <div class="mer-tabla">
+      <div class="mer-tabla-header">Consultas</div>
+      <div class="mer-tabla-campo"><span class="badge-pk">PK</span><span class="badge-nn">NN</span> id_consulta <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> fecha <em>DATE</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> motivo <em>VARCHAR(100)</em></div>
+      <div class="mer-tabla-campo">diagnostico <em>VARCHAR(150)</em></div>
+      <div class="mer-tabla-campo"><span class="badge-nn">NN</span> costo <em>DECIMAL — CHECK &gt;=0</em></div>
+      <div class="mer-tabla-campo"><span class="badge-fk">FK</span><span class="badge-nn">NN</span> id_mascota <em>INTEGER</em></div>
+      <div class="mer-tabla-campo"><span class="badge-fk">FK</span><span class="badge-nn">NN</span> id_veterinario <em>INTEGER</em></div>
+    </div>
+
+  </div>
+
+  <div class="nota-importante">
+    <strong>Relaciones:</strong>
+    Mascotas.id_propietario → Propietarios.id_propietario &nbsp;|&nbsp;
+    Veterinario_Especialidad.id_veterinario → Veterinarios.id_veterinario &nbsp;|&nbsp;
+    Veterinario_Especialidad.id_especialidad → Especialidades.id_especialidad &nbsp;|&nbsp;
+    Consultas.id_mascota → Mascotas.id_mascota &nbsp;|&nbsp;
+    Consultas.id_veterinario → Veterinarios.id_veterinario
+  </div>
+
+  <div class="advertencia">
+    <strong>Recordá:</strong> Veterinario_Especialidad es una tabla asociativa: resuelve la relación M:N entre Veterinarios y Especialidades. Su clave primaria es compuesta (las dos columnas juntas), no un id propio.
+  </div>
+</div>
+
+<!-- ======================== TAB: EDITOR LIBRE ======================== -->
+<div id="tab-editor" class="tab-content">
+  <h2 class="titulo-seccion">Editor SQL libre</h2>
+
+  <div class="db-status" style="margin-bottom:16px">
+    <div class="db-dot" id="dbDot2"></div>
+    <span id="dbStatusTxt2" style="font-weight:bold">Iniciando base de datos…</span>
+    <button class="btn-reset" onclick="resetDB()">↺ Reiniciar BD</button>
+  </div>
+
+  <p class="subtitulo-seccion">Escribí cualquier sentencia SQL. Podés ejecutar SELECT, INSERT, UPDATE, DELETE y más — cada clic en "Ejecutar" corre todas las sentencias separadas por ";" en el editor.</p>
+
+  <p class="subtitulo-seccion" style="margin-bottom:8px">Acceso rápido a tablas:</p>
+  <div class="chips-tablas">
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Propietarios;')">Propietarios</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Mascotas;')">Mascotas</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Veterinarios;')">Veterinarios</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Especialidades;')">Especialidades</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Veterinario_Especialidad;')">Veterinario_Especialidad</span>
+    <span class="chip-tabla" onclick="insertarSQL('SELECT * FROM Consultas;')">Consultas</span>
+    <span class="chip-tabla" onclick="insertarSQL(`SELECT M.nombre AS mascota, C.fecha, C.motivo, C.costo, V.nombre || ' ' || V.apellido AS veterinario\nFROM Consultas C\nJOIN Mascotas M ON C.id_mascota = M.id_mascota\nJOIN Veterinarios V ON C.id_veterinario = V.id_veterinario\nORDER BY C.fecha;`)">JOIN completo</span>
+  </div>
+
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <span>SQLite · sql.js</span>
+      <button class="btn-ejecutar" onclick="ejecutarSQL('editorLibre', 'resultadoLibre')">▶ Ejecutar</button>
+    </div>
+    <textarea id="editorLibre" class="editor-sql" placeholder="-- Escriba su sentencia SQL aquí
+SELECT * FROM Mascotas;" spellcheck="false"></textarea>
+    <div id="resultadoLibre" class="resultado-area"></div>
+  </div>
+</div>
+
+<!-- ======================== TAB: EJERCICIOS ======================== -->
+<div id="tab-ejercicios" class="tab-content">
+  <h2 class="titulo-seccion">Consultas de práctica (Parte B.2 y B.3)</h2>
+  <p class="subtitulo-seccion">La base ya está creada y cargada con los datos de ejemplo (pestaña "Script SQL"). Escribí el SELECT, UPDATE o DELETE que pide cada consigna y ejecutalo contra la base real.</p>
+
+  <div class="db-status" style="margin-bottom:16px">
+    <div class="db-dot" id="dbDot3"></div>
+    <span id="dbStatusTxt3" style="font-weight:bold">Iniciando…</span>
+    <button class="btn-reset" onclick="resetDB()">↺ Reiniciar BD</button>
+  </div>
+
+  <!-- EJ 1 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 1</span>
+      <h3>Mascotas de un propietario</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Listá el nombre y la especie de todas las mascotas de un propietario en particular (por ejemplo, María González, id_propietario = 1).</div>
+      <div class="hint"><strong>Pista:</strong> JOIN entre Mascotas y Propietarios, filtrando por id_propietario o por nombre/apellido.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej1','res1')">▶ Ejecutar</button></div>
+        <textarea id="ej1" class="editor-sql" style="min-height:100px" spellcheck="false">-- Nombre y especie de las mascotas de un propietario
+</textarea>
+        <div id="res1" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 2 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 2</span>
+      <h3>Historial de consultas de una mascota</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Listá el historial completo de consultas de una mascota (fecha, motivo, diagnóstico, costo), ordenado por fecha.</div>
+      <div class="hint"><strong>Pista:</strong> SELECT ... FROM Consultas WHERE id_mascota = ? ORDER BY fecha;</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej2','res2')">▶ Ejecutar</button></div>
+        <textarea id="ej2" class="editor-sql" style="min-height:100px" spellcheck="false">-- Historial de consultas de una mascota, ordenado por fecha
+</textarea>
+        <div id="res2" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 3 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 3</span>
+      <h3>Veterinario y sus especialidades</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Mostrá el nombre del veterinario y todas sus especialidades (podés hacerlo con varias filas, o agrupado con <code>GROUP_CONCAT</code>).</div>
+      <div class="hint"><strong>Pista:</strong> JOIN Veterinarios → Veterinario_Especialidad → Especialidades. Con GROUP_CONCAT(E.nombre_especialidad) y GROUP BY podés unificar en una fila por veterinario.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej3','res3')">▶ Ejecutar</button></div>
+        <textarea id="ej3" class="editor-sql" style="min-height:120px" spellcheck="false">-- Nombre del veterinario y sus especialidades
+</textarea>
+        <div id="res3" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 4 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 4</span>
+      <h3>Total facturado por veterinario</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Calculá el total facturado (suma de costos) por veterinario.</div>
+      <div class="hint"><strong>Pista:</strong> JOIN Consultas → Veterinarios, con SUM(costo) y GROUP BY veterinario.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej4','res4')">▶ Ejecutar</button></div>
+        <textarea id="ej4" class="editor-sql" style="min-height:110px" spellcheck="false">-- Total facturado por veterinario
+</textarea>
+        <div id="res4" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 5 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 5</span>
+      <h3>Mascotas sin consultas</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Listá las mascotas que nunca tuvieron una consulta.</div>
+      <div class="hint"><strong>Pista:</strong> LEFT JOIN Mascotas con Consultas, y filtrá con WHERE id_consulta IS NULL.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej5','res5')">▶ Ejecutar</button></div>
+        <textarea id="ej5" class="editor-sql" style="min-height:110px" spellcheck="false">-- Mascotas sin ninguna consulta (LEFT JOIN + IS NULL)
+</textarea>
+        <div id="res5" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 6 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 6</span>
+      <h3>Especialidad con más veterinarios</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Mostrá la especialidad que más veterinarios tiene.</div>
+      <div class="hint"><strong>Pista:</strong> JOIN Especialidades → Veterinario_Especialidad, COUNT(id_veterinario), GROUP BY especialidad, ORDER BY el conteo DESC, LIMIT 1.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej6','res6')">▶ Ejecutar</button></div>
+        <textarea id="ej6" class="editor-sql" style="min-height:110px" spellcheck="false">-- Especialidad con más veterinarios
+</textarea>
+        <div id="res6" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 7 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 7</span>
+      <h3>Actualizar el teléfono de un propietario</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Actualizá el teléfono de un propietario (por ejemplo, Carlos Benítez, id_propietario = 2) a un nuevo número.</div>
+      <div class="hint"><strong>Pista:</strong> UPDATE Propietarios SET telefono = '...' WHERE id_propietario = ...;</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej7','res7')">▶ Ejecutar</button></div>
+        <textarea id="ej7" class="editor-sql" style="min-height:100px" spellcheck="false">-- UPDATE del teléfono de un propietario
+</textarea>
+        <div id="res7" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 8 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 8</span>
+      <h3>Eliminar una consulta puntual</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">Eliminá una consulta puntual por su id_consulta (por ejemplo, la consulta 4).</div>
+      <div class="hint"><strong>Pista:</strong> DELETE FROM Consultas WHERE id_consulta = ...;</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej8','res8')">▶ Ejecutar</button></div>
+        <textarea id="ej8" class="editor-sql" style="min-height:100px" spellcheck="false">-- DELETE de una consulta puntual
+</textarea>
+        <div id="res8" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJ 9 -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-card-header">
+      <span class="ej-num">CONSIGNA 9</span>
+      <h3>Integridad referencial — eliminar un propietario con mascotas</h3>
+    </div>
+    <div class="ejercicio-card-body">
+      <div class="consigna">
+        Intentá eliminar un propietario que tiene mascotas registradas (por ejemplo, María González, id_propietario = 1).
+        Ejecutá el DELETE y mirá qué pasa. Después, en el recuadro de abajo, explicá por qué pasa eso, relacionándolo con la integridad referencial.
+      </div>
+      <div class="hint"><strong>Pista:</strong> DELETE FROM Propietarios WHERE id_propietario = 1; — SQLite va a rechazar la operación por la restricción FOREIGN KEY.</div>
+      <div class="editor-wrap">
+        <div class="editor-header"><span>editor</span><button class="btn-ejecutar" onclick="ejecutarSQL('ej9','res9')">▶ Ejecutar</button></div>
+        <textarea id="ej9" class="editor-sql" style="min-height:100px" spellcheck="false">-- Intentar eliminar un propietario con mascotas registradas
+DELETE FROM Propietarios WHERE id_propietario = 1;
+</textarea>
+        <div id="res9" class="resultado-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLEXIÓN -->
+  <div class="reflexion-card">
+    <div class="seccion-titulo">// Punto de reflexión para el cierre</div>
+    <div class="consigna">
+      ¿Por qué la tabla <code>Veterinario_Especialidad</code> es necesaria? ¿Qué problema tendríamos si intentáramos guardar la especialidad como una columna directamente en la tabla <code>Veterinarios</code>?
+      <br><br>
+      Respondan por escrito, en dos o tres líneas — la idea es que puedan verbalizar el porqué, no solo copiar la estructura.
+    </div>
+    <textarea placeholder="Escribí tu respuesta acá (no se guarda ni se envía — es para pensarlo antes de mirar la solución)"></textarea>
+  </div>
+</div>
+
+<!-- ======================== TAB: SOLUCIONES ======================== -->
+<div id="tab-soluciones" class="tab-content">
+  <h2 class="titulo-seccion">Soluciones</h2>
+  <p class="subtitulo-seccion">Compará tus respuestas después de intentarlo en la pestaña Ejercicios — no antes.</p>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 1 — Mascotas de un propietario</div>
+    <div class="sol-explicacion">JOIN entre Mascotas y Propietarios, filtrando por el propietario elegido.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT M.nombre, M.especie
+FROM Mascotas M
+JOIN Propietarios P ON M.id_propietario = P.id_propietario
+WHERE P.id_propietario = 1;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 2 — Historial de consultas de una mascota</div>
+    <div class="sol-explicacion">Filtro directo sobre Consultas por id_mascota, ordenado por fecha.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT fecha, motivo, diagnostico, costo
+FROM Consultas
+WHERE id_mascota = 1
+ORDER BY fecha;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 3 — Veterinario y sus especialidades</div>
+    <div class="sol-explicacion">GROUP_CONCAT agrupa todas las especialidades de un mismo veterinario en una sola fila.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT V.nombre || ' ' || V.apellido AS veterinario,
+       GROUP_CONCAT(E.nombre_especialidad, ', ') AS especialidades
+FROM Veterinarios V
+JOIN Veterinario_Especialidad VE ON V.id_veterinario = VE.id_veterinario
+JOIN Especialidades E ON VE.id_especialidad = E.id_especialidad
+GROUP BY V.id_veterinario;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 4 — Total facturado por veterinario</div>
+    <div class="sol-explicacion">SUM(costo) agrupado por veterinario.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT V.nombre || ' ' || V.apellido AS veterinario,
+       SUM(C.costo) AS total_facturado
+FROM Consultas C
+JOIN Veterinarios V ON C.id_veterinario = V.id_veterinario
+GROUP BY V.id_veterinario;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 5 — Mascotas sin consultas</div>
+    <div class="sol-explicacion">LEFT JOIN conserva todas las mascotas aunque no tengan consultas asociadas; IS NULL filtra las que no encontraron ninguna coincidencia.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT M.nombre
+FROM Mascotas M
+LEFT JOIN Consultas C ON M.id_mascota = C.id_mascota
+WHERE C.id_consulta IS NULL;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 6 — Especialidad con más veterinarios</div>
+    <div class="sol-explicacion">COUNT + GROUP BY + ORDER BY DESC + LIMIT 1 devuelve la especialidad con más veterinarios asociados.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">SELECT E.nombre_especialidad, COUNT(VE.id_veterinario) AS cantidad
+FROM Especialidades E
+JOIN Veterinario_Especialidad VE ON E.id_especialidad = VE.id_especialidad
+GROUP BY E.id_especialidad
+ORDER BY cantidad DESC
+LIMIT 1;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 7 — Actualizar teléfono</div>
+    <div class="sol-explicacion">UPDATE con WHERE por clave primaria, para no modificar otras filas por error.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">UPDATE Propietarios
+SET telefono = '0984-999888'
+WHERE id_propietario = 2;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 8 — Eliminar una consulta</div>
+    <div class="sol-explicacion">DELETE con WHERE por clave primaria. Consultas no tiene tablas que dependan de ella, así que se elimina sin problemas.</div>
+    <pre class="codigo-sql" style="margin:0;border-radius:0">DELETE FROM Consultas
+WHERE id_consulta = 4;</pre>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Consigna 9 — Integridad referencial</div>
+    <div class="sol-explicacion">
+      SQLite rechaza el DELETE con un error de tipo "FOREIGN KEY constraint failed". Esto pasa porque María González (id_propietario = 1) tiene mascotas registradas (Rocky y Michi) que la referencian mediante <code>Mascotas.id_propietario</code>. Si se permitiera eliminarla, esas mascotas quedarían "huérfanas" — con una referencia a un propietario que ya no existe, violando la regla de negocio N.° 8. Ese es exactamente el propósito de la integridad referencial: evitar datos inconsistentes. Para eliminar al propietario habría que primero decidir qué hacer con sus mascotas (reasignarlas o eliminarlas también, según la regla del negocio).
+    </div>
+  </div>
+
+  <div class="sol-card">
+    <div class="sol-card-header">Punto de reflexión — Veterinario_Especialidad</div>
+    <div class="sol-explicacion" style="padding-bottom:16px">
+      Si la especialidad fuera una columna directa en Veterinarios, un veterinario con dos especialidades (como Andrés, que hace Cirugía y Odontología) necesitaría repetir toda su fila dos veces — una por cada especialidad — duplicando nombre, apellido y matrícula. Eso viola la Segunda Forma Normal (2FN) y genera redundancia: si cambia la matrícula de Andrés, habría que actualizarla en varias filas, con riesgo de que queden inconsistentes entre sí. La tabla asociativa Veterinario_Especialidad resuelve esto: cada veterinario aparece una sola vez en Veterinarios, y sus especialidades se registran como filas separadas en la tabla intermedia, sin duplicar ningún otro dato.
+    </div>
+  </div>
+</div>
+
+</div><!-- fin lab-content -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+const INIT_SQL = `
+PRAGMA foreign_keys = OFF;
+
+CREATE TABLE IF NOT EXISTS Propietarios (
+  id_propietario INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre VARCHAR(30) NOT NULL,
+  apellido VARCHAR(30) NOT NULL,
+  telefono VARCHAR(20),
+  direccion VARCHAR(60)
+);
+CREATE TABLE IF NOT EXISTS Mascotas (
+  id_mascota INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre VARCHAR(30) NOT NULL,
+  especie VARCHAR(20) NOT NULL,
+  raza VARCHAR(30),
+  fecha_nacimiento DATE,
+  id_propietario INTEGER NOT NULL,
+  FOREIGN KEY (id_propietario) REFERENCES Propietarios(id_propietario)
+);
+CREATE TABLE IF NOT EXISTS Veterinarios (
+  id_veterinario INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre VARCHAR(30) NOT NULL,
+  apellido VARCHAR(30) NOT NULL,
+  matricula VARCHAR(20) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS Especialidades (
+  id_especialidad INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre_especialidad VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS Veterinario_Especialidad (
+  id_veterinario INTEGER NOT NULL,
+  id_especialidad INTEGER NOT NULL,
+  PRIMARY KEY (id_veterinario, id_especialidad),
+  FOREIGN KEY (id_veterinario) REFERENCES Veterinarios(id_veterinario),
+  FOREIGN KEY (id_especialidad) REFERENCES Especialidades(id_especialidad)
+);
+CREATE TABLE IF NOT EXISTS Consultas (
+  id_consulta INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha DATE NOT NULL,
+  motivo VARCHAR(100) NOT NULL,
+  diagnostico VARCHAR(150),
+  costo DECIMAL(10,2) NOT NULL CHECK (costo >= 0),
+  id_mascota INTEGER NOT NULL,
+  id_veterinario INTEGER NOT NULL,
+  FOREIGN KEY (id_mascota) REFERENCES Mascotas(id_mascota),
+  FOREIGN KEY (id_veterinario) REFERENCES Veterinarios(id_veterinario)
+);
+
+INSERT INTO Propietarios VALUES (1,'María','González','0981-123456','Av. España 1234');
+INSERT INTO Propietarios VALUES (2,'Carlos','Benítez','0982-234567','Mcal. López 567');
+INSERT INTO Propietarios VALUES (3,'Lucía','Ramírez','0983-345678','Fernando de la Mora 89');
+
+INSERT INTO Mascotas VALUES (1,'Rocky','Perro','Labrador','2021-03-14',1);
+INSERT INTO Mascotas VALUES (2,'Michi','Gato','Siamés','2022-07-02',1);
+INSERT INTO Mascotas VALUES (3,'Firulais','Perro','Criollo','2019-11-20',2);
+INSERT INTO Mascotas VALUES (4,'Pelusa','Conejo','Belier','2023-01-10',3);
+
+INSERT INTO Veterinarios VALUES (1,'Andrés','Duarte','V-001');
+INSERT INTO Veterinarios VALUES (2,'Patricia','Ovelar','V-002');
+INSERT INTO Veterinarios VALUES (3,'Jorge','Insfrán','V-003');
+
+INSERT INTO Especialidades VALUES (1,'Cirugía');
+INSERT INTO Especialidades VALUES (2,'Dermatología');
+INSERT INTO Especialidades VALUES (3,'Odontología');
+
+INSERT INTO Veterinario_Especialidad VALUES (1,1);
+INSERT INTO Veterinario_Especialidad VALUES (1,3);
+INSERT INTO Veterinario_Especialidad VALUES (2,2);
+INSERT INTO Veterinario_Especialidad VALUES (3,1);
+
+INSERT INTO Consultas VALUES (1,'2026-03-05','Control anual','Sano',150000,1,1);
+INSERT INTO Consultas VALUES (2,'2026-03-10','Picazón en la piel','Dermatitis alérgica',220000,2,2);
+INSERT INTO Consultas VALUES (3,'2026-04-02','Cirugía menor','Extracción de tumor benigno',450000,3,3);
+INSERT INTO Consultas VALUES (4,'2026-04-15','Vacunación','Aplicación de vacuna antirrábica',80000,1,1);
+INSERT INTO Consultas VALUES (5,'2026-05-01','Revisión dental','Sarro leve',120000,2,1);
+
+PRAGMA foreign_keys = ON;
+`;
+
+let db = null;
+
+function setStatus(ok, msg, info) {
+  ['dbDot','dbDot2','dbDot3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'db-dot' + (ok ? ' on' : '');
+  });
+  ['dbStatusTxt','dbStatusTxt2','dbStatusTxt3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = msg;
+  });
+  const info1 = document.getElementById('dbInfoTxt');
+  if (info1) info1.textContent = info || '';
+}
+
+function initDB() {
+  setStatus(false, 'Cargando sql.js…');
+  initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
+    .then(SQL => {
+      db = new SQL.Database();
+      db.run(INIT_SQL);
+      setStatus(true, 'Base de datos lista', '· 6 tablas · datos cargados');
+    })
+    .catch(e => setStatus(false, 'Error al cargar sql.js: ' + e.message));
+}
+
+function resetDB() {
+  if (db) { db.close(); db = null; }
+  setStatus(false, 'Reiniciando…');
+  initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
+    .then(SQL => {
+      db = new SQL.Database();
+      db.run(INIT_SQL);
+      setStatus(true, 'Base de datos reiniciada', '· estado original restaurado');
+    });
+}
+
+function insertarSQL(sql) {
+  const el = document.getElementById('editorLibre');
+  if (el) {
+    el.value = sql;
+    mostrarTab('editor', document.querySelectorAll('.lab-tabs-nav button')[3]);
+  }
+}
+
+function ejecutarSQL(editorId, resultadoId) {
+  const el = document.getElementById(editorId);
+  const res = document.getElementById(resultadoId);
+  if (!el || !res) return;
+  const sql = el.value.trim();
+  if (!sql || sql.startsWith('--') && !sql.includes('\n')) {
+    mostrarResultado(res, 'info', 'Escriba una sentencia SQL y presione Ejecutar.', null);
+    return;
+  }
+  if (!db) { mostrarResultado(res, 'error', 'La base de datos aún no está lista.', null); return; }
+
+  try {
+    const statements = sql.split(';').map(s => s.trim()).filter(s => s.length > 0 && !s.startsWith('--'));
+    let lastResult = null;
+    let lastIsSelect = false;
+    let ejecutoAlgo = false;
+
+    for (const stmt of statements) {
+      if (!stmt) continue;
+      ejecutoAlgo = true;
+      const isSelect = /^\s*SELECT/i.test(stmt);
+      if (isSelect) {
+        lastResult = db.exec(stmt + ';');
+        lastIsSelect = true;
+      } else {
+        db.run(stmt + ';');
+        lastIsSelect = false;
+      }
+    }
+
+    if (!ejecutoAlgo) {
+      mostrarResultado(res, 'info', 'Escriba una sentencia SQL y presione Ejecutar.', null);
+    } else if (lastIsSelect && lastResult && lastResult.length > 0) {
+      const { columns, values } = lastResult[0];
+      mostrarResultado(res, 'ok', `${values.length} fila(s) encontrada(s)`, { columns, values });
+    } else if (lastIsSelect && (!lastResult || lastResult.length === 0)) {
+      mostrarResultado(res, 'ok', 'Consulta ejecutada — sin resultados (0 filas)', null);
+    } else {
+      mostrarResultado(res, 'ok', 'Sentencia ejecutada correctamente ✓', null);
+    }
+  } catch (e) {
+    mostrarResultado(res, 'error', 'Error: ' + e.message, null);
+  }
+}
+
+function mostrarResultado(el, tipo, msg, tabla) {
+  el.className = 'resultado-area ' + (tipo === 'error' ? 'err' : 'ok');
+  let html = `<div class="resultado-barra ${tipo === 'error' ? 'err' : 'ok'}">${msg}</div>`;
+  if (tabla) {
+    html += '<div style="overflow-x:auto"><table class="tabla-resultado"><thead><tr>';
+    for (const col of tabla.columns) html += `<th>${col}</th>`;
+    html += '</tr></thead><tbody>';
+    for (const row of tabla.values) {
+      html += '<tr>';
+      for (const cell of row) html += `<td>${cell === null ? '<em style="color:var(--texto3)">NULL</em>' : cell}</td>`;
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+  }
+  el.innerHTML = html;
+}
+
+function mostrarTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activa'));
+  document.querySelectorAll('.lab-tabs-nav button').forEach(b => b.classList.remove('activa'));
+  const tab = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('activa');
+  if (btn) btn.classList.add('activa');
+}
+
+document.addEventListener('DOMContentLoaded', initDB);
+</script>
+</body>
+</html>
