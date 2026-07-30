@@ -245,6 +245,44 @@
   margin-top: 8px;
 }
 
+.ia-cta-banner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--violeta-s);
+  border: 1px solid var(--violeta-b);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-top: 8px;
+}
+
+.ia-cta-banner img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+}
+
+.ia-cta-titulo {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.ia-cta-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  max-width: 560px;
+}
+
+@media (max-width: 700px) {
+  .ia-cta-banner { flex-direction: column; text-align: center; }
+}
+
 /* ══════════════════════════════════════
    MALLA CURRICULAR
 ══════════════════════════════════════ */
@@ -490,10 +528,10 @@
         <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('ofimatica', document.querySelector('.ruta-btn[data-ruta=\'ofimatica\']'))">📊 Ruta Ofimática y Datos</span>
         <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('programacion', document.querySelector('.ruta-btn[data-ruta=\'programacion\']'))">💻 Ruta Programación</span>
         <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('sistemas', document.querySelector('.ruta-btn[data-ruta=\'sistemas\']'))">🗄️ Ruta Sistemas y BD</span>
-        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('web', document.querySelector('.ruta-btn[data-ruta=\'web\']'))">🌐 Ruta Web e IA</span>
+        <span class="tag tag-naranja" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('web', document.querySelector('.ruta-btn[data-ruta=\'web\']'))">🌐 Ruta Web</span>
+        <span class="tag tag-violeta" style="cursor:pointer" role="button" tabindex="0" onclick="showRuta('ia', document.querySelector('.ruta-btn[data-ruta=\'ia\']'))">🤖 IA aplicada</span>
         <span class="tag tag-azul">Lenguajes</span>
         <span class="tag tag-azul">Presencia Web</span>
-        <span class="tag tag-violeta">IA aplicada</span>
       </div>
     </div>
     <div class="hero-char">
@@ -603,7 +641,8 @@
   <button class="ruta-btn" data-ruta="ofimatica" onclick="showRuta('ofimatica',this)">📊 Ruta Ofimática y Datos</button>
   <button class="ruta-btn" data-ruta="programacion" onclick="showRuta('programacion',this)">💻 Ruta Programación</button>
   <button class="ruta-btn" data-ruta="sistemas" onclick="showRuta('sistemas',this)">🗄️ Ruta Sistemas y BD</button>
-  <button class="ruta-btn" data-ruta="web" onclick="showRuta('web',this)">🌐 Ruta Web e IA</button>
+  <button class="ruta-btn" data-ruta="web" onclick="showRuta('web',this)">🌐 Ruta Web</button>
+  <button class="ruta-btn" data-ruta="ia" onclick="showRuta('ia',this)">🤖 IA aplicada</button>
 </div>
 
 <!-- ══════ RUTA ALGORÍTMICA ══════ -->
@@ -1497,16 +1536,15 @@
   </div>
 </div>
 
-<!-- ══════ RUTA WEB E IA ══════ -->
+<!-- ══════ RUTA WEB ══════ -->
 <div id="ruta-web" class="ruta-panel">
   <div class="ruta-intro">
     <div>
-      <span class="kicker">// Presencia Web · IA aplicada · 1ro, 2do y 3ro</span>
-      <h2 class="titulo-h2 mt-8">Ruta Web e IA</h2>
+      <span class="kicker">// Presencia Web · 1er curso</span>
+      <h2 class="titulo-h2 mt-8">Ruta Web</h2>
       <p class="desc mt-8">
-        Dos tecnologías que definen el presente: la web como espacio de presencia profesional,
-        y la IA como herramienta que hay que saber usar con criterio.
-        Juntas forman al técnico del siglo XXI.
+        La web como espacio de presencia profesional: estructurar, dar estilo
+        y publicar un sitio real. La base técnica antes de sumar cualquier otra herramienta.
       </p>
     </div>
     <div class="ruta-intro-char">
@@ -1572,9 +1610,29 @@
         <div class="tema-card-right"></div>
       </div>
     </div>
+  </div>
+</div>
 
+<!-- ══════ RUTA IA APLICADA ══════ -->
+<div id="ruta-ia" class="ruta-panel">
+  <div class="ruta-intro">
+    <div>
+      <span class="kicker violeta">// IA aplicada · transversal a los 3 cursos</span>
+      <h2 class="titulo-h2 mt-8">IA aplicada</h2>
+      <p class="desc mt-8">
+        La IA no es magia — es un sistema entrenado con datos humanos, con límites concretos.
+        Antes de usarla hay que entenderla; antes de copiar su respuesta, hay que cuestionarla.
+        Tres años, tres niveles de profundidad — desarrollados en detalle dentro de <strong style="color:var(--texto)">El Sistema</strong>.
+      </p>
+    </div>
+    <div class="ruta-intro-char">
+      <img src="img/gatiel_trabajando.png" alt="Gatiel trabajando">
+    </div>
+  </div>
+
+  <div class="temas-container">
     <div class="tema-grupo">
-      <div class="tema-grupo-label">IA aplicada — tres niveles progresivos</div>
+      <div class="tema-grupo-label">Tres niveles progresivos</div>
 
       <div class="tema-card">
         <div class="tema-card-left">
@@ -1583,10 +1641,7 @@
         </div>
         <div class="tema-card-body">
           <h4>Alfabetización en IA — límites y criterio</h4>
-          <p>Cómo funciona la IA. Alucinaciones, sesgos, limitaciones. Escritura de prompts efectivos: roles, contexto, público objetivo, formato. Curación de información antes de usarla.</p>
-          <div class="tema-recursos">
-            <a href="el-sistema.html#ia-critica" class="rec-btn pdf">📄 Ver en El Sistema</a>
-          </div>
+          <p>Cómo funciona la IA. Alucinaciones, sesgos, limitaciones. Escritura de prompts efectivos con la fórmula C-R-O-F. Curación de información antes de usarla.</p>
         </div>
         <div class="tema-card-right"></div>
       </div>
@@ -1599,9 +1654,6 @@
         <div class="tema-card-body">
           <h4>IA como herramienta de desarrollo</h4>
           <p>Copilot, Claude y ChatGPT para código. Generar, depurar y documentar. Cuándo usarla y cuándo no. Integración con proyectos ICIENTEC.</p>
-          <div class="tema-recursos">
-            <a href="el-sistema.html#ia-critica" class="rec-btn pdf">📄 Ver en El Sistema</a>
-          </div>
         </div>
         <div class="tema-card-right"></div>
       </div>
@@ -1614,9 +1666,6 @@
         <div class="tema-card-body">
           <h4>IA crítica — sesgos, impacto y responsabilidad</h4>
           <p>¿Qué le estamos enseñando al sistema? Decisiones técnicas con consecuencias éticas. El técnico como responsable de lo que su código produce.</p>
-          <div class="tema-recursos">
-            <a href="el-sistema.html#ia-critica" class="rec-btn pdf">📄 Ver en El Sistema</a>
-          </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Comprender conceptos éticos, legales, económicos y financieros">T10</span>
             <span class="tuning" title="Aplicar metodologías de investigación en soluciones">T12</span>
@@ -1624,6 +1673,15 @@
           </div>
         </div>
         <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="ia-cta-banner">
+      <img src="img/bit_motivando.png" alt="Bit motivando">
+      <div>
+        <div class="ia-cta-titulo">Las guías, prácticas y cuestionarios completos viven en El Sistema</div>
+        <p class="ia-cta-texto">Ahí está todo desarrollado en profundidad, conectado con el Manifiesto y los Ancestros — el lugar donde la IA deja de ser una herramienta suelta y pasa a ser parte de la identidad BATIN.</p>
+        <a href="el-sistema.html#ia-critica" class="btn btn-violeta">🤖 Ir a IA Crítica en El Sistema</a>
       </div>
     </div>
   </div>
@@ -1649,7 +1707,7 @@ function toggleMalla() {
 
 // Activa la ruta indicada en el hash de la URL (ej. aprendiendo.html#programacion)
 function initRutaFromHash() {
-  const validIds = ['algoritmica', 'ofimatica', 'programacion', 'sistemas', 'web'];
+  const validIds = ['algoritmica', 'ofimatica', 'programacion', 'sistemas', 'web', 'ia'];
   const hash = window.location.hash.replace('#', '');
   if (validIds.includes(hash)) {
     const btn = document.querySelector('.ruta-btn[data-ruta="' + hash + '"]');
