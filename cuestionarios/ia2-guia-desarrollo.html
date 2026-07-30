@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA como herramienta de desarrollo · Guía · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.guia-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.guia-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--azul-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.guia-hero-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.guia-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.guia-ruta a { color: var(--naranja); text-decoration: none; }
+.guia-ruta a:hover { text-decoration: underline; }
+.guia-ruta .sep { color: var(--borde3); }
+
+.guia-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--azul-s);
+  color: var(--azul);
+  border: 1px solid var(--azul-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.guia-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.guia-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 16px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.guia-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.guia-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   ÍNDICE
+══════════════════════════════════════ */
+.indice { max-width: 820px; margin: 32px auto 0; padding: 0 56px; }
+
+.indice-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 12px;
+}
+
+.indice-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.indice-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  color: var(--texto2);
+  text-decoration: none;
+  transition: all .15s;
+}
+
+.indice-item:hover { border-color: var(--azul-b); color: var(--azul); background: var(--azul-s); }
+
+/* ══════════════════════════════════════
+   MAIN / CAPÍTULOS
+══════════════════════════════════════ */
+.guia-main { max-width: 820px; margin: 0 auto; padding: 40px 56px 64px; }
+
+.capitulo { margin-bottom: 56px; scroll-margin-top: 24px; }
+
+.capitulo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+.capitulo-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--azul);
+  border: 1px solid var(--azul-b);
+  background: var(--azul-s);
+  border-radius: 6px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: #fff; }
+
+.capitulo-texto { font-size: 14.5px; color: var(--texto2); line-height: 1.8; margin-bottom: 18px; }
+.capitulo-texto p { margin-bottom: 14px; }
+.capitulo-texto p:last-child { margin-bottom: 0; }
+.capitulo-texto strong { color: #fff; font-weight: 600; }
+
+/* Personaje ilustrativo */
+.capitulo-personaje {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+}
+
+.capitulo-personaje img { width: 60px; height: 60px; object-fit: contain; flex-shrink: 0; }
+.capitulo-personaje-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; font-style: italic; }
+.capitulo-personaje-texto strong { color: #fff; font-style: normal; }
+
+/* Bloque de código */
+.codigo-block {
+  background: #0a0d14;
+  border: 1px solid var(--borde2);
+  border-radius: var(--r2);
+  margin: 16px 0;
+  overflow: hidden;
+}
+
+.codigo-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--bg4);
+  border-bottom: 1px solid var(--borde);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.codigo-block pre {
+  margin: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #d4d4d4;
+}
+
+.codigo-block .c-com { color: #6a9955; }
+.codigo-block .c-kw { color: #569cd6; }
+.codigo-block .c-str { color: #ce9178; }
+.codigo-block .c-err { color: #f14c4c; }
+.codigo-block .c-fn { color: #dcdcaa; }
+
+/* Diálogo prompt / respuesta */
+.dialogo-prompt {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialogo-burbuja {
+  border-radius: var(--r2);
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 92%;
+}
+
+.dialogo-burbuja.mal {
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.25);
+  color: var(--texto2);
+  align-self: flex-start;
+}
+
+.dialogo-burbuja.bien {
+  background: rgba(80,200,120,.08);
+  border: 1px solid rgba(80,200,120,.25);
+  color: var(--texto2);
+  align-self: flex-start;
+}
+
+.dialogo-burbuja .etiqueta { font-family: var(--font-mono); font-size: 10px; display: block; margin-bottom: 4px; }
+.dialogo-burbuja.mal .etiqueta { color: #e08080; }
+.dialogo-burbuja.bien .etiqueta { color: #50c878; }
+
+/* Callout de definición */
+.definicion {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--naranja);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+}
+
+.definicion-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin-bottom: 6px;
+}
+
+.definicion-texto { font-size: 13.5px; color: var(--texto); line-height: 1.7; }
+.definicion-texto strong { color: var(--naranja2); }
+
+/* Callout "en profundidad" */
+.profundiza {
+  background: var(--azul-s);
+  border: 1px solid var(--azul-b);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.profundiza-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.profundiza-body { flex: 1; }
+
+.profundiza-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 6px;
+}
+
+.profundiza-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.profundiza-texto strong { color: var(--texto); }
+
+/* Checklist numerada */
+.checklist-num { list-style: none; margin: 16px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.checklist-num li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13.5px;
+  color: var(--texto2);
+  line-height: 1.6;
+}
+
+.checklist-num-n { font-family: var(--font-mono); font-size: 11px; color: var(--azul); flex-shrink: 0; min-width: 18px; }
+.checklist-num strong { color: var(--texto); }
+
+/* Tabla comparativa */
+.tabla-comp {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+
+.tabla-comp th {
+  background: var(--bg4);
+  color: var(--azul);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+}
+
+.tabla-comp td {
+  padding: 10px 14px;
+  color: var(--texto2);
+  border-bottom: 1px solid var(--borde);
+  vertical-align: top;
+}
+
+.tabla-comp tr:last-child td { border-bottom: none; }
+.tabla-comp td strong { color: var(--texto); }
+
+/* Personaje aporta (resumen final) */
+.personaje-aporta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.personaje-aporta img { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; }
+.personaje-aporta-texto { font-size: 13px; color: var(--texto2); line-height: 1.6; }
+.personaje-aporta-texto strong { color: #fff; }
+
+.sep-capitulo { height: 1px; background: linear-gradient(90deg, transparent, var(--borde2), transparent); margin: 40px 0; }
+
+/* CTA final */
+.cta-final {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 32px 28px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
+.cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-azul { color: var(--azul); border-color: var(--azul-b); background: var(--azul-s); }
+.btn-azul:hover { background: var(--azul-m); }
+
+.volver-arriba {
+  position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--borde2); color: var(--azul);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; font-size: 16px; text-decoration: none;
+}
+.volver-arriba.visible { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .guia-hero { padding: 32px 20px 28px; }
+  .indice { padding: 0 20px; }
+  .guia-main { padding: 28px 20px 48px; }
+  .capitulo-personaje { flex-direction: column; text-align: center; }
+  .tabla-comp { font-size: 12px; }
+  .tabla-comp th, .tabla-comp td { padding: 8px 10px; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="guia-hero">
+  <div class="guia-hero-inner">
+    <div class="guia-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#web">Ruta Web e IA</a>
+      <span class="sep">/</span>
+      <span>IA aplicada · 2do curso</span>
+    </div>
+    <span class="guia-nivel-badge">// Guía · IA como herramienta de desarrollo</span>
+    <h1 class="guia-titulo">IA como herramienta de desarrollo</h1>
+    <p class="guia-subtitulo">Usar IA para programar no es hacer trampa — es una habilidad técnica más, con sus propias reglas. Acá vemos cómo generar, depurar, documentar y saber cuándo NO usarla.</p>
+    <div class="guia-meta">
+      <span class="guia-meta-item">📖 6 secciones</span>
+      <span class="guia-meta-item">⏱ ~12 minutos de lectura</span>
+      <span class="guia-meta-item">🐍 Ejemplos en Python</span>
+    </div>
+  </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="indice">
+  <div class="indice-titulo">// En esta guía</div>
+  <div class="indice-lista">
+    <a href="#c1" class="indice-item">1. IA para código</a>
+    <a href="#c2" class="indice-item">2. Copilot y asistentes</a>
+    <a href="#c3" class="indice-item">3. Depuración asistida</a>
+    <a href="#c4" class="indice-item">4. Documentación automática</a>
+    <a href="#c5" class="indice-item">5. IA + Python</a>
+    <a href="#c6" class="indice-item">6. Límites del asistente</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="guia-main">
+
+  <!-- ═══════ CAPÍTULO 1 ═══════ -->
+  <div class="capitulo" id="c1">
+    <div class="capitulo-header">
+      <span class="capitulo-num">01</span>
+      <h2 class="capitulo-titulo">IA para código</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Ya sabés que una IA puede generar texto. También puede generar código — funciones, scripts completos, incluso proyectos enteros si el pedido es lo bastante detallado. Eso es útil, pero trae una trampa: <strong>es fácil pedir código que funciona sin entender por qué funciona</strong>.</p>
+      <p>Copiar y pegar un bloque de código que no podés explicar no es programar — es depender de una caja negra. La regla de esta sección es simple: <strong>si la IA te generó un código, tenés que poder explicarlo línea por línea antes de usarlo.</strong></p>
+    </div>
+    <div class="codigo-block">
+      <div class="codigo-block-header">ejemplo — función generada por IA</div>
+      <pre><span class="c-kw">def</span> <span class="c-fn">es_primo</span>(n):
+    <span class="c-com"># Un número primo solo es divisible por 1 y por sí mismo</span>
+    <span class="c-kw">if</span> n &lt; 2:
+        <span class="c-kw">return</span> <span class="c-kw">False</span>
+    <span class="c-kw">for</span> i <span class="c-kw">in</span> range(2, int(n<span class="c-c">**</span>0.5) + 1):
+        <span class="c-kw">if</span> n % i == 0:
+            <span class="c-kw">return</span> <span class="c-kw">False</span>
+    <span class="c-kw">return</span> <span class="c-kw">True</span></pre>
+    </div>
+    <div class="capitulo-texto">
+      <p>Antes de usar esta función en tu proyecto, deberías poder responder: ¿por qué el rango llega hasta la raíz cuadrada de <code>n</code> y no hasta <code>n</code>? ¿Qué pasa si <code>n</code> es negativo? Si no podés responder, todavía no es tuyo el código — es de la IA.</p>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto"><strong>Generar no es entender.</strong> Un código que no podés explicar es un riesgo, no una solución — sobre todo el día que falle y tengas que corregirlo vos solo.</div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 2 ═══════ -->
+  <div class="capitulo" id="c2">
+    <div class="capitulo-header">
+      <span class="capitulo-num">02</span>
+      <h2 class="capitulo-titulo">Copilot y asistentes</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>No todas las herramientas de IA para programar funcionan igual. Conviene distinguir dos familias:</p>
+    </div>
+    <table class="tabla-comp">
+      <tr><th>Tipo</th><th>Cómo funciona</th><th>Ejemplos</th><th>Mejor para</th></tr>
+      <tr>
+        <td><strong>Autocompletado en el editor</strong></td>
+        <td>Sugiere código mientras escribís, directo en tu editor</td>
+        <td>GitHub Copilot</td>
+        <td>Completar patrones repetitivos, acelerar código que ya sabés escribir</td>
+      </tr>
+      <tr>
+        <td><strong>Asistente conversacional</strong></td>
+        <td>Le explicás el problema en lenguaje natural y conversás</td>
+        <td>Claude, ChatGPT</td>
+        <td>Diseñar la lógica, depurar con explicaciones, aprender un concepto nuevo</td>
+      </tr>
+    </table>
+    <div class="capitulo-texto">
+      <p>La diferencia práctica: un autocompletado es rápido pero silencioso — no te explica nada, solo termina lo que empezaste. Un asistente conversacional es más lento, pero podés preguntarle "por qué" tantas veces como necesites. Para <strong>aprender</strong>, el segundo tipo suele ser más valioso.</p>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 3 ═══════ -->
+  <div class="capitulo" id="c3">
+    <div class="capitulo-header">
+      <span class="capitulo-num">03</span>
+      <h2 class="capitulo-titulo">Depuración asistida</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Cuando un programa falla, hay dos formas muy distintas de pedirle ayuda a una IA — y solo una te deja algo aprendido.</p>
+    </div>
+    <div class="codigo-block">
+      <div class="codigo-block-header">código con error</div>
+      <pre>numeros = [10, 20, 30]
+<span class="c-kw">for</span> i <span class="c-kw">in</span> range(4):
+    print(numeros[i])
+<span class="c-com"># IndexError: list index out of range</span></pre>
+    </div>
+    <div class="dialogo-prompt">
+      <div class="dialogo-burbuja mal">
+        <span class="etiqueta">✗ Pedido que no enseña nada</span>
+        "Arreglame este código."
+      </div>
+      <div class="dialogo-burbuja bien">
+        <span class="etiqueta">✓ Pedido que enseña</span>
+        "Este código tira IndexError. ¿Por qué pasa, sin arreglarlo todavía — quiero entender la causa primero?"
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>El primer pedido te da una solución que podés copiar sin aprender nada. El segundo te obliga a entender el problema — en este caso, que <code>range(4)</code> genera índices 0 a 3, pero la lista solo tiene índices 0 a 2. Una vez que entendés la causa, arreglarlo es un paso trivial que además vas a recordar la próxima vez.</p>
+    </div>
+    <div class="profundiza">
+      <div class="profundiza-ico">🐛</div>
+      <div class="profundiza-body">
+        <div class="profundiza-titulo">Regla práctica</div>
+        <div class="profundiza-texto">Preguntá <strong>"por qué falla"</strong> antes de preguntar <strong>"cómo lo arreglo"</strong>. El orden importa: entender la causa te sirve para el resto de tu carrera; una corrección copiada solo te sirve para esa línea.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 4 ═══════ -->
+  <div class="capitulo" id="c4">
+    <div class="capitulo-header">
+      <span class="capitulo-num">04</span>
+      <h2 class="capitulo-titulo">Documentación automática</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Las IA son buenas generando comentarios y <em>docstrings</em> rápido — pero "rápido" no es lo mismo que "correcto". Igual que con el código, la documentación generada hay que revisarla, no aceptarla de memoria.</p>
+    </div>
+    <div class="codigo-block">
+      <div class="codigo-block-header">docstring generado por IA — con un error</div>
+      <pre><span class="c-kw">def</span> <span class="c-fn">calcular_descuento</span>(precio, porcentaje):
+    <span class="c-str">"""
+    Calcula el precio final sumando un descuento.
+
+    Args:
+        precio (float): precio original del producto
+        porcentaje (float): porcentaje de descuento a aplicar
+
+    Returns:
+        float: precio final con el descuento sumado
+    """</span>
+    <span class="c-kw">return</span> precio - (precio * porcentaje / 100)</pre>
+    </div>
+    <div class="capitulo-texto">
+      <p>¿Encontraste el error? El docstring dice "sumando" y "sumado" dos veces, pero la función <strong>resta</strong> el descuento — <code>return precio - (...)</code>. Es un error típico de documentación generada: describe lo que "debería" hacer una función con ese nombre, no necesariamente lo que el código hace de verdad línea por línea.</p>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">Revisá siempre que la documentación generada coincida con lo que el código <strong>realmente</strong> hace — no con lo que "suena razonable" que haga.</div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 5 ═══════ -->
+  <div class="capitulo" id="c5">
+    <div class="capitulo-header">
+      <span class="capitulo-num">05</span>
+      <h2 class="capitulo-titulo">IA + Python</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Python es el lenguaje puente de 2do curso, y es también donde más sentido tiene practicar todo lo anterior en conjunto. En un proyecto real — por ejemplo, uno de ICIENTEC — la IA puede acompañar distintas etapas, pero el criterio de cuándo y cómo usarla sigue siendo tuyo.</p>
+    </div>
+    <ul class="checklist-num">
+      <li><span class="checklist-num-n">01</span><span><strong>Planificación:</strong> pedirle a la IA que te ayude a pensar la estructura general del programa (qué funciones vas a necesitar) — vos decidís cuáles usar.</span></li>
+      <li><span class="checklist-num-n">02</span><span><strong>Primer borrador:</strong> generar una función puntual con la fórmula C-R-O-F, y explicarla antes de integrarla.</span></li>
+      <li><span class="checklist-num-n">03</span><span><strong>Depuración:</strong> cuando algo falla, preguntar la causa antes de pedir la solución.</span></li>
+      <li><span class="checklist-num-n">04</span><span><strong>Documentación:</strong> generar docstrings y revisarlos contra el código real.</span></li>
+    </ul>
+    <div class="capitulo-texto">
+      <p>Lo que no cambia en ningún paso: cada línea que entra en tu proyecto tiene que poder ser explicada por vos en la defensa o presentación — no solo funcionar.</p>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 6 ═══════ -->
+  <div class="capitulo" id="c6">
+    <div class="capitulo-header">
+      <span class="capitulo-num">06</span>
+      <h2 class="capitulo-titulo">Límites del asistente</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Hay momentos en los que usar IA, aunque sea posible, <strong>no conviene</strong> — porque el objetivo no es resolver el problema lo más rápido posible, sino aprender a resolverlo vos.</p>
+    </div>
+    <table class="tabla-comp">
+      <tr><th>Situación</th><th>¿Conviene usar IA?</th></tr>
+      <tr><td>Practicar un algoritmo nuevo que se está aprendiendo en clase (por ejemplo, un ordenamiento)</td><td><strong>No</strong> — el objetivo es que el razonamiento quede en tu cabeza, no en el historial de un chat</td></tr>
+      <tr><td>Una evaluación o examen sin autorización explícita del docente</td><td><strong>No</strong> — además de ser una falta, no vas a poder defenderlo después</td></tr>
+      <tr><td>Depurar un error después de haber intentado entenderlo solo</td><td><strong>Sí</strong> — como apoyo, no como primer recurso</td></tr>
+      <tr><td>Generar una función repetitiva que ya sabés escribir, para ahorrar tiempo</td><td><strong>Sí</strong> — no hay aprendizaje nuevo en esa tarea</td></tr>
+    </table>
+    <div class="profundiza">
+      <div class="profundiza-ico">🚦</div>
+      <div class="profundiza-body">
+        <div class="profundiza-titulo">La pregunta que conviene hacerse</div>
+        <div class="profundiza-texto">Antes de abrir el asistente, preguntate: <strong>¿esta tarea es la que tengo que aprender a hacer, o es una tarea que ya sé hacer y solo quiero acelerar?</strong> Si es lo primero, resolvela sola o solo primero. La IA va a seguir estando disponible después.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen breve -->
+  <div class="capitulo-personaje">
+    <img src="../img/gatiel_idea.png" alt="Gatiel">
+    <div class="capitulo-personaje-texto">Gatiel dice: <strong>"La IA acelera el camino, pero el camino lo tenés que caminar vos. Si te salteás el proceso, no hay atajo que compense lo que no aprendiste."</strong></div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="cta-final">
+    <img src="../img/bit_ok.png" alt="Bit">
+    <div class="cta-final-titulo">Seguí practicando</div>
+    <p class="cta-final-texto">Esta guía es la base teórica. La próxima vez que programes con ayuda de IA, probá aplicar las reglas de cada sección: explicar el código antes de usarlo, preguntar "por qué" antes de "arreglalo", y revisar la documentación generada.</p>
+    <div class="cta-final-acciones">
+      <a href="../aprendiendo.html#web" class="btn btn-naranja">📚 Volver a las rutas</a>
+    </div>
+  </div>
+
+</div><!-- fin guia-main -->
+
+<a href="#top" class="volver-arriba" id="volver-arriba">↑</a>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+  const btnArriba = document.getElementById('volver-arriba');
+  window.addEventListener('scroll', () => {
+    btnArriba.classList.toggle('visible', window.scrollY > 500);
+  });
+</script>
+</body>
+</html>
