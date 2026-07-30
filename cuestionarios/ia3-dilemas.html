@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dilemas técnicos · IA crítica · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--naranja-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+.quiz-hero-inner { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+.quiz-ruta { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.quiz-ruta a { color: var(--naranja); text-decoration: none; }
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+.quiz-hero-header { display: flex; align-items: flex-start; gap: 20px; }
+.quiz-hero-char img { width: 100px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); flex-shrink: 0; }
+.quiz-nivel-badge {
+  font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 4px;
+  background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); margin-bottom: 8px; display: inline-block;
+}
+.quiz-titulo { font-family: var(--font-title); font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; }
+.quiz-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 14px; }
+.quiz-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.quiz-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
+
+.quiz-main { max-width: 780px; margin: 0 auto; padding: 40px 56px 64px; }
+
+.instrucciones {
+  background: var(--bg3); border: 1px solid var(--borde); border-left: 3px solid var(--violeta);
+  border-radius: var(--r2); padding: 18px 22px; margin-bottom: 32px; display: flex; gap: 14px; align-items: flex-start;
+}
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.instrucciones-texto p { font-size: 13px; color: var(--texto2); line-height: 1.7; margin-bottom: 6px; }
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+.quiz-progreso { margin-bottom: 28px; }
+.progreso-label { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.progreso-barra { height: 4px; background: var(--borde); border-radius: 2px; overflow: hidden; }
+.progreso-fill { height: 100%; background: linear-gradient(90deg, var(--naranja), var(--violeta)); border-radius: 2px; transition: width .4s ease; width: 0%; }
+
+.dilema-panel { display: none; }
+.dilema-panel.act { display: block; animation: fadeInUp .3s ease; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.dilema-card { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 28px 28px 24px; margin-bottom: 20px; }
+.dilema-num { font-family: var(--font-mono); font-size: 10px; color: var(--naranja); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+.dilema-situacion {
+  background: var(--bg); border: 1px solid var(--borde2); border-left: 3px solid var(--violeta);
+  border-radius: var(--r); padding: 18px 20px; margin-bottom: 20px; font-size: 14.5px; line-height: 1.7; color: var(--texto);
+}
+.dilema-pregunta { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 18px; }
+
+.opciones-dilema { display: flex; flex-direction: column; gap: 10px; }
+.opcion-dilema {
+  display: block; width: 100%; text-align: left; padding: 14px 18px; background: var(--bg4);
+  border: 1.5px solid var(--borde); border-radius: var(--r); cursor: pointer; transition: all .15s;
+  font-size: 13.5px; color: var(--texto); line-height: 1.55; font-family: inherit;
+}
+.opcion-dilema:hover { border-color: var(--violeta-b); background: var(--violeta-s); }
+.opcion-dilema.elegida { border-color: var(--naranja-b); background: var(--naranja-s); }
+.opcion-dilema:disabled { cursor: default; }
+.opcion-dilema .letra { font-family: var(--font-mono); color: var(--texto3); margin-right: 8px; }
+
+.consecuencia-panel {
+  display: none; margin-top: 18px; background: var(--bg4); border: 1px dashed var(--borde2);
+  border-radius: var(--r2); padding: 20px 22px;
+}
+.consecuencia-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--violeta); margin-bottom: 10px; }
+.consecuencia-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; margin-bottom: 14px; }
+.consecuencia-texto strong { color: #fff; }
+.consecuencia-otras { font-size: 12.5px; color: var(--texto3); line-height: 1.7; border-top: 1px solid var(--borde); padding-top: 14px; }
+.consecuencia-otras strong { color: var(--texto2); }
+
+.dilema-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.btn-nav {
+  font-family: var(--font-mono); font-size: 12px; padding: 9px 20px; border-radius: var(--r);
+  border: 1.5px solid; cursor: pointer; background: transparent; transition: all .15s;
+}
+.btn-nav.anterior { color: var(--texto3); border-color: var(--borde2); }
+.btn-nav.anterior:hover { color: var(--texto); border-color: var(--borde3); }
+.btn-nav.siguiente { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-nav.siguiente:hover { background: var(--naranja-m); }
+.btn-nav.siguiente:disabled { opacity: .4; cursor: not-allowed; }
+.btn-nav.finalizar { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.btn-nav.finalizar:hover { background: var(--violeta-m); }
+.btn-nav.finalizar:disabled { opacity: .4; cursor: not-allowed; }
+
+.dilema-dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--borde2); border: 1px solid var(--borde); cursor: pointer; transition: all .15s; }
+.dot.act { background: var(--naranja); border-color: var(--naranja); }
+.dot.hecha { background: var(--violeta-m); border-color: var(--violeta-b); }
+
+#resultado-panel { display: none; }
+.resultado-card { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 36px 32px; text-align: center; margin-bottom: 24px; }
+.resultado-char img { width: 130px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.3)); }
+.resultado-titulo { font-family: var(--font-title); font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+.resultado-mensaje { font-size: 14.5px; color: var(--texto2); line-height: 1.8; max-width: 560px; margin: 0 auto; font-weight: 300; }
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+.resumen-elecciones { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 24px 28px; margin-bottom: 20px; }
+.resumen-item { padding: 12px 0; border-bottom: 1px solid var(--borde); }
+.resumen-item:last-child { border-bottom: none; }
+.resumen-item-situacion { font-size: 12px; color: var(--texto3); margin-bottom: 4px; font-family: var(--font-mono); }
+.resumen-item-eleccion { font-size: 13.5px; color: var(--texto); }
+
+.resultado-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 24px 0; }
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-violeta { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.btn-violeta:hover { background: var(--violeta-m); }
+
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .quiz-hero-char { display: none; }
+  .dilema-card { padding: 20px 18px 18px; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ia">IA aplicada</a>
+      <span class="sep">/</span>
+      <span>IA crítica · 3er curso</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char"><img src="../img/gatiel_idea.png" alt="Gatiel con idea"></div>
+      <div>
+        <span class="quiz-nivel-badge">// Actividad · Dilemas técnicos</span>
+        <h1 class="quiz-titulo">Dilemas técnicos<br>¿Qué harías vos?</h1>
+        <p class="quiz-subtitulo">No hay una única respuesta correcta. Cada camino tiene consecuencias — la idea es pensarlas antes de elegir.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">⚖️ 5 dilemas</span>
+          <span class="quiz-meta-item">⏱ ~10 minutos</span>
+          <span class="quiz-meta-item">🎯 Sin nota, con reflexión</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-main">
+
+  <div class="instrucciones">
+    <div class="instrucciones-ico">⚖️</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Gatiel dice:</strong> Estos dilemas están inspirados en situaciones que pasaron de verdad. No hay una opción marcada como "correcta" — cada una tiene consecuencias distintas, y vas a poder verlas todas después de elegir.</p>
+      <p>Elegí lo que realmente harías, no lo que te parece que "hay que responder". Al final vas a ver un resumen de tus cinco decisiones.</p>
+    </div>
+  </div>
+
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Dilema 1 de 5</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra"><div class="progreso-fill" id="progreso-fill"></div></div>
+  </div>
+
+  <div class="dilema-dots" id="dots-container"></div>
+
+  <div id="dilemas-container">
+
+    <!-- DILEMA 1 -->
+    <div class="dilema-panel" id="d1">
+      <div class="dilema-card">
+        <div class="dilema-num">// Dilema 01 — Sesgos en datasets</div>
+        <div class="dilema-situacion">Estás armando un sistema para tu proyecto de ICIENTEC que recomienda qué estudiantes necesitan apoyo extra, entrenado con las notas de los últimos 5 años. Al probarlo, notás que el sistema recomienda apoyo con mucha más frecuencia a estudiantes de ciertas secciones que a otras — y esas secciones coinciden con turnos que históricamente tuvieron menos recursos.</div>
+        <div class="dilema-pregunta">¿Qué hacés?</div>
+        <div class="opciones-dilema" id="ops-1">
+          <button class="opcion-dilema" onclick="elegir(1,'a',this)"><span class="letra">a)</span>Lo entrego igual — el patrón está en los datos reales, no lo inventé yo.</button>
+          <button class="opcion-dilema" onclick="elegir(1,'b',this)"><span class="letra">b)</span>Reviso si el patrón refleja una desigualdad histórica de recursos antes de decidir si el sistema está listo para usarse.</button>
+          <button class="opcion-dilema" onclick="elegir(1,'c',this)"><span class="letra">c)</span>Saco la variable de "sección" del modelo y lo entrego así, asumiendo que ya está resuelto.</button>
+        </div>
+        <div class="consecuencia-panel" id="cons-1">
+          <div class="consecuencia-titulo">// Lo que suele pasar</div>
+          <div class="consecuencia-texto" id="cons-texto-1"></div>
+          <div class="consecuencia-otras" id="cons-otras-1"></div>
+        </div>
+      </div>
+      <div class="dilema-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="irA(2)" disabled>Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- DILEMA 2 -->
+    <div class="dilema-panel" id="d2">
+      <div class="dilema-card">
+        <div class="dilema-num">// Dilema 02 — Decisiones técnicas éticas</div>
+        <div class="dilema-situacion">Tu profesor de Laboratorio te pide programar un sistema de cámara con reconocimiento facial para registrar la asistencia automáticamente, sin avisar formalmente a las familias del alumnado. Técnicamente es un proyecto interesante y factible con lo que aprendiste este año.</div>
+        <div class="dilema-pregunta">¿Qué hacés?</div>
+        <div class="opciones-dilema" id="ops-2">
+          <button class="opcion-dilema" onclick="elegir(2,'a',this)"><span class="letra">a)</span>Lo hago — es un proyecto técnico interesante y la decisión de si está bien o mal es del profesor, no mía.</button>
+          <button class="opcion-dilema" onclick="elegir(2,'b',this)"><span class="letra">b)</span>Le pregunto al profesor si las familias fueron informadas antes de empezar a programarlo.</button>
+          <button class="opcion-dilema" onclick="elegir(2,'c',this)"><span class="letra">c)</span>Me niego directamente a hacerlo, sin conversarlo primero.</button>
+        </div>
+        <div class="consecuencia-panel" id="cons-2">
+          <div class="consecuencia-titulo">// Lo que suele pasar</div>
+          <div class="consecuencia-texto" id="cons-texto-2"></div>
+          <div class="consecuencia-otras" id="cons-otras-2"></div>
+        </div>
+      </div>
+      <div class="dilema-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="irA(3)" disabled>Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- DILEMA 3 -->
+    <div class="dilema-panel" id="d3">
+      <div class="dilema-card">
+        <div class="dilema-num">// Dilema 03 — Impacto social del código</div>
+        <div class="dilema-situacion">Estás diseñando una app para un proyecto grupal que muestra contenido educativo, y tu equipo decide medir el éxito por "minutos de uso diario". Notás que para subir esa métrica, el diseño empuja a que los usuarios sigan scrolleando en vez de terminar y cerrar la app.</div>
+        <div class="dilema-pregunta">¿Qué hacés?</div>
+        <div class="opciones-dilema" id="ops-3">
+          <button class="opcion-dilema" onclick="elegir(3,'a',this)"><span class="letra">a)</span>Sigo con la métrica de minutos de uso — es la que pidió el equipo y funciona para la demo.</button>
+          <button class="opcion-dilema" onclick="elegir(3,'b',this)"><span class="letra">b)</span>Propongo al equipo cambiar la métrica a algo como "contenidos completados" en vez de "tiempo en pantalla".</button>
+          <button class="opcion-dilema" onclick="elegir(3,'c',this)"><span class="letra">c)</span>No digo nada — no es mi decisión, yo solo programo lo que me asignaron.</button>
+        </div>
+        <div class="consecuencia-panel" id="cons-3">
+          <div class="consecuencia-titulo">// Lo que suele pasar</div>
+          <div class="consecuencia-texto" id="cons-texto-3"></div>
+          <div class="consecuencia-otras" id="cons-otras-3"></div>
+        </div>
+      </div>
+      <div class="dilema-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="irA(4)" disabled>Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- DILEMA 4 -->
+    <div class="dilema-panel" id="d4">
+      <div class="dilema-card">
+        <div class="dilema-num">// Dilema 04 — IA y educación</div>
+        <div class="dilema-situacion">Un compañero te muestra que usó una IA para resolver todo un trabajo práctico de Algorítmica sin entender el código que entregó, y te pide que lo ayudes a "explicarlo" rápido por si el profesor le pregunta en la defensa oral.</div>
+        <div class="dilema-pregunta">¿Qué hacés?</div>
+        <div class="opciones-dilema" id="ops-4">
+          <button class="opcion-dilema" onclick="elegir(4,'a',this)"><span class="letra">a)</span>Lo ayudo a memorizar una explicación rápida para que pase la defensa.</button>
+          <button class="opcion-dilema" onclick="elegir(4,'b',this)"><span class="letra">b)</span>Le explico el código en serio, tomándonos el tiempo, aunque eso signifique que no llegue "listo" para hoy.</button>
+          <button class="opcion-dilema" onclick="elegir(4,'c',this)"><span class="letra">c)</span>Le digo que se arregle solo — no es mi problema si no entiende lo que entregó.</button>
+        </div>
+        <div class="consecuencia-panel" id="cons-4">
+          <div class="consecuencia-titulo">// Lo que suele pasar</div>
+          <div class="consecuencia-texto" id="cons-texto-4"></div>
+          <div class="consecuencia-otras" id="cons-otras-4"></div>
+        </div>
+      </div>
+      <div class="dilema-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="irA(5)" disabled>Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- DILEMA 5 -->
+    <div class="dilema-panel" id="d5">
+      <div class="dilema-card">
+        <div class="dilema-num">// Dilema 05 — El técnico como responsable</div>
+        <div class="dilema-situacion">Años después, ya trabajando, te piden programar un sistema que decide automáticamente si aprobar o rechazar préstamos, y notás en las pruebas que rechaza sistemáticamente más solicitudes de un barrio específico de la ciudad, sin una razón económica clara.</div>
+        <div class="dilema-pregunta">¿Qué hacés?</div>
+        <div class="opciones-dilema" id="ops-5">
+          <button class="opcion-dilema" onclick="elegir(5,'a',this)"><span class="letra">a)</span>Lo entrego como está — los plazos del proyecto no dan para investigar más, y no es una decisión mía.</button>
+          <button class="opcion-dilema" onclick="elegir(5,'b',this)"><span class="letra">b)</span>Reporto el hallazgo por escrito a mi jefe antes de entregar, aunque eso retrase el proyecto.</button>
+          <button class="opcion-dilema" onclick="elegir(5,'c',this)"><span class="letra">c)</span>Renuncio al proyecto sin explicar por qué.</button>
+        </div>
+        <div class="consecuencia-panel" id="cons-5">
+          <div class="consecuencia-titulo">// Lo que suele pasar</div>
+          <div class="consecuencia-texto" id="cons-texto-5"></div>
+          <div class="consecuencia-otras" id="cons-otras-5"></div>
+        </div>
+      </div>
+      <div class="dilema-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-5" onclick="mostrarResultado()" disabled>Ver mi resumen ✓</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="resultado-panel">
+    <div class="resultado-card">
+      <div class="resultado-char"><img src="../img/gatiel_explicando.png" alt="Gatiel explicando"></div>
+      <div class="resultado-titulo">No hay una respuesta perfecta — hay criterio</div>
+      <p class="resultado-mensaje">Estos cinco dilemas no tienen un final "ganador". Lo que importa no es haber elegido la opción "b" en todos — es haber pensado en las consecuencias antes de decidir. Ese es exactamente el trabajo de un técnico responsable.</p>
+    </div>
+
+    <div class="resumen-elecciones" id="resumen-elecciones">
+      <div class="cierre-titulo" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--naranja);margin-bottom:14px">// Tus decisiones</div>
+      <div id="resumen-lista"></div>
+    </div>
+
+    <div class="resultado-acciones">
+      <a href="ia3-guia-critica.html" class="btn btn-violeta">📖 Volver a la guía</a>
+      <a href="../aprendiendo.html#ia" class="btn btn-naranja">📚 Volver a las rutas</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+const TOTAL = 5;
+
+const DILEMAS_TITULO = {
+  1: 'Sesgos en datasets',
+  2: 'Decisiones técnicas éticas',
+  3: 'Impacto social del código',
+  4: 'IA y educación',
+  5: 'El técnico como responsable'
+};
+
+const OPCIONES_TEXTO = {
+  1: { a: 'Lo entrego igual', b: 'Reviso el patrón antes de decidir', c: 'Saco la variable y lo doy por resuelto' },
+  2: { a: 'Lo hago sin preguntar', b: 'Pregunto si las familias fueron informadas', c: 'Me niego sin conversarlo' },
+  3: { a: 'Sigo con minutos de uso', b: 'Propongo cambiar la métrica', c: 'No digo nada' },
+  4: { a: 'Lo ayudo a memorizar una explicación', b: 'Le explico el código en serio', c: 'Le digo que se arregle solo' },
+  5: { a: 'Lo entrego como está', b: 'Reporto el hallazgo por escrito', c: 'Renuncio sin explicar' }
+};
+
+const CONSECUENCIAS = {
+  1: {
+    a: { texto: 'El sistema queda funcionando y sigue derivando menos apoyo a las secciones que ya tenían menos recursos — el problema histórico se perpetúa, ahora con la excusa de "lo dijo el algoritmo".', otras: '<strong>Con b:</strong> revisar antes de decidir te permite distinguir un patrón real de una desigualdad heredada — es más trabajo, pero es la única forma de saber qué estás entregando. <strong>Con c:</strong> sacar la variable explícita no borra el sesgo si otras variables (turno, sección) están correlacionadas con ella — el problema probablemente sigue ahí, solo que ahora es menos visible.' },
+    b: { texto: 'Te toma más tiempo, y quizás tengas que discutir con tu equipo por qué el plazo se corre. Pero es la única opción que realmente responde a la pregunta "¿este patrón es justo o hereda una desigualdad?" antes de que el sistema tome decisiones sobre personas reales.', otras: '<strong>Con a:</strong> entregarlo sin revisar es más rápido, pero heredás cualquier sesgo que hubiera en los datos, con tu firma. <strong>Con c:</strong> sacar la variable sin investigar es una solución cosmética que puede dejar el problema real intacto.' },
+    c: { texto: 'Parece una solución rápida, pero si "sección" está correlacionada con "turno con menos recursos", el sistema puede seguir reproduciendo el mismo patrón usando otras variables como sustituto — el sesgo sigue ahí, solo que ahora es más difícil de detectar.', otras: '<strong>Con b:</strong> investigar la causa del patrón es más lento, pero es lo único que te dice si hay que corregir el sistema o el proceso que generó los datos. <strong>Con a:</strong> al menos esa opción es honesta sobre lo que se está entregando — esta puede dar una falsa sensación de que el problema ya se resolvió.' }
+  },
+  2: {
+    a: { texto: 'El proyecto avanza rápido, pero si después surge un reclamo de una familia, la responsabilidad de "no haber preguntado" también va a recaer sobre quien lo programó, no solo sobre quien lo pidió.', otras: '<strong>Con b:</strong> preguntar antes no te garantiza una respuesta que te guste, pero te deja en una posición mucho más clara si después hay que dar explicaciones. <strong>Con c:</strong> negarte sin conversar cierra la puerta a que el profesor tal vez sí tenga el permiso y vos no lo sabías.' },
+    b: { texto: 'Es la opción que más se parece a lo que hizo el equipo de Amazon con su herramienta de reclutamiento: antes de construir, preguntar si están dadas las condiciones para hacerlo bien. Puede que la respuesta sea "sí, ya se avisó" — y entonces programás tranquilo.', otras: '<strong>Con a:</strong> programar sin preguntar es más rápido, pero te deja expuesto si después aparece un problema de consentimiento. <strong>Con c:</strong> negarte de entrada, sin dar lugar a la respuesta, puede ser una reacción excesiva si en realidad el permiso ya existía.' },
+    c: { texto: 'Puede ser la reacción correcta si después de conversarlo la respuesta es que no hay consentimiento — pero hacerlo sin preguntar primero te puede llevar a un conflicto innecesario si el profesor sí tenía el permiso resuelto.', otras: '<strong>Con b:</strong> preguntar primero te da la información que necesitás antes de tomar una postura firme. <strong>Con a:</strong> es la opción opuesta — programar sin cuestionar nada.' }
+  },
+  3: {
+    a: { texto: 'La demo puede lucir bien con esa métrica, pero el diseño terminó empujando a un uso más compulsivo de la app que a un mejor aprendizaje — el mismo patrón que se vio en redes sociales con adolescentes.', otras: '<strong>Con b:</strong> proponer una métrica distinta cambia el incentivo de diseño desde la raíz, hacia algo que realmente mide aprendizaje. <strong>Con c:</strong> quedarte callado no cambia el resultado, solo te saca de la conversación.' },
+    b: { texto: 'Cambiar la métrica que estás optimizando cambia todo el comportamiento del sistema — es la intervención más efectiva, aunque implique una charla incómoda con tu equipo sobre por qué la métrica original no era la correcta.', otras: '<strong>Con a:</strong> es más fácil a corto plazo, pero mantiene el incentivo problemático. <strong>Con c:</strong> no decir nada evita el conflicto, pero también evita la mejora.' },
+    c: { texto: 'Evitás el conflicto en el momento, pero el sistema queda diseñado con un incentivo que favorece el uso compulsivo por sobre el aprendizaje real — y vos lo sabías.', otras: '<strong>Con b:</strong> plantearlo, aunque incomode, es lo que puede cambiar el diseño antes de que el sistema esté terminado. <strong>Con a:</strong> al menos es una postura consciente, aunque no la más responsable.' }
+  },
+  4: {
+    a: { texto: 'Tu compañero puede pasar la defensa oral esta vez, pero no aprendió nada del contenido — y la próxima vez que necesite ese conocimiento, va a estar en el mismo lugar. Además, vos quedás cubriendo un trabajo que no entendés del todo tampoco.', otras: '<strong>Con b:</strong> explicarle de verdad toma más tiempo ahora, pero es la única opción que le deja algo aprendido para la próxima. <strong>Con c:</strong> no ayudarlo en nada tampoco resuelve el problema de fondo — solo lo deja solo con él.' },
+    b: { texto: 'Toma más tiempo y quizás no llegue "perfecto" a tiempo, pero es la única opción de las tres que realmente ayuda a tu compañero a entender lo que va a defender — que es, después de todo, el objetivo de la evaluación.', otras: '<strong>Con a:</strong> memorizar una explicación sin entenderla es una solución de corto plazo que no se sostiene si el profesor repregunta. <strong>Con c:</strong> negarte a ayudar del todo no le da a tu compañero ninguna salida, ni siquiera una buena.' },
+    c: { texto: 'Es comprensible no querer cargar con el problema de otro, pero tu compañero sigue sin entender el código que va a defender — el problema de fondo (usar IA sin entender) no se resolvió, solo quedó sin ayuda.', otras: '<strong>Con b:</strong> ayudarlo a entender de verdad resuelve el problema de fondo, no solo el trámite de hoy. <strong>Con a:</strong> ayudarlo a memorizar sin entender tampoco resuelve nada, pero al menos lo acompaña.' }
+  },
+  5: {
+    a: { texto: 'El sistema se lanza con un sesgo territorial sin investigar, similar al caso COMPAS — vas a estar involucrado en un sistema que afecta el acceso al crédito de personas reales por dónde viven, no por su capacidad de pago.', otras: '<strong>Con b:</strong> reportarlo por escrito antes de entregar deja registro de que el problema se identificó y se comunicó, incluso si la decisión final no es tuya. <strong>Con c:</strong> renunciar sin explicar no deja ningún registro del problema — el próximo desarrollador puede repetir el mismo error sin saberlo.' },
+    b: { texto: 'Es la opción más cercana a lo que hicieron los ingenieros que objetaron el Proyecto Maven en Google: usar la voz que tenés, incluso sin poder de decisión final, y dejar constancia formal del hallazgo. No garantiza que el proyecto cambie, pero es la forma más responsable de ejercer tu criterio profesional.', otras: '<strong>Con a:</strong> entregarlo sin decir nada es más cómodo a corto plazo, pero te vuelve parte silenciosa del problema. <strong>Con c:</strong> renunciar sin explicar tiene un costo alto para vos y no deja ningún registro útil del problema encontrado.' },
+    c: { texto: 'Es una forma de no participar del problema, pero al no explicar por qué, no dejás ningún registro que ayude a que el sistema se corrija — el próximo desarrollador puede no darse cuenta del mismo patrón.', otras: '<strong>Con b:</strong> reportarlo por escrito, aunque te quedes en el proyecto, genera un registro formal del problema que puede llevar a que se corrija. <strong>Con a:</strong> entregarlo sin decir nada evita el conflicto pero no dice nada sobre lo que encontraste.' }
+  }
+};
+
+let dilemaActual = 1;
+let elecciones = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = DILEMAS_TITULO[i];
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('d' + dilemaActual)?.classList.remove('act');
+  document.getElementById('dot-' + dilemaActual)?.classList.remove('act');
+  dilemaActual = num;
+  document.getElementById('d' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const hechos = Object.keys(elecciones).length;
+  const pct = Math.round((hechos / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Dilema ${dilemaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function elegir(nro, letra, btn) {
+  if (elecciones[nro]) return;
+  elecciones[nro] = letra;
+
+  document.querySelectorAll(`#ops-${nro} .opcion-dilema`).forEach(b => {
+    b.disabled = true;
+    b.style.cursor = 'default';
+  });
+  btn.classList.add('elegida');
+
+  const c = CONSECUENCIAS[nro][letra];
+  document.getElementById('cons-texto-' + nro).innerHTML = `<strong>Elegiste: "${OPCIONES_TEXTO[nro][letra]}".</strong> ${c.texto}`;
+  document.getElementById('cons-otras-' + nro).innerHTML = c.otras;
+  document.getElementById('cons-' + nro).style.display = 'block';
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) dot.classList.add('hecha');
+
+  const btnSig = document.getElementById('btn-sig-' + nro);
+  const btnFin = document.getElementById('btn-fin-' + nro);
+  if (btnSig) btnSig.disabled = false;
+  if (btnFin) btnFin.disabled = false;
+
+  actualizarProgreso();
+}
+
+function mostrarResultado() {
+  document.getElementById('dilemas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const lista = document.getElementById('resumen-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const letra = elecciones[i];
+    const item = document.createElement('div');
+    item.className = 'resumen-item';
+    item.innerHTML = `
+      <div class="resumen-item-situacion">Dilema ${i} · ${DILEMAS_TITULO[i]}</div>
+      <div class="resumen-item-eleccion">${letra ? OPCIONES_TEXTO[i][letra] : '— No respondido'}</div>
+    `;
+    lista.appendChild(item);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('d1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>

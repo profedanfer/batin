@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA crítica — sesgos, impacto y responsabilidad · Guía · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+.guia-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.guia-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--naranja-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+.guia-hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+.guia-ruta { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.guia-ruta a { color: var(--naranja); text-decoration: none; }
+.guia-ruta a:hover { text-decoration: underline; }
+.guia-ruta .sep { color: var(--borde3); }
+.guia-nivel-badge {
+  font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 4px;
+  background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b);
+  margin-bottom: 8px; display: inline-block;
+}
+.guia-titulo { font-family: var(--font-title); font-size: clamp(1.3rem, 3.2vw, 1.9rem); font-weight: 800; color: #fff; margin-bottom: 8px; line-height: 1.2; }
+.guia-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 16px; max-width: 640px; line-height: 1.6; }
+.guia-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.guia-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
+
+.indice { max-width: 820px; margin: 32px auto 0; padding: 0 56px; }
+.indice-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--naranja); margin-bottom: 12px; }
+.indice-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+.indice-item {
+  font-family: var(--font-mono); font-size: 11px; padding: 6px 12px; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--borde); color: var(--texto2); text-decoration: none; transition: all .15s;
+}
+.indice-item:hover { border-color: var(--naranja-b); color: var(--naranja); background: var(--naranja-s); }
+
+.guia-main { max-width: 820px; margin: 0 auto; padding: 40px 56px 64px; }
+.capitulo { margin-bottom: 56px; scroll-margin-top: 24px; }
+.capitulo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.capitulo-num {
+  font-family: var(--font-mono); font-size: 11px; color: var(--naranja);
+  border: 1px solid var(--naranja-b); background: var(--naranja-s); border-radius: 6px; padding: 4px 10px; flex-shrink: 0;
+}
+.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: #fff; }
+.capitulo-texto { font-size: 14.5px; color: var(--texto2); line-height: 1.8; margin-bottom: 18px; }
+.capitulo-texto p { margin-bottom: 14px; }
+.capitulo-texto p:last-child { margin-bottom: 0; }
+.capitulo-texto strong { color: #fff; font-weight: 600; }
+
+/* Caso real */
+.caso-real {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 20px 24px;
+  margin: 18px 0;
+}
+.caso-real-titulo {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--azul); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.caso-real-nombre { font-family: var(--font-title); font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+.caso-real-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.caso-real-texto strong { color: var(--texto); }
+
+/* Pregunta de discusión */
+.pregunta-discusion {
+  background: var(--violeta-s);
+  border: 1px solid var(--violeta-b);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.pregunta-discusion-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.pregunta-discusion-body { flex: 1; }
+.pregunta-discusion-titulo {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--violeta); margin-bottom: 6px;
+}
+.pregunta-discusion-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; font-style: italic; }
+
+/* Cita del manifiesto */
+.cita-manifiesto {
+  border-left: 3px solid var(--naranja);
+  padding: 4px 0 4px 20px;
+  margin: 22px 0;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-style: italic;
+  color: #fff;
+  line-height: 1.6;
+}
+.cita-manifiesto span { display: block; font-family: var(--font-mono); font-size: 10px; font-style: normal; color: var(--texto3); margin-top: 8px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* Definición */
+.definicion {
+  background: var(--bg3); border: 1px solid var(--borde); border-left: 3px solid var(--naranja);
+  border-radius: var(--r2); padding: 16px 20px; margin: 18px 0;
+}
+.definicion-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--naranja); margin-bottom: 6px; }
+.definicion-texto { font-size: 13.5px; color: var(--texto); line-height: 1.7; }
+.definicion-texto strong { color: var(--naranja2); }
+
+.checklist-num { list-style: none; margin: 16px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.checklist-num li {
+  display: flex; gap: 12px; align-items: flex-start; background: var(--bg4); border: 1px solid var(--borde);
+  border-radius: var(--r); padding: 12px 16px; font-size: 13.5px; color: var(--texto2); line-height: 1.6;
+}
+.checklist-num-n { font-family: var(--font-mono); font-size: 11px; color: var(--naranja); flex-shrink: 0; min-width: 18px; }
+.checklist-num strong { color: var(--texto); }
+
+.sep-capitulo { height: 1px; background: linear-gradient(90deg, transparent, var(--borde2), transparent); margin: 40px 0; }
+
+.cta-final { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 32px 28px; text-align: center; margin-top: 20px; }
+.cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
+.cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-violeta { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.btn-violeta:hover { background: var(--violeta-m); }
+
+.volver-arriba {
+  position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--borde2); color: var(--naranja);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; font-size: 16px; text-decoration: none;
+}
+.volver-arriba.visible { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .guia-hero { padding: 32px 20px 28px; }
+  .indice { padding: 0 20px; }
+  .guia-main { padding: 28px 20px 48px; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="guia-hero">
+  <div class="guia-hero-inner">
+    <div class="guia-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ia">IA aplicada</a>
+      <span class="sep">/</span>
+      <span>IA crítica · 3er curso</span>
+    </div>
+    <span class="guia-nivel-badge">// Guía · IA crítica</span>
+    <h1 class="guia-titulo">IA crítica — sesgos, impacto y responsabilidad</h1>
+    <p class="guia-subtitulo">Casos reales de sistemas que fallaron, y las preguntas que un técnico responsable tiene que hacerse antes de que el código llegue a producción.</p>
+    <div class="guia-meta">
+      <span class="guia-meta-item">📖 6 secciones</span>
+      <span class="guia-meta-item">⏱ ~15 minutos de lectura</span>
+      <span class="guia-meta-item">🌐 Casos reales, no hipotéticos</span>
+    </div>
+  </div>
+</div>
+
+<div class="indice">
+  <div class="indice-titulo">// En esta guía</div>
+  <div class="indice-lista">
+    <a href="#c1" class="indice-item">1. Sesgos en datasets</a>
+    <a href="#c2" class="indice-item">2. Decisiones técnicas éticas</a>
+    <a href="#c3" class="indice-item">3. Impacto social del código</a>
+    <a href="#c4" class="indice-item">4. IA y educación</a>
+    <a href="#c5" class="indice-item">5. Auditoría de algoritmos</a>
+    <a href="#c6" class="indice-item">6. El técnico como responsable</a>
+  </div>
+</div>
+
+<div class="guia-main">
+
+  <!-- ═══════ CAPÍTULO 1 ═══════ -->
+  <div class="capitulo" id="c1">
+    <div class="capitulo-header">
+      <span class="capitulo-num">01</span>
+      <h2 class="capitulo-titulo">Sesgos en datasets</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Un algoritmo no nace sesgado — <strong>aprende</strong> el sesgo de los datos con los que fue entrenado. Si esos datos reflejan una desigualdad histórica, el algoritmo la va a reproducir, y encima con la apariencia de objetividad que le da venir de "un cálculo".</p>
+    </div>
+    <div class="caso-real">
+      <div class="caso-real-titulo">🌐 Caso real</div>
+      <div class="caso-real-nombre">COMPAS — el algoritmo que predecía reincidencia</div>
+      <div class="caso-real-texto">Varios tribunales de Estados Unidos usaron (y algunos siguen usando) un sistema llamado COMPAS para estimar qué tan probable era que una persona acusada volviera a cometer un delito — una puntuación que influía en decisiones de fianza y sentencia. Una investigación periodística de ProPublica en 2016 encontró que el sistema marcaba a personas afroamericanas como "alto riesgo" con una tasa de falsos positivos casi el doble que a personas blancas, aun cuando no reincidían. El algoritmo no tenía una variable de "raza" explícita — el sesgo entró a través de datos históricos de arrestos, que ya reflejaban desigualdades previas en el sistema judicial.</div>
+    </div>
+    <div class="pregunta-discusion">
+      <div class="pregunta-discusion-ico">💬</div>
+      <div class="pregunta-discusion-body">
+        <div class="pregunta-discusion-titulo">Para pensar</div>
+        <div class="pregunta-discusion-texto">Si un algoritmo no usa la raza como variable pero igual discrimina por raza a través de otros datos correlacionados (barrio, historial de arrestos), ¿alcanza con "no preguntar" para no discriminar? ¿Quién debería revisar esto antes de que el sistema se use en un tribunal?</div>
+      </div>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">Un sistema puede discriminar sin tener una variable explícita de discriminación, si usa datos que están <strong>correlacionados</strong> con esa categoría. Quitar la variable no alcanza — hay que auditar el resultado.</div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 2 ═══════ -->
+  <div class="capitulo" id="c2">
+    <div class="capitulo-header">
+      <span class="capitulo-num">02</span>
+      <h2 class="capitulo-titulo">Decisiones técnicas éticas</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Cada decisión de diseño de un sistema — qué datos usar, qué optimizar, qué variables incluir — es también una decisión de valores, aunque se presente como "solo una elección técnica".</p>
+    </div>
+    <div class="caso-real">
+      <div class="caso-real-titulo">🌐 Caso real</div>
+      <div class="caso-real-nombre">La herramienta de reclutamiento de Amazon</div>
+      <div class="caso-real-texto">Entre 2014 y 2017, Amazon desarrolló internamente un sistema de IA para filtrar currículums de candidatos técnicos. Lo entrenaron con diez años de CVs recibidos — mayoritariamente de hombres, reflejo de la composición histórica de la industria tech. El sistema aprendió a penalizar currículums que incluían la palabra "mujeres" (como en "capitana del club de ajedrez de mujeres") y a favorecer verbos y términos más comunes en CVs masculinos. Amazon detectó el problema, intentó corregirlo, y finalmente discontinuó el proyecto en 2018 al no poder garantizar que fuera neutral.</div>
+    </div>
+    <div class="pregunta-discusion">
+      <div class="pregunta-discusion-ico">💬</div>
+      <div class="pregunta-discusion-body">
+        <div class="pregunta-discusion-titulo">Para pensar</div>
+        <div class="pregunta-discusion-texto">El equipo de Amazon actuó bien al descontinuar el sistema en vez de lanzarlo. ¿Qué hubiera pasado si nadie lo notaba antes del lanzamiento? ¿De quién es la responsabilidad de encontrar este tipo de problemas — de quien entrena el modelo, de quien lo aprueba, de quien lo usa?</div>
+      </div>
+    </div>
+    <div class="cita-manifiesto">
+      "Toda decisión técnica es, en el fondo, una decisión humana."
+      <span>— Manifiesto BATIN</span>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 3 ═══════ -->
+  <div class="capitulo" id="c3">
+    <div class="capitulo-header">
+      <span class="capitulo-num">03</span>
+      <h2 class="capitulo-titulo">Impacto social del código</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Un algoritmo no vive aislado en un servidor — cambia comportamientos humanos a escala masiva. Cuando ese algoritmo está optimizado para un solo objetivo (tiempo de uso, clics, interacción), puede producir efectos secundarios que nadie diseñó a propósito, pero tampoco nadie frenó.</p>
+    </div>
+    <div class="caso-real">
+      <div class="caso-real-titulo">🌐 Caso real</div>
+      <div class="caso-real-nombre">Algoritmos de redes sociales y salud mental adolescente</div>
+      <div class="caso-real-texto">En 2021, filtraciones internas de Meta (conocidas como los "Facebook Papers") revelaron que la propia empresa tenía estudios donde reconocía que Instagram empeoraba la imagen corporal en una proporción significativa de adolescentes mujeres, y que el algoritmo de recomendación —diseñado para maximizar el tiempo de uso— tendía a mostrar cada vez más ese tipo de contenido a quienes ya mostraban interés en él, profundizando el problema en lugar de detectarlo.</div>
+    </div>
+    <div class="pregunta-discusion">
+      <div class="pregunta-discusion-ico">💬</div>
+      <div class="pregunta-discusion-body">
+        <div class="pregunta-discusion-titulo">Para pensar</div>
+        <div class="pregunta-discusion-texto">El algoritmo no fue diseñado para dañar la autoestima de nadie — fue diseñado para maximizar tiempo de uso. ¿Cómo podés diseñar un sistema pensando en el efecto que puede tener, y no solo en la métrica que le pediste que optimice?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 4 ═══════ -->
+  <div class="capitulo" id="c4">
+    <div class="capitulo-header">
+      <span class="capitulo-num">04</span>
+      <h2 class="capitulo-titulo">IA y educación</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>La educación tiene su propio dilema con la IA, y es uno que te toca de cerca: la misma herramienta que puede ayudarte a aprender más rápido puede también hacer que dependas de ella para no aprender nada.</p>
+    </div>
+    <div class="caso-real">
+      <div class="caso-real-titulo">🌐 Caso real</div>
+      <div class="caso-real-nombre">Los detectores de IA que se equivocan</div>
+      <div class="caso-real-texto">Varias universidades adoptaron rápidamente herramientas para "detectar" texto generado por IA en trabajos de estudiantes. Estudios posteriores mostraron que estos detectores tenían tasas altas de falsos positivos, especialmente con estudiantes que escriben inglés como segunda lengua o con estilos de escritura más formulaicos — acusando de "usar IA" a alumnos que habían escrito su trabajo por su cuenta, sin ningún mecanismo confiable de defensa.</div>
+    </div>
+    <div class="pregunta-discusion">
+      <div class="pregunta-discusion-ico">💬</div>
+      <div class="pregunta-discusion-body">
+        <div class="pregunta-discusion-titulo">Para pensar</div>
+        <div class="pregunta-discusion-texto">Si una herramienta de detección se equivoca en 1 de cada 20 casos, pero se usa para tomar decisiones académicas serias (una sanción, una nota), ¿es aceptable usarla igual? ¿Qué tendría que garantizar un sistema así antes de confiar en su resultado?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 5 ═══════ -->
+  <div class="capitulo" id="c5">
+    <div class="capitulo-header">
+      <span class="capitulo-num">05</span>
+      <h2 class="capitulo-titulo">Auditoría de algoritmos</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Si los sistemas pueden fallar de formas que no son obvias a simple vista, la respuesta no es "confiar" ni "desconfiar" en bloque — es <strong>auditar</strong>: revisar sistemáticamente cómo se comporta un sistema con distintos grupos de personas, antes y después de ponerlo en producción.</p>
+    </div>
+    <ul class="checklist-num">
+      <li><span class="checklist-num-n">01</span><span><strong>Revisar los datos de entrenamiento:</strong> ¿de dónde vienen? ¿representan a toda la población que va a usar el sistema, o solo a una parte?</span></li>
+      <li><span class="checklist-num-n">02</span><span><strong>Medir el resultado por grupo:</strong> no alcanza con una tasa de error general — hay que comparar la tasa de error entre distintos grupos (género, edad, origen).</span></li>
+      <li><span class="checklist-num-n">03</span><span><strong>Probar casos límite:</strong> qué pasa con los casos poco comunes que no estaban bien representados en los datos de entrenamiento.</span></li>
+      <li><span class="checklist-num-n">04</span><span><strong>Repetir la auditoría en el tiempo:</strong> un sistema que era justo al lanzarse puede dejar de serlo si el contexto cambia y el sistema no se actualiza.</span></li>
+    </ul>
+    <div class="cita-manifiesto">
+      "Elegimos... sistemas que pueden ser auditados, explicados y corregidos."
+      <span>— Manifiesto BATIN</span>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 6 ═══════ -->
+  <div class="capitulo" id="c6">
+    <div class="capitulo-header">
+      <span class="capitulo-num">06</span>
+      <h2 class="capitulo-titulo">El técnico como responsable</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>El último punto es el más incómodo: cuando un sistema causa daño, "yo solo escribí el código que me pidieron" no es una defensa completa. La responsabilidad técnica no desaparece porque la decisión de negocio la haya tomado otra persona.</p>
+    </div>
+    <div class="caso-real">
+      <div class="caso-real-titulo">🌐 Caso real</div>
+      <div class="caso-real-nombre">Los ingenieros que dijeron que no</div>
+      <div class="caso-real-texto">En 2018, más de 3.000 empleados de Google firmaron una carta interna oponiéndose al "Proyecto Maven", un contrato con el Pentágono para usar IA de la empresa en el análisis de video de drones militares. Varios ingenieros renunciaron en protesta. La presión interna fue uno de los factores que llevó a Google a no renovar el contrato y a publicar principios propios sobre el uso de IA en armamento. Fue un caso donde técnicos individuales, sin poder de decisión final, igual ejercieron su responsabilidad profesional negándose a construir algo con lo que no estaban de acuerdo.</div>
+    </div>
+    <div class="pregunta-discusion">
+      <div class="pregunta-discusion-ico">💬</div>
+      <div class="pregunta-discusion-body">
+        <div class="pregunta-discusion-titulo">Para pensar</div>
+        <div class="pregunta-discusion-texto">Vos todavía no tenés ese nivel de poder de decisión en un trabajo — pero vas a ir formando el criterio para tenerlo. ¿Qué tendría que pedirte un proyecto para que dijeras que no, aunque te costara el trabajo?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-final">
+    <img src="../img/gatiel_idea.png" alt="Gatiel">
+    <div class="cta-final-titulo">Ahora, a los dilemas</div>
+    <p class="cta-final-texto">Leer sobre casos ajenos es el primer paso. El siguiente es ponerte en la situación de decidir vos — sin una respuesta única y correcta, como pasa en la vida profesional real.</p>
+    <div class="cta-final-acciones">
+      <a href="ia3-dilemas.html" class="btn btn-naranja">⚖️ Actividad: Dilemas técnicos</a>
+      <a href="../el-sistema.html#ia-critica" class="btn btn-violeta">🤖 Volver a El Sistema</a>
+    </div>
+  </div>
+
+</div>
+
+<a href="#top" class="volver-arriba" id="volver-arriba">↑</a>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+  const btnArriba = document.getElementById('volver-arriba');
+  window.addEventListener('scroll', () => {
+    btnArriba.classList.toggle('visible', window.scrollY > 500);
+  });
+</script>
+</body>
+</html>
