@@ -447,6 +447,72 @@
 .tl-item.c2 .tl-entregable { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
 .tl-item.c3 .tl-entregable { background: var(--violeta-s); color: var(--violeta); border: 1px solid var(--violeta-b); }
 
+/* Consigna aplicada dentro de cada etapa */
+.tl-consigna {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--borde2);
+}
+
+.tl-consigna-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.tl-item.c1 .tl-consigna-titulo { color: var(--azul); }
+.tl-item.c2 .tl-consigna-titulo { color: var(--naranja); }
+.tl-item.c3 .tl-consigna-titulo { color: var(--violeta); }
+
+.tl-consigna-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.tl-consigna-texto strong { color: var(--texto); }
+
+.tl-consigna-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.tl-consigna-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid;
+  transition: background .15s;
+}
+
+.tl-item.c1 .tl-consigna-link { color: var(--azul); border-color: var(--azul-b); background: var(--azul-s); }
+.tl-item.c1 .tl-consigna-link:hover { background: var(--azul-m); }
+.tl-item.c2 .tl-consigna-link { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.tl-item.c2 .tl-consigna-link:hover { background: var(--naranja-m); }
+.tl-item.c3 .tl-consigna-link { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.tl-item.c3 .tl-consigna-link:hover { background: var(--violeta-m); }
+
+.tl-consigna-ia {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.6;
+}
+.tl-consigna-ia-ico { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+.tl-consigna-ia strong { color: var(--texto2); }
+
 /* Pautas generales del proyecto */
 .pautas-promo {
   background: var(--bg3);
@@ -771,6 +837,20 @@
             <span class="tl-habilidad">Viabilidad económica</span>
           </div>
           <span class="tl-entregable">📄 Entregable: informe + PPT + datos tabulados</span>
+
+          <div class="tl-consigna">
+            <div class="tl-consigna-titulo">// consigna aplicada · 1er curso</div>
+            <div class="tl-consigna-texto">Armá el informe de fundamentación con las herramientas de esta etapa: datos recolectados con un <strong>formulario</strong>, organizados en Excel, presentados en un documento de <strong>Word</strong> con estructura profesional, y defendidos en una <strong>presentación</strong> breve.</div>
+            <div class="tl-consigna-links">
+              <a href="cuestionarios/formularios-guia-toma-datos.html" class="tl-consigna-link">📘 Formularios</a>
+              <a href="cuestionarios/word-guia-formato-profesional.html" class="tl-consigna-link">📘 Word</a>
+              <a href="cuestionarios/presentaciones-guia-comunicar.html" class="tl-consigna-link">📘 Presentaciones</a>
+            </div>
+            <div class="tl-consigna-ia">
+              <span class="tl-consigna-ia-ico">🤖</span>
+              <span><strong>IA en esta etapa:</strong> sirve para redactar un borrador del informe o generar ideas de preguntas para el formulario — no para inventar datos de la encuesta ni para sacar conclusiones sin haber mirado los datos reales.</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -798,6 +878,18 @@
             <span class="tl-habilidad">Requerimientos cerrados</span>
           </div>
           <span class="tl-entregable">💻 Entregable: prototipo funcional + requerimientos</span>
+
+          <div class="tl-consigna">
+            <div class="tl-consigna-titulo">// consigna aplicada · 2do curso</div>
+            <div class="tl-consigna-texto">Antes de programar, validá el diseño con el público objetivo: un <strong>formulario</strong> corto para detectar qué esperan del prototipo o qué les resulta confuso de una primera versión, antes de invertir tiempo construyéndola mal.</div>
+            <div class="tl-consigna-links">
+              <a href="cuestionarios/formularios-guia-toma-datos.html" class="tl-consigna-link">📘 Formularios</a>
+            </div>
+            <div class="tl-consigna-ia">
+              <span class="tl-consigna-ia-ico">🤖</span>
+              <span><strong>IA en esta etapa:</strong> sirve para generar ideas de diseño de interfaz o para entender un error de código — no para que te escriba el programa completo. El prototipo tiene que poder explicarse línea por línea.</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -825,6 +917,20 @@
             <span class="tl-habilidad">Defensa formal</span>
           </div>
           <span class="tl-entregable">🎓 Entregable: sistema implementado + defensa formal</span>
+
+          <div class="tl-consigna">
+            <div class="tl-consigna-titulo">// consigna aplicada · 3er curso</div>
+            <div class="tl-consigna-texto">Cerrá el ciclo evaluando el producto terminado: un <strong>formulario</strong> de feedback con usuarios reales del sistema, documentación técnica en <strong>Word</strong> y la defensa final armada como <strong>presentación</strong> — el mismo circuito de 1er curso, ahora sobre el sistema real.</div>
+            <div class="tl-consigna-links">
+              <a href="cuestionarios/formularios-guia-toma-datos.html" class="tl-consigna-link">📘 Formularios</a>
+              <a href="cuestionarios/word-guia-formato-profesional.html" class="tl-consigna-link">📘 Word</a>
+              <a href="cuestionarios/presentaciones-guia-comunicar.html" class="tl-consigna-link">📘 Presentaciones</a>
+            </div>
+            <div class="tl-consigna-ia">
+              <span class="tl-consigna-ia-ico">🤖</span>
+              <span><strong>IA en esta etapa:</strong> sirve para redactar un primer borrador de la documentación técnica o revisar errores en el código — no para escribir el guion de la defensa oral. Las decisiones de diseño tenés que poder explicarlas vos, sin depender de un texto generado.</span>
+            </div>
+          </div>
         </div>
       </div>
 
