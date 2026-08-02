@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word: documentos con estructura profesional · Guía · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.guia-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.guia-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--naranja-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.guia-hero-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.guia-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.guia-ruta a { color: var(--naranja); text-decoration: none; }
+.guia-ruta a:hover { text-decoration: underline; }
+.guia-ruta .sep { color: var(--borde3); }
+
+.guia-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.guia-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.guia-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 16px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.guia-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.guia-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   ÍNDICE
+══════════════════════════════════════ */
+.indice {
+  max-width: 820px;
+  margin: 32px auto 0;
+  padding: 0 56px;
+}
+
+.indice-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin-bottom: 12px;
+}
+
+.indice-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.indice-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  color: var(--texto2);
+  text-decoration: none;
+  transition: all .15s;
+}
+
+.indice-item:hover { border-color: var(--naranja-b); color: var(--naranja); background: var(--naranja-s); }
+
+/* ══════════════════════════════════════
+   MAIN / CAPÍTULOS
+══════════════════════════════════════ */
+.guia-main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+.capitulo {
+  margin-bottom: 56px;
+  scroll-margin-top: 24px;
+}
+
+.capitulo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.capitulo-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  background: var(--naranja-s);
+  border-radius: 6px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+.capitulo-titulo {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.capitulo-texto {
+  font-size: 14.5px;
+  color: var(--texto2);
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.capitulo-texto p { margin-bottom: 14px; }
+.capitulo-texto p:last-child { margin-bottom: 0; }
+.capitulo-texto strong { color: #fff; font-weight: 600; }
+
+.capitulo-imagenes {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.capitulo-imagenes figure {
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+.capitulo-imagenes img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r2);
+  border: 1px solid var(--borde);
+  display: block;
+}
+
+.capitulo-imagenes figcaption {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Callout de definición */
+.definicion {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--naranja);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+}
+
+.definicion-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin-bottom: 6px;
+}
+
+.definicion-texto { font-size: 13.5px; color: var(--texto); line-height: 1.7; }
+.definicion-texto strong { color: var(--naranja2); }
+
+/* Callout "en profundidad" */
+.profundiza {
+  background: var(--azul-s);
+  border: 1px solid var(--azul-b);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.profundiza-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.profundiza-body { flex: 1; }
+.profundiza-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 6px;
+}
+.profundiza-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.profundiza-texto strong { color: var(--texto); }
+
+/* Callout de actividad sugerida */
+.actividad {
+  background: var(--violeta-s);
+  border: 1px solid var(--violeta-b);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.actividad-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.actividad-body { flex: 1; }
+.actividad-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--violeta);
+  margin-bottom: 6px;
+}
+.actividad-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.actividad-texto strong { color: var(--texto); }
+
+/* Checklist numerada */
+.checklist-num {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checklist-num li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13.5px;
+  color: var(--texto2);
+  line-height: 1.6;
+}
+
+.checklist-num-n {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--naranja);
+  flex-shrink: 0;
+  min-width: 18px;
+}
+
+.checklist-num strong { color: var(--texto); }
+
+/* Separador */
+.sep-capitulo {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--borde2), transparent);
+  margin: 40px 0;
+}
+
+/* CTA final */
+.cta-final {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 32px 28px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
+.cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-violeta { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.btn-violeta:hover { background: var(--violeta-m); }
+
+/* Volver arriba */
+.volver-arriba {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--borde2);
+  color: var(--naranja);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  z-index: 50;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.volver-arriba.visible { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .guia-hero { padding: 32px 20px 28px; }
+  .indice { padding: 0 20px; }
+  .guia-main { padding: 28px 20px 48px; }
+  .capitulo-imagenes { flex-direction: column; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="guia-hero">
+  <div class="guia-hero-inner">
+    <div class="guia-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ofimatica">Ruta Ofimática y Datos</a>
+      <span class="sep">/</span>
+      <span>Word · 1er curso</span>
+    </div>
+    <span class="guia-nivel-badge">// Guía · Procesador de textos</span>
+    <h1 class="guia-titulo">Word: documentos con estructura profesional</h1>
+    <p class="guia-subtitulo">Un técnico entrega documentos, no solo información — y el documento es parte del producto. De la tipografía al control de cambios: cinco clases para que un informe se lea rápido, se entienda sin esfuerzo y se pueda defender.</p>
+    <div class="guia-meta">
+      <span class="guia-meta-item">📖 5 clases</span>
+      <span class="guia-meta-item">⏱ ~15 minutos de lectura</span>
+      <span class="guia-meta-item">🎯 Base del informe ICIENTEC</span>
+    </div>
+  </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="indice">
+  <div class="indice-titulo">// En esta guía</div>
+  <div class="indice-lista">
+    <a href="#c1" class="indice-item">1. Formatos profesionales</a>
+    <a href="#c2" class="indice-item">2. Estilos y TOC dinámica</a>
+    <a href="#c3" class="indice-item">3. Encabezados y saltos de sección</a>
+    <a href="#c4" class="indice-item">4. Tablas y referencias</a>
+    <a href="#c5" class="indice-item">5. Revisión, imágenes y entrega</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="guia-main">
+
+  <!-- ═══════ CAPÍTULO 1 ═══════ -->
+  <div class="capitulo" id="c1">
+    <div class="capitulo-header">
+      <span class="capitulo-num">01</span>
+      <h2 class="capitulo-titulo">Formatos profesionales</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Cuando hablamos de "formato" no estamos hablando de decoración — el formato es lo que hace que un documento se lea rápido, se entienda sin esfuerzo y transmita seriedad profesional. Dos documentos con el mismo contenido pueden comunicar cosas muy distintas según cómo estén armados.</p>
+      <p>Fuente única (o máximo dos: una para títulos, otra para cuerpo), tamaño de 11-12 pt para el cuerpo, interlineado de 1.15 a 1.5, márgenes estándar y alineación con propósito. La negrita y la cursiva se usan para destacar, no para decorar — si todo está en negrita, nada resalta.</p>
+    </div>
+    <div class="capitulo-imagenes">
+      <figure>
+        <img src="../img/doc-clase1.png" alt="Techi, Bit y Gatiel explican los formatos profesionales en Word">
+        <figcaption>El documento es parte del producto que entrega un técnico</figcaption>
+      </figure>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">Un técnico entrega documentos, no solo información. Un documento con formato inconsistente se lee como improvisado, aunque el contenido sea excelente.</div>
+    </div>
+    <div class="profundiza">
+      <div class="profundiza-ico">⚠️</div>
+      <div class="profundiza-body">
+        <div class="profundiza-titulo">Errores típicos de "documento amateur"</div>
+        <div class="profundiza-texto">Usar espacios en vez de sangría para alinear texto, usar Enter varias veces en vez de un salto de página, y arrastrar sin querer el formato de origen al pegar texto de otra fuente. Son los tres errores que más rápido delatan un documento improvisado.</div>
+      </div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">Tomá un documento con 3-4 fuentes distintas, espaciados inconsistentes y alineaciones mezcladas, y corregilo aplicando los criterios de esta clase.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 2 ═══════ -->
+  <div class="capitulo" id="c2">
+    <div class="capitulo-header">
+      <span class="capitulo-num">02</span>
+      <h2 class="capitulo-titulo">Estilos y tabla de contenido dinámica</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Poner un texto en negrita y letra grande <em>parece</em> un título, pero para Word sigue siendo texto normal — y ahí está el problema. Sin un estilo real no se puede generar un índice automático, ni navegar el documento por secciones, ni cambiar todos los títulos a la vez.</p>
+      <p>Un estilo es una etiqueta semántica: "esto es un Título 1", no "esto es Calibri 16 negrita azul". Word ya trae una jerarquía predefinida (Título 1 → Título 2 → Título 3 → Normal) — y saltearse niveles rompe la lógica del documento y del índice.</p>
+    </div>
+    <div class="capitulo-imagenes">
+      <figure>
+        <img src="../img/doc-clase2.png" alt="Diferencia entre apariencia y estructura de estilos en Word">
+        <figcaption>Parecer título no es lo mismo que ser título</figcaption>
+      </figure>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">La tabla de contenido dinámica no es magia: es la recompensa de haber usado estilos desde el principio. Se inserta desde Referencias → Tabla de contenido, y se actualiza con un clic.</div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">Tomá el documento corregido de la Clase 1, aplicá estilos de título a sus secciones, generá la tabla de contenido, agregá una sección nueva en el medio y actualizala con un clic.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 3 ═══════ -->
+  <div class="capitulo" id="c3">
+    <div class="capitulo-header">
+      <span class="capitulo-num">03</span>
+      <h2 class="capitulo-titulo">Encabezados, pie de página y saltos de sección</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>El requisito más pedido y más frustrante de lograr a los ponchazos: portada sin número de página, cuerpo numerado desde 1. Ahí es donde entra el <strong>salto de sección</strong>, que no es lo mismo que un salto de página — permite que cada parte del documento tenga su propio encabezado, pie y numeración.</p>
+    </div>
+    <div class="capitulo-imagenes">
+      <figure>
+        <img src="../img/doc-clase3.png" alt="Portada sin número y cuerpo numerado desde 1 con salto de sección">
+        <figcaption>El salto de sección separa el formato de página, no solo el contenido</figcaption>
+      </figure>
+    </div>
+    <ul class="checklist-num">
+      <li><span class="checklist-num-n">01</span><span>Insertar un salto de sección (página siguiente) al final de la portada.</span></li>
+      <li><span class="checklist-num-n">02</span><span>En el pie de página del cuerpo, <strong>desvincular</strong> de la sección anterior — si no, cualquier cambio se propaga a ambas.</span></li>
+      <li><span class="checklist-num-n">03</span><span>Configurar el número de página de esa sección para que empiece en 1.</span></li>
+    </ul>
+    <div class="profundiza">
+      <div class="profundiza-ico">🧩</div>
+      <div class="profundiza-body">
+        <div class="profundiza-titulo">Es el punto donde más se traban los estudiantes</div>
+        <div class="profundiza-texto">No por difícil, sino porque Word no avisa que hay que desvincular manualmente. Vale la pena mostrarlo paso a paso en vivo, no solo describirlo.</div>
+      </div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">Dado un documento de 3-4 páginas con portada + cuerpo, lograr portada sin numerar, cuerpo numerado desde 1, y el nombre del proyecto en el encabezado del cuerpo (pero no de la portada).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 4 ═══════ -->
+  <div class="capitulo" id="c4">
+    <div class="capitulo-header">
+      <span class="capitulo-num">04</span>
+      <h2 class="capitulo-titulo">Tablas y referencias</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Cierra el ciclo: un informe no solo se ve prolijo, también presenta sus datos con claridad y muestra de dónde salió cada afirmación. Encabezado de columna diferenciado, fila de encabezado repetida si la tabla cruza de página, números alineados a la derecha.</p>
+      <p>Las <strong>referencias cruzadas</strong> permiten que el texto diga "ver Tabla 3" con un vínculo que se actualiza solo si la numeración cambia. Y el gestor de citas de Word arma la bibliografía en Normas APA automáticamente, ordenada y lista para actualizarse si se agregan nuevas fuentes.</p>
+    </div>
+    <div class="capitulo-imagenes">
+      <figure>
+        <img src="../img/doc-clase4.png" alt="Tabla de datos con referencias cruzadas y bibliografía en Normas APA">
+        <figcaption>Referencias cruzadas y bibliografía se actualizan solas</figcaption>
+      </figure>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">Citar bien no es solo evitar plagio — es parte de la credibilidad técnica del informe: mostrar de dónde salió cada dato.</div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">Con un texto que tenga 2-3 afirmaciones sin fuente, agregar citas con el gestor de Word, generar la bibliografía, y armar una tabla de datos con al menos una referencia cruzada ("como se ve en la Tabla 1...").</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 5 ═══════ -->
+  <div class="capitulo" id="c5">
+    <div class="capitulo-header">
+      <span class="capitulo-num">05</span>
+      <h2 class="capitulo-titulo">Revisión, imágenes y entrega final</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>El documento pasa de "borrador individual" a algo que un equipo revisó, corrigió y defendió en conjunto. Los <strong>comentarios</strong> (Revisar → Nuevo comentario) marcan ajustes sin tocar el texto; el <strong>control de cambios</strong> registra quién editó qué, con la posibilidad de aceptar o rechazar cada edición.</p>
+      <p>Las imágenes también necesitan título numerado ("Figura 1", "Figura 2...") — la misma lógica de la tabla de contenido, aplicada a figuras. Y antes de entregar: exportar a PDF y revisar que nada se haya movido en la conversión.</p>
+    </div>
+    <div class="capitulo-imagenes">
+      <figure>
+        <img src="../img/doc-clase5.png" alt="Revisión con comentarios, control de cambios e imágenes con título numerado">
+        <figcaption>El último control de calidad antes de la defensa</figcaption>
+      </figure>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">Lo que se ve bien en Word no siempre se ve igual en el PDF exportado — revisar el PDF final es el último paso, no un detalle opcional.</div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">En equipos, intercambiar el informe, dejar al menos 2 comentarios cada uno, hacer una corrección con control de cambios activo, insertar una imagen con su título correspondiente, y exportar a PDF para revisarlo antes de "entregarlo".</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="cta-final">
+    <img src="../img/bit_ok.png" alt="Bit">
+    <div class="cta-final-titulo">El informe listo, el mensaje por armar</div>
+    <p class="cta-final-texto">Con el documento estructurado, el siguiente paso es comunicarlo — cómo convertir este mismo informe en una presentación que se defienda en vivo.</p>
+    <div class="cta-final-acciones">
+      <a href="presentaciones-guia-comunicar.html" class="btn btn-naranja">🎯 Seguir con Presentaciones</a>
+      <a href="../aprendiendo.html#ofimatica" class="btn btn-violeta">📚 Volver a las rutas</a>
+    </div>
+  </div>
+
+</div><!-- fin guia-main -->
+
+<a href="#top" class="volver-arriba" id="volver-arriba">↑</a>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+  const btnArriba = document.getElementById('volver-arriba');
+  window.addEventListener('scroll', () => {
+    btnArriba.classList.toggle('visible', window.scrollY > 500);
+  });
+</script>
+</body>
+</html>
