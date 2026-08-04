@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es-PY">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java desde Cero → Conexión con PataFeliz (JDBC)</title>
+<style>
+  :root{
+    --orange:#E8791A;
+    --orange-dark:#C4610F;
+    --orange-light:#FDEBD8;
+    --bg:#FFFBF6;
+    --card:#FFFFFF;
+    --text:#2B2420;
+    --muted:#7A6F63;
+    --code-bg:#1E1E1E;
+    --code-text:#D4D4D4;
+    --border:#F0D9BC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI', Roboto, Arial, sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
+  }
+  header{
+    background:linear-gradient(135deg, var(--orange), var(--orange-dark));
+    color:#fff; padding:28px 24px; text-align:center;
+  }
+  header h1{margin:0 0 6px 0; font-size:1.7rem;}
+  header p{margin:0; opacity:.95; font-size:.98rem;}
+  .tabs{
+    display:flex; flex-wrap:wrap; gap:6px; padding:14px 16px 0 16px;
+    background:var(--orange-light); border-bottom:3px solid var(--orange);
+    position:sticky; top:0; z-index:10;
+  }
+  .tab-btn{
+    background:#fff; border:2px solid var(--orange); color:var(--orange-dark);
+    padding:9px 14px; border-radius:8px 8px 0 0; cursor:pointer;
+    font-size:.88rem; font-weight:600; transition:.15s;
+  }
+  .tab-btn:hover{background:var(--orange-light);}
+  .tab-btn.active{background:var(--orange); color:#fff;}
+  .content{max-width:920px; margin:0 auto; padding:22px 18px 60px 18px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+  .section-title{
+    color:var(--orange-dark); font-size:1.25rem; margin:26px 0 10px 0;
+    border-bottom:2px solid var(--orange-light); padding-bottom:6px;
+  }
+  .section-title:first-child{margin-top:0;}
+  p{margin:10px 0;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; margin:14px 0;
+  }
+  .nota{
+    background:var(--orange-light); border-left:4px solid var(--orange);
+    padding:12px 14px; border-radius:6px; margin:14px 0; font-size:.93rem;
+  }
+  .nota strong{color:var(--orange-dark);}
+  pre.code{
+    background:var(--code-bg); color:var(--code-text); padding:14px 16px;
+    border-radius:8px; overflow-x:auto; font-size:.86rem; line-height:1.55;
+    font-family:'Consolas','Courier New',monospace; margin:10px 0;
+  }
+  pre.code, pre.code *{color:var(--code-text);}
+  .kw{color:#569CD6; font-weight:600;}
+  .type{color:#4EC9B0;}
+  .str{color:#CE9178;}
+  .com{color:#6A9955; font-style:italic;}
+  .num{color:#B5CEA8;}
+  .met{color:#DCDCAA;}
+  table.explica{width:100%; border-collapse:collapse; margin:10px 0; font-size:.9rem;}
+  table.explica th, table.explica td{
+    border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;
+  }
+  table.explica th{background:var(--orange-light); color:var(--orange-dark);}
+  table.explica td:first-child{font-family:'Consolas','Courier New',monospace; white-space:nowrap; color:var(--orange-dark); font-weight:600;}
+  .pasos{counter-reset:paso;}
+  .paso{
+    position:relative; padding-left:38px; margin:14px 0;
+  }
+  .paso::before{
+    counter-increment:paso; content:counter(paso);
+    position:absolute; left:0; top:0; width:26px; height:26px;
+    background:var(--orange); color:#fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem;
+  }
+  .badge{
+    display:inline-block; background:var(--orange); color:#fff; font-size:.72rem;
+    padding:2px 9px; border-radius:12px; font-weight:600; margin-left:6px; vertical-align:middle;
+  }
+  ul, ol{margin:8px 0; padding-left:22px;}
+  code.inline{background:var(--orange-light); color:var(--orange-dark); padding:1px 6px; border-radius:4px; font-family:'Consolas','Courier New',monospace;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Java desde Cero → Conexión con la Clínica PataFeliz</h1>
+  <p>Variables · Clases y Objetos · Métodos · JDBC · SQLite</p>
+</header>
+
+<div class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="t1">1. Primeros pasos</button>
+  <button class="tab-btn" data-tab="t2">2. Variables y tipos</button>
+  <button class="tab-btn" data-tab="t3">3. Clases y objetos</button>
+  <button class="tab-btn" data-tab="t4">4. Métodos</button>
+  <button class="tab-btn" data-tab="t5">5. Conexión JDBC</button>
+  <button class="tab-btn" data-tab="t6">6. Cargar registros</button>
+  <button class="tab-btn" data-tab="t7">7. Para practicar</button>
+</div>
+
+<div class="content">
+
+<!-- TAB 1 -->
+<div class="tab-panel active" id="t1">
+  <div class="section-title">¿Qué es Java y cómo se ejecuta un programa?</div>
+  <p>Java es un lenguaje de programación orientado a objetos. A diferencia de otros lenguajes, un programa en Java pasa por dos etapas antes de correr:</p>
+  <div class="pasos">
+    <div class="paso"><strong>Compilación:</strong> el compilador (<code class="inline">javac</code>) traduce el código fuente (<code class="inline">.java</code>) a bytecode (<code class="inline">.class</code>), un código intermedio que entiende la máquina virtual de Java.</div>
+    <div class="paso"><strong>Ejecución:</strong> el comando <code class="inline">java</code> corre ese bytecode a través de la JVM (Java Virtual Machine), que ya está instalada en las notebooks (OpenJDK).</div>
+  </div>
+
+  <div class="card">
+    <strong>Primer programa: HolaMundo.java</strong>
+    <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">HolaMundo</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="met">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Hola, PataFeliz!"</span>);
+    }
+}</pre>
+  </div>
+
+  <p><strong>Explicación palabra por palabra:</strong></p>
+  <table class="explica">
+    <tr><th>Palabra</th><th>Qué significa</th></tr>
+    <tr><td>public class HolaMundo</td><td>Define una clase pública llamada <code class="inline">HolaMundo</code>. El nombre del archivo <strong>debe</strong> coincidir exactamente con el nombre de la clase: <code class="inline">HolaMundo.java</code>.</td></tr>
+    <tr><td>public static void main</td><td>Es el método por donde arranca la ejecución. <code class="inline">public</code>: la JVM puede llamarlo desde afuera. <code class="inline">static</code>: no hace falta crear un objeto para ejecutarlo. <code class="inline">void</code>: no devuelve ningún valor.</td></tr>
+    <tr><td>(String[] args)</td><td>Parámetro que recibe argumentos escritos por consola (un arreglo de textos). Por ahora no lo vamos a usar, pero siempre va ahí.</td></tr>
+    <tr><td>System.out.println(...)</td><td><code class="inline">System.out</code> es el flujo de salida estándar (la consola). <code class="inline">println</code> imprime el texto y salta de línea.</td></tr>
+    <tr><td>;</td><td>Cada instrucción en Java termina con punto y coma. Es obligatorio.</td></tr>
+    <tr><td>{ }</td><td>Delimitan bloques de código: dónde empieza y dónde termina una clase, un método, etc.</td></tr>
+  </table>
+
+  <div class="nota">
+    <strong>Para compilar y ejecutar en la notebook (sin internet):</strong>
+    <pre class="code">javac HolaMundo.java
+java HolaMundo</pre>
+    Esto genera <code class="inline">HolaMundo.class</code> y luego lo ejecuta. Java distingue mayúsculas de minúsculas, ¡ojo con eso!
+  </div>
+</div>
+
+<!-- TAB 2 -->
+<div class="tab-panel" id="t2">
+  <div class="section-title">Variables y tipos de datos</div>
+  <p>Una variable es un espacio en memoria con un nombre, un tipo y un valor. En Java, a diferencia de SQLite, <strong>siempre hay que declarar el tipo</strong>.</p>
+
+  <div class="card">
+    <strong>Ejemplo simple</strong>
+    <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">Variables</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="met">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span> edad = <span class="num">15</span>;
+        <span class="type">double</span> promedio = <span class="num">8.75</span>;
+        <span class="type">String</span> nombre = <span class="str">"Ana"</span>;
+        <span class="type">boolean</span> aprobado = <span class="kw">true</span>;
+        <span class="type">char</span> inicial = <span class="str">'A'</span>;
+
+        <span class="type">System</span>.out.<span class="met">println</span>(nombre + <span class="str">" tiene "</span> + edad + <span class="str">" años"</span>);
+    }
+}</pre>
+  </div>
+
+  <table class="explica">
+    <tr><th>Tipo</th><th>Guarda</th><th>Ejemplo</th></tr>
+    <tr><td>int</td><td>Números enteros</td><td>15, -3, 2026</td></tr>
+    <tr><td>double</td><td>Números con decimales</td><td>8.75, 3.14</td></tr>
+    <tr><td>String</td><td>Texto (nótese la S mayúscula: es una clase, no un tipo primitivo)</td><td>"Ana"</td></tr>
+    <tr><td>boolean</td><td>Verdadero o falso</td><td>true / false</td></tr>
+    <tr><td>char</td><td>Un solo carácter, entre comillas simples</td><td>'A'</td></tr>
+  </table>
+
+  <div class="nota"><strong>Un poco más complejo — operaciones y decisión:</strong></div>
+  <pre class="code"><span class="type">int</span> costoConsulta = <span class="num">150000</span>;
+<span class="type">int</span> descuento = <span class="num">20000</span>;
+<span class="type">int</span> total = costoConsulta - descuento;
+
+<span class="kw">if</span> (total &gt; <span class="num">100000</span>) {
+    <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Consulta de alto costo: "</span> + total);
+} <span class="kw">else</span> {
+    <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Consulta estándar: "</span> + total);
+}</pre>
+  <p>Este ejemplo ya conecta con algo que conocen: <code class="inline">costoConsulta</code> es el mismo dato que van a ver en la tabla <code class="inline">Consultas</code> de PataFeliz. La idea es que vayan viendo que las variables de Java van a "espejar" las columnas de las tablas.</p>
+</div>
+
+<!-- TAB 3 -->
+<div class="tab-panel" id="t3">
+  <div class="section-title">Clases y objetos</div>
+  <p>Una <strong>clase</strong> es un molde: define qué atributos (datos) y qué métodos (comportamientos) va a tener algo. Un <strong>objeto</strong> es una instancia concreta de esa clase, creada con la palabra <code class="inline">new</code>.</p>
+
+  <div class="card">
+    <strong>Ejemplo simple: clase Mascota</strong>
+    <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">Mascota</span> {
+    <span class="com">// Atributos: los datos que va a tener cada mascota</span>
+    <span class="type">String</span> nombre;
+    <span class="type">String</span> especie;
+
+    <span class="com">// Constructor: se ejecuta al crear el objeto con "new"</span>
+    <span class="kw">public</span> <span class="met">Mascota</span>(<span class="type">String</span> nombre, <span class="type">String</span> especie) {
+        <span class="kw">this</span>.nombre = nombre;
+        <span class="kw">this</span>.especie = especie;
+    }
+}</pre>
+  </div>
+
+  <table class="explica">
+    <tr><th>Palabra</th><th>Qué significa</th></tr>
+    <tr><td>String nombre;</td><td>Atributo (o "campo"): un dato que cada objeto Mascota va a tener propio.</td></tr>
+    <tr><td>public Mascota(...)</td><td>Constructor: un método especial, con el mismo nombre que la clase, sin tipo de retorno. Se ejecuta automáticamente al crear el objeto.</td></tr>
+    <tr><td>this.nombre</td><td><code class="inline">this</code> significa "este objeto que se está creando ahora". Se usa para diferenciar el atributo de la clase del parámetro recibido, que se llaman igual.</td></tr>
+  </table>
+
+  <div class="nota"><strong>Creando y usando objetos (desde el main de otra clase):</strong></div>
+  <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">PruebaMascota</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="met">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">Mascota</span> m1 = <span class="kw">new</span> <span class="met">Mascota</span>(<span class="str">"Toby"</span>, <span class="str">"Perro"</span>);
+        <span class="type">Mascota</span> m2 = <span class="kw">new</span> <span class="met">Mascota</span>(<span class="str">"Michi"</span>, <span class="str">"Gato"</span>);
+
+        <span class="type">System</span>.out.<span class="met">println</span>(m1.nombre + <span class="str">" es un "</span> + m1.especie);
+        <span class="type">System</span>.out.<span class="met">println</span>(m2.nombre + <span class="str">" es un "</span> + m2.especie);
+    }
+}</pre>
+  <p><code class="inline">m1</code> y <code class="inline">m2</code> son dos objetos distintos, cada uno con sus propios valores, creados a partir del mismo molde (la clase <code class="inline">Mascota</code>).</p>
+
+  <div class="nota">
+    <strong>Ahora sí, la clase que vamos a usar con la base de datos.</strong> Fíjense que sus atributos son <em>exactamente</em> las columnas de la tabla <code class="inline">Mascotas</code> de PataFeliz:
+  </div>
+  <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">Mascota</span> {
+    <span class="type">int</span> idMascota;
+    <span class="type">String</span> nombre;
+    <span class="type">String</span> especie;
+    <span class="type">String</span> raza;
+    <span class="type">String</span> fechaNacimiento;
+    <span class="type">int</span> idPropietario;
+
+    <span class="kw">public</span> <span class="met">Mascota</span>(<span class="type">int</span> idMascota, <span class="type">String</span> nombre, <span class="type">String</span> especie,
+                   <span class="type">String</span> raza, <span class="type">String</span> fechaNacimiento, <span class="type">int</span> idPropietario) {
+        <span class="kw">this</span>.idMascota = idMascota;
+        <span class="kw">this</span>.nombre = nombre;
+        <span class="kw">this</span>.especie = especie;
+        <span class="kw">this</span>.raza = raza;
+        <span class="kw">this</span>.fechaNacimiento = fechaNacimiento;
+        <span class="kw">this</span>.idPropietario = idPropietario;
+    }
+}</pre>
+</div>
+
+<!-- TAB 4 -->
+<div class="tab-panel" id="t4">
+  <div class="section-title">Métodos</div>
+  <p>Un método es un bloque de código con nombre que realiza una tarea. Puede recibir parámetros y puede devolver un resultado.</p>
+
+  <div class="card">
+    <strong>Ejemplo simple: método sin retorno</strong>
+    <pre class="code"><span class="kw">public</span> <span class="kw">void</span> <span class="met">mostrarInfo</span>() {
+    <span class="type">System</span>.out.<span class="met">println</span>(nombre + <span class="str">" - "</span> + especie);
+}</pre>
+  </div>
+
+  <div class="card">
+    <strong>Un poco más complejo: método con retorno</strong>
+    <pre class="code"><span class="kw">public</span> <span class="type">String</span> <span class="met">describir</span>() {
+    <span class="kw">return</span> nombre + <span class="str">" ("</span> + especie + <span class="str">", "</span> + raza + <span class="str">")"</span>;
+}</pre>
+    <p>Este método <em>devuelve</em> un String en lugar de imprimirlo directamente. Quien lo llame decide qué hacer con el resultado: imprimirlo, guardarlo en otra variable, etc.</p>
+  </div>
+
+  <table class="explica">
+    <tr><th>Parte</th><th>Qué significa</th></tr>
+    <tr><td>void</td><td>El método no devuelve ningún valor.</td></tr>
+    <tr><td>String (antes del nombre)</td><td>El método sí devuelve un valor, y ese valor es de tipo String.</td></tr>
+    <tr><td>return</td><td>Corta la ejecución del método y entrega el valor indicado a quien lo llamó.</td></tr>
+  </table>
+
+  <div class="nota"><strong>Clase Mascota completa con su método:</strong></div>
+  <pre class="code"><span class="kw">public</span> <span class="kw">class</span> <span class="type">Mascota</span> {
+    <span class="type">int</span> idMascota;
+    <span class="type">String</span> nombre;
+    <span class="type">String</span> especie;
+    <span class="type">String</span> raza;
+    <span class="type">String</span> fechaNacimiento;
+    <span class="type">int</span> idPropietario;
+
+    <span class="kw">public</span> <span class="met">Mascota</span>(<span class="type">int</span> idMascota, <span class="type">String</span> nombre, <span class="type">String</span> especie,
+                   <span class="type">String</span> raza, <span class="type">String</span> fechaNacimiento, <span class="type">int</span> idPropietario) {
+        <span class="kw">this</span>.idMascota = idMascota;
+        <span class="kw">this</span>.nombre = nombre;
+        <span class="kw">this</span>.especie = especie;
+        <span class="kw">this</span>.raza = raza;
+        <span class="kw">this</span>.fechaNacimiento = fechaNacimiento;
+        <span class="kw">this</span>.idPropietario = idPropietario;
+    }
+
+    <span class="kw">public</span> <span class="type">String</span> <span class="met">describir</span>() {
+        <span class="kw">return</span> <span class="str">"#"</span> + idMascota + <span class="str">" "</span> + nombre + <span class="str">" ("</span> + especie + <span class="str">", "</span> + raza + <span class="str">")"</span>;
+    }
+}</pre>
+  <p>Con esto ya tenemos todo lo que necesitamos para representar una mascota <em>en memoria</em>. Ahora falta un paso: en vez de escribir los datos a mano con <code class="inline">new</code>, vamos a traerlos desde la base de datos real. Para eso necesitamos JDBC.</p>
+</div>
+
+<!-- TAB 5 -->
+<div class="tab-panel" id="t5">
+  <div class="section-title">Conexión a la base de datos con JDBC</div>
+  <p><strong>JDBC</strong> (Java Database Connectivity) es la API que le permite a un programa Java hablar con una base de datos. Para SQLite necesitamos un <em>driver</em>: una librería externa que traduce las llamadas de JDBC al formato de archivo <code class="inline">.db</code> de SQLite.</p>
+
+  <div class="nota">
+    <strong>Preparación (hacer antes de la clase, sin internet en el aula):</strong>
+    <div class="pasos">
+      <div class="paso">Descargar el driver <code class="inline">sqlite-jdbc-3.xx.x.jar</code> (una sola vez, con internet) desde Maven Central.</div>
+      <div class="paso">Copiar el <code class="inline">.jar</code> y el archivo <code class="inline">PataFeliz.db</code> a la carpeta del proyecto en cada notebook.</div>
+      <div class="paso">Compilar y ejecutar indicando el classpath (dónde están las librerías).</div>
+    </div>
+    <pre class="code"><span class="com">-- Windows --</span>
+javac -cp .;sqlite-jdbc-3.45.0.0.jar ConexionPataFeliz.java
+java  -cp .;sqlite-jdbc-3.45.0.0.jar ConexionPataFeliz
+
+<span class="com">-- Linux/Mac --</span>
+javac -cp .:sqlite-jdbc-3.45.0.0.jar ConexionPataFeliz.java
+java  -cp .:sqlite-jdbc-3.45.0.0.jar ConexionPataFeliz</pre>
+  </div>
+
+  <div class="card">
+    <strong>Programa mínimo: probar la conexión</strong>
+    <pre class="code"><span class="kw">import</span> java.sql.Connection;
+<span class="kw">import</span> java.sql.DriverManager;
+<span class="kw">import</span> java.sql.SQLException;
+
+<span class="kw">public</span> <span class="kw">class</span> <span class="type">ConexionPataFeliz</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="met">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">String</span> url = <span class="str">"jdbc:sqlite:PataFeliz.db"</span>;
+
+        <span class="kw">try</span> (<span class="type">Connection</span> conexion = <span class="type">DriverManager</span>.<span class="met">getConnection</span>(url)) {
+            <span class="kw">if</span> (conexion != <span class="kw">null</span>) {
+                <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Conexión exitosa a PataFeliz.db"</span>);
+            }
+        } <span class="kw">catch</span> (<span class="type">SQLException</span> e) {
+            <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Error de conexión: "</span> + e.<span class="met">getMessage</span>());
+        }
+    }
+}</pre>
+  </div>
+
+  <table class="explica">
+    <tr><th>Parte</th><th>Qué significa</th></tr>
+    <tr><td>import java.sql...</td><td>Trae las clases necesarias para trabajar con bases de datos: Connection, DriverManager, SQLException.</td></tr>
+    <tr><td>jdbc:sqlite:PataFeliz.db</td><td>La URL de conexión. <code class="inline">jdbc:sqlite:</code> le dice al driver qué motor usar; lo que sigue es la ruta al archivo .db.</td></tr>
+    <tr><td>try (Connection conexion = ...)</td><td><em>try-with-resources</em>: abre la conexión y la cierra automáticamente al terminar el bloque, aunque ocurra un error. Evita conexiones "colgadas".</td></tr>
+    <tr><td>DriverManager.getConnection(url)</td><td>Pide al driver que abra la conexión con esa URL y la devuelve como un objeto Connection.</td></tr>
+    <tr><td>catch (SQLException e)</td><td>Si algo sale mal (archivo no existe, permisos, etc.), se captura el error en vez de que el programa se rompa de golpe.</td></tr>
+  </table>
+</div>
+
+<!-- TAB 6 -->
+<div class="tab-panel" id="t6">
+  <div class="section-title">Cargar registros: de la tabla Mascotas a objetos Java</div>
+  <p>Ahora unimos todo: la clase <code class="inline">Mascota</code> (tab 3-4) más la conexión JDBC (tab 5), para leer los registros reales de la tabla <code class="inline">Mascotas</code> y convertir cada fila en un objeto.</p>
+
+  <div class="card">
+    <strong>Programa completo</strong>
+    <pre class="code"><span class="kw">import</span> java.sql.*;
+<span class="kw">import</span> java.util.ArrayList;
+
+<span class="kw">public</span> <span class="kw">class</span> <span class="type">CargarMascotas</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="met">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">String</span> url = <span class="str">"jdbc:sqlite:PataFeliz.db"</span>;
+        <span class="type">ArrayList</span>&lt;Mascota&gt; mascotas = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+        <span class="type">String</span> sql = <span class="str">"SELECT id_mascota, nombre, especie, raza, "</span> +
+                     <span class="str">"fecha_nacimiento, id_propietario FROM Mascotas"</span>;
+
+        <span class="kw">try</span> (<span class="type">Connection</span> conexion = <span class="type">DriverManager</span>.<span class="met">getConnection</span>(url);
+             <span class="type">Statement</span> stmt = conexion.<span class="met">createStatement</span>();
+             <span class="type">ResultSet</span> rs = stmt.<span class="met">executeQuery</span>(sql)) {
+
+            <span class="kw">while</span> (rs.<span class="met">next</span>()) {
+                <span class="type">int</span> id = rs.<span class="met">getInt</span>(<span class="str">"id_mascota"</span>);
+                <span class="type">String</span> nombre = rs.<span class="met">getString</span>(<span class="str">"nombre"</span>);
+                <span class="type">String</span> especie = rs.<span class="met">getString</span>(<span class="str">"especie"</span>);
+                <span class="type">String</span> raza = rs.<span class="met">getString</span>(<span class="str">"raza"</span>);
+                <span class="type">String</span> fecha = rs.<span class="met">getString</span>(<span class="str">"fecha_nacimiento"</span>);
+                <span class="type">int</span> idProp = rs.<span class="met">getInt</span>(<span class="str">"id_propietario"</span>);
+
+                <span class="type">Mascota</span> m = <span class="kw">new</span> <span class="met">Mascota</span>(id, nombre, especie, raza, fecha, idProp);
+                mascotas.<span class="met">add</span>(m);
+            }
+
+        } <span class="kw">catch</span> (<span class="type">SQLException</span> e) {
+            <span class="type">System</span>.out.<span class="met">println</span>(<span class="str">"Error al leer la base: "</span> + e.<span class="met">getMessage</span>());
+        }
+
+        <span class="com">// Ahora mascotas contiene objetos Java, no filas de tabla</span>
+        <span class="kw">for</span> (<span class="type">Mascota</span> m : mascotas) {
+            <span class="type">System</span>.out.<span class="met">println</span>(m.<span class="met">describir</span>());
+        }
+    }
+}</pre>
+  </div>
+
+  <table class="explica">
+    <tr><th>Parte</th><th>Qué significa</th></tr>
+    <tr><td>ArrayList&lt;Mascota&gt;</td><td>Una lista dinámica que va a guardar objetos Mascota (a diferencia de un arreglo, puede crecer).</td></tr>
+    <tr><td>Statement / executeQuery</td><td><code class="inline">Statement</code> ejecuta sentencias SQL. <code class="inline">executeQuery</code> se usa específicamente para SELECT y devuelve un ResultSet.</td></tr>
+    <tr><td>ResultSet rs</td><td>Es el "cursor" que apunta fila por fila al resultado del SELECT, muy parecido a recorrer los resultados en DB Browser.</td></tr>
+    <tr><td>rs.next()</td><td>Avanza a la siguiente fila. Devuelve <code class="inline">false</code> cuando ya no hay más filas — por eso funciona como condición del <code class="inline">while</code>.</td></tr>
+    <tr><td>rs.getInt("id_mascota")</td><td>Lee el valor de esa columna en la fila actual, con el tipo indicado (getInt, getString, etc.). El nombre debe coincidir con la columna real de la tabla.</td></tr>
+    <tr><td>for (Mascota m : mascotas)</td><td><em>for-each</em>: recorre cada objeto de la lista sin necesidad de un índice numérico.</td></tr>
+  </table>
+
+  <div class="nota">
+    <strong>Conexión con lo que ya saben de SQL:</strong> el <code class="inline">SELECT</code> de la línea <code class="inline">sql</code> es exactamente el mismo tipo de consulta que ya escribieron en DB Browser o en el laboratorio interactivo. JDBC no reemplaza el SQL: lo ejecuta desde Java y convierte cada fila del resultado en un objeto.
+  </div>
+</div>
+
+<!-- TAB 7 -->
+<div class="tab-panel" id="t7">
+  <div class="section-title">Para practicar</div>
+  <p>Consignas para que resuelvan en clase, de menor a mayor complejidad. No incluyen la solución completa: la idea es que apliquen lo visto.</p>
+
+  <div class="card">
+    <strong>Ejercicio 1 — Variables</strong>
+    <p>Declaren variables para representar un veterinario (nombre, apellido, matrícula) y muestren un mensaje de presentación usando <code class="inline">System.out.println</code>.</p>
+  </div>
+
+  <div class="card">
+    <strong>Ejercicio 2 — Clase y objeto</strong>
+    <p>Creen una clase <code class="inline">Propietario</code> con los mismos atributos que la tabla <code class="inline">Propietarios</code> de PataFeliz (id_propietario, nombre, apellido, telefono, direccion). Instancien dos objetos con datos inventados y muestren su información.</p>
+  </div>
+
+  <div class="card">
+    <strong>Ejercicio 3 — Método con retorno</strong>
+    <p>Agreguen a la clase <code class="inline">Propietario</code> un método <code class="inline">describir()</code> que devuelva un String con el nombre completo y el teléfono.</p>
+  </div>
+
+  <div class="card">
+    <strong>Ejercicio 4 — JDBC</strong>
+    <p>Escriban un programa <code class="inline">CargarPropietarios.java</code> que se conecte a <code class="inline">PataFeliz.db</code>, lea todos los registros de <code class="inline">Propietarios</code> y los cargue en un <code class="inline">ArrayList&lt;Propietario&gt;</code>, mostrando el resultado con <code class="inline">describir()</code>.</p>
+  </div>
+
+  <div class="card">
+    <strong>Ejercicio 5 — Desafío (para el que termine antes)</strong>
+    <p>Adapten el programa de Mascotas para que, además de cargarlas, muestren cuántas mascotas tiene cada propietario. Pista: van a necesitar una consulta con <code class="inline">JOIN</code> o <code class="inline">GROUP BY</code>, igual que en SQL.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
