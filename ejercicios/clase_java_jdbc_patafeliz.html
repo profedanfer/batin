@@ -116,12 +116,50 @@
 
 <!-- TAB 1 -->
 <div class="tab-panel active" id="t1">
-  <div class="section-title">¿Qué es Java y cómo se ejecuta un programa?</div>
-  <p>Java es un lenguaje de programación orientado a objetos. A diferencia de otros lenguajes, un programa en Java pasa por dos etapas antes de correr:</p>
+  <div class="section-title">Instalación paso a paso: descargar, instalar y verificar el JDK</div>
+  <p>Antes de escribir una sola línea de código hace falta el <strong>JDK</strong> (Java Development Kit): el paquete que trae el compilador, la máquina virtual y todas las herramientas para desarrollar en Java. En las notebooks del aula ya está instalado (OpenJDK, parte del setup portátil), pero conviene que sepan hacerlo de cero para su casa o para cualquier PC nueva.</p>
+
   <div class="pasos">
-    <div class="paso"><strong>Compilación:</strong> el compilador (<code class="inline">javac</code>) traduce el código fuente (<code class="inline">.java</code>) a bytecode (<code class="inline">.class</code>), un código intermedio que entiende la máquina virtual de Java.</div>
-    <div class="paso"><strong>Ejecución:</strong> el comando <code class="inline">java</code> corre ese bytecode a través de la JVM (Java Virtual Machine), que ya está instalada en las notebooks (OpenJDK).</div>
+    <div class="paso">
+      <strong>Descargar el JDK.</strong> Se descarga de forma gratuita. Dos opciones confiables:
+      <ul>
+        <li><strong>Eclipse Temurin (Adoptium)</strong> — <code class="inline">adoptium.net</code> — distribución de OpenJDK, gratuita y sin necesidad de crear cuenta. La recomendada para empezar.</li>
+        <li><strong>Oracle JDK</strong> — <code class="inline">oracle.com/java</code> — la versión oficial de Oracle, también gratuita para uso general.</li>
+      </ul>
+      Eligen la versión <strong>LTS</strong> (Long Term Support — de soporte prolongado, más estable) más reciente, por ejemplo Java 21, y el instalador correspondiente a su sistema operativo (Windows x64, en la mayoría de los casos).
+    </div>
+    <div class="paso">
+      <strong>Instalar (Windows).</strong> Ejecutan el instalador descargado (<code class="inline">.msi</code>) y siguen el asistente con las opciones por defecto. Un detalle importante: si el instalador ofrece una casilla como <em>"Set JAVA_HOME variable"</em> o <em>"Add to PATH"</em>, hay que dejarla tildada — eso evita tener que configurar las variables de entorno a mano después.
+    </div>
+    <div class="paso">
+      <strong>Verificar la instalación.</strong> Abren una terminal (Símbolo del sistema o PowerShell en Windows) y escriben:
+      <pre class="code">java -version
+javac -version</pre>
+      Si todo salió bien, ambos comandos muestran el número de versión instalada. Si en cambio aparece algo como <code class="inline">"'java' no se reconoce como un comando..."</code>, el problema es de configuración del PATH — ver el recuadro de errores comunes más abajo.
+    </div>
+    <div class="paso">
+      <strong>Elegir un editor de código.</strong> Con el JDK alcanza para compilar y ejecutar desde la terminal, pero escribir código en el Bloc de notas es incómodo. Se recomienda <strong>Visual Studio Code</strong> (gratuito) con el paquete de extensiones <em>"Extension Pack for Java"</em>, que agrega resaltado de sintaxis, autocompletado y un botón para ejecutar sin escribir los comandos a mano. No es obligatorio: la terminal + cualquier editor de texto también funciona, y es justamente lo que vamos a usar hoy en el aula (setup portátil, sin instalar nada nuevo).
+    </div>
   </div>
+
+  <div class="nota">
+    <strong>Tres piezas que conviene distinguir desde el principio:</strong>
+    <table class="explica" style="margin-top:8px;">
+      <tr><th>Sigla</th><th>Nombre</th><th>Qué es</th></tr>
+      <tr><td>JDK</td><td>Java Development Kit</td><td>El paquete completo para <em>desarrollar</em>: incluye el compilador (javac), herramientas y el JRE.</td></tr>
+      <tr><td>JRE</td><td>Java Runtime Environment</td><td>Lo mínimo para <em>ejecutar</em> programas Java ya compilados (no incluye el compilador). Va incluido dentro del JDK.</td></tr>
+      <tr><td>JVM</td><td>Java Virtual Machine</td><td>La máquina virtual que efectivamente corre el bytecode. Es la pieza que le da a Java el "escribí una vez, ejecutá en cualquier lado".</td></tr>
+    </table>
+    En el aula, con instalar el JDK ya tienen las tres cosas.
+  </div>
+
+  <div class="section-title">¿Qué es Java y cómo se ejecuta un programa? (teoría)</div>
+  <p>Java es un lenguaje de programación orientado a objetos. A diferencia de lenguajes como Python, un programa en Java pasa por dos etapas separadas antes de correr:</p>
+  <div class="pasos">
+    <div class="paso"><strong>Compilación:</strong> el compilador (<code class="inline">javac</code>) traduce el código fuente (<code class="inline">.java</code>, texto que escribe la persona) a <strong>bytecode</strong> (<code class="inline">.class</code>), un código intermedio que no es código máquina todavía, sino un formato que entiende específicamente la JVM.</div>
+    <div class="paso"><strong>Ejecución:</strong> el comando <code class="inline">java</code> invoca a la JVM, que lee ese bytecode y lo va traduciendo a instrucciones que el procesador de esa PC específica puede correr.</div>
+  </div>
+  <p>La ventaja de este esquema en dos pasos: el mismo archivo <code class="inline">.class</code> corre igual en Windows, Linux o Mac, siempre que haya una JVM instalada — no hace falta recompilar el código para cada sistema operativo, como sí pasa en C o C++.</p>
 
   <div class="card">
     <strong>Primer programa: HolaMundo.java</strong>
@@ -149,6 +187,16 @@
 java HolaMundo</pre>
     Esto genera <code class="inline">HolaMundo.class</code> y luego lo ejecuta. Java distingue mayúsculas de minúsculas, ¡ojo con eso!
   </div>
+
+  <div class="section-title">Errores comunes al empezar</div>
+  <table class="explica">
+    <tr><th>Error</th><th>Causa habitual</th><th>Solución</th></tr>
+    <tr><td>'javac' no se reconoce como un comando</td><td>El PATH del sistema no apunta a la carpeta <code class="inline">bin</code> del JDK.</td><td>Reinstalar tildando "Add to PATH", o agregar la ruta manualmente en Variables de entorno (Windows: Panel de control → Sistema → Configuración avanzada).</td></tr>
+    <tr><td>class HolaMundo is public, should be declared in a file named HolaMundo.java</td><td>El nombre del archivo no coincide con el nombre de la clase pública.</td><td>Renombrar el archivo para que sea idéntico al nombre de la clase, respetando mayúsculas.</td></tr>
+    <tr><td>';' expected</td><td>Falta un punto y coma al final de una instrucción.</td><td>Revisar la línea señalada por el compilador (y a veces la anterior).</td></tr>
+    <tr><td>cannot find symbol</td><td>Se usó una variable, clase o método que no existe o está mal escrito (incluyendo mayúsculas/minúsculas).</td><td>Revisar el nombre exacto donde fue declarado.</td></tr>
+    <tr><td>Error: Could not find or load main class</td><td>Se ejecutó <code class="inline">java</code> con la extensión <code class="inline">.class</code> incluida, o desde una carpeta distinta a donde está el archivo compilado.</td><td>Ejecutar <code class="inline">java HolaMundo</code> (sin ".class") desde la misma carpeta donde está <code class="inline">HolaMundo.class</code>.</td></tr>
+  </table>
 </div>
 
 <!-- TAB 2 -->
