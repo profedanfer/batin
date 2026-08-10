@@ -782,6 +782,222 @@ public class TareaDatosPersonales {
       { label: "Edad (nextInt)", placeholder: "16" },
     ],
   },
+  {
+    title: "Total de la compra",
+    concept: "Scanner + operadores aritméticos",
+    task: "Completá el programa para que lea el precio de un producto (<code>double</code>) y la cantidad de unidades (<code>int</code>), y calcule el total a pagar.",
+    starter:
+`import java.util.Scanner;
+
+public class TotalCompra {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el precio del producto?");
+        double precio = /* completá acá */;
+
+        System.out.println("¿Cuántas unidades vas a llevar?");
+        int cantidad = /* completá acá */;
+
+        double total = /* completá acá: precio por cantidad */;
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class TotalCompra {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el precio del producto?");
+        double precio = entrada.nextDouble();
+
+        System.out.println("¿Cuántas unidades vas a llevar?");
+        int cantidad = entrada.nextInt();
+
+        double total = precio * cantidad;
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solutionNote: "Al multiplicar un double por un int, Java convierte el int a double: el resultado siempre es double.",
+    inputs: [
+      { label: "Precio (nextDouble)", placeholder: "5000.0" },
+      { label: "Cantidad (nextInt)", placeholder: "3" },
+    ],
+  },
+  {
+    title: "Vuelto",
+    concept: "Scanner + resta",
+    task: "Completá el programa para que lea el total a pagar y el monto con el que paga el cliente (ambos <code>double</code>), y calcule el vuelto.",
+    starter:
+`import java.util.Scanner;
+
+public class Vuelto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuánto es el total a pagar?");
+        double total = /* completá acá */;
+
+        System.out.println("¿Con cuánto paga el cliente?");
+        double pago = /* completá acá */;
+
+        double vuelto = /* completá acá */;
+        System.out.println("Vuelto: Gs. " + vuelto);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class Vuelto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuánto es el total a pagar?");
+        double total = entrada.nextDouble();
+
+        System.out.println("¿Con cuánto paga el cliente?");
+        double pago = entrada.nextDouble();
+
+        double vuelto = pago - total;
+        System.out.println("Vuelto: Gs. " + vuelto);
+    }
+}`,
+    solutionNote: "El vuelto siempre se calcula como lo que pagó el cliente menos el total — el orden de la resta importa.",
+    inputs: [
+      { label: "Total (nextDouble)", placeholder: "12000.0" },
+      { label: "Pago del cliente (nextDouble)", placeholder: "20000.0" },
+    ],
+  },
+  {
+    title: "Promedio de notas",
+    concept: "Variables double + división",
+    task: "Completá el programa para que calcule el promedio de las tres notas declaradas e imprima el resultado.",
+    starter:
+`public class PromedioNotas {
+    public static void main(String[] args) {
+        double n1 = 8.0;
+        double n2 = 7.0;
+        double n3 = 9.0;
+
+        double promedio = /* completá acá */;
+        System.out.println("Promedio: " + promedio);
+    }
+}`,
+    solution:
+`public class PromedioNotas {
+    public static void main(String[] args) {
+        double n1 = 8.0;
+        double n2 = 7.0;
+        double n3 = 9.0;
+
+        double promedio = (n1 + n2 + n3) / 3;
+        System.out.println("Promedio: " + promedio);
+    }
+}`,
+    solutionNote: "Los paréntesis son necesarios: sin ellos, Java resolvería primero n3 / 3 por precedencia de operadores, y el resultado sería otro.",
+    inputs: [],
+  },
+  {
+    title: "Ticket del puesto",
+    concept: "Concatenación en una variable String",
+    task: "Completá la línea que arma la variable <code>ticket</code>, combinando el producto, la cantidad y el precio, para que se imprima:<br><code>Empanada x2 - Gs. 3000.0</code>",
+    starter:
+`public class TicketPuesto {
+    public static void main(String[] args) {
+        String producto = "Empanada";
+        double precio = 3000.0;
+        int cantidad = 2;
+
+        String ticket = /* completá acá */;
+        System.out.println(ticket);
+    }
+}`,
+    solution:
+`public class TicketPuesto {
+    public static void main(String[] args) {
+        String producto = "Empanada";
+        double precio = 3000.0;
+        int cantidad = 2;
+
+        String ticket = producto + " x" + cantidad + " - Gs. " + precio;
+        System.out.println(ticket);
+    }
+}`,
+    solutionNote: "Podés armar un String completo en una variable antes de imprimirlo — no hace falta que el concatenado esté directamente dentro del println.",
+    inputs: [],
+  },
+  {
+    title: "Reparto en filas",
+    concept: "Operador módulo (%)",
+    task: "Hay que ubicar a los estudiantes en filas de un tamaño fijo. Completá el programa para calcular cuántas filas completas se forman y cuántos estudiantes quedan sueltos.",
+    starter:
+`public class RepartoFilas {
+    public static void main(String[] args) {
+        int totalEstudiantes = 23;
+        int porFila = 5;
+
+        int filas = /* completá acá: división entera */;
+        int sobran = /* completá acá: resto */;
+
+        System.out.println("Filas completas: " + filas);
+        System.out.println("Estudiantes que sobran: " + sobran);
+    }
+}`,
+    solution:
+`public class RepartoFilas {
+    public static void main(String[] args) {
+        int totalEstudiantes = 23;
+        int porFila = 5;
+
+        int filas = totalEstudiantes / porFila;
+        int sobran = totalEstudiantes % porFila;
+
+        System.out.println("Filas completas: " + filas);
+        System.out.println("Estudiantes que sobran: " + sobran);
+    }
+}`,
+    solutionNote: "La división entera (/) da el cociente sin decimales, y el módulo (%) da el resto de esa misma división. Juntos resuelven cualquier problema de \"repartir en grupos\".",
+    inputs: [],
+  },
+  {
+    title: "Contador de ventas",
+    concept: "Incremento y decremento en secuencia",
+    task: "Un puesto registra tres ventas y después le anulan una. Completá el programa usando <code>++</code> y <code>--</code> para llegar al total neto correcto.",
+    starter:
+`public class ContadorVentas {
+    public static void main(String[] args) {
+        int ventas = 0;
+
+        // Se registran tres ventas
+        /* completá acá: incrementá ventas tres veces */
+
+        // Se anula una venta
+        /* completá acá: decrementá ventas una vez */
+
+        System.out.println("Ventas netas del día: " + ventas);
+    }
+}`,
+    solution:
+`public class ContadorVentas {
+    public static void main(String[] args) {
+        int ventas = 0;
+
+        // Se registran tres ventas
+        ventas++;
+        ventas++;
+        ventas++;
+
+        // Se anula una venta
+        ventas--;
+
+        System.out.println("Ventas netas del día: " + ventas);
+    }
+}`,
+    solutionNote: "Cada ++ o -- modifica la variable directamente, sin necesidad de reasignarla con =. Podés encadenar tantos como necesites.",
+    inputs: [],
+  },
 ];
 
 /* =========================================================
