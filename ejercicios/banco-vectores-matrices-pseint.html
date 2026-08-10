@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es-PY">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Banco Interactivo — Vectores y Matrices en PSeInt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #10101a;
+  --bg2: #16161f;
+  --panel: #1c1c28;
+  --panel2: #20202e;
+  --console: #0b0b12;
+  --border: #2d2d3d;
+  --text: #e9e7f2;
+  --text-dim: #9b97b3;
+  --violet: #9b7fd4;
+  --violet-dim: #6E4C9E;
+  --blue: #5fa8e0;
+  --blue-dim: #2E6FA3;
+  --orange: #eda05a;
+  --orange-dim: #D97B29;
+  --green: #6fcf97;
+  --red: #e8748a;
+}
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: radial-gradient(circle at 15% 0%, #1a1a2c 0%, var(--bg) 45%) fixed;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
+::selection{ background: var(--violet-dim); color: white; }
+
+.topbar{
+  padding: 22px clamp(16px,4vw,40px) 18px;
+  border-bottom: 1px solid var(--border);
+  display:flex; flex-direction:column; gap:4px;
+}
+.topbar .eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.topbar h1{
+  font-family:'Orbitron', sans-serif;
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 2px 0 0;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--violet), var(--blue) 55%, var(--orange));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.topbar p.sub{ margin: 6px 0 0; color: var(--text-dim); font-size: 14px; max-width: 760px; }
+
+.layout{
+  display:grid;
+  grid-template-columns: 300px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 96px);
+}
+@media (max-width: 880px){
+  .layout{ grid-template-columns: 1fr; }
+}
+
+/* ---------- Sidebar / trail ---------- */
+.sidebar{
+  border-right: 1px solid var(--border);
+  padding: 18px 14px 40px;
+  overflow-y:auto;
+  max-height: calc(100vh - 96px);
+  position: sticky; top:0;
+}
+@media (max-width: 880px){
+  .sidebar{ position:static; max-height:none; border-right:none; border-bottom:1px solid var(--border); }
+}
+.block-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 18px 6px 8px;
+}
+.block-label:first-child{ margin-top: 4px; }
+.trail{ list-style:none; margin:0; padding:0; position:relative; }
+.trail::before{
+  content:""; position:absolute; left:17px; top:6px; bottom:6px; width:2px;
+  background: linear-gradient(var(--violet-dim), var(--orange-dim));
+  opacity:0.35;
+}
+.trail li{ position:relative; }
+.node-btn{
+  all:unset; cursor:pointer; display:flex; align-items:center; gap:10px;
+  width:100%; padding:7px 8px 7px 4px; border-radius: 8px;
+  position:relative; z-index:1;
+}
+.node-btn:hover{ background: var(--panel); }
+.node-btn.active{ background: var(--panel2); }
+.dot{
+  width: 14px; height:14px; border-radius:50%; flex:0 0 auto;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--dotcolor);
+  background: var(--dotcolor);
+}
+.node-text{ display:flex; flex-direction:column; min-width:0; }
+.node-text .num{ font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--text-dim); }
+.node-text .ttl{ font-size: 13px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.node-btn.active .ttl{ color: var(--violet); font-weight:600; }
+
+/* ---------- Main ---------- */
+.main{ padding: 22px clamp(16px,4vw,36px) 60px; min-width:0; }
+.tags{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 10px; }
+.tag{
+  font-family:'JetBrains Mono', monospace; font-size: 12px;
+  padding: 4px 10px; border-radius:999px; border:1px solid var(--border);
+  color: var(--text-dim); background: var(--panel);
+}
+.tag.ctx-gatiel{ color: var(--violet); border-color: var(--violet-dim); }
+.tag.ctx-bit{ color: var(--blue); border-color: var(--blue-dim); }
+.tag.ctx-techi{ color: var(--orange); border-color: var(--orange-dim); }
+
+.main h2{
+  font-family:'Orbitron', sans-serif; font-size: 22px; margin: 4px 0 14px;
+}
+.enunciado{
+  background: var(--panel); border:1px solid var(--border); border-radius: 12px;
+  padding: 16px 18px; line-height:1.55; font-size:15px; margin-bottom: 18px;
+}
+
+.editor-wrap{ margin-bottom: 14px; }
+.editor-label{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-dim); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+textarea#editor{
+  width:100%; min-height: 230px; resize: vertical;
+  background: var(--console); color:#dfe6ff; border:1px solid var(--border); border-radius: 10px;
+  font-family:'JetBrains Mono', monospace; font-size: 13.5px; line-height:1.5;
+  padding: 14px; tab-size: 4;
+}
+textarea#editor:focus{ outline: 2px solid var(--violet-dim); outline-offset: 1px; }
+
+.btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 20px; }
+button{
+  font-family:'DM Sans', sans-serif; font-weight:600; font-size: 14px;
+  border:none; border-radius:9px; padding: 10px 16px; cursor:pointer;
+  transition: transform .08s ease, filter .15s ease;
+}
+button:active{ transform: scale(0.97); }
+button:focus-visible{ outline: 2px solid white; outline-offset:2px; }
+.btn-run{ background: linear-gradient(90deg, var(--violet-dim), var(--blue-dim)); color:white; }
+.btn-run:hover{ filter:brightness(1.12); }
+.btn-secondary{ background: var(--panel2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover{ background: var(--panel); }
+.btn-secondary:disabled{ opacity:0.4; cursor:not-allowed; }
+
+.console{
+  background: var(--console); border:1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; min-height: 140px; max-height: 340px; overflow-y:auto;
+  font-family:'JetBrains Mono', monospace; font-size: 13px; line-height:1.6;
+  white-space: pre-wrap; word-break: break-word;
+}
+.console .placeholder{ color: var(--text-dim); }
+.console .err{ color: var(--red); }
+.console .done{ color: var(--green); }
+.input-row{ display:flex; gap:8px; margin-top:6px; align-items:center; }
+.input-row input{
+  flex:1; background:#151520; border:1px solid var(--blue-dim); border-radius:6px;
+  color:#fff; font-family:'JetBrains Mono', monospace; font-size:13px; padding:6px 10px;
+}
+.input-row input:focus{ outline:none; border-color: var(--violet); }
+.input-row button{ padding:6px 12px; font-size:13px; }
+
+details.solution{
+  margin-top: 18px; border:1px solid var(--border); border-radius: 12px; overflow:hidden;
+  background: var(--panel);
+}
+details.solution > summary{
+  cursor:pointer; padding: 12px 16px; font-weight:600; font-size:14px;
+  list-style:none; display:flex; align-items:center; gap:8px; color: var(--text-dim);
+}
+details.solution > summary::-webkit-details-marker{ display:none; }
+details.solution > summary:before{ content:"🐾"; }
+details.solution[open] > summary{ border-bottom:1px solid var(--border); color: var(--text); }
+.solution-body{ padding: 14px 16px 18px; }
+.solution-body pre{
+  background: var(--console); border:1px solid var(--border); border-radius:8px;
+  padding: 12px 14px; overflow-x:auto; font-family:'JetBrains Mono', monospace; font-size:13px; line-height:1.5;
+}
+.solution-body .copy-btn{ margin-top:10px; }
+
+.footer-note{
+  margin-top: 26px; font-size: 12.5px; color: var(--text-dim); line-height:1.5;
+  border-top: 1px solid var(--border); padding-top: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="eyebrow">BATIN · 2do Curso · Algorítmica</span>
+  <h1>Banco Interactivo — Vectores y Matrices</h1>
+  <p class="sub">22 ejercicios progresivos para practicar arreglos unidimensionales y bidimensionales, con un intérprete de PSeInt embebido: escribe tu algoritmo y ejecutalo directamente en esta página.</p>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Lista de ejercicios"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const EXERCISES = [{"id":"A1","titulo":"Carga y despliegue de un vector","contexto":"Neutro","ctxClass":"n","bloom":"N2 · Comprende / Aplica","nivel":2,"enunciado":"Diseñar un algoritmo que declare un vector de 10 números enteros, solicite su carga completa por teclado y luego muestre todos los valores almacenados.","codigo":"Algoritmo CargaYMuestra\n    Definir vector Como Entero;\n    Dimension vector[10];\n    Definir i Como Entero;\n\n    Para i<-1 Hasta 10 Con Paso 1 Hacer\n        Escribir \"Ingrese el valor \", i, \": \";\n        Leer vector[i];\n    FinPara\n\n    Escribir \"Valores cargados:\";\n    Para i<-1 Hasta 10 Con Paso 1 Hacer\n        Escribir vector[i];\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo CargaYMuestra\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A2","titulo":"Precios del kiosco escolar","contexto":"Bit 🤖","ctxClass":"bit","bloom":"N2 · Comprende / Aplica","nivel":2,"enunciado":"Bit necesita un algoritmo que cargue el precio de 8 productos del kiosco escolar en un vector y luego los muestre indicando el número de producto junto a su precio (ej.: \"Producto 1: 3500 Gs.\").","codigo":"Algoritmo PreciosKiosco\n    Definir precios Como Real;\n    Dimension precios[8];\n    Definir i Como Entero;\n\n    Para i<-1 Hasta 8 Con Paso 1 Hacer\n        Escribir \"Precio del producto \", i, \": \";\n        Leer precios[i];\n    FinPara\n\n    Para i<-1 Hasta 8 Con Paso 1 Hacer\n        Escribir \"Producto \", i, \": \", precios[i], \" Gs.\";\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo PreciosKiosco\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A3","titulo":"Suma de calificaciones","contexto":"Neutro","ctxClass":"n","bloom":"N3 · Aplica","nivel":3,"enunciado":"Diseñar un algoritmo que cargue las calificaciones de 15 estudiantes en un vector y calcule la suma total de todas ellas.","codigo":"Algoritmo SumaCalificaciones\n    Definir calif Como Real;\n    Dimension calif[15];\n    Definir i Como Entero;\n    Definir total Como Real;\n\n    total <- 0;\n    Para i<-1 Hasta 15 Con Paso 1 Hacer\n        Escribir \"Calificacion del estudiante \", i, \": \";\n        Leer calif[i];\n        total <- total + calif[i];\n    FinPara\n\n    Escribir \"La suma total de las calificaciones es: \", total;\nFinAlgoritmo","skeleton":"Algoritmo SumaCalificaciones\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A4","titulo":"Promedio de aportes de la cooperativa","contexto":"Techi 👩‍💻","ctxClass":"techi","bloom":"N3 · Aplica","nivel":3,"enunciado":"Techi está ayudando a una cooperativa a analizar los aportes mensuales de 12 socios. Diseñar un algoritmo que cargue los aportes en un vector y calcule el promedio de los aportes.","codigo":"Algoritmo PromedioAportes\n    Definir aportes Como Real;\n    Dimension aportes[12];\n    Definir i Como Entero;\n    Definir total, promedio Como Real;\n\n    total <- 0;\n    Para i<-1 Hasta 12 Con Paso 1 Hacer\n        Escribir \"Aporte del socio \", i, \": \";\n        Leer aportes[i];\n        total <- total + aportes[i];\n    FinPara\n\n    promedio <- total / 12;\n    Escribir \"El promedio de aportes es: \", promedio;\nFinAlgoritmo","skeleton":"Algoritmo PromedioAportes\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A5","titulo":"Conteo de mayores de edad","contexto":"Neutro","ctxClass":"n","bloom":"N3-N4 · Aplica / Analiza","nivel":4,"enunciado":"Diseñar un algoritmo que cargue las edades de 20 personas en un vector y determine cuántas de ellas son mayores de edad (18 años o más).","codigo":"Algoritmo ContarMayores\n    Definir edades Como Entero;\n    Dimension edades[20];\n    Definir i, cont Como Entero;\n\n    cont <- 0;\n    Para i<-1 Hasta 20 Con Paso 1 Hacer\n        Escribir \"Edad de la persona \", i, \": \";\n        Leer edades[i];\n        Si edades[i] >= 18 Entonces\n            cont <- cont + 1;\n        FinSi\n    FinPara\n\n    Escribir \"Cantidad de personas mayores de edad: \", cont;\nFinAlgoritmo","skeleton":"Algoritmo ContarMayores\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A6","titulo":"El mejor día de ventas","contexto":"Gatiel 🦊","ctxClass":"gatiel","bloom":"N4 · Analiza","nivel":4,"enunciado":"Gatiel quiere saber cuál fue el mejor día de ventas del kiosco escolar durante la semana. Diseñar un algoritmo que cargue las ventas de 7 días en un vector y determine el valor más alto y en qué día (posición) ocurrió.","codigo":"Algoritmo MejorDiaVentas\n    Definir ventas Como Real;\n    Dimension ventas[7];\n    Definir i, diaMax Como Entero;\n    Definir maximo Como Real;\n\n    Para i<-1 Hasta 7 Con Paso 1 Hacer\n        Escribir \"Venta del dia \", i, \": \";\n        Leer ventas[i];\n    FinPara\n\n    maximo <- ventas[1];\n    diaMax <- 1;\n    Para i<-2 Hasta 7 Con Paso 1 Hacer\n        Si ventas[i] > maximo Entonces\n            maximo <- ventas[i];\n            diaMax <- i;\n        FinSi\n    FinPara\n\n    Escribir \"La mayor venta fue \", maximo, \" y ocurrio el dia \", diaMax;\nFinAlgoritmo","skeleton":"Algoritmo MejorDiaVentas\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A7","titulo":"Temperatura mínima de la semana","contexto":"Neutro","ctxClass":"n","bloom":"N4 · Analiza","nivel":4,"enunciado":"Diseñar un algoritmo que registre las temperaturas de 7 días en un vector y determine la temperatura más baja y el día en que ocurrió.","codigo":"Algoritmo TemperaturaMinima\n    Definir temp Como Real;\n    Dimension temp[7];\n    Definir i, diaMin Como Entero;\n    Definir minimo Como Real;\n\n    Para i<-1 Hasta 7 Con Paso 1 Hacer\n        Escribir \"Temperatura del dia \", i, \": \";\n        Leer temp[i];\n    FinPara\n\n    minimo <- temp[1];\n    diaMin <- 1;\n    Para i<-2 Hasta 7 Con Paso 1 Hacer\n        Si temp[i] < minimo Entonces\n            minimo <- temp[i];\n            diaMin <- i;\n        FinSi\n    FinPara\n\n    Escribir \"La temperatura minima fue \", minimo, \" registrada el dia \", diaMin;\nFinAlgoritmo","skeleton":"Algoritmo TemperaturaMinima\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A8","titulo":"¿Existe el código?","contexto":"Bit 🤖","ctxClass":"bit","bloom":"N4 · Analiza","nivel":4,"enunciado":"Bit maneja un vector con los códigos de 10 productos del kiosco. Diseñar un algoritmo que solicite un código al usuario e indique si dicho código existe en el vector o no.","codigo":"Algoritmo BuscarCodigo\n    Definir codigos Como Entero;\n    Dimension codigos[10];\n    Definir i, buscado Como Entero;\n    Definir encontrado Como Logico;\n\n    Para i<-1 Hasta 10 Con Paso 1 Hacer\n        Escribir \"Codigo del producto \", i, \": \";\n        Leer codigos[i];\n    FinPara\n\n    Escribir \"Ingrese el codigo a buscar: \";\n    Leer buscado;\n\n    encontrado <- Falso;\n    i <- 1;\n    Mientras i<=10 Y encontrado=Falso Hacer\n        Si codigos[i] = buscado Entonces\n            encontrado <- Verdadero;\n        FinSi\n        i <- i + 1;\n    FinMientras\n\n    Si encontrado Entonces\n        Escribir \"El codigo existe en el vector.\";\n    SiNo\n        Escribir \"El codigo no existe en el vector.\";\n    FinSi\nFinAlgoritmo","skeleton":"Algoritmo BuscarCodigo\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A9","titulo":"Resultados de la encuesta","contexto":"Neutro","ctxClass":"n","bloom":"N4 · Analiza","nivel":4,"enunciado":"Diseñar un algoritmo que cargue las 15 respuestas de una encuesta (cada respuesta es un carácter: A, B, C o D) en un vector, cuente cuántas veces aparece cada opción e informe cuál fue la opción más elegida.","codigo":"Algoritmo ResultadosEncuesta\n    Definir respuestas Como Caracter;\n    Dimension respuestas[15];\n    Definir i Como Entero;\n    Definir contA, contB, contC, contD Como Entero;\n\n    contA <- 0; contB <- 0; contC <- 0; contD <- 0;\n\n    Para i<-1 Hasta 15 Con Paso 1 Hacer\n        Escribir \"Respuesta \", i, \" (A/B/C/D): \";\n        Leer respuestas[i];\n        Segun respuestas[i] Hacer\n            'A': contA <- contA + 1;\n            'B': contB <- contB + 1;\n            'C': contC <- contC + 1;\n            'D': contD <- contD + 1;\n        FinSegun\n    FinPara\n\n    Escribir \"A: \", contA, \" B: \", contB, \" C: \", contC, \" D: \", contD;\nFinAlgoritmo","skeleton":"Algoritmo ResultadosEncuesta\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A10","titulo":"El socio con mayor deuda","contexto":"Techi 👩‍💻","ctxClass":"techi","bloom":"N4 · Analiza","nivel":4,"enunciado":"Techi trabaja con dos vectores paralelos de una cooperativa: uno con los nombres de 10 socios y otro con el monto de su deuda. Diseñar un algoritmo que cargue ambos vectores y muestre el nombre del socio que tiene la mayor deuda.","codigo":"Algoritmo SocioMayorDeuda\n    Definir nombres Como Cadena;\n    Dimension nombres[10];\n    Definir deudas Como Real;\n    Dimension deudas[10];\n    Definir i, posMax Como Entero;\n    Definir maxDeuda Como Real;\n\n    Para i<-1 Hasta 10 Con Paso 1 Hacer\n        Escribir \"Nombre del socio \", i, \": \";\n        Leer nombres[i];\n        Escribir \"Deuda del socio \", i, \": \";\n        Leer deudas[i];\n    FinPara\n\n    maxDeuda <- deudas[1];\n    posMax <- 1;\n    Para i<-2 Hasta 10 Con Paso 1 Hacer\n        Si deudas[i] > maxDeuda Entonces\n            maxDeuda <- deudas[i];\n            posMax <- i;\n        FinSi\n    FinPara\n\n    Escribir \"El socio con mayor deuda es \", nombres[posMax], \" con \", maxDeuda;\nFinAlgoritmo","skeleton":"Algoritmo SocioMayorDeuda\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A11","titulo":"Venta de números de la rifa","contexto":"Gatiel 🦊","ctxClass":"gatiel","bloom":"N4 · Analiza","nivel":4,"enunciado":"Gatiel organiza una rifa escolar con 10 números. Diseñar un algoritmo que cargue un vector con los números de la rifa (1 al 10) y un vector paralelo de estados (\"Disponible\" para todos al inicio). Luego debe solicitar un número al usuario, validar que exista y que esté disponible, y en tal caso marcarlo como \"Vendido\".","codigo":"Algoritmo VentaRifa\n    Definir numeros Como Entero;\n    Dimension numeros[10];\n    Definir estado Como Cadena;\n    Dimension estado[10];\n    Definir i, elegido, pos Como Entero;\n    Definir encontrado Como Logico;\n\n    Para i<-1 Hasta 10 Con Paso 1 Hacer\n        numeros[i] <- i;\n        estado[i] <- \"Disponible\";\n    FinPara\n\n    Escribir \"Ingrese el numero a vender: \";\n    Leer elegido;\n\n    encontrado <- Falso;\n    i <- 1;\n    Mientras i<=10 Y encontrado=Falso Hacer\n        Si numeros[i] = elegido Entonces\n            encontrado <- Verdadero;\n            pos <- i;\n        FinSi\n        i <- i + 1;\n    FinMientras\n\n    Si encontrado Entonces\n        Si estado[pos] = \"Disponible\" Entonces\n            estado[pos] <- \"Vendido\";\n            Escribir \"Numero \", elegido, \" vendido correctamente.\";\n        SiNo\n            Escribir \"Ese numero ya fue vendido.\";\n        FinSi\n    SiNo\n        Escribir \"El numero ingresado no existe en la rifa.\";\n    FinSi\nFinAlgoritmo","skeleton":"Algoritmo VentaRifa\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"A12","titulo":"Reporte semanal del almacén","contexto":"Neutro · Integrador","ctxClass":"n","bloom":"N5 · Evalúa","nivel":5,"enunciado":"Diseñar un algoritmo integrador que cargue las ventas diarias de un almacén durante 20 días en un vector y genere un reporte con: el total vendido, el promedio diario, el valor máximo y mínimo, y la cantidad de días en que la venta superó el promedio.","codigo":"Algoritmo ReporteSemanalAlmacen\n    Definir ventas Como Real;\n    Dimension ventas[20];\n    Definir i, contSuperiores Como Entero;\n    Definir total, promedio, maximo, minimo Como Real;\n\n    total <- 0;\n    Para i<-1 Hasta 20 Con Paso 1 Hacer\n        Escribir \"Venta del dia \", i, \": \";\n        Leer ventas[i];\n        total <- total + ventas[i];\n    FinPara\n\n    promedio <- total / 20;\n\n    maximo <- ventas[1];\n    minimo <- ventas[1];\n    Para i<-2 Hasta 20 Con Paso 1 Hacer\n        Si ventas[i] > maximo Entonces\n            maximo <- ventas[i];\n        FinSi\n        Si ventas[i] < minimo Entonces\n            minimo <- ventas[i];\n        FinSi\n    FinPara\n\n    contSuperiores <- 0;\n    Para i<-1 Hasta 20 Con Paso 1 Hacer\n        Si ventas[i] > promedio Entonces\n            contSuperiores <- contSuperiores + 1;\n        FinSi\n    FinPara\n\n    Escribir \"----- REPORTE SEMANAL -----\";\n    Escribir \"Total vendido: \", total;\n    Escribir \"Promedio diario: \", promedio;\n    Escribir \"Venta maxima: \", maximo;\n    Escribir \"Venta minima: \", minimo;\n    Escribir \"Dias sobre el promedio: \", contSuperiores;\nFinAlgoritmo","skeleton":"Algoritmo ReporteSemanalAlmacen\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B1","titulo":"Carga y despliegue de una matriz","contexto":"Neutro","ctxClass":"n","bloom":"N2 · Comprende / Aplica","nivel":2,"enunciado":"Diseñar un algoritmo que declare una matriz de 3 filas por 3 columnas, cargue sus valores por teclado y luego la muestre en formato de tabla.","codigo":"Algoritmo CargaMatriz\n    Definir matriz Como Entero;\n    Dimension matriz[3,3];\n    Definir f, c Como Entero;\n\n    Para f<-1 Hasta 3 Con Paso 1 Hacer\n        Para c<-1 Hasta 3 Con Paso 1 Hacer\n            Escribir \"Valor [\", f, \",\", c, \"]: \";\n            Leer matriz[f,c];\n        FinPara\n    FinPara\n\n    Para f<-1 Hasta 3 Con Paso 1 Hacer\n        Para c<-1 Hasta 3 Con Paso 1 Hacer\n            Escribir Sin Saltar matriz[f,c], \" \";\n        FinPara\n        Escribir \"\";\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo CargaMatriz\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B2","titulo":"Explorando el tablero","contexto":"Bit 🤖","ctxClass":"bit","bloom":"N2-N3 · Comprende / Aplica","nivel":3,"enunciado":"Bit está probando un tablero de juego de 4x4. Diseñar un algoritmo que cargue una matriz de 4x4 con valores enteros y muestre cada valor junto con su posición exacta (fila y columna).","codigo":"Algoritmo ExplorarTablero\n    Definir tablero Como Entero;\n    Dimension tablero[4,4];\n    Definir f, c Como Entero;\n\n    Para f<-1 Hasta 4 Con Paso 1 Hacer\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Valor de la casilla [\", f, \",\", c, \"]: \";\n            Leer tablero[f,c];\n        FinPara\n    FinPara\n\n    Para f<-1 Hasta 4 Con Paso 1 Hacer\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Fila \", f, \", Columna \", c, \": \", tablero[f,c];\n        FinPara\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo ExplorarTablero\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B3","titulo":"Total general de ventas","contexto":"Neutro","ctxClass":"n","bloom":"N3 · Aplica","nivel":3,"enunciado":"Una matriz representa las ventas de una semana (5 días) para 4 productos: las filas son los días y las columnas los productos. Diseñar un algoritmo que cargue la matriz y calcule el total general vendido.","codigo":"Algoritmo TotalGeneralVentas\n    Definir ventas Como Real;\n    Dimension ventas[5,4];\n    Definir f, c Como Entero;\n    Definir total Como Real;\n\n    total <- 0;\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Venta del dia \", f, \", producto \", c, \": \";\n            Leer ventas[f,c];\n            total <- total + ventas[f,c];\n        FinPara\n    FinPara\n\n    Escribir \"El total general vendido es: \", total;\nFinAlgoritmo","skeleton":"Algoritmo TotalGeneralVentas\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B4","titulo":"Total aportado por cada socio","contexto":"Techi 👩‍💻","ctxClass":"techi","bloom":"N4 · Analiza","nivel":4,"enunciado":"Techi analiza una matriz de aportes de una cooperativa donde las filas representan a 6 socios y las columnas los 4 meses del semestre. Diseñar un algoritmo que cargue la matriz y muestre el total aportado por cada socio (suma de su fila).","codigo":"Algoritmo TotalPorSocio\n    Definir aportes Como Real;\n    Dimension aportes[6,4];\n    Definir f, c Como Entero;\n    Definir totalFila Como Real;\n\n    Para f<-1 Hasta 6 Con Paso 1 Hacer\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Aporte del socio \", f, \", mes \", c, \": \";\n            Leer aportes[f,c];\n        FinPara\n    FinPara\n\n    Para f<-1 Hasta 6 Con Paso 1 Hacer\n        totalFila <- 0;\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            totalFila <- totalFila + aportes[f,c];\n        FinPara\n        Escribir \"Total aportado por el socio \", f, \": \", totalFila;\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo TotalPorSocio\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B5","titulo":"Total vendido por producto","contexto":"Neutro","ctxClass":"n","bloom":"N4 · Analiza","nivel":4,"enunciado":"Utilizando la misma matriz de ventas semanales (5 días x 4 productos), diseñar un algoritmo que calcule y muestre el total vendido de cada producto (suma de su columna).","codigo":"Algoritmo TotalPorProducto\n    Definir ventas Como Real;\n    Dimension ventas[5,4];\n    Definir f, c Como Entero;\n    Definir totalColumna Como Real;\n\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        Para c<-1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Venta del dia \", f, \", producto \", c, \": \";\n            Leer ventas[f,c];\n        FinPara\n    FinPara\n\n    Para c<-1 Hasta 4 Con Paso 1 Hacer\n        totalColumna <- 0;\n        Para f<-1 Hasta 5 Con Paso 1 Hacer\n            totalColumna <- totalColumna + ventas[f,c];\n        FinPara\n        Escribir \"Total vendido del producto \", c, \": \", totalColumna;\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo TotalPorProducto\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B6","titulo":"El mejor resultado del torneo","contexto":"Gatiel 🦊","ctxClass":"gatiel","bloom":"N4 · Analiza","nivel":4,"enunciado":"Gatiel registra los puntajes de un torneo de la feria ICIENTEC en una matriz donde las filas son 5 equipos y las columnas son 3 rondas. Diseñar un algoritmo que determine el puntaje más alto obtenido y en qué equipo y ronda ocurrió.","codigo":"Algoritmo MejorResultadoTorneo\n    Definir puntajes Como Entero;\n    Dimension puntajes[5,3];\n    Definir f, c, equipoMax, rondaMax Como Entero;\n    Definir maximo Como Entero;\n\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        Para c<-1 Hasta 3 Con Paso 1 Hacer\n            Escribir \"Puntaje equipo \", f, \", ronda \", c, \": \";\n            Leer puntajes[f,c];\n        FinPara\n    FinPara\n\n    maximo <- puntajes[1,1];\n    equipoMax <- 1;\n    rondaMax <- 1;\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        Para c<-1 Hasta 3 Con Paso 1 Hacer\n            Si puntajes[f,c] > maximo Entonces\n                maximo <- puntajes[f,c];\n                equipoMax <- f;\n                rondaMax <- c;\n            FinSi\n        FinPara\n    FinPara\n\n    Escribir \"El mejor puntaje fue \", maximo, \", logrado por el equipo \", equipoMax, \" en la ronda \", rondaMax;\nFinAlgoritmo","skeleton":"Algoritmo MejorResultadoTorneo\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B7","titulo":"Inasistencias por estudiante","contexto":"Neutro","ctxClass":"n","bloom":"N4 · Analiza","nivel":4,"enunciado":"Una matriz registra la asistencia de 25 estudiantes (filas) durante 20 días de clase (columnas), donde 1 significa presente y 0 significa ausente. Diseñar un algoritmo que muestre la cantidad de inasistencias de cada estudiante.","codigo":"Algoritmo InasistenciasPorEstudiante\n    Definir asistencia Como Entero;\n    Dimension asistencia[25,20];\n    Definir f, c, faltas Como Entero;\n\n    Para f<-1 Hasta 25 Con Paso 1 Hacer\n        Para c<-1 Hasta 20 Con Paso 1 Hacer\n            Escribir \"Asistencia estudiante \", f, \", dia \", c, \" (1=Presente, 0=Ausente): \";\n            Leer asistencia[f,c];\n        FinPara\n    FinPara\n\n    Para f<-1 Hasta 25 Con Paso 1 Hacer\n        faltas <- 0;\n        Para c<-1 Hasta 20 Con Paso 1 Hacer\n            Si asistencia[f,c] = 0 Entonces\n                faltas <- faltas + 1;\n            FinSi\n        FinPara\n        Escribir \"El estudiante \", f, \" tuvo \", faltas, \" inasistencias.\";\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo InasistenciasPorEstudiante\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B8","titulo":"La diagonal del tablero","contexto":"Bit 🤖","ctxClass":"bit","bloom":"N4 · Analiza","nivel":4,"enunciado":"Bit trabaja con un tablero cuadrado de 5x5 usado en un mini-juego. Diseñar un algoritmo que cargue la matriz y calcule la suma de los valores ubicados en la diagonal principal.","codigo":"Algoritmo SumaDiagonalPrincipal\n    Definir tablero Como Entero;\n    Dimension tablero[5,5];\n    Definir f, c Como Entero;\n    Definir sumaDiagonal Como Entero;\n\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        Para c<-1 Hasta 5 Con Paso 1 Hacer\n            Escribir \"Valor [\", f, \",\", c, \"]: \";\n            Leer tablero[f,c];\n        FinPara\n    FinPara\n\n    sumaDiagonal <- 0;\n    Para f<-1 Hasta 5 Con Paso 1 Hacer\n        sumaDiagonal <- sumaDiagonal + tablero[f,f];\n    FinPara\n\n    Escribir \"La suma de la diagonal principal es: \", sumaDiagonal;\nFinAlgoritmo","skeleton":"Algoritmo SumaDiagonalPrincipal\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B9","titulo":"Comparando turnos en la fábrica BIT","contexto":"Gatiel 🦊","ctxClass":"gatiel","bloom":"N4-N5 · Analiza / Evalúa","nivel":5,"enunciado":"Retomando el caso de la fábrica BIT: se registran los resultados de producción del turno mañana y del turno tarde en dos matrices de igual tamaño (4 operarios x 5 días). Diseñar un algoritmo que compare ambas matrices posición por posición y muestre en qué operario y día el turno tarde produjo más que el turno mañana.","codigo":"Algoritmo CompararTurnos\n    Definir manana, tarde Como Entero;\n    Dimension manana[4,5];\n    Dimension tarde[4,5];\n    Definir f, c Como Entero;\n\n    Para f<-1 Hasta 4 Con Paso 1 Hacer\n        Para c<-1 Hasta 5 Con Paso 1 Hacer\n            Escribir \"Produccion turno manana, operario \", f, \", dia \", c, \": \";\n            Leer manana[f,c];\n            Escribir \"Produccion turno tarde, operario \", f, \", dia \", c, \": \";\n            Leer tarde[f,c];\n        FinPara\n    FinPara\n\n    Escribir \"Casos en que el turno tarde produjo mas:\";\n    Para f<-1 Hasta 4 Con Paso 1 Hacer\n        Para c<-1 Hasta 5 Con Paso 1 Hacer\n            Si tarde[f,c] > manana[f,c] Entonces\n                Escribir \"Operario \", f, \", dia \", c, \" -> tarde: \", tarde[f,c], \" manana: \", manana[f,c];\n            FinSi\n        FinPara\n    FinPara\nFinAlgoritmo","skeleton":"Algoritmo CompararTurnos\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"},{"id":"B10","titulo":"Reporte anual de la cooperativa","contexto":"Techi 👩‍💻 · Integrador","ctxClass":"techi","bloom":"N5-N6 · Evalúa / Crea","nivel":6,"enunciado":"Diseñar un algoritmo integrador que cargue una matriz de ventas mensuales de una cooperativa (6 meses x 5 productos) y genere un reporte completo que incluya: el total general vendido, el total por mes, el total por producto, el producto que más se vendió y el mes de mayor venta.","codigo":"Algoritmo ReporteAnualCooperativa\n    Definir ventas Como Real;\n    Dimension ventas[6,5];\n    Definir f, c, mesMax, productoMax Como Entero;\n    Definir totalGeneral Como Real;\n    Definir totalMes Como Real;\n    Dimension totalMes[6];\n    Definir totalProducto Como Real;\n    Dimension totalProducto[5];\n    Definir maxMes, maxProducto Como Real;\n\n    Para f<-1 Hasta 6 Con Paso 1 Hacer\n        totalMes[f] <- 0;\n    FinPara\n    Para c<-1 Hasta 5 Con Paso 1 Hacer\n        totalProducto[c] <- 0;\n    FinPara\n    totalGeneral <- 0;\n\n    Para f<-1 Hasta 6 Con Paso 1 Hacer\n        Para c<-1 Hasta 5 Con Paso 1 Hacer\n            Escribir \"Venta del mes \", f, \", producto \", c, \": \";\n            Leer ventas[f,c];\n            totalMes[f] <- totalMes[f] + ventas[f,c];\n            totalProducto[c] <- totalProducto[c] + ventas[f,c];\n            totalGeneral <- totalGeneral + ventas[f,c];\n        FinPara\n    FinPara\n\n    maxMes <- totalMes[1];\n    mesMax <- 1;\n    Para f<-2 Hasta 6 Con Paso 1 Hacer\n        Si totalMes[f] > maxMes Entonces\n            maxMes <- totalMes[f];\n            mesMax <- f;\n        FinSi\n    FinPara\n\n    maxProducto <- totalProducto[1];\n    productoMax <- 1;\n    Para c<-2 Hasta 5 Con Paso 1 Hacer\n        Si totalProducto[c] > maxProducto Entonces\n            maxProducto <- totalProducto[c];\n            productoMax <- c;\n        FinSi\n    FinPara\n\n    Escribir \"----- REPORTE ANUAL -----\";\n    Escribir \"Total general vendido: \", totalGeneral;\n    Escribir \"Mes con mayor venta: \", mesMax, \" (\", maxMes, \")\";\n    Escribir \"Producto mas vendido: \", productoMax, \" (\", maxProducto, \")\";\nFinAlgoritmo","skeleton":"Algoritmo ReporteAnualCooperativa\n    // Escribe aqui tu solucion\n    \nFinAlgoritmo"}];
+
+// ---------- Utilidades de bajo nivel ----------
+
+function splitTop(str, sep) {
+  const out = [];
+  let depth = 0, inStr = false, cur = "";
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (inStr) {
+      cur += ch;
+      if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') { inStr = true; cur += ch; continue; }
+    if (ch === "(" || ch === "[") depth++;
+    if (ch === ")" || ch === "]") depth--;
+    if (ch === sep && depth === 0) { out.push(cur); cur = ""; continue; }
+    cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+function firstKeyword(line) {
+  if (line === undefined || line === null) return null;
+  const t = line.trim().toUpperCase();
+  if (t === "FINPARA") return "FINPARA";
+  if (t === "FINSI") return "FINSI";
+  if (t === "SINO") return "SINO";
+  if (t === "FINMIENTRAS") return "FINMIENTRAS";
+  if (t === "FINSEGUN") return "FINSEGUN";
+  if (t === "FINALGORITMO") return "FINALGORITMO";
+  return null;
+}
+
+// ---------- Parser ----------
+
+function parseLValue(s) {
+  const m = /^(\w+)(?:\[(.+)\])?$/.exec(s.trim());
+  if (!m) return { name: s.trim(), indices: null };
+  const name = m[1];
+  if (m[2] === undefined) return { name, indices: null };
+  const indices = splitTop(m[2], ",").map((x) => x.trim());
+  return { name, indices };
+}
+
+function parseSimpleStatement(raw) {
+  let s = raw.trim().replace(/;$/, "").trim();
+  if (!s) return { type: "noop" };
+  if (/^Definir\b/i.test(s) || /^Dimension\b/i.test(s)) return { type: "noop" };
+  let m;
+  if ((m = /^Leer\s+(.+)$/i.exec(s))) {
+    return { type: "read", target: parseLValue(m[1]) };
+  }
+  if ((m = /^Escribir\s+(?:(Sin\s+Saltar)\s+)?(.*)$/i.exec(s))) {
+    const sinSaltar = !!m[1];
+    const args = m[2].trim() ? splitTop(m[2], ",").map((a) => a.trim()) : [];
+    return { type: "write", args, sinSaltar };
+  }
+  if ((m = /^(.+?)<-(.+)$/.exec(s))) {
+    return { type: "assign", target: parseLValue(m[1]), expr: m[2].trim() };
+  }
+  return { type: "noop" };
+}
+
+function parseBlock(lines, pos, terminators) {
+  const stmts = [];
+  while (pos < lines.length) {
+    const kw = firstKeyword(lines[pos]);
+    if (kw && terminators.has(kw)) break;
+    const r = parseStatement(lines, pos);
+    stmts.push(r.stmt);
+    pos = r.next;
+  }
+  return { stmts, pos };
+}
+
+function parseStatement(lines, pos) {
+  const trimmed = lines[pos].trim();
+  let m;
+
+  if ((m = /^Para\s+(\w+)\s*<-\s*(.+?)\s+Hasta\s+(.+?)(?:\s+Con\s+Paso\s+(.+?))?\s+Hacer$/i.exec(trimmed))) {
+    const varName = m[1], fromExpr = m[2], toExpr = m[3], stepExpr = m[4] || "1";
+    const body = parseBlock(lines, pos + 1, new Set(["FINPARA"]));
+    return { stmt: { type: "for", varName, fromExpr, toExpr, stepExpr, body: body.stmts }, next: body.pos + 1 };
+  }
+  if ((m = /^Mientras\s+(.+)\s+Hacer$/i.exec(trimmed))) {
+    const cond = m[1];
+    const body = parseBlock(lines, pos + 1, new Set(["FINMIENTRAS"]));
+    return { stmt: { type: "while", cond, body: body.stmts }, next: body.pos + 1 };
+  }
+  if ((m = /^Si\s+(.+)\s+Entonces$/i.exec(trimmed))) {
+    const cond = m[1];
+    const thenBlock = parseBlock(lines, pos + 1, new Set(["SINO", "FINSI"]));
+    let elseBlock = [];
+    let next = thenBlock.pos;
+    if (firstKeyword(lines[next]) === "SINO") {
+      const eb = parseBlock(lines, next + 1, new Set(["FINSI"]));
+      elseBlock = eb.stmts;
+      next = eb.pos;
+    }
+    return { stmt: { type: "if", cond, thenBlock: thenBlock.stmts, elseBlock }, next: next + 1 };
+  }
+  if ((m = /^Segun\s+(.+)\s+Hacer$/i.exec(trimmed))) {
+    const expr = m[1];
+    const cases = [];
+    let p = pos + 1;
+    while (firstKeyword(lines[p]) !== "FINSEGUN") {
+      const cm = /^'(.+?)'\s*:\s*(.*)$/.exec(lines[p].trim());
+      if (cm) {
+        const label = cm[1];
+        const rest = cm[2].trim();
+        const caseStmts = [];
+        if (rest) {
+          splitTop(rest, ";").map((s) => s.trim()).filter(Boolean).forEach((s) => caseStmts.push(parseSimpleStatement(s)));
+        }
+        cases.push({ label, stmts: caseStmts });
+      }
+      p++;
+    }
+    return { stmt: { type: "switch", expr, cases }, next: p + 1 };
+  }
+
+  const parts = splitTop(trimmed, ";").map((s) => s.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    return { stmt: { type: "block", stmts: parts.map(parseSimpleStatement) }, next: pos + 1 };
+  }
+  return { stmt: parseSimpleStatement(parts[0] || trimmed), next: pos + 1 };
+}
+
+function parseProgram(text) {
+  const rawLines = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+  let start = rawLines.findIndex((l) => /^Algoritmo\b/i.test(l));
+  let end = -1;
+  for (let i = rawLines.length - 1; i >= 0; i--) {
+    if (firstKeyword(rawLines[i]) === "FINALGORITMO") { end = i; break; }
+  }
+  const bodyLines = start >= 0 && end >= 0 ? rawLines.slice(start + 1, end) : rawLines;
+  const { stmts } = parseBlock(bodyLines, 0, new Set());
+  return stmts;
+}
+
+// ---------- Evaluador de expresiones ----------
+
+function tokenizeExpr(str) {
+  const tokens = [];
+  let i = 0;
+  const isDigit = (c) => c >= "0" && c <= "9";
+  const isAlpha = (c) => /[A-Za-zÁÉÍÓÚÑáéíóúñ_]/.test(c);
+  while (i < str.length) {
+    const c = str[i];
+    if (c === " " || c === "\t") { i++; continue; }
+    if (c === '"') {
+      let j = i + 1, out = "";
+      while (j < str.length && str[j] !== '"') { out += str[j]; j++; }
+      tokens.push({ t: "STR", v: out });
+      i = j + 1;
+      continue;
+    }
+    if (isDigit(c) || (c === "." && isDigit(str[i + 1]))) {
+      let j = i, out = "";
+      while (j < str.length && (isDigit(str[j]) || str[j] === ".")) { out += str[j]; j++; }
+      tokens.push({ t: "NUM", v: parseFloat(out) });
+      i = j;
+      continue;
+    }
+    if (isAlpha(c)) {
+      let j = i, out = "";
+      while (j < str.length && (isAlpha(str[j]) || isDigit(str[j]))) { out += str[j]; j++; }
+      const up = out.toUpperCase();
+      if (up === "Y") tokens.push({ t: "AND" });
+      else if (up === "O") tokens.push({ t: "OR" });
+      else if (up === "NO") tokens.push({ t: "NOT" });
+      else if (up === "VERDADERO") tokens.push({ t: "BOOL", v: true });
+      else if (up === "FALSO") tokens.push({ t: "BOOL", v: false });
+      else tokens.push({ t: "ID", v: out });
+      i = j;
+      continue;
+    }
+    if (c === "<" && str[i + 1] === "-") { tokens.push({ t: "ASSIGN" }); i += 2; continue; }
+    if (c === "<" && str[i + 1] === "=") { tokens.push({ t: "LE" }); i += 2; continue; }
+    if (c === ">" && str[i + 1] === "=") { tokens.push({ t: "GE" }); i += 2; continue; }
+    if (c === "<" && str[i + 1] === ">") { tokens.push({ t: "NE" }); i += 2; continue; }
+    if (c === "<") { tokens.push({ t: "LT" }); i++; continue; }
+    if (c === ">") { tokens.push({ t: "GT" }); i++; continue; }
+    if (c === "=") { tokens.push({ t: "EQ" }); i++; continue; }
+    if (c === "+") { tokens.push({ t: "PLUS" }); i++; continue; }
+    if (c === "-") { tokens.push({ t: "MINUS" }); i++; continue; }
+    if (c === "*") { tokens.push({ t: "MUL" }); i++; continue; }
+    if (c === "/") { tokens.push({ t: "DIV" }); i++; continue; }
+    if (c === "%") { tokens.push({ t: "MOD" }); i++; continue; }
+    if (c === "(") { tokens.push({ t: "LP" }); i++; continue; }
+    if (c === ")") { tokens.push({ t: "RP" }); i++; continue; }
+    if (c === "[") { tokens.push({ t: "LB" }); i++; continue; }
+    if (c === "]") { tokens.push({ t: "RB" }); i++; continue; }
+    if (c === ",") { tokens.push({ t: "COMMA" }); i++; continue; }
+    i++; // ignora caracteres no reconocidos
+  }
+  return tokens;
+}
+
+function makeExprParser(tokens, env) {
+  let pos = 0;
+  const peek = () => tokens[pos];
+  const next = () => tokens[pos++];
+
+  function parseOr() {
+    let left = parseAnd();
+    while (peek() && peek().t === "OR") { next(); const right = parseAnd(); left = left || right; }
+    return left;
+  }
+  function parseAnd() {
+    let left = parseNot();
+    while (peek() && peek().t === "AND") { next(); const right = parseNot(); left = left && right; }
+    return left;
+  }
+  function parseNot() {
+    if (peek() && peek().t === "NOT") { next(); return !toBool(parseNot()); }
+    return parseCompare();
+  }
+  function parseCompare() {
+    let left = parseAdd();
+    while (peek() && ["LT", "GT", "LE", "GE", "EQ", "NE"].includes(peek().t)) {
+      const op = next().t;
+      const right = parseAdd();
+      if (op === "LT") left = left < right;
+      else if (op === "GT") left = left > right;
+      else if (op === "LE") left = left <= right;
+      else if (op === "GE") left = left >= right;
+      else if (op === "EQ") left = left == right;
+      else if (op === "NE") left = left != right;
+    }
+    return left;
+  }
+  function parseAdd() {
+    let left = parseMul();
+    while (peek() && (peek().t === "PLUS" || peek().t === "MINUS")) {
+      const op = next().t;
+      const right = parseMul();
+      if (op === "PLUS") {
+        left = (typeof left === "string" || typeof right === "string") ? String(left) + String(right) : left + right;
+      } else left = left - right;
+    }
+    return left;
+  }
+  function parseMul() {
+    let left = parseUnary();
+    while (peek() && ["MUL", "DIV", "MOD"].includes(peek().t)) {
+      const op = next().t;
+      const right = parseUnary();
+      if (op === "MUL") left = left * right;
+      else if (op === "DIV") left = left / right;
+      else left = left % right;
+    }
+    return left;
+  }
+  function parseUnary() {
+    if (peek() && peek().t === "MINUS") { next(); return -parsePrimary(); }
+    if (peek() && peek().t === "PLUS") { next(); return parsePrimary(); }
+    return parsePrimary();
+  }
+  function parsePrimary() {
+    const tk = next();
+    if (!tk) return 0;
+    if (tk.t === "NUM") return tk.v;
+    if (tk.t === "STR") return tk.v;
+    if (tk.t === "BOOL") return tk.v;
+    if (tk.t === "LP") { const v = parseOr(); if (peek() && peek().t === "RP") next(); return v; }
+    if (tk.t === "ID") {
+      if (peek() && peek().t === "LB") {
+        next();
+        const idxs = [parseOr()];
+        while (peek() && peek().t === "COMMA") { next(); idxs.push(parseOr()); }
+        if (peek() && peek().t === "RB") next();
+        const key = idxs.join(",");
+        const store = env.vars[tk.v];
+        if (store && typeof store === "object") {
+          const v = store[key];
+          return v === undefined ? 0 : v;
+        }
+        return 0;
+      }
+      const v = env.vars[tk.v];
+      return v === undefined ? 0 : v;
+    }
+    return 0;
+  }
+  return { parseOr };
+}
+
+function toBool(v) { return !!v; }
+
+function evalExpr(str, env) {
+  const tokens = tokenizeExpr(str);
+  const parser = makeExprParser(tokens, env);
+  return parser.parseOr();
+}
+
+// ---------- Intérprete (generador) ----------
+
+function setLValue(target, value, env) {
+  if (!target.indices) { env.vars[target.name] = value; return; }
+  if (!env.vars[target.name] || typeof env.vars[target.name] !== "object") env.vars[target.name] = {};
+  const key = target.indices.map((ix) => evalExpr(ix, env)).join(",");
+  env.vars[target.name][key] = value;
+}
+
+function stringifyVal(v) {
+  if (v === true) return "Verdadero";
+  if (v === false) return "Falso";
+  if (typeof v === "number") {
+    if (Number.isInteger(v)) return String(v);
+    return String(Math.round(v * 1e6) / 1e6);
+  }
+  return String(v === undefined ? "" : v);
+}
+
+function parseInputValue(raw) {
+  const s = String(raw === undefined || raw === null ? "" : raw).trim();
+  if (/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+  if (/^verdadero$/i.test(s)) return true;
+  if (/^falso$/i.test(s)) return false;
+  return s;
+}
+
+function* execBlock(stmts, env) {
+  for (const st of stmts) yield* execStmt(st, env);
+}
+
+function* execStmt(st, env) {
+  env.steps = (env.steps || 0) + 1;
+  if (env.steps > 300000) throw new Error("Límite de pasos excedido (posible bucle infinito).");
+
+  switch (st.type) {
+    case "noop":
+      return;
+    case "block":
+      yield* execBlock(st.stmts, env);
+      return;
+    case "assign": {
+      const value = evalExpr(st.expr, env);
+      setLValue(st.target, value, env);
+      return;
+    }
+    case "read": {
+      const raw = yield { type: "read", varName: st.target.name };
+      const value = parseInputValue(raw);
+      setLValue(st.target, value, env);
+      return;
+    }
+    case "write": {
+      let text = "";
+      for (const a of st.args) text += stringifyVal(evalExpr(a, env));
+      yield { type: "write", text, newline: !st.sinSaltar };
+      return;
+    }
+    case "if": {
+      const cond = evalExpr(st.cond, env);
+      if (toBool(cond)) yield* execBlock(st.thenBlock, env);
+      else yield* execBlock(st.elseBlock, env);
+      return;
+    }
+    case "while": {
+      while (toBool(evalExpr(st.cond, env))) {
+        yield* execBlock(st.body, env);
+        env.steps++;
+        if (env.steps > 300000) throw new Error("Límite de pasos excedido (posible bucle infinito).");
+      }
+      return;
+    }
+    case "for": {
+      const from = evalExpr(st.fromExpr, env);
+      const to = evalExpr(st.toExpr, env);
+      const step = evalExpr(st.stepExpr, env);
+      env.vars[st.varName] = from;
+      const asc = step >= 0;
+      while (asc ? env.vars[st.varName] <= to : env.vars[st.varName] >= to) {
+        yield* execBlock(st.body, env);
+        env.vars[st.varName] += step;
+        env.steps++;
+        if (env.steps > 300000) throw new Error("Límite de pasos excedido (posible bucle infinito).");
+      }
+      return;
+    }
+    case "switch": {
+      const val = evalExpr(st.expr, env);
+      for (const c of st.cases) {
+        const labelVal = /^-?\d+(\.\d+)?$/.test(c.label) ? parseFloat(c.label) : c.label;
+        if (val == labelVal) {
+          yield* execBlock(c.stmts, env);
+          break;
+        }
+      }
+      return;
+    }
+    default:
+      return;
+  }
+}
+
+function* runProgram(stmts) {
+  const env = { vars: {}, steps: 0 };
+  yield* execBlock(stmts, env);
+}
+
+
+</script>
+<script>
+// ---------- Colores por nivel Bloom (progresion simple -> complejo) ----------
+function colorForLevel(n){
+  const stops = [
+    [2, "#5fa8e0"],
+    [3, "#7fb8c9"],
+    [4, "#9b7fd4"],
+    [5, "#c98fbf"],
+    [6, "#eda05a"],
+  ];
+  for (const [lvl, col] of stops) if (n <= lvl) return col;
+  return "#eda05a";
+}
+
+let currentId = EXERCISES[0].id;
+let genState = null;
+let running = false;
+
+function el(tag, attrs, children){
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs){
+    if (k === "class") e.className = attrs[k];
+    else if (k === "html") e.innerHTML = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  (children||[]).forEach(c => e.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+  return e;
+}
+
+function buildSidebar(){
+  const sidebar = document.getElementById("sidebar");
+  sidebar.innerHTML = "";
+  const blocks = [
+    { label: "Bloque A — Vectores", prefix: "A" },
+    { label: "Bloque B — Matrices", prefix: "B" },
+  ];
+  blocks.forEach(b => {
+    sidebar.appendChild(el("div", { class: "block-label" }, [b.label]));
+    const ul = el("ul", { class: "trail" }, []);
+    EXERCISES.filter(ex => ex.id.startsWith(b.prefix)).forEach(ex => {
+      const li = el("li", {}, []);
+      const btn = el("button", { class: "node-btn" + (ex.id === currentId ? " active" : ""), "data-id": ex.id }, [
+        (() => { const d = el("span", { class: "dot" }, []); d.style.setProperty("--dotcolor", colorForLevel(ex.nivel)); return d; })(),
+        el("span", { class: "node-text" }, [
+          el("span", { class: "num" }, [ex.id]),
+          el("span", { class: "ttl" }, [ex.titulo]),
+        ]),
+      ]);
+      btn.addEventListener("click", () => selectExercise(ex.id));
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+    sidebar.appendChild(ul);
+  });
+}
+
+function ctxTagClass(ctxClass){
+  if (ctxClass === "gatiel") return "tag ctx-gatiel";
+  if (ctxClass === "bit") return "tag ctx-bit";
+  if (ctxClass === "techi") return "tag ctx-techi";
+  return "tag";
+}
+
+function renderMain(){
+  const ex = EXERCISES.find(e => e.id === currentId);
+  const main = document.getElementById("main");
+  main.innerHTML = "";
+
+  main.appendChild(el("div", { class: "tags" }, [
+    el("span", { class: ctxTagClass(ex.ctxClass) }, [ex.contexto]),
+    el("span", { class: "tag" }, [ex.bloom]),
+  ]));
+  main.appendChild(el("h2", {}, [ex.id + ". " + ex.titulo]));
+  main.appendChild(el("div", { class: "enunciado" }, [ex.enunciado]));
+
+  const editorWrap = el("div", { class: "editor-wrap" }, []);
+  editorWrap.appendChild(el("div", { class: "editor-label" }, [
+    el("span", {}, ["Tu código PSeInt"]),
+  ]));
+  const textarea = el("textarea", { id: "editor", spellcheck: "false" }, []);
+  textarea.value = ex.skeleton;
+  editorWrap.appendChild(textarea);
+  main.appendChild(editorWrap);
+
+  textarea.addEventListener("keydown", (e) => {
+    if (e.key === "Tab"){
+      e.preventDefault();
+      const start = textarea.selectionStart, end = textarea.selectionEnd;
+      textarea.value = textarea.value.slice(0, start) + "    " + textarea.value.slice(end);
+      textarea.selectionStart = textarea.selectionEnd = start + 4;
+    }
+  });
+
+  const btnRow = el("div", { class: "btn-row" }, []);
+  const runBtn = el("button", { class: "btn-run" }, ["▶ Ejecutar"]);
+  const resetBtn = el("button", { class: "btn-secondary" }, ["Reiniciar código"]);
+  btnRow.appendChild(runBtn);
+  btnRow.appendChild(resetBtn);
+  main.appendChild(btnRow);
+
+  const consoleEl = el("div", { class: "console" }, [
+    el("span", { class: "placeholder" }, ["Presioná ▶ Ejecutar para correr tu algoritmo. Las instrucciones Leer van a pedir el dato acá mismo."]),
+  ]);
+  main.appendChild(consoleEl);
+
+  runBtn.addEventListener("click", () => runCode(textarea.value, consoleEl));
+  resetBtn.addEventListener("click", () => { textarea.value = ex.skeleton; });
+
+  const details = el("details", { class: "solution" }, []);
+  const summary = el("summary", {}, ["¿Atascado? Ver la solución de Gatiel, Bit y Techi"]);
+  const body = el("div", { class: "solution-body" }, []);
+  const pre = el("pre", {}, [ex.codigo]);
+  const copyBtn = el("button", { class: "btn-secondary copy-btn" }, ["Copiar al editor"]);
+  copyBtn.addEventListener("click", () => { textarea.value = ex.codigo; });
+  body.appendChild(pre);
+  body.appendChild(copyBtn);
+  details.appendChild(summary);
+  details.appendChild(body);
+  main.appendChild(details);
+
+  main.appendChild(el("div", { class: "footer-note" }, [
+    "Este intérprete corre un subconjunto de PSeInt (Para, Mientras, Si/SiNo, Segun, arreglos de 1 y 2 dimensiones, Leer y Escribir) pensado para estos 22 ejercicios. No reemplaza a PSeInt de escritorio para algoritmos fuera de este banco.",
+  ]));
+}
+
+function appendConsoleText(consoleEl, text){
+  const ph = consoleEl.querySelector(".placeholder");
+  if (ph) ph.remove();
+  consoleEl.appendChild(document.createTextNode(text));
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+function runCode(code, consoleEl){
+  consoleEl.innerHTML = "";
+  let ast;
+  try{
+    ast = parseProgram(code);
+  } catch(e){
+    consoleEl.appendChild(el("span", { class: "err" }, ["Error al leer el algoritmo: " + e.message]));
+    return;
+  }
+  genState = runProgram(ast);
+  advance(consoleEl);
+}
+
+function advance(consoleEl, inputValue){
+  let res;
+  try{
+    res = genState.next(inputValue);
+  } catch(e){
+    appendConsoleText(consoleEl, "\n");
+    consoleEl.appendChild(el("span", { class: "err" }, ["⚠ " + e.message]));
+    return;
+  }
+  if (res.done){
+    consoleEl.appendChild(el("div", { class: "done" }, ["\n--- Fin del programa ---"]));
+    return;
+  }
+  const cmd = res.value;
+  if (cmd.type === "write"){
+    appendConsoleText(consoleEl, cmd.text + (cmd.newline ? "\n" : ""));
+    advance(consoleEl);
+  } else if (cmd.type === "read"){
+    const row = el("div", { class: "input-row" }, []);
+    const label = el("span", {}, ["» " + cmd.varName + " ="]);
+    const input = el("input", { type: "text", autocomplete: "off" }, []);
+    const sendBtn = el("button", { class: "btn-secondary" }, ["Enviar ⏎"]);
+    const submit = () => {
+      const val = input.value;
+      row.remove();
+      appendConsoleText(consoleEl, val + "\n");
+      advance(consoleEl, val);
+    };
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+    sendBtn.addEventListener("click", submit);
+    row.appendChild(label);
+    row.appendChild(input);
+    row.appendChild(sendBtn);
+    consoleEl.appendChild(row);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+    input.focus();
+  }
+}
+
+function selectExercise(id){
+  currentId = id;
+  buildSidebar();
+  renderMain();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+buildSidebar();
+renderMain();
+</script>
+</body>
+</html>
