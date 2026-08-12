@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java: ciclos — Práctica interactiva | CEDMR Míguela Rodríguez Araujo</title>
+<style>
+  :root {
+    --orange: #C0511E;
+    --orange-light: #E8A46A;
+    --orange-pale: #FBE9DC;
+    --darkgray: #3A3A3A;
+    --midgray: #6B6B6B;
+    --bg: #F4F4F4;
+    --card: #FFFFFF;
+    --codebg: #2B2B2B;
+    --codefg: #E8E8E8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Calibri", "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--darkgray);
+  }
+  header {
+    background: var(--orange);
+    color: #fff;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header img {
+    width: 54px;
+    height: 54px;
+    border-radius: 6px;
+    background: #fff;
+    padding: 3px;
+  }
+  header .school {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    opacity: 0.95;
+  }
+  header .subschool {
+    font-size: 12px;
+    color: var(--orange-pale);
+  }
+  .hero {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 28px 10px;
+  }
+  .hero h1 {
+    font-family: Georgia, "Cambria", serif;
+    font-size: 40px;
+    margin: 0 0 6px;
+    color: var(--darkgray);
+  }
+  .hero p.lead {
+    font-size: 17px;
+    color: var(--orange);
+    font-style: italic;
+    margin: 0 0 18px;
+  }
+  .hero .instructions {
+    background: var(--card);
+    border-left: 5px solid var(--orange);
+    border-radius: 4px;
+    padding: 16px 20px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .instructions ul { margin: 6px 0 0; padding-left: 20px; }
+
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 10px 28px 60px;
+  }
+
+  .section-divider {
+    margin: 46px 0 8px;
+    padding-top: 10px;
+  }
+  .section-divider .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+  .section-divider h2 {
+    font-family: Georgia, "Cambria", serif;
+    font-size: 28px;
+    margin: 4px 0 6px;
+    color: var(--darkgray);
+  }
+  .section-divider p {
+    font-size: 14.5px;
+    color: var(--midgray);
+    margin: 0;
+    max-width: 720px;
+  }
+  .section-divider hr {
+    border: none;
+    border-top: 3px solid var(--orange);
+    width: 60px;
+    margin: 14px 0 0;
+  }
+
+  .exercise {
+    background: var(--card);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin: 34px 0;
+    overflow: hidden;
+  }
+  .exercise-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 22px 24px 4px;
+  }
+  .badge {
+    flex: 0 0 auto;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .exercise-head h2 {
+    font-family: Georgia, "Cambria", serif;
+    font-size: 21px;
+    margin: 2px 0 4px;
+    color: var(--darkgray);
+  }
+  .exercise-head .concept {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: var(--orange-pale);
+    padding: 3px 9px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .exercise-body { padding: 6px 24px 24px; }
+  .task {
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 14px;
+  }
+  .task ul { margin: 6px 0 0; padding-left: 20px; }
+
+  textarea.code-editor {
+    width: 100%;
+    min-height: 190px;
+    background: var(--codebg);
+    color: var(--codefg);
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    resize: vertical;
+    tab-size: 4;
+    white-space: pre;
+  }
+  textarea.code-editor:focus { outline: 2px solid var(--orange); }
+
+  .inputs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 14px 0;
+    padding: 12px 14px;
+    background: #FAF3EC;
+    border-radius: 8px;
+    border: 1px dashed var(--orange-light);
+  }
+  .inputs-row .hint {
+    flex-basis: 100%;
+    font-size: 12.5px;
+    color: var(--midgray);
+    margin-bottom: 2px;
+  }
+  .inputs-row label {
+    font-size: 13px;
+    color: var(--darkgray);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .inputs-row input {
+    font-family: "Courier New", monospace;
+    font-size: 13.5px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 140px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin: 14px 0 4px;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: filter 0.15s ease;
+  }
+  button:hover { filter: brightness(0.95); }
+  button:active { filter: brightness(0.88); }
+  .btn-run { background: var(--orange); color: #fff; }
+  .btn-reset { background: #EDEDED; color: var(--darkgray); }
+  .btn-solution { background: #fff; color: var(--orange); border: 1px solid var(--orange); }
+
+  .console {
+    margin-top: 14px;
+    background: #1E1E1E;
+    color: #D4D4D4;
+    font-family: "Courier New", monospace;
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 14px 16px;
+    min-height: 44px;
+    max-height: 340px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+  .console .placeholder { color: #777; font-style: italic; }
+  .console .line-out { color: #A8E6A1; }
+  .console .line-err { color: #F08A80; }
+
+  .solution {
+    margin-top: 14px;
+    display: none;
+    background: #FAF3EC;
+    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--orange-light);
+  }
+  .solution.open { display: block; }
+  .solution h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--orange);
+  }
+  .solution pre {
+    background: var(--codebg);
+    color: var(--codefg);
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    margin: 0 0 10px;
+  }
+  .solution .note { font-size: 13.5px; line-height: 1.5; color: var(--darkgray); }
+
+  footer {
+    text-align: center;
+    padding: 30px 20px 50px;
+    color: var(--midgray);
+    font-size: 13px;
+    font-style: italic;
+  }
+  footer .motto { color: var(--orange); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    .inputs-row input { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="data:image/jpeg;base64,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umlaPzJC0ccKNtEjkDOW4wg5JYD1IqyeKJr3wTd3c11NZSbpP38MS+akSybM7MkK7kFVGc857HAB12papBpcaNMsr784WJNx4Gen5D6kDvV+srRJbi70uCS/8h7teJGhU+Xu9FJJyB0znqDWrQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAVSv8ASdO1VY1v7G2uwhynnRK+0+oyOKu0UAQQWlrbQeRb20MUP/PONAq/kKPsltvD/Z4t4TywdgyF9AfSp6KAKyWNpFbtbpbQpA2cxBAFOeuRQbK0a2+zm2hMAIPlbBtznOcdKs0UAV4rSGG5muET99Nje3cgDAH0GT+Z9aGtLZ1CNbxMgfzApQEBuufr71YooArvaW8qkPbxsCwcgoDlvX6+9H2K18ySX7ND5kgw7bBlh7nvViigCsLG0Fu1uLaEQP8Aej8sbW+o6Vn6/dSWWmqlvavKJP3f7uDzNgweidyegzxkjPFbNFAGB4W0V9K015rz5tUvHM95Jncdx+6m7uqLhR244xmtkW8KySSrDGJJMB22jLDtk96mooAgitLeFY0it4kWPOwKgATPXHpTY7K1hXZFbRINpXCoAMen09qs0UAZF/ZW1naSX1tpcdxc2sJNvDHGNxKglVXsDkkfjTtG002ugWtneIsk3lhrjOGDysdzn3+ck1q0UAQy20E8PkywRyQ8fI6gjjpxTkiSPdsQLuOTgYycdT+Q/KpKKAIEtLeNQEt41AYuAEA+b1+vvSfYrXyJIfs0PlSEl02Da5PUkd6sUUAMVQihVAAAwAOgFPoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z" alt="Logo CEDMR">
+  <div>
+    <div class="school">Centro Educativo Departamental Municipal</div>
+    <div class="subschool">Míguela Rodríguez Araujo — Luque, Paraguay</div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Java: ciclos — Práctica interactiva</h1>
+  <p class="lead">Laboratorio · Gabinete de Informática — 3º BATIN</p>
+  <div class="instructions">
+    Esta página tiene un pequeño intérprete de Java integrado: podés escribir código real, apretar
+    <strong>Ejecutar</strong> y ver la salida en la consola de abajo, sin instalar nada.
+    <ul>
+      <li>Además de todo lo de las páginas anteriores (variables, Scanner, operadores, comparaciones, lógicos, if/else), esta página soporta ciclos: <code>while</code>, <code>do-while</code> y <code>for</code> — incluso anidados.</li>
+      <li><strong>Seguridad contra ciclos infinitos:</strong> si tu programa se repite más de 20.000 veces sin llegar a su condición de corte, la ejecución se detiene sola y te avisa — así el navegador nunca se cuelga. Es una señal para revisar que la variable de control cambie dentro del ciclo.</li>
+      <li>No es una JVM completa — todavía no reconoce arreglos ni clases propias. Para eso vamos a usar VS Code en el laboratorio.</li>
+      <li>Si un ejercicio usa <code>Scanner</code>, completá los valores simulados en el recuadro naranja antes de ejecutar, en el orden que se piden.</li>
+      <li>Podés tocar "Ver solución" en cualquier momento para comparar tu código.</li>
+    </ul>
+  </div>
+</div>
+
+<main id="exercises"></main>
+
+<footer>
+  <div class="motto">"Saber, hacer y transformar"</div>
+  <div>CEDMR Míguela Rodríguez Araujo — Práctica de Laboratorio, Java: ciclos</div>
+</footer>
+
+<script>
+/* =========================================================
+   MINI INTÉRPRETE DE JAVA (subconjunto usado en clase)
+   Ahora con: while, do-while, for + límite de seguridad
+   ========================================================= */
+function tokenizeExpr(str) {
+  const re = /\s*(?:("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\d+\.\d+|\d+)|([A-Za-z_]\w*)|(==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|\*=|\/=|%=|[+\-*/%(),.<>!])|(\S))/g;
+  const tokens = [];
+  let m;
+  while ((m = re.exec(str)) !== null) {
+    if (m[1] !== undefined) tokens.push({ type: "string", raw: m[1] });
+    else if (m[2] !== undefined) tokens.push({ type: "char", raw: m[2] });
+    else if (m[3] !== undefined) tokens.push({ type: "number", raw: m[3] });
+    else if (m[4] !== undefined) tokens.push({ type: "ident", raw: m[4] });
+    else if (m[5] !== undefined) tokens.push({ type: "op", raw: m[5] });
+    else if (m[6] !== undefined) tokens.push({ type: "unknown", raw: m[6] });
+  }
+  return tokens;
+}
+function unescapeString(raw) {
+  const inner = raw.slice(1, -1);
+  return inner.replace(/\\(.)/g, (_, c) => ({ n: "\n", t: "\t", '"': '"', "'": "'", "\\": "\\" }[c] || c));
+}
+function formatDouble(v) {
+  if (Number.isInteger(v)) return v.toFixed(1);
+  return String(v);
+}
+function stringify(val) {
+  switch (val.type) {
+    case "String": return val.value;
+    case "int": return String(val.value);
+    case "double": return formatDouble(val.value);
+    case "boolean": return val.value ? "true" : "false";
+    case "char": return val.value;
+    default: return String(val.value);
+  }
+}
+function castTo(type, val) {
+  switch (type) {
+    case "int": return { type: "int", value: Math.trunc(val.value) };
+    case "double": return { type: "double", value: Number(val.value) };
+    case "boolean": return { type: "boolean", value: !!val.value };
+    case "char": return { type: "char", value: (typeof val.value === "string" ? val.value[0] : String(val.value)[0]) || "\u0000" };
+    case "String": return { type: "String", value: stringify(val) };
+    default: return val;
+  }
+}
+class RuntimeErrorX extends Error {}
+class LoopLimitError extends Error {}
+const MAX_STEPS = 20000;
+
+function makeInterpreter() {
+  const env = {};
+  const scanners = new Set();
+  let inputQueue = [];
+  let inputPtr = 0;
+  const output = [];
+  let steps = 0;
+
+  function tickStep() {
+    steps++;
+    if (steps > MAX_STEPS) {
+      throw new LoopLimitError("El programa hizo demasiadas repeticiones (más de " + MAX_STEPS + ") y se detuvo. Probablemente el ciclo nunca llega a su condición de corte — revisá que la variable de control cambie dentro del ciclo.");
+    }
+  }
+  function nextInput() {
+    if (inputPtr >= inputQueue.length) throw new RuntimeErrorX("Se pidió un dato con Scanner pero no hay más entradas simuladas cargadas. Completá el recuadro de entradas.");
+    return inputQueue[inputPtr++];
+  }
+
+  function parseExpression(tokens) {
+    let pos = 0;
+    function peek() { return tokens[pos]; }
+    function next() { return tokens[pos++]; }
+
+    function parsePrimary() {
+      const t = peek();
+      if (!t) throw new RuntimeErrorX("Expresión incompleta.");
+      if (t.type === "number") {
+        next();
+        if (t.raw.includes(".")) return { type: "double", value: parseFloat(t.raw) };
+        return { type: "int", value: parseInt(t.raw, 10) };
+      }
+      if (t.type === "string") { next(); return { type: "String", value: unescapeString(t.raw) }; }
+      if (t.type === "char") { next(); return { type: "char", value: unescapeString(t.raw) || "" }; }
+      if (t.type === "op" && t.raw === "(") {
+        next();
+        const v = parseOr();
+        if (!peek() || peek().raw !== ")") throw new RuntimeErrorX("Falta cerrar un paréntesis.");
+        next();
+        return v;
+      }
+      if (t.type === "op" && t.raw === "!") {
+        next();
+        const v = parsePrimary();
+        if (v.type !== "boolean") throw new RuntimeErrorX("El operador ! solo se puede usar con un valor boolean.");
+        return { type: "boolean", value: !v.value };
+      }
+      if (t.type === "op" && (t.raw === "-" || t.raw === "+")) {
+        next();
+        const v = parsePrimary();
+        if (t.raw === "-") return { type: v.type, value: -v.value };
+        return v;
+      }
+      if (t.type === "ident") {
+        if (t.raw === "true" || t.raw === "false") { next(); return { type: "boolean", value: t.raw === "true" }; }
+        next();
+        const name = t.raw;
+        if (peek() && peek().type === "op" && peek().raw === ".") {
+          next();
+          const methodTok = next();
+          if (!methodTok || methodTok.type !== "ident") throw new RuntimeErrorX("Se esperaba un método después de '.'");
+          const method = methodTok.raw;
+          if (!peek() || peek().raw !== "(") throw new RuntimeErrorX("Se esperaba '(' después de " + method);
+          next();
+          if (peek() && peek().raw === ")") next();
+          else throw new RuntimeErrorX("Esta práctica no soporta argumentos en " + method + "()");
+          if (scanners.has(name)) {
+            const raw = nextInput();
+            if (method === "nextInt") return { type: "int", value: Math.trunc(parseInt(raw, 10)) };
+            if (method === "nextDouble") return { type: "double", value: parseFloat(raw) };
+            if (method === "nextBoolean") return { type: "boolean", value: String(raw).trim() === "true" };
+            if (method === "nextLine" || method === "next") return { type: "String", value: String(raw) };
+            throw new RuntimeErrorX("Método de Scanner no soportado: " + method);
+          }
+          throw new RuntimeErrorX("Método no soportado en esta práctica: " + name + "." + method + "()");
+        }
+        if (!(name in env)) throw new RuntimeErrorX("La variable '" + name + "' no fue declarada todavía.");
+        return env[name];
+      }
+      throw new RuntimeErrorX("No se pudo interpretar la expresión cerca de '" + t.raw + "'.");
+    }
+
+    function parseMultiplicative() {
+      let left = parsePrimary();
+      while (peek() && peek().type === "op" && ["*", "/", "%"].includes(peek().raw)) {
+        const op = next().raw;
+        const right = parsePrimary();
+        left = applyMul(left, right, op);
+      }
+      return left;
+    }
+    function parseAdditive() {
+      let left = parseMultiplicative();
+      while (peek() && peek().type === "op" && ["+", "-"].includes(peek().raw)) {
+        const op = next().raw;
+        const right = parseMultiplicative();
+        left = applyAdd(left, right, op);
+      }
+      return left;
+    }
+    function parseComparison() {
+      let left = parseAdditive();
+      if (peek() && peek().type === "op" && ["==", "!=", "<", ">", "<=", ">="].includes(peek().raw)) {
+        const op = next().raw;
+        const right = parseAdditive();
+        left = applyCompare(left, right, op);
+      }
+      return left;
+    }
+    function parseAnd() {
+      let left = parseComparison();
+      while (peek() && peek().type === "op" && peek().raw === "&&") {
+        next();
+        const right = parseComparison();
+        left = applyLogical(left, right, "&&");
+      }
+      return left;
+    }
+    function parseOr() {
+      let left = parseAnd();
+      while (peek() && peek().type === "op" && peek().raw === "||") {
+        next();
+        const right = parseAnd();
+        left = applyLogical(left, right, "||");
+      }
+      return left;
+    }
+
+    const result = parseOr();
+    if (pos < tokens.length) throw new RuntimeErrorX("Sobra código después de la expresión: '" + tokens[pos].raw + "'.");
+    return result;
+  }
+
+  function applyMul(a, b, op) {
+    if (a.type === "String" || b.type === "String") throw new RuntimeErrorX("No se puede usar '" + op + "' con texto (String).");
+    const bothInt = a.type === "int" && b.type === "int";
+    if (op === "/") {
+      if (b.value === 0) throw new RuntimeErrorX("División por cero.");
+      const v = bothInt ? Math.trunc(a.value / b.value) : a.value / b.value;
+      return { type: bothInt ? "int" : "double", value: v };
+    }
+    if (op === "*") return { type: bothInt ? "int" : "double", value: a.value * b.value };
+    return { type: bothInt ? "int" : "double", value: a.value % b.value };
+  }
+  function applyAdd(a, b, op) {
+    if (op === "+") {
+      if (a.type === "String" || b.type === "String") return { type: "String", value: stringify(a) + stringify(b) };
+      const bothInt = a.type === "int" && b.type === "int";
+      return { type: bothInt ? "int" : "double", value: a.value + b.value };
+    }
+    if (a.type === "String" || b.type === "String") throw new RuntimeErrorX("No se puede restar texto (String).");
+    const bothInt = a.type === "int" && b.type === "int";
+    return { type: bothInt ? "int" : "double", value: a.value - b.value };
+  }
+  function applyCompare(a, b, op) {
+    if (op === "==" || op === "!=") {
+      const eq = a.value === b.value;
+      return { type: "boolean", value: op === "==" ? eq : !eq };
+    }
+    const numeric = (t) => t === "int" || t === "double";
+    if (!numeric(a.type) || !numeric(b.type)) throw new RuntimeErrorX("Los operadores <, >, <=, >= solo se pueden usar entre números.");
+    let v;
+    if (op === "<") v = a.value < b.value;
+    else if (op === ">") v = a.value > b.value;
+    else if (op === "<=") v = a.value <= b.value;
+    else v = a.value >= b.value;
+    return { type: "boolean", value: v };
+  }
+  function applyLogical(a, b, op) {
+    if (a.type !== "boolean" || b.type !== "boolean") throw new RuntimeErrorX("Los operadores && y || solo se pueden usar entre valores boolean.");
+    return { type: "boolean", value: op === "&&" ? (a.value && b.value) : (a.value || b.value) };
+  }
+  function evalExprString(str) { return parseExpression(tokenizeExpr(str)); }
+
+  function preprocess(code) {
+    let lines = code.split("\n").map((line) => {
+      const idx = line.indexOf("//");
+      return idx !== -1 ? line.slice(0, idx) : line;
+    });
+    lines = lines.filter((l) => !/^\s*import\s+/.test(l));
+    const classIdx = lines.findIndex((l) => /^\s*public\s+class\s+\w+(\s*\{)?\s*$/.test(l));
+    if (classIdx !== -1) lines.splice(classIdx, 1);
+    const mainIdx = lines.findIndex((l) => /^\s*public\s+static\s+void\s+main\s*\(\s*String(\[\])?\s*\[?\]?\s*args\s*\)(\s*\{)?\s*$/.test(l));
+    if (mainIdx !== -1) lines.splice(mainIdx, 1);
+    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+    if (lines.length && lines[lines.length - 1].trim() === "}") lines.pop();
+    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+    if (lines.length && lines[lines.length - 1].trim() === "}") lines.pop();
+    return lines.join("\n");
+  }
+
+  function skipWs(text, pos) { while (pos < text.length && /\s/.test(text[pos])) pos++; return pos; }
+  function matchWord(text, pos, word) {
+    if (text.substr(pos, word.length) !== word) return false;
+    const before = pos > 0 ? text[pos - 1] : "";
+    const after = text[pos + word.length] || "";
+    if (/[A-Za-z0-9_]/.test(before)) return false;
+    if (/[A-Za-z0-9_]/.test(after)) return false;
+    return true;
+  }
+  function findMatching(text, openPos, openCh, closeCh) {
+    let depth = 0, inStr = false, strCh = null, escaped = false;
+    for (let i = openPos; i < text.length; i++) {
+      const c = text[i];
+      if (inStr) {
+        if (escaped) escaped = false;
+        else if (c === "\\") escaped = true;
+        else if (c === strCh) inStr = false;
+        continue;
+      }
+      if (c === '"' || c === "'") { inStr = true; strCh = c; continue; }
+      if (c === openCh) depth++;
+      else if (c === closeCh) { depth--; if (depth === 0) return i; }
+    }
+    throw new RuntimeErrorX("Falta cerrar '" + openCh + "' en el código.");
+  }
+  function splitTopLevel(text, sep) {
+    const parts = [];
+    let cur = "", inStr = false, strCh = null, escaped = false, depth = 0;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inStr) {
+        cur += c;
+        if (escaped) escaped = false;
+        else if (c === "\\") escaped = true;
+        else if (c === strCh) inStr = false;
+        continue;
+      }
+      if (c === '"' || c === "'") { inStr = true; strCh = c; cur += c; continue; }
+      if (c === "(") depth++;
+      if (c === ")") depth--;
+      if (c === sep && depth === 0) { parts.push(cur); cur = ""; continue; }
+      cur += c;
+    }
+    parts.push(cur);
+    return parts;
+  }
+
+  function parseStatements(text) {
+    const nodes = [];
+    let pos = 0;
+    const len = text.length;
+    while (true) {
+      pos = skipWs(text, pos);
+      if (pos >= len) break;
+
+      if (matchWord(text, pos, "if")) {
+        pos += 2;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'if'.");
+        const cp = findMatching(text, pos, "(", ")");
+        const cond = text.slice(pos + 1, cp).trim();
+        pos = cp + 1;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del if.");
+        const cb = findMatching(text, pos, "{", "}");
+        const bodyNodes = parseStatements(text.slice(pos + 1, cb));
+        pos = cb + 1;
+        const clauses = [{ cond, nodes: bodyNodes }];
+
+        while (true) {
+          const afterIf = pos;
+          pos = skipWs(text, pos);
+          if (matchWord(text, pos, "else")) {
+            pos += 4;
+            pos = skipWs(text, pos);
+            if (matchWord(text, pos, "if")) {
+              pos += 2;
+              pos = skipWs(text, pos);
+              if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'else if'.");
+              const cp2 = findMatching(text, pos, "(", ")");
+              const cond2 = text.slice(pos + 1, cp2).trim();
+              pos = cp2 + 1;
+              pos = skipWs(text, pos);
+              if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del else if.");
+              const cb2 = findMatching(text, pos, "{", "}");
+              clauses.push({ cond: cond2, nodes: parseStatements(text.slice(pos + 1, cb2)) });
+              pos = cb2 + 1;
+              continue;
+            } else {
+              if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del else.");
+              const cb3 = findMatching(text, pos, "{", "}");
+              clauses.push({ cond: null, nodes: parseStatements(text.slice(pos + 1, cb3)) });
+              pos = cb3 + 1;
+              break;
+            }
+          } else {
+            pos = afterIf;
+            break;
+          }
+        }
+        nodes.push({ kind: "if", clauses });
+        continue;
+      }
+
+      if (matchWord(text, pos, "while")) {
+        pos += 5;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'while'.");
+        const cp = findMatching(text, pos, "(", ")");
+        const cond = text.slice(pos + 1, cp).trim();
+        pos = cp + 1;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del while.");
+        const cb = findMatching(text, pos, "{", "}");
+        const bodyNodes = parseStatements(text.slice(pos + 1, cb));
+        pos = cb + 1;
+        nodes.push({ kind: "while", cond, nodes: bodyNodes });
+        continue;
+      }
+
+      if (matchWord(text, pos, "do")) {
+        pos += 2;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "{") throw new RuntimeErrorX("Se esperaba '{' después de 'do'.");
+        const cb = findMatching(text, pos, "{", "}");
+        const bodyNodes = parseStatements(text.slice(pos + 1, cb));
+        pos = cb + 1;
+        pos = skipWs(text, pos);
+        if (!matchWord(text, pos, "while")) throw new RuntimeErrorX("Se esperaba 'while' después del bloque do { }.");
+        pos += 5;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'while'.");
+        const cp = findMatching(text, pos, "(", ")");
+        const cond = text.slice(pos + 1, cp).trim();
+        pos = cp + 1;
+        pos = skipWs(text, pos);
+        if (text[pos] === ";") pos++;
+        nodes.push({ kind: "dowhile", cond, nodes: bodyNodes });
+        continue;
+      }
+
+      if (matchWord(text, pos, "for")) {
+        pos += 3;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'for'.");
+        const cp = findMatching(text, pos, "(", ")");
+        const headerText = text.slice(pos + 1, cp);
+        const parts = splitTopLevel(headerText, ";");
+        if (parts.length !== 3) throw new RuntimeErrorX("El for debe tener tres partes separadas por ';' — inicialización; condición; actualización.");
+        const initText = parts[0].trim();
+        const condText = parts[1].trim();
+        const updateText = parts[2].trim();
+        pos = cp + 1;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del for.");
+        const cb = findMatching(text, pos, "{", "}");
+        const bodyNodes = parseStatements(text.slice(pos + 1, cb));
+        pos = cb + 1;
+        nodes.push({ kind: "for", init: initText, cond: condText, update: updateText, nodes: bodyNodes });
+        continue;
+      }
+
+      const start = pos;
+      let inStr = false, strCh = null, escaped = false, j = pos;
+      for (; j < len; j++) {
+        const c = text[j];
+        if (inStr) {
+          if (escaped) escaped = false;
+          else if (c === "\\") escaped = true;
+          else if (c === strCh) inStr = false;
+          continue;
+        }
+        if (c === '"' || c === "'") { inStr = true; strCh = c; continue; }
+        if (c === ";") break;
+      }
+      if (j >= len) {
+        const remainder = text.slice(start).trim();
+        if (remainder.length > 0) throw new RuntimeErrorX("Falta un ';' al final de: " + remainder);
+        break;
+      }
+      const stmtText = text.slice(start, j).trim();
+      pos = j + 1;
+      if (stmtText.length > 0) nodes.push({ kind: "simple", text: stmtText });
+    }
+    return nodes;
+  }
+
+  const TYPES = ["int", "double", "boolean", "char", "String"];
+  function execStatement(stmt) {
+    let m = stmt.match(/^Scanner\s+([A-Za-z_]\w*)\s*=\s*new\s+Scanner\s*\(\s*System\.in\s*\)$/);
+    if (m) { scanners.add(m[1]); env[m[1]] = { type: "Scanner", value: null }; return; }
+
+    for (const ty of TYPES) {
+      const re = new RegExp("^" + ty + "\\s+([A-Za-z_]\\w*)\\s*=\\s*(.+)$");
+      m = stmt.match(re);
+      if (m) { env[m[1]] = castTo(ty, evalExprString(m[2])); return; }
+    }
+    for (const ty of TYPES) {
+      const re = new RegExp("^" + ty + "\\s+([A-Za-z_]\\w*)$");
+      m = stmt.match(re);
+      if (m) {
+        const defaults = { int: 0, double: 0.0, boolean: false, char: "\u0000", String: "" };
+        env[m[1]] = { type: ty, value: defaults[ty] };
+        return;
+      }
+    }
+    m = stmt.match(/^System\.out\.(println|print)\s*\((.*)\)$/s);
+    if (m) {
+      const kind = m[1];
+      const inner = m[2].trim();
+      let text = "";
+      if (inner !== "") text = stringify(evalExprString(inner));
+      output.push({ text, newline: kind === "println" });
+      return;
+    }
+    m = stmt.match(/^([A-Za-z_]\w*)\s*(\+=|-=|\*=|\/=|%=)\s*(.+)$/);
+    if (m) {
+      const name = m[1], op = m[2], exprStr = m[3];
+      if (!(name in env)) throw new RuntimeErrorX("La variable '" + name + "' no fue declarada.");
+      const cur = env[name];
+      const rhs = evalExprString(exprStr);
+      let result;
+      if (op === "+=") result = applyAdd(cur, rhs, "+");
+      else if (op === "-=") result = applyAdd(cur, rhs, "-");
+      else if (op === "*=") result = applyMul(cur, rhs, "*");
+      else if (op === "/=") result = applyMul(cur, rhs, "/");
+      else result = applyMul(cur, rhs, "%");
+      env[name] = castTo(cur.type, result);
+      return;
+    }
+    m = stmt.match(/^([A-Za-z_]\w*)(\+\+|--)$/);
+    if (!m) m = stmt.match(/^(\+\+|--)([A-Za-z_]\w*)$/);
+    if (m) {
+      const name = m[1].length === 2 ? m[2] : m[1];
+      const op = m[1].length === 2 ? m[1] : m[2];
+      if (!(name in env)) throw new RuntimeErrorX("La variable '" + name + "' no fue declarada.");
+      const cur = env[name];
+      const delta = op === "++" ? 1 : -1;
+      env[name] = castTo(cur.type, { type: cur.type, value: cur.value + delta });
+      return;
+    }
+    m = stmt.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
+    if (m) {
+      const name = m[1];
+      const rhs = evalExprString(m[2]);
+      if (name in env && env[name].type !== "Scanner") env[name] = castTo(env[name].type, rhs);
+      else env[name] = rhs;
+      return;
+    }
+    try { evalExprString(stmt); return; }
+    catch (e) { throw new RuntimeErrorX("No se entendió esta línea: " + stmt); }
+  }
+
+  function execBlock(nodes) {
+    for (const n of nodes) {
+      tickStep();
+      if (n.kind === "simple") { execStatement(n.text); continue; }
+      if (n.kind === "if") {
+        for (const clause of n.clauses) {
+          let take;
+          if (clause.cond === null) take = true;
+          else {
+            const condVal = evalExprString(clause.cond);
+            if (condVal.type !== "boolean") throw new RuntimeErrorX("La condición del if debe ser un valor boolean.");
+            take = condVal.value;
+          }
+          if (take) { execBlock(clause.nodes); break; }
+        }
+        continue;
+      }
+      if (n.kind === "while") {
+        while (true) {
+          tickStep();
+          const condVal = evalExprString(n.cond);
+          if (condVal.type !== "boolean") throw new RuntimeErrorX("La condición del while debe ser un valor boolean.");
+          if (!condVal.value) break;
+          execBlock(n.nodes);
+        }
+        continue;
+      }
+      if (n.kind === "dowhile") {
+        while (true) {
+          tickStep();
+          execBlock(n.nodes);
+          const condVal = evalExprString(n.cond);
+          if (condVal.type !== "boolean") throw new RuntimeErrorX("La condición del while debe ser un valor boolean.");
+          if (!condVal.value) break;
+        }
+        continue;
+      }
+      if (n.kind === "for") {
+        if (n.init) execStatement(n.init);
+        while (true) {
+          tickStep();
+          if (n.cond) {
+            const condVal = evalExprString(n.cond);
+            if (condVal.type !== "boolean") throw new RuntimeErrorX("La condición del for debe ser un valor boolean.");
+            if (!condVal.value) break;
+          }
+          execBlock(n.nodes);
+          if (n.update) execStatement(n.update);
+        }
+        continue;
+      }
+    }
+  }
+
+  function run(code, inputs) {
+    inputQueue = inputs || [];
+    inputPtr = 0;
+    output.length = 0;
+    steps = 0;
+    const body = preprocess(code);
+    const nodes = parseStatements(body);
+    execBlock(nodes);
+    return output;
+  }
+  return { run };
+}
+
+/* =========================================================
+   DEFINICIÓN DE EJERCICIOS
+   ========================================================= */
+const exercises = [
+  // ---------- PARTE 1: while ----------
+  {
+    section: "Parte 1 · while",
+    sectionTitle: "Repetir mientras una condición sea verdadera",
+    sectionDesc: "El ciclo while comprueba la condición antes de cada vuelta. Si nunca deja de ser verdadera, el programa se detiene solo por seguridad (más de 20.000 repeticiones).",
+    title: "Contar del 1 al 5",
+    concept: "while básico",
+    task: "Completá el programa para que imprima los números del 1 al 5, uno por línea, usando un while.",
+    starter:
+`public class ContarDel1Al5 {
+    public static void main(String[] args) {
+        int i = 1;
+        while (/* completá acá: i menor o igual a 5 */) {
+            System.out.println(i);
+            /* completá acá: incrementá i */
+        }
+    }
+}`,
+    solution:
+`public class ContarDel1Al5 {
+    public static void main(String[] args) {
+        int i = 1;
+        while (i <= 5) {
+            System.out.println(i);
+            i++;
+        }
+    }
+}`,
+    solutionNote: "El while revisa la condición ANTES de cada vuelta. Si i nunca cambiara dentro del ciclo, esto sería un ciclo infinito.",
+    inputs: [],
+  },
+  {
+    title: "Suma de números naturales",
+    concept: "while + acumulador + Scanner",
+    task: "Completá el programa para que sume todos los números naturales desde 1 hasta el número que ingrese el usuario.",
+    starter:
+`import java.util.Scanner;
+
+public class SumaNaturales {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Hasta qué número querés sumar?");
+        int n = entrada.nextInt();
+
+        int suma = 0;
+        int i = 1;
+        while (/* completá acá */) {
+            /* completá acá: sumá i al acumulador */
+            i++;
+        }
+        System.out.println("La suma es: " + suma);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SumaNaturales {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Hasta qué número querés sumar?");
+        int n = entrada.nextInt();
+
+        int suma = 0;
+        int i = 1;
+        while (i <= n) {
+            suma += i;
+            i++;
+        }
+        System.out.println("La suma es: " + suma);
+    }
+}`,
+    solutionNote: "El patrón acumulador (suma += i) es uno de los más usados dentro de cualquier ciclo.",
+    inputs: [{ label: "n (nextInt)", placeholder: "5" }],
+  },
+  {
+    title: "Validar un número positivo",
+    concept: "while + Scanner repetido",
+    task: "Completá el programa para que siga pidiendo un número mientras sea negativo, y recién termine cuando el usuario ingrese uno positivo.",
+    starter:
+`import java.util.Scanner;
+
+public class ValidarPositivo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Ingresá un número positivo:");
+        int numero = entrada.nextInt();
+
+        while (/* completá acá: numero menor a 0 */) {
+            System.out.println("Ese número es negativo, probá de nuevo:");
+            numero = /* completá acá: leé otro entero */;
+        }
+        System.out.println("Gracias, ingresaste: " + numero);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class ValidarPositivo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Ingresá un número positivo:");
+        int numero = entrada.nextInt();
+
+        while (numero < 0) {
+            System.out.println("Ese número es negativo, probá de nuevo:");
+            numero = entrada.nextInt();
+        }
+        System.out.println("Gracias, ingresaste: " + numero);
+    }
+}`,
+    solutionNote: "Este es el patrón de \"validación de entrada\": se sigue preguntando hasta que el dato cumple lo que necesitamos. Cargá varias entradas simuladas — el programa va a consumir las que necesite.",
+    inputs: [
+      { label: "Intento 1 (nextInt)", placeholder: "-3" },
+      { label: "Intento 2 (nextInt)", placeholder: "-1" },
+      { label: "Intento 3 (nextInt)", placeholder: "7" },
+    ],
+  },
+  {
+    title: "Vender hasta agotar el stock",
+    concept: "while + contador + resta",
+    task: "Completá el programa para que venda unidades de a una hasta que el stock llegue a 0, y cuente cuántas se vendieron.",
+    starter:
+`public class VenderHastaAgotar {
+    public static void main(String[] args) {
+        int stock = 7;
+        int vendidos = 0;
+
+        while (/* completá acá: stock mayor a 0 */) {
+            stock--;
+            /* completá acá: incrementá vendidos */
+        }
+        System.out.println("Se vendieron " + vendidos + " unidades");
+    }
+}`,
+    solution:
+`public class VenderHastaAgotar {
+    public static void main(String[] args) {
+        int stock = 7;
+        int vendidos = 0;
+
+        while (stock > 0) {
+            stock--;
+            vendidos++;
+        }
+        System.out.println("Se vendieron " + vendidos + " unidades");
+    }
+}`,
+    solutionNote: "Acá la condición de corte depende de una variable que se va reduciendo (stock), en vez de una que crece.",
+    inputs: [],
+  },
+  {
+    title: "Tabla de multiplicar con while",
+    concept: "while + concatenación",
+    task: "Completá el programa para que imprima la tabla del 4, del 1 al 10, usando un while.",
+    starter:
+`public class TablaMultiplicarWhile {
+    public static void main(String[] args) {
+        int numero = 4;
+        int i = 1;
+        while (i <= 10) {
+            System.out.println(numero + " x " + i + " = " + /* completá acá */);
+            i++;
+        }
+    }
+}`,
+    solution:
+`public class TablaMultiplicarWhile {
+    public static void main(String[] args) {
+        int numero = 4;
+        int i = 1;
+        while (i <= 10) {
+            System.out.println(numero + " x " + i + " = " + (numero * i));
+            i++;
+        }
+    }
+}`,
+    solutionNote: "Los paréntesis alrededor de (numero * i) aseguran que la multiplicación se resuelva antes de concatenarla como texto.",
+    inputs: [],
+  },
+
+  // ---------- PARTE 2: do-while ----------
+  {
+    section: "Parte 2 · do-while",
+    sectionTitle: "Repetir ejecutando el bloque al menos una vez",
+    sectionDesc: "La diferencia clave con while: el do-while ejecuta el bloque PRIMERO, y recién después pregunta si tiene que repetir. Por eso siempre corre al menos una vez, aunque la condición ya sea falsa desde el principio.",
+    title: "Mostrar al menos una vez",
+    concept: "do-while básico",
+    task: "Este programa ya está completo. Fijate que cantidadRestante empieza en 0 — con un while normal, el bloque nunca se ejecutaría. Ejecutalo y comprobá que igual imprime una vez.",
+    starter:
+`public class MostrarAlMenosUnaVez {
+    public static void main(String[] args) {
+        int cantidadRestante = 0;
+        do {
+            System.out.println("Quedan " + cantidadRestante + " entradas");
+            cantidadRestante--;
+        } while (cantidadRestante > 0);
+    }
+}`,
+    solution:
+`public class MostrarAlMenosUnaVez {
+    public static void main(String[] args) {
+        int cantidadRestante = 0;
+        do {
+            System.out.println("Quedan " + cantidadRestante + " entradas");
+            cantidadRestante--;
+        } while (cantidadRestante > 0);
+    }
+}`,
+    solutionNote: "do { ... } while (condición); ejecuta el bloque primero y pregunta después — por eso corre una vez aunque la condición ya sea false desde el arranque.",
+    inputs: [],
+  },
+  {
+    title: "Cuenta regresiva",
+    concept: "do-while + decremento",
+    task: "Completá el programa para que haga una cuenta regresiva desde 5 hasta 0 (incluido), usando do-while.",
+    starter:
+`public class CuentaRegresiva {
+    public static void main(String[] args) {
+        int i = 5;
+        do {
+            System.out.println(i);
+            /* completá acá: decrementá i */
+        } while (/* completá acá: i mayor o igual a 0 */);
+    }
+}`,
+    solution:
+`public class CuentaRegresiva {
+    public static void main(String[] args) {
+        int i = 5;
+        do {
+            System.out.println(i);
+            i--;
+        } while (i >= 0);
+    }
+}`,
+    solutionNote: "",
+    inputs: [],
+  },
+  {
+    title: "Intentos de acceso",
+    concept: "do-while + Scanner + comparación de String",
+    task: "Completá la condición para que el programa siga pidiendo la clave hasta que el intento coincida con la clave correcta.",
+    starter:
+`import java.util.Scanner;
+
+public class IntentosAcceso {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        String claveCorrecta = "feria2026";
+        String intento;
+        int intentos = 0;
+
+        do {
+            System.out.println("Ingresá la clave del puesto:");
+            intento = entrada.nextLine();
+            intentos++;
+        } while (/* completá acá: intento distinto de claveCorrecta */);
+
+        System.out.println("Acceso concedido en el intento número " + intentos);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class IntentosAcceso {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        String claveCorrecta = "feria2026";
+        String intento;
+        int intentos = 0;
+
+        do {
+            System.out.println("Ingresá la clave del puesto:");
+            intento = entrada.nextLine();
+            intentos++;
+        } while (intento != claveCorrecta);
+
+        System.out.println("Acceso concedido en el intento número " + intentos);
+    }
+}`,
+    solutionNote: "En esta práctica != compara el contenido de los String directamente (a diferencia de Java real, donde para texto se usa .equals() — acá simplificamos para poder practicar el patrón del ciclo).",
+    inputs: [
+      { label: "Intento 1 (nextLine)", placeholder: "1234" },
+      { label: "Intento 2 (nextLine)", placeholder: "abcd" },
+      { label: "Intento 3 (nextLine)", placeholder: "feria2026" },
+    ],
+  },
+  {
+    title: "Sumar hasta que ingresen 0",
+    concept: "do-while + centinela",
+    task: "Completá el programa para que siga sumando números hasta que el usuario ingrese un 0 (el 0 no debería contarse extra, pero termina el ciclo).",
+    starter:
+`import java.util.Scanner;
+
+public class SumarHastaCero {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        int suma = 0;
+        int numero;
+
+        do {
+            System.out.println("Ingresá un número (0 para terminar):");
+            numero = entrada.nextInt();
+            suma += numero;
+        } while (/* completá acá: numero distinto de 0 */);
+
+        System.out.println("Suma total: " + suma);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SumarHastaCero {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        int suma = 0;
+        int numero;
+
+        do {
+            System.out.println("Ingresá un número (0 para terminar):");
+            numero = entrada.nextInt();
+            suma += numero;
+        } while (numero != 0);
+
+        System.out.println("Suma total: " + suma);
+    }
+}`,
+    solutionNote: "Este patrón se llama \"valor centinela\": un valor especial (acá 0) que le avisa al programa que pare de leer datos.",
+    inputs: [
+      { label: "Número 1 (nextInt)", placeholder: "5" },
+      { label: "Número 2 (nextInt)", placeholder: "10" },
+      { label: "Número 3 (nextInt)", placeholder: "0" },
+    ],
+  },
+
+  // ---------- PARTE 3: for ----------
+  {
+    section: "Parte 3 · for",
+    sectionTitle: "El ciclo con contador incorporado",
+    sectionDesc: "El for junta en una sola línea las tres partes que veníamos escribiendo aparte en el while: inicialización, condición y actualización. Es el más usado cuando ya sabemos cuántas veces queremos repetir.",
+    title: "Tabla de multiplicar con for",
+    concept: "for básico",
+    task: "Completá el for para que imprima la tabla del 6, del 1 al 10.",
+    starter:
+`public class TablaMultiplicarFor {
+    public static void main(String[] args) {
+        int numero = 6;
+        for (/* completá acá: int i = 1; i <= 10; i++ */) {
+            System.out.println(numero + " x " + i + " = " + (numero * i));
+        }
+    }
+}`,
+    solution:
+`public class TablaMultiplicarFor {
+    public static void main(String[] args) {
+        int numero = 6;
+        for (int i = 1; i <= 10; i++) {
+            System.out.println(numero + " x " + i + " = " + (numero * i));
+        }
+    }
+}`,
+    solutionNote: "Las tres partes del for van separadas por ';': inicialización (una sola vez), condición (se revisa antes de cada vuelta) y actualización (se ejecuta al final de cada vuelta).",
+    inputs: [],
+  },
+  {
+    title: "Suma con for",
+    concept: "for + acumulador",
+    task: "Reescribí con for el mismo programa que ya hicieron con while: sumar los números naturales desde 1 hasta n.",
+    starter:
+`import java.util.Scanner;
+
+public class SumaConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Hasta qué número querés sumar?");
+        int n = entrada.nextInt();
+
+        int suma = 0;
+        for (/* completá acá */) {
+            suma += i;
+        }
+        System.out.println("La suma es: " + suma);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SumaConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Hasta qué número querés sumar?");
+        int n = entrada.nextInt();
+
+        int suma = 0;
+        for (int i = 1; i <= n; i++) {
+            suma += i;
+        }
+        System.out.println("La suma es: " + suma);
+    }
+}`,
+    solutionNote: "El mismo problema, con for queda un poco más compacto que con while porque las tres partes están juntas.",
+    inputs: [{ label: "n (nextInt)", placeholder: "10" }],
+  },
+  {
+    title: "Contar números pares",
+    concept: "for + if",
+    task: "Completá el programa para que cuente cuántos números pares hay entre 1 y 20.",
+    starter:
+`public class ContarPares {
+    public static void main(String[] args) {
+        int cantidadPares = 0;
+        for (int i = 1; i <= 20; i++) {
+            if (/* completá acá: i es par */) {
+                cantidadPares++;
+            }
+        }
+        System.out.println("Hay " + cantidadPares + " números pares entre 1 y 20");
+    }
+}`,
+    solution:
+`public class ContarPares {
+    public static void main(String[] args) {
+        int cantidadPares = 0;
+        for (int i = 1; i <= 20; i++) {
+            if (i % 2 == 0) {
+                cantidadPares++;
+            }
+        }
+        System.out.println("Hay " + cantidadPares + " números pares entre 1 y 20");
+    }
+}`,
+    solutionNote: "Un if dentro de un for es una combinación muy común: recorrer todo un rango, pero contar/actuar solo sobre los que cumplen una condición.",
+    inputs: [],
+  },
+  {
+    title: "Factorial de un número",
+    concept: "for + producto acumulado",
+    task: "Completá el programa para que calcule el factorial del número ingresado (multiplicar todos los enteros desde 1 hasta n).",
+    starter:
+`import java.util.Scanner;
+
+public class Factorial {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿De qué número querés el factorial?");
+        int n = entrada.nextInt();
+
+        int resultado = 1;
+        for (int i = 1; i <= n; i++) {
+            /* completá acá: multiplicá resultado por i */
+        }
+        System.out.println("El factorial es: " + resultado);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class Factorial {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿De qué número querés el factorial?");
+        int n = entrada.nextInt();
+
+        int resultado = 1;
+        for (int i = 1; i <= n; i++) {
+            resultado *= i;
+        }
+        System.out.println("El factorial es: " + resultado);
+    }
+}`,
+    solutionNote: "resultado empieza en 1 (no en 0) porque es un acumulador de multiplicación — si empezara en 0, todo el resultado sería siempre 0.",
+    inputs: [{ label: "n (nextInt)", placeholder: "5" }],
+  },
+  {
+    title: "Repetir un anuncio",
+    concept: "for simple con contador en el mensaje",
+    task: "Completá el for para que repita el anuncio tantas veces como indique el usuario, numerando cada anuncio.",
+    starter:
+`import java.util.Scanner;
+
+public class RepetirMensaje {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas veces querés anunciar la feria?");
+        int veces = entrada.nextInt();
+
+        for (/* completá acá */) {
+            System.out.println("Anuncio " + i + ": ¡Vengan a la Feria Estudiantil!");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class RepetirMensaje {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas veces querés anunciar la feria?");
+        int veces = entrada.nextInt();
+
+        for (int i = 1; i <= veces; i++) {
+            System.out.println("Anuncio " + i + ": ¡Vengan a la Feria Estudiantil!");
+        }
+    }
+}`,
+    solutionNote: "",
+    inputs: [{ label: "veces (nextInt)", placeholder: "3" }],
+  },
+  {
+    title: "Sumar ventas del día",
+    concept: "for + Scanner adentro del ciclo",
+    task: "Completá el programa para que pida, una por una, el monto de cada venta del día, y acumule el total.",
+    starter:
+`import java.util.Scanner;
+
+public class SumarVentasConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas ventas hubo hoy?");
+        int cantidadVentas = entrada.nextInt();
+
+        double total = 0;
+        for (int i = 1; i <= cantidadVentas; i++) {
+            System.out.println("Monto de la venta " + i + ":");
+            double monto = /* completá acá */;
+            total += monto;
+        }
+        System.out.println("Total vendido: Gs. " + total);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SumarVentasConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas ventas hubo hoy?");
+        int cantidadVentas = entrada.nextInt();
+
+        double total = 0;
+        for (int i = 1; i <= cantidadVentas; i++) {
+            System.out.println("Monto de la venta " + i + ":");
+            double monto = entrada.nextDouble();
+            total += monto;
+        }
+        System.out.println("Total vendido: Gs. " + total);
+    }
+}`,
+    solutionNote: "Este es el patrón más común de todo el ciclo con Scanner: leer N datos, uno por vuelta, acumulando un resultado.",
+    inputs: [
+      { label: "Cantidad de ventas (nextInt)", placeholder: "3" },
+      { label: "Venta 1 (nextDouble)", placeholder: "5000" },
+      { label: "Venta 2 (nextDouble)", placeholder: "8000" },
+      { label: "Venta 3 (nextDouble)", placeholder: "2000" },
+    ],
+  },
+
+  // ---------- PARTE 4: combinados y anidados ----------
+  {
+    section: "Parte 4 · Combinados y anidados",
+    sectionTitle: "Un ciclo dentro de otro, y ciclos con if adentro",
+    sectionDesc: "Los últimos ejercicios integran todo: ciclos anidados (un for dentro de otro for), y ciclos combinados con condicionales para resolver problemas más completos.",
+    title: "Tabla de multiplicar completa (for anidado)",
+    concept: "for dentro de for",
+    task: "Completá el for externo para que imprima las tablas del 1, del 2 y del 3 (cada una del 1 al 5), usando un for dentro de otro for.",
+    starter:
+`public class TablaMultiplicarCompleta {
+    public static void main(String[] args) {
+        for (/* completá acá: numero de 1 a 3 */) {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(numero + " x " + i + " = " + (numero * i));
+            }
+        }
+    }
+}`,
+    solution:
+`public class TablaMultiplicarCompleta {
+    public static void main(String[] args) {
+        for (int numero = 1; numero <= 3; numero++) {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(numero + " x " + i + " = " + (numero * i));
+            }
+        }
+    }
+}`,
+    solutionNote: "Por cada vuelta del for externo (numero), el for interno (i) completa TODAS sus vueltas antes de que el externo avance una vez más.",
+    inputs: [],
+  },
+  {
+    title: "Contar pares e impares",
+    concept: "for + if/else + dos contadores",
+    task: "Completá el else para que el programa cuente, además de los pares, cuántos números impares hay entre 1 y 15.",
+    starter:
+`public class ContarParesEImpares {
+    public static void main(String[] args) {
+        int pares = 0;
+        int impares = 0;
+        for (int i = 1; i <= 15; i++) {
+            if (i % 2 == 0) {
+                pares++;
+            } else {
+                /* completá acá */
+            }
+        }
+        System.out.println("Pares: " + pares);
+        System.out.println("Impares: " + impares);
+    }
+}`,
+    solution:
+`public class ContarParesEImpares {
+    public static void main(String[] args) {
+        int pares = 0;
+        int impares = 0;
+        for (int i = 1; i <= 15; i++) {
+            if (i % 2 == 0) {
+                pares++;
+            } else {
+                impares++;
+            }
+        }
+        System.out.println("Pares: " + pares);
+        System.out.println("Impares: " + impares);
+    }
+}`,
+    solutionNote: "Un solo recorrido del for puede alimentar varios contadores distintos a la vez.",
+    inputs: [],
+  },
+  {
+    title: "Buscar el primer múltiplo",
+    concept: "while + if + variable boolean (sin break)",
+    task: "Esta práctica no soporta la instrucción break, así que usamos una variable boolean como \"bandera\" para cortar el ciclo. Completá el if para marcar cuándo se encontró el múltiplo.",
+    starter:
+`import java.util.Scanner;
+
+public class PrimerMultiplo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Buscar el primer múltiplo de qué número?");
+        int divisor = entrada.nextInt();
+
+        int numero = 1;
+        boolean encontrado = false;
+        while (!encontrado) {
+            if (/* completá acá: numero es múltiplo de divisor */) {
+                encontrado = true;
+            } else {
+                numero++;
+            }
+        }
+        System.out.println("El primer múltiplo es: " + numero);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class PrimerMultiplo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Buscar el primer múltiplo de qué número?");
+        int divisor = entrada.nextInt();
+
+        int numero = 1;
+        boolean encontrado = false;
+        while (!encontrado) {
+            if (numero % divisor == 0) {
+                encontrado = true;
+            } else {
+                numero++;
+            }
+        }
+        System.out.println("El primer múltiplo es: " + numero);
+    }
+}`,
+    solutionNote: "La variable encontrado funciona como \"bandera\": mientras sea false, el while sigue. En Java real existe break para cortar de golpe, pero esta práctica no lo soporta — el patrón de bandera es una alternativa válida y muy usada igual.",
+    inputs: [{ label: "divisor (nextInt)", placeholder: "7" }],
+  },
+  {
+    title: "Promedio con for",
+    concept: "for + Scanner + acumulador + división final",
+    task: "Completá el programa para que pida N notas y calcule el promedio.",
+    starter:
+`import java.util.Scanner;
+
+public class PromedioConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas notas vas a promediar?");
+        int cantidad = entrada.nextInt();
+
+        double suma = 0;
+        for (int i = 1; i <= cantidad; i++) {
+            System.out.println("Nota " + i + ":");
+            double nota = entrada.nextDouble();
+            /* completá acá: sumá nota al acumulador */
+        }
+        double promedio = /* completá acá: suma dividido cantidad */;
+        System.out.println("Promedio: " + promedio);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class PromedioConFor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas notas vas a promediar?");
+        int cantidad = entrada.nextInt();
+
+        double suma = 0;
+        for (int i = 1; i <= cantidad; i++) {
+            System.out.println("Nota " + i + ":");
+            double nota = entrada.nextDouble();
+            suma += nota;
+        }
+        double promedio = suma / cantidad;
+        System.out.println("Promedio: " + promedio);
+    }
+}`,
+    solutionNote: "La división final se hace UNA sola vez, después de que el for terminó de acumular todas las notas — no adentro del ciclo.",
+    inputs: [
+      { label: "Cantidad de notas (nextInt)", placeholder: "3" },
+      { label: "Nota 1 (nextDouble)", placeholder: "8" },
+      { label: "Nota 2 (nextDouble)", placeholder: "7" },
+      { label: "Nota 3 (nextDouble)", placeholder: "9" },
+    ],
+  },
+  {
+    title: "Sistema de ventas del día (integradora)",
+    concept: "for + Scanner + acumulador + if — combina todo",
+    task: "Completá el programa para que, además de sumar el total vendido, cuente cuántas ventas fueron \"grandes\" (10000 o más).",
+    starter:
+`import java.util.Scanner;
+
+public class SistemaVentasDelDia {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas ventas hubo hoy?");
+        int cantidadVentas = entrada.nextInt();
+
+        double total = 0;
+        int ventasGrandes = 0;
+        for (int i = 1; i <= cantidadVentas; i++) {
+            System.out.println("Monto de la venta " + i + ":");
+            double monto = entrada.nextDouble();
+            total += monto;
+            if (/* completá acá: monto >= 10000 */) {
+                ventasGrandes++;
+            }
+        }
+        System.out.println("Total vendido: Gs. " + total);
+        System.out.println("Ventas grandes (10000 o más): " + ventasGrandes);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SistemaVentasDelDia {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("¿Cuántas ventas hubo hoy?");
+        int cantidadVentas = entrada.nextInt();
+
+        double total = 0;
+        int ventasGrandes = 0;
+        for (int i = 1; i <= cantidadVentas; i++) {
+            System.out.println("Monto de la venta " + i + ":");
+            double monto = entrada.nextDouble();
+            total += monto;
+            if (monto >= 10000) {
+                ventasGrandes++;
+            }
+        }
+        System.out.println("Total vendido: Gs. " + total);
+        System.out.println("Ventas grandes (10000 o más): " + ventasGrandes);
+    }
+}`,
+    solutionNote: "Este ejercicio junta todo el recorrido: Scanner dentro de un for, un acumulador, y un if que clasifica cada dato a medida que se lee — el mismo patrón que van a usar en el sistema real de su proyecto.",
+    inputs: [
+      { label: "Cantidad de ventas (nextInt)", placeholder: "3" },
+      { label: "Venta 1 (nextDouble)", placeholder: "5000" },
+      { label: "Venta 2 (nextDouble)", placeholder: "12000" },
+      { label: "Venta 3 (nextDouble)", placeholder: "20000" },
+    ],
+  },
+];
+
+/* =========================================================
+   RENDER Y EJECUCIÓN
+   ========================================================= */
+const container = document.getElementById("exercises");
+let exerciseCounter = 0;
+
+exercises.forEach((ex) => {
+  if (ex.section) {
+    const div = document.createElement("div");
+    div.className = "section-divider";
+    div.innerHTML = `
+      <div class="kicker">${ex.section}</div>
+      <h2>${ex.sectionTitle}</h2>
+      <p>${ex.sectionDesc}</p>
+      <hr>
+    `;
+    container.appendChild(div);
+  }
+  exerciseCounter++;
+  const idx = exerciseCounter;
+
+  const el = document.createElement("section");
+  el.className = "exercise";
+
+  const inputsHtml = ex.inputs.length
+    ? `<div class="inputs-row">
+         <div class="hint">Entradas simuladas para Scanner (se consumen en este orden):</div>
+         ${ex.inputs.map((inp, i) => `
+           <label>${inp.label}
+             <input type="text" data-input-idx="${i}" placeholder="${inp.placeholder}">
+           </label>
+         `).join("")}
+       </div>`
+    : "";
+
+  el.innerHTML = `
+    <div class="exercise-head">
+      <div class="badge">${idx}</div>
+      <div>
+        <div class="concept">${ex.concept}</div>
+        <h2>${ex.title}</h2>
+      </div>
+    </div>
+    <div class="exercise-body">
+      <p class="task">${ex.task}</p>
+      <textarea class="code-editor" spellcheck="false">${ex.starter}</textarea>
+      ${inputsHtml}
+      <div class="btn-row">
+        <button class="btn-run">▶ Ejecutar</button>
+        <button class="btn-reset">↺ Reiniciar código</button>
+        <button class="btn-solution">👁 Ver solución</button>
+      </div>
+      <div class="console"><span class="placeholder">La salida de tu programa va a aparecer acá.</span></div>
+      <div class="solution">
+        <h4>Solución</h4>
+        <pre>${ex.solution}</pre>
+        ${ex.solutionNote ? `<div class="note">${ex.solutionNote}</div>` : ""}
+      </div>
+    </div>
+  `;
+  container.appendChild(el);
+
+  const textarea = el.querySelector(".code-editor");
+  const consoleEl = el.querySelector(".console");
+  const solutionEl = el.querySelector(".solution");
+  const inputEls = Array.from(el.querySelectorAll("input[data-input-idx]"));
+
+  el.querySelector(".btn-run").addEventListener("click", () => {
+    const code = textarea.value;
+    const inputs = inputEls.map((inp) => inp.value.trim() || inp.placeholder);
+    consoleEl.innerHTML = "";
+    try {
+      const interp = makeInterpreter();
+      const out = interp.run(code, inputs);
+      if (out.length === 0) {
+        consoleEl.innerHTML = '<span class="placeholder">(el programa no imprimió nada)</span>';
+      } else {
+        let html = "";
+        out.forEach((o) => {
+          html += `<span class="line-out">${escapeHtml(o.text)}</span>` + (o.newline ? "\n" : "");
+        });
+        consoleEl.innerHTML = html;
+      }
+    } catch (e) {
+      consoleEl.innerHTML = `<span class="line-err">⚠ ${escapeHtml(e.message || String(e))}</span>`;
+    }
+  });
+
+  el.querySelector(".btn-reset").addEventListener("click", () => {
+    textarea.value = ex.starter;
+    consoleEl.innerHTML = '<span class="placeholder">La salida de tu programa va a aparecer acá.</span>';
+  });
+
+  el.querySelector(".btn-solution").addEventListener("click", (e) => {
+    solutionEl.classList.toggle("open");
+    e.target.textContent = solutionEl.classList.contains("open") ? "🙈 Ocultar solución" : "👁 Ver solución";
+  });
+});
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+</script>
+</body>
+</html>
