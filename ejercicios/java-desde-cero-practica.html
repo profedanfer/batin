@@ -15,9 +15,6 @@
     --card: #FFFFFF;
     --codebg: #2B2B2B;
     --codefg: #E8E8E8;
-    --good: #4CAF6D;
-    --warn: #D98A2B;
-    --err: #D9534F;
   }
   * { box-sizing: border-box; }
   body {
@@ -85,6 +82,36 @@
     padding: 10px 28px 60px;
   }
 
+  .section-divider {
+    margin: 46px 0 8px;
+    padding-top: 10px;
+  }
+  .section-divider .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+  .section-divider h2 {
+    font-family: Georgia, "Cambria", serif;
+    font-size: 28px;
+    margin: 4px 0 6px;
+    color: var(--darkgray);
+  }
+  .section-divider p {
+    font-size: 14.5px;
+    color: var(--midgray);
+    margin: 0;
+    max-width: 720px;
+  }
+  .section-divider hr {
+    border: none;
+    border-top: 3px solid var(--orange);
+    width: 60px;
+    margin: 14px 0 0;
+  }
+
   .exercise {
     background: var(--card);
     border-radius: 10px;
@@ -106,7 +133,7 @@
     color: #fff;
     font-weight: 700;
     display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
+    font-size: 14px;
   }
   .exercise-head h2 {
     font-family: Georgia, "Cambria", serif;
@@ -180,7 +207,7 @@
     padding: 6px 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 130px;
+    width: 140px;
   }
 
   .btn-row {
@@ -219,7 +246,6 @@
   }
   .console .placeholder { color: #777; font-style: italic; }
   .console .line-out { color: #A8E6A1; }
-  .console .line-warn { color: #F0C36E; }
   .console .line-err { color: #F08A80; }
 
   .solution {
@@ -282,8 +308,8 @@
     Esta página tiene un pequeño intérprete de Java integrado: podés escribir código real, apretar
     <strong>Ejecutar</strong> y ver la salida en la consola de abajo, sin instalar nada.
     <ul>
-      <li>Soporta exactamente lo que vimos en clase: variables (<code>int</code>, <code>double</code>, <code>boolean</code>, <code>char</code>, <code>String</code>), <code>Scanner</code>, operadores y <code>System.out.println</code>.</li>
-      <li>No es una JVM completa — no reconoce condicionales, ciclos ni clases propias todavía. Para eso vamos a usar VS Code en el laboratorio.</li>
+      <li>Soporta variables (<code>int</code>, <code>double</code>, <code>boolean</code>, <code>char</code>, <code>String</code>), <code>Scanner</code>, operadores aritméticos, de comparación (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>) y lógicos (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>), y condicionales <code>if</code> / <code>else if</code> / <code>else</code> (incluso anidados).</li>
+      <li>No es una JVM completa — todavía no reconoce ciclos (<code>for</code>, <code>while</code>) ni clases propias. Para eso vamos a usar VS Code en el laboratorio.</li>
       <li>Si un ejercicio usa <code>Scanner</code>, completá los valores simulados en el recuadro naranja antes de ejecutar.</li>
       <li>Podés tocar "Ver solución" en cualquier momento para comparar tu código.</li>
     </ul>
@@ -300,9 +326,10 @@
 <script>
 /* =========================================================
    MINI INTÉRPRETE DE JAVA (subconjunto usado en clase)
+   Ahora con: comparaciones, operadores lógicos, if/else if/else
    ========================================================= */
 function tokenizeExpr(str) {
-  const re = /\s*(?:("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\d+\.\d+|\d+)|([A-Za-z_]\w*)|(==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|\*=|\/=|%=|[+\-*/%(),.])|(\S))/g;
+  const re = /\s*(?:("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\d+\.\d+|\d+)|([A-Za-z_]\w*)|(==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|\*=|\/=|%=|[+\-*/%(),.<>!])|(\S))/g;
   const tokens = [];
   let m;
   while ((m = re.exec(str)) !== null) {
@@ -353,9 +380,7 @@ function makeInterpreter() {
   const output = [];
 
   function nextInput() {
-    if (inputPtr >= inputQueue.length) {
-      throw new RuntimeErrorX("Se pidió un dato con Scanner pero no hay más entradas simuladas cargadas. Completá el recuadro de entradas.");
-    }
+    if (inputPtr >= inputQueue.length) throw new RuntimeErrorX("Se pidió un dato con Scanner pero no hay más entradas simuladas cargadas. Completá el recuadro de entradas.");
     return inputQueue[inputPtr++];
   }
 
@@ -376,10 +401,16 @@ function makeInterpreter() {
       if (t.type === "char") { next(); return { type: "char", value: unescapeString(t.raw) || "" }; }
       if (t.type === "op" && t.raw === "(") {
         next();
-        const v = parseAdditive();
+        const v = parseOr();
         if (!peek() || peek().raw !== ")") throw new RuntimeErrorX("Falta cerrar un paréntesis.");
         next();
         return v;
+      }
+      if (t.type === "op" && t.raw === "!") {
+        next();
+        const v = parsePrimary();
+        if (v.type !== "boolean") throw new RuntimeErrorX("El operador ! solo se puede usar con un valor boolean.");
+        return { type: "boolean", value: !v.value };
       }
       if (t.type === "op" && (t.raw === "-" || t.raw === "+")) {
         next();
@@ -434,7 +465,35 @@ function makeInterpreter() {
       }
       return left;
     }
-    const result = parseAdditive();
+    function parseComparison() {
+      let left = parseAdditive();
+      if (peek() && peek().type === "op" && ["==", "!=", "<", ">", "<=", ">="].includes(peek().raw)) {
+        const op = next().raw;
+        const right = parseAdditive();
+        left = applyCompare(left, right, op);
+      }
+      return left;
+    }
+    function parseAnd() {
+      let left = parseComparison();
+      while (peek() && peek().type === "op" && peek().raw === "&&") {
+        next();
+        const right = parseComparison();
+        left = applyLogical(left, right, "&&");
+      }
+      return left;
+    }
+    function parseOr() {
+      let left = parseAnd();
+      while (peek() && peek().type === "op" && peek().raw === "||") {
+        next();
+        const right = parseAnd();
+        left = applyLogical(left, right, "||");
+      }
+      return left;
+    }
+
+    const result = parseOr();
     if (pos < tokens.length) throw new RuntimeErrorX("Sobra código después de la expresión: '" + tokens[pos].raw + "'.");
     return result;
   }
@@ -460,45 +519,149 @@ function makeInterpreter() {
     const bothInt = a.type === "int" && b.type === "int";
     return { type: bothInt ? "int" : "double", value: a.value - b.value };
   }
+  function applyCompare(a, b, op) {
+    if (op === "==" || op === "!=") {
+      const eq = a.value === b.value;
+      return { type: "boolean", value: op === "==" ? eq : !eq };
+    }
+    const numeric = (t) => t === "int" || t === "double";
+    if (!numeric(a.type) || !numeric(b.type)) throw new RuntimeErrorX("Los operadores <, >, <=, >= solo se pueden usar entre números.");
+    let v;
+    if (op === "<") v = a.value < b.value;
+    else if (op === ">") v = a.value > b.value;
+    else if (op === "<=") v = a.value <= b.value;
+    else v = a.value >= b.value;
+    return { type: "boolean", value: v };
+  }
+  function applyLogical(a, b, op) {
+    if (a.type !== "boolean" || b.type !== "boolean") throw new RuntimeErrorX("Los operadores && y || solo se pueden usar entre valores boolean.");
+    return { type: "boolean", value: op === "&&" ? (a.value && b.value) : (a.value || b.value) };
+  }
   function evalExprString(str) { return parseExpression(tokenizeExpr(str)); }
 
-  function stripBoilerplate(code) {
-    const lines = code.split("\n");
-    const kept = [];
-    for (let raw of lines) {
-      let line = raw;
-      const commentIdx = line.indexOf("//");
-      if (commentIdx !== -1) line = line.slice(0, commentIdx);
-      const trimmed = line.trim();
-      if (trimmed === "") continue;
-      if (/^import\s+/.test(trimmed)) continue;
-      if (/^public\s+class\s+\w+(\s*\{)?$/.test(trimmed)) continue;
-      if (/^public\s+static\s+void\s+main\s*\(\s*String(\[\])?\s*\[?\]?\s*args\s*\)(\s*\{)?$/.test(trimmed)) continue;
-      if (trimmed === "{" || trimmed === "}") continue;
-      kept.push(line);
-    }
-    return kept.join("\n");
+  function preprocess(code) {
+    let lines = code.split("\n").map((line) => {
+      const idx = line.indexOf("//");
+      return idx !== -1 ? line.slice(0, idx) : line;
+    });
+    lines = lines.filter((l) => !/^\s*import\s+/.test(l));
+    const classIdx = lines.findIndex((l) => /^\s*public\s+class\s+\w+(\s*\{)?\s*$/.test(l));
+    if (classIdx !== -1) lines.splice(classIdx, 1);
+    const mainIdx = lines.findIndex((l) => /^\s*public\s+static\s+void\s+main\s*\(\s*String(\[\])?\s*\[?\]?\s*args\s*\)(\s*\{)?\s*$/.test(l));
+    if (mainIdx !== -1) lines.splice(mainIdx, 1);
+    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+    if (lines.length && lines[lines.length - 1].trim() === "}") lines.pop();
+    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+    if (lines.length && lines[lines.length - 1].trim() === "}") lines.pop();
+    return lines.join("\n");
   }
-  function splitStatements(code) {
-    const cleaned = stripBoilerplate(code);
-    const stmts = [];
-    let cur = "";
-    let inStr = false, strCh = null, escaped = false;
-    for (let i = 0; i < cleaned.length; i++) {
-      const c = cleaned[i];
+
+  function skipWs(text, pos) { while (pos < text.length && /\s/.test(text[pos])) pos++; return pos; }
+  function matchWord(text, pos, word) {
+    if (text.substr(pos, word.length) !== word) return false;
+    const before = pos > 0 ? text[pos - 1] : "";
+    const after = text[pos + word.length] || "";
+    if (/[A-Za-z0-9_]/.test(before)) return false;
+    if (/[A-Za-z0-9_]/.test(after)) return false;
+    return true;
+  }
+  function findMatching(text, openPos, openCh, closeCh) {
+    let depth = 0, inStr = false, strCh = null, escaped = false;
+    for (let i = openPos; i < text.length; i++) {
+      const c = text[i];
       if (inStr) {
-        cur += c;
-        if (escaped) { escaped = false; }
-        else if (c === "\\") { escaped = true; }
-        else if (c === strCh) { inStr = false; }
+        if (escaped) escaped = false;
+        else if (c === "\\") escaped = true;
+        else if (c === strCh) inStr = false;
         continue;
       }
-      if (c === '"' || c === "'") { inStr = true; strCh = c; cur += c; continue; }
-      if (c === ";") { stmts.push(cur.trim()); cur = ""; continue; }
-      cur += c;
+      if (c === '"' || c === "'") { inStr = true; strCh = c; continue; }
+      if (c === openCh) depth++;
+      else if (c === closeCh) { depth--; if (depth === 0) return i; }
     }
-    if (cur.trim() !== "") stmts.push(cur.trim());
-    return stmts.filter((s) => s.length > 0);
+    throw new RuntimeErrorX("Falta cerrar '" + openCh + "' en el código.");
+  }
+
+  function parseStatements(text) {
+    const nodes = [];
+    let pos = 0;
+    const len = text.length;
+    while (true) {
+      pos = skipWs(text, pos);
+      if (pos >= len) break;
+
+      if (matchWord(text, pos, "if")) {
+        pos += 2;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'if'.");
+        const cp = findMatching(text, pos, "(", ")");
+        const cond = text.slice(pos + 1, cp).trim();
+        pos = cp + 1;
+        pos = skipWs(text, pos);
+        if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del if.");
+        const cb = findMatching(text, pos, "{", "}");
+        const bodyNodes = parseStatements(text.slice(pos + 1, cb));
+        pos = cb + 1;
+        const clauses = [{ cond, nodes: bodyNodes }];
+
+        while (true) {
+          const afterIf = pos;
+          pos = skipWs(text, pos);
+          if (matchWord(text, pos, "else")) {
+            pos += 4;
+            pos = skipWs(text, pos);
+            if (matchWord(text, pos, "if")) {
+              pos += 2;
+              pos = skipWs(text, pos);
+              if (text[pos] !== "(") throw new RuntimeErrorX("Se esperaba '(' después de 'else if'.");
+              const cp2 = findMatching(text, pos, "(", ")");
+              const cond2 = text.slice(pos + 1, cp2).trim();
+              pos = cp2 + 1;
+              pos = skipWs(text, pos);
+              if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del else if.");
+              const cb2 = findMatching(text, pos, "{", "}");
+              clauses.push({ cond: cond2, nodes: parseStatements(text.slice(pos + 1, cb2)) });
+              pos = cb2 + 1;
+              continue;
+            } else {
+              if (text[pos] !== "{") throw new RuntimeErrorX("Esta práctica requiere llaves { } después del else.");
+              const cb3 = findMatching(text, pos, "{", "}");
+              clauses.push({ cond: null, nodes: parseStatements(text.slice(pos + 1, cb3)) });
+              pos = cb3 + 1;
+              break;
+            }
+          } else {
+            pos = afterIf;
+            break;
+          }
+        }
+        nodes.push({ kind: "if", clauses });
+        continue;
+      }
+
+      const start = pos;
+      let inStr = false, strCh = null, escaped = false, j = pos;
+      for (; j < len; j++) {
+        const c = text[j];
+        if (inStr) {
+          if (escaped) escaped = false;
+          else if (c === "\\") escaped = true;
+          else if (c === strCh) inStr = false;
+          continue;
+        }
+        if (c === '"' || c === "'") { inStr = true; strCh = c; continue; }
+        if (c === ";") break;
+      }
+      if (j >= len) {
+        const remainder = text.slice(start).trim();
+        if (remainder.length > 0) throw new RuntimeErrorX("Falta un ';' al final de: " + remainder);
+        break;
+      }
+      const stmtText = text.slice(start, j).trim();
+      pos = j + 1;
+      if (stmtText.length > 0) nodes.push({ kind: "simple", text: stmtText });
+    }
+    return nodes;
   }
 
   const TYPES = ["int", "double", "boolean", "char", "String"];
@@ -567,12 +730,31 @@ function makeInterpreter() {
     catch (e) { throw new RuntimeErrorX("No se entendió esta línea: " + stmt); }
   }
 
+  function execBlock(nodes) {
+    for (const n of nodes) {
+      if (n.kind === "simple") { execStatement(n.text); continue; }
+      if (n.kind === "if") {
+        for (const clause of n.clauses) {
+          let take;
+          if (clause.cond === null) take = true;
+          else {
+            const condVal = evalExprString(clause.cond);
+            if (condVal.type !== "boolean") throw new RuntimeErrorX("La condición del if debe ser un valor boolean (usá comparaciones como ==, <, > o una variable boolean).");
+            take = condVal.value;
+          }
+          if (take) { execBlock(clause.nodes); break; }
+        }
+      }
+    }
+  }
+
   function run(code, inputs) {
     inputQueue = inputs || [];
     inputPtr = 0;
     output.length = 0;
-    const stmts = splitStatements(code);
-    for (const s of stmts) execStatement(s);
+    const body = preprocess(code);
+    const nodes = parseStatements(body);
+    execBlock(nodes);
     return output;
   }
   return { run };
@@ -582,7 +764,11 @@ function makeInterpreter() {
    DEFINICIÓN DE EJERCICIOS
    ========================================================= */
 const exercises = [
+  // ---------- PARTE 1: FUNDAMENTOS ----------
   {
+    section: "Parte 1 · Fundamentos",
+    sectionTitle: "Variables, Scanner y operadores",
+    sectionDesc: "La base: declarar datos, leer del teclado y operar con ellos.",
     title: "Hola, Feria!",
     concept: "System.out.println",
     task: "Completá el programa para que imprima exactamente el siguiente texto en la consola:<br><code>¡Hola, Feria Estudiantil!</code>",
@@ -699,9 +885,8 @@ public class SaludoPersonalizado {
         System.out.println(otro);   // 4
     }
 }`,
-    solutionNote: "++test incrementa test de 5 a 6 antes del println. otro-- decrementa otro de 5 a 4. En este uso (cada uno en su propia línea) prefijo y sufijo terminan dando el mismo resultado sobre la variable.",
+    solutionNote: "++test incrementa test de 5 a 6 antes del println. otro-- decrementa otro de 5 a 4.",
     inputs: [],
-    noBlank: true,
   },
   {
     title: "Datos completos (concatenación)",
@@ -775,7 +960,7 @@ public class TareaDatosPersonales {
         System.out.println("Dentro de 144 meses vas a tener: " + edadEn144Meses + " años");
     }
 }`,
-    solutionNote: "144 / 12 es división entera entre dos int y da 12 exacto (144 meses = 12 años). Si el resultado no fuera exacto, Java trunca el decimal en vez de redondear.",
+    solutionNote: "144 / 12 es división entera entre dos int y da 12 exacto (144 meses = 12 años).",
     inputs: [
       { label: "Nombre (nextLine)", placeholder: "Gabriela" },
       { label: "Apellido (nextLine)", placeholder: "Pérez" },
@@ -896,7 +1081,7 @@ public class Vuelto {
         System.out.println("Promedio: " + promedio);
     }
 }`,
-    solutionNote: "Los paréntesis son necesarios: sin ellos, Java resolvería primero n3 / 3 por precedencia de operadores, y el resultado sería otro.",
+    solutionNote: "Los paréntesis son necesarios: sin ellos, Java resolvería primero n3 / 3 por precedencia de operadores.",
     inputs: [],
   },
   {
@@ -958,7 +1143,7 @@ public class Vuelto {
         System.out.println("Estudiantes que sobran: " + sobran);
     }
 }`,
-    solutionNote: "La división entera (/) da el cociente sin decimales, y el módulo (%) da el resto de esa misma división. Juntos resuelven cualquier problema de \"repartir en grupos\".",
+    solutionNote: "La división entera (/) da el cociente sin decimales, y el módulo (%) da el resto de esa misma división.",
     inputs: [],
   },
   {
@@ -995,8 +1180,905 @@ public class Vuelto {
         System.out.println("Ventas netas del día: " + ventas);
     }
 }`,
-    solutionNote: "Cada ++ o -- modifica la variable directamente, sin necesidad de reasignarla con =. Podés encadenar tantos como necesites.",
+    solutionNote: "Cada ++ o -- modifica la variable directamente, sin necesidad de reasignarla con =.",
     inputs: [],
+  },
+
+  // ---------- PARTE 2: CONDICIONALES ----------
+  {
+    section: "Parte 2 · Condicionales",
+    sectionTitle: "Comparaciones, operadores lógicos e if / else if / else",
+    sectionDesc: "De menor a mayor complejidad: comparar valores, decidir entre dos caminos, encadenar varias condiciones, combinar condiciones con && y ||, y anidar un if dentro de otro.",
+    title: "¿Mayor de edad?",
+    concept: "if simple + comparación",
+    task: "Completá el programa para que, si la edad ingresada es mayor o igual a 18, imprima el mensaje. Probá primero con una edad mayor a 18, y después con una menor: fijate que en ese caso no se imprime nada.",
+    starter:
+`import java.util.Scanner;
+
+public class MayorDeEdad {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (/* completá acá: edad mayor o igual a 18 */) {
+            System.out.println("Podés entrar sin acompañante.");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class MayorDeEdad {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (edad >= 18) {
+            System.out.println("Podés entrar sin acompañante.");
+        }
+    }
+}`,
+    solutionNote: "Un if sin else simplemente no hace nada si la condición es falsa — el programa sigue de largo.",
+    inputs: [{ label: "Edad (nextInt)", placeholder: "20" }],
+  },
+  {
+    title: "¿Alcanza el saldo?",
+    concept: "if simple + comparación entre double",
+    task: "Bit quiere comprar algo en un puesto. Completá el programa para avisarle si el saldo que tiene le alcanza para pagar el precio.",
+    starter:
+`import java.util.Scanner;
+
+public class AlcanzaSaldo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuánto tenés en la billetera?");
+        double saldo = entrada.nextDouble();
+        System.out.println("¿Cuánto cuesta el producto?");
+        double precio = entrada.nextDouble();
+
+        if (/* completá acá: saldo mayor o igual a precio */) {
+            System.out.println("Te alcanza para comprarlo.");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class AlcanzaSaldo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuánto tenés en la billetera?");
+        double saldo = entrada.nextDouble();
+        System.out.println("¿Cuánto cuesta el producto?");
+        double precio = entrada.nextDouble();
+
+        if (saldo >= precio) {
+            System.out.println("Te alcanza para comprarlo.");
+        }
+    }
+}`,
+    solutionNote: "Las comparaciones (>=, <=, <, >) funcionan igual entre int y double.",
+    inputs: [
+      { label: "Saldo (nextDouble)", placeholder: "10000" },
+      { label: "Precio (nextDouble)", placeholder: "8000" },
+    ],
+  },
+  {
+    title: "¿Es par?",
+    concept: "if simple + módulo + comparación de igualdad",
+    task: "Completá el programa para que imprima si el número declarado es par, usando el resto de dividir entre 2.",
+    starter:
+`public class EsPar {
+    public static void main(String[] args) {
+        int numero = 8;
+
+        if (/* completá acá: numero % 2 igual a 0 */) {
+            System.out.println(numero + " es par");
+        }
+    }
+}`,
+    solution:
+`public class EsPar {
+    public static void main(String[] args) {
+        int numero = 8;
+
+        if (numero % 2 == 0) {
+            System.out.println(numero + " es par");
+        }
+    }
+}`,
+    solutionNote: "== compara igualdad (no confundir con = que asigna). Si el resto de dividir entre 2 es 0, el número es par.",
+    inputs: [],
+  },
+  {
+    title: "¿Aprobado?",
+    concept: "if simple",
+    task: "Completá el programa para que, si la nota es mayor o igual a 6, imprima el mensaje de aprobado.",
+    starter:
+`import java.util.Scanner;
+
+public class Aprobado {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste?");
+        int nota = entrada.nextInt();
+
+        if (/* completá acá */) {
+            System.out.println("¡Aprobado!");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class Aprobado {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste?");
+        int nota = entrada.nextInt();
+
+        if (nota >= 6) {
+            System.out.println("¡Aprobado!");
+        }
+    }
+}`,
+    solutionNote: "Mismo patrón que los ejercicios anteriores: comparación dentro del if, sin else todavía.",
+    inputs: [{ label: "Nota (nextInt)", placeholder: "8" }],
+  },
+  {
+    title: "Mayor o menor de edad",
+    concept: "if / else",
+    task: "Ahora sí queremos un mensaje para los dos casos. Completá el else para que el programa siempre diga algo, sea cual sea la edad.",
+    starter:
+`import java.util.Scanner;
+
+public class MayorOMenor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (edad >= 18) {
+            System.out.println("Sos mayor de edad");
+        } else {
+            /* completá acá */
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class MayorOMenor {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (edad >= 18) {
+            System.out.println("Sos mayor de edad");
+        } else {
+            System.out.println("Sos menor de edad");
+        }
+    }
+}`,
+    solutionNote: "El bloque else se ejecuta únicamente cuando la condición del if fue falsa. Nunca se ejecutan los dos.",
+    inputs: [{ label: "Edad (nextInt)", placeholder: "16" }],
+  },
+  {
+    title: "Par o impar",
+    concept: "if / else",
+    task: "Completá el else para que el programa avise cuando el número es impar.",
+    starter:
+`public class ParOImpar {
+    public static void main(String[] args) {
+        int numero = 7;
+
+        if (numero % 2 == 0) {
+            System.out.println(numero + " es par");
+        } else {
+            /* completá acá */
+        }
+    }
+}`,
+    solution:
+`public class ParOImpar {
+    public static void main(String[] args) {
+        int numero = 7;
+
+        if (numero % 2 == 0) {
+            System.out.println(numero + " es par");
+        } else {
+            System.out.println(numero + " es impar");
+        }
+    }
+}`,
+    solutionNote: "Si el resto no es 0 (la condición del if es falsa), automáticamente es impar — no hace falta comprobarlo de nuevo en el else.",
+    inputs: [],
+  },
+  {
+    title: "Aprobado o no",
+    concept: "if / else",
+    task: "Completá el else para que el programa avise cuando el estudiante está reprobado.",
+    starter:
+`import java.util.Scanner;
+
+public class AprobadoONo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste?");
+        int nota = entrada.nextInt();
+
+        if (nota >= 6) {
+            System.out.println("Aprobado");
+        } else {
+            /* completá acá */
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class AprobadoONo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste?");
+        int nota = entrada.nextInt();
+
+        if (nota >= 6) {
+            System.out.println("Aprobado");
+        } else {
+            System.out.println("Reprobado");
+        }
+    }
+}`,
+    solutionNote: "",
+    inputs: [{ label: "Nota (nextInt)", placeholder: "4" }],
+  },
+  {
+    title: "Puesto abierto o cerrado",
+    concept: "if / else con variable boolean",
+    task: "Una variable boolean se puede usar directamente como condición del if — no hace falta compararla con true. Completá el else.",
+    starter:
+`public class PuestoAbiertoOCerrado {
+    public static void main(String[] args) {
+        boolean abierto = true;
+
+        if (abierto) {
+            System.out.println("El puesto está abierto");
+        } else {
+            /* completá acá */
+        }
+    }
+}`,
+    solution:
+`public class PuestoAbiertoOCerrado {
+    public static void main(String[] args) {
+        boolean abierto = true;
+
+        if (abierto) {
+            System.out.println("El puesto está abierto");
+        } else {
+            System.out.println("El puesto está cerrado");
+        }
+    }
+}`,
+    solutionNote: "if (abierto) es equivalente a if (abierto == true), pero más limpio de escribir y de leer.",
+    inputs: [],
+  },
+  {
+    title: "Clasificar nota (A / B / C / D)",
+    concept: "if / else if / else — condicional múltiple",
+    task: "Completá la cadena de else if para clasificar la nota en 4 categorías: A (9 o más), B (7 u 8), C (5 o 6), D (menos de 5).",
+    starter:
+`import java.util.Scanner;
+
+public class ClasificarNota {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste? (0 a 10)");
+        int nota = entrada.nextInt();
+
+        if (nota >= 9) {
+            System.out.println("Calificación: A");
+        } else if (/* completá acá: nota >= 7 */) {
+            System.out.println("Calificación: B");
+        } else if (/* completá acá: nota >= 5 */) {
+            System.out.println("Calificación: C");
+        } else {
+            System.out.println("Calificación: D");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class ClasificarNota {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué nota sacaste? (0 a 10)");
+        int nota = entrada.nextInt();
+
+        if (nota >= 9) {
+            System.out.println("Calificación: A");
+        } else if (nota >= 7) {
+            System.out.println("Calificación: B");
+        } else if (nota >= 5) {
+            System.out.println("Calificación: C");
+        } else {
+            System.out.println("Calificación: D");
+        }
+    }
+}`,
+    solutionNote: "Java evalúa las condiciones en orden y se queda con la primera que sea verdadera — por eso no hace falta escribir nota < 9 && nota >= 7 en el segundo bloque.",
+    inputs: [{ label: "Nota (nextInt)", placeholder: "7" }],
+  },
+  {
+    title: "Franja horaria",
+    concept: "if / else if / else",
+    task: "Completá la cadena para saludar según la hora: antes de las 12, buenos días; antes de las 19, buenas tardes; si no, buenas noches.",
+    starter:
+`import java.util.Scanner;
+
+public class FranjaHoraria {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué hora es? (0 a 23)");
+        int hora = entrada.nextInt();
+
+        if (/* completá acá: hora menor a 12 */) {
+            System.out.println("Buenos días");
+        } else if (/* completá acá: hora menor a 19 */) {
+            System.out.println("Buenas tardes");
+        } else {
+            System.out.println("Buenas noches");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class FranjaHoraria {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué hora es? (0 a 23)");
+        int hora = entrada.nextInt();
+
+        if (hora < 12) {
+            System.out.println("Buenos días");
+        } else if (hora < 19) {
+            System.out.println("Buenas tardes");
+        } else {
+            System.out.println("Buenas noches");
+        }
+    }
+}`,
+    solutionNote: "En el segundo bloque no hace falta comprobar hora >= 12: si llegamos hasta ahí es porque el primer if ya fue falso.",
+    inputs: [{ label: "Hora (nextInt)", placeholder: "15" }],
+  },
+  {
+    title: "Categoría de precio",
+    concept: "if / else if / else con double",
+    task: "Completá la cadena para clasificar un producto según su precio: económico, medio o premium.",
+    starter:
+`import java.util.Scanner;
+
+public class CategoriaPrecio {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el precio del producto?");
+        double precio = entrada.nextDouble();
+
+        if (/* completá acá: precio menor a 5000 */) {
+            System.out.println("Categoría: económico");
+        } else if (/* completá acá: precio menor a 15000 */) {
+            System.out.println("Categoría: medio");
+        } else {
+            System.out.println("Categoría: premium");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class CategoriaPrecio {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el precio del producto?");
+        double precio = entrada.nextDouble();
+
+        if (precio < 5000) {
+            System.out.println("Categoría: económico");
+        } else if (precio < 15000) {
+            System.out.println("Categoría: medio");
+        } else {
+            System.out.println("Categoría: premium");
+        }
+    }
+}`,
+    solutionNote: "",
+    inputs: [{ label: "Precio (nextDouble)", placeholder: "9000" }],
+  },
+  {
+    title: "Tamaño de grupo",
+    concept: "if / else if / else",
+    task: "Completá la cadena para clasificar la cantidad de estudiantes en la fila: chico (5 o menos), mediano (hasta 15), grande (más de 15).",
+    starter:
+`import java.util.Scanner;
+
+public class TamanioDeGrupo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuántos estudiantes hay en la fila?");
+        int cantidad = entrada.nextInt();
+
+        if (/* completá acá: cantidad menor o igual a 5 */) {
+            System.out.println("Grupo chico");
+        } else if (/* completá acá: cantidad menor o igual a 15 */) {
+            System.out.println("Grupo mediano");
+        } else {
+            System.out.println("Grupo grande");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class TamanioDeGrupo {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuántos estudiantes hay en la fila?");
+        int cantidad = entrada.nextInt();
+
+        if (cantidad <= 5) {
+            System.out.println("Grupo chico");
+        } else if (cantidad <= 15) {
+            System.out.println("Grupo mediano");
+        } else {
+            System.out.println("Grupo grande");
+        }
+    }
+}`,
+    solutionNote: "",
+    inputs: [{ label: "Cantidad (nextInt)", placeholder: "10" }],
+  },
+  {
+    title: "Descuento según monto",
+    concept: "if / else if / else + arreglar el resultado con aritmética",
+    task: "Completá el programa para asignar un descuento según el monto de la compra (20% si es 50000 o más, 10% si es 20000 o más, sin descuento si no), y calcular el total a pagar.",
+    starter:
+`import java.util.Scanner;
+
+public class DescuentoSegunMonto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el monto de la compra?");
+        double monto = entrada.nextDouble();
+
+        double descuento = 0;
+        if (/* completá acá: monto >= 50000 */) {
+            descuento = 0.20;
+        } else if (/* completá acá: monto >= 20000 */) {
+            descuento = 0.10;
+        } else {
+            descuento = 0.0;
+        }
+
+        double total = monto - (monto * descuento);
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class DescuentoSegunMonto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es el monto de la compra?");
+        double monto = entrada.nextDouble();
+
+        double descuento = 0;
+        if (monto >= 50000) {
+            descuento = 0.20;
+        } else if (monto >= 20000) {
+            descuento = 0.10;
+        } else {
+            descuento = 0.0;
+        }
+
+        double total = monto - (monto * descuento);
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solutionNote: "El if/else if/else decide qué valor toma descuento, y recién después se usa ese valor en una cuenta aritmética normal.",
+    inputs: [{ label: "Monto (nextDouble)", placeholder: "60000" }],
+  },
+  {
+    title: "Acceso VIP",
+    concept: "Operador lógico && (Y)",
+    task: "Bit solo puede entrar a la zona VIP si es mayor de edad Y además es socio de la cooperativa estudiantil. Completá la condición usando &&.",
+    starter:
+`import java.util.Scanner;
+
+public class AccesoVIP {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos socio de la cooperativa? (true/false)");
+        boolean esSocio = entrada.nextBoolean();
+
+        if (/* completá acá: edad >= 18 Y esSocio */) {
+            System.out.println("Acceso VIP habilitado");
+        } else {
+            System.out.println("Acceso VIP no habilitado");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class AccesoVIP {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos socio de la cooperativa? (true/false)");
+        boolean esSocio = entrada.nextBoolean();
+
+        if (edad >= 18 && esSocio) {
+            System.out.println("Acceso VIP habilitado");
+        } else {
+            System.out.println("Acceso VIP no habilitado");
+        }
+    }
+}`,
+    solutionNote: "&& (Y lógico) exige que las DOS condiciones sean verdaderas al mismo tiempo. Si una sola es falsa, todo el && es falso.",
+    inputs: [
+      { label: "Edad (nextInt)", placeholder: "20" },
+      { label: "Es socio (nextBoolean: true/false)", placeholder: "true" },
+    ],
+  },
+  {
+    title: "Promoción 2x1",
+    concept: "Operador lógico || (O)",
+    task: "Hay promoción 2x1 si es feriado O si es el último día de la feria (alcanza con que se cumpla una de las dos). Completá la condición usando ||.",
+    starter:
+`import java.util.Scanner;
+
+public class Promocion2x1 {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Es feriado? (true/false)");
+        boolean esFeriado = entrada.nextBoolean();
+        System.out.println("¿Es el último día de la feria? (true/false)");
+        boolean esUltimoDia = entrada.nextBoolean();
+
+        if (/* completá acá: esFeriado O esUltimoDia */) {
+            System.out.println("¡Hay promoción 2x1!");
+        } else {
+            System.out.println("No hay promoción hoy");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class Promocion2x1 {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Es feriado? (true/false)");
+        boolean esFeriado = entrada.nextBoolean();
+        System.out.println("¿Es el último día de la feria? (true/false)");
+        boolean esUltimoDia = entrada.nextBoolean();
+
+        if (esFeriado || esUltimoDia) {
+            System.out.println("¡Hay promoción 2x1!");
+        } else {
+            System.out.println("No hay promoción hoy");
+        }
+    }
+}`,
+    solutionNote: "|| (O lógico) alcanza con que UNA de las condiciones sea verdadera. Solo es falso cuando las dos lo son.",
+    inputs: [
+      { label: "Es feriado (true/false)", placeholder: "false" },
+      { label: "Es último día (true/false)", placeholder: "true" },
+    ],
+  },
+  {
+    title: "Validar datos",
+    concept: "&& combinando comparación numérica y de texto",
+    task: "Completá la condición para que los datos se consideren válidos solo si el nombre no está vacío Y la edad es mayor a 0.",
+    starter:
+`import java.util.Scanner;
+
+public class ValidarDatos {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es tu nombre?");
+        String nombre = entrada.nextLine();
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (/* completá acá: nombre distinto de "" Y edad > 0 */) {
+            System.out.println("Datos válidos");
+        } else {
+            System.out.println("Datos inválidos");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class ValidarDatos {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Cuál es tu nombre?");
+        String nombre = entrada.nextLine();
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+
+        if (nombre != "" && edad > 0) {
+            System.out.println("Datos válidos");
+        } else {
+            System.out.println("Datos inválidos");
+        }
+    }
+}`,
+    solutionNote: "!= es la negación de == (\"distinto de\"). Se puede combinar una comparación de texto con una numérica en el mismo &&.",
+    inputs: [
+      { label: "Nombre (nextLine)", placeholder: "Gabriela" },
+      { label: "Edad (nextInt)", placeholder: "16" },
+    ],
+  },
+  {
+    title: "Negar una condición",
+    concept: "Operador ! (NO)",
+    task: "Si el estudiante NO es representante de curso, puede anotarse como voluntario libre. Completá la condición usando el operador !.",
+    starter:
+`import java.util.Scanner;
+
+public class NegarCondicion {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Sos representante de curso? (true/false)");
+        boolean esRepresentante = entrada.nextBoolean();
+
+        if (/* completá acá: NO esRepresentante */) {
+            System.out.println("Podés anotarte como voluntario libre");
+        } else {
+            System.out.println("Ya tenés un rol asignado");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class NegarCondicion {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Sos representante de curso? (true/false)");
+        boolean esRepresentante = entrada.nextBoolean();
+
+        if (!esRepresentante) {
+            System.out.println("Podés anotarte como voluntario libre");
+        } else {
+            System.out.println("Ya tenés un rol asignado");
+        }
+    }
+}`,
+    solutionNote: "! invierte un valor boolean: !true es false, y !false es true.",
+    inputs: [{ label: "Es representante (true/false)", placeholder: "false" }],
+  },
+  {
+    title: "Condición compuesta con paréntesis",
+    concept: "&& y || combinados",
+    task: "Puede participar del sorteo quien tenga entre 18 y 65 años, O que sea jubilado (sin importar la edad). Completá usando paréntesis para agrupar la primera parte.",
+    starter:
+`import java.util.Scanner;
+
+public class CondicionCompuesta {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos jubilado? (true/false)");
+        boolean esJubilado = entrada.nextBoolean();
+
+        if (/* completá acá: (edad >= 18 Y edad <= 65) O esJubilado */) {
+            System.out.println("Puede participar del sorteo");
+        } else {
+            System.out.println("No puede participar del sorteo");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class CondicionCompuesta {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos jubilado? (true/false)");
+        boolean esJubilado = entrada.nextBoolean();
+
+        if ((edad >= 18 && edad <= 65) || esJubilado) {
+            System.out.println("Puede participar del sorteo");
+        } else {
+            System.out.println("No puede participar del sorteo");
+        }
+    }
+}`,
+    solutionNote: "Los paréntesis agrupan el && para que se evalúe como una sola unidad antes del ||, igual que en matemática.",
+    inputs: [
+      { label: "Edad (nextInt)", placeholder: "70" },
+      { label: "Es jubilado (true/false)", placeholder: "true" },
+    ],
+  },
+  {
+    title: "Descuento anidado",
+    concept: "if dentro de if (anidado)",
+    task: "Solo los socios acceden a descuento, y dentro de los socios, el porcentaje depende del monto. Completá el if interno (anidado dentro del primero).",
+    starter:
+`import java.util.Scanner;
+
+public class DescuentoAnidado {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Sos socio de la cooperativa? (true/false)");
+        boolean esSocio = entrada.nextBoolean();
+        System.out.println("¿Cuál es el monto de la compra?");
+        double monto = entrada.nextDouble();
+
+        double descuento = 0;
+        if (esSocio) {
+            if (/* completá acá: monto >= 50000 */) {
+                descuento = 0.20;
+            } else {
+                descuento = 0.10;
+            }
+        } else {
+            descuento = 0.0;
+        }
+
+        double total = monto - (monto * descuento);
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class DescuentoAnidado {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Sos socio de la cooperativa? (true/false)");
+        boolean esSocio = entrada.nextBoolean();
+        System.out.println("¿Cuál es el monto de la compra?");
+        double monto = entrada.nextDouble();
+
+        double descuento = 0;
+        if (esSocio) {
+            if (monto >= 50000) {
+                descuento = 0.20;
+            } else {
+                descuento = 0.10;
+            }
+        } else {
+            descuento = 0.0;
+        }
+
+        double total = monto - (monto * descuento);
+        System.out.println("Total a pagar: Gs. " + total);
+    }
+}`,
+    solutionNote: "El if de adentro solo se evalúa si ya se entró al if de afuera — es una decisión que depende de otra decisión anterior.",
+    inputs: [
+      { label: "Es socio (true/false)", placeholder: "true" },
+      { label: "Monto (nextDouble)", placeholder: "60000" },
+    ],
+  },
+  {
+    title: "Sistema de acceso al puesto (integradora)",
+    concept: "if / else if anidado — combina todo lo visto",
+    task: "El puesto de Bit y Techi tiene reglas de acceso: menores de 12 años entran gratis; los estudiantes del colegio tienen descuento (15% si gastan 20000 o más, 10% si no); los mayores de 65 tienen descuento de jubilado; el resto paga entrada general. Completá el programa combinando if, else if y un if anidado.",
+    starter:
+`import java.util.Scanner;
+
+public class SistemaAccesoPuesto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos estudiante de este colegio? (true/false)");
+        boolean esEstudiante = entrada.nextBoolean();
+        System.out.println("¿Cuál es el monto que vas a gastar?");
+        double monto = entrada.nextDouble();
+
+        if (/* completá acá: edad menor a 12 */) {
+            System.out.println("Entrada libre, sin cargo");
+        } else if (esEstudiante) {
+            if (/* completá acá: monto >= 20000 */) {
+                System.out.println("Estudiante con compra grande: 15% de descuento");
+            } else {
+                System.out.println("Estudiante: 10% de descuento");
+            }
+        } else if (/* completá acá: edad >= 65 */) {
+            System.out.println("Entrada con descuento de jubilado");
+        } else {
+            System.out.println("Entrada general, sin descuento");
+        }
+    }
+}`,
+    solution:
+`import java.util.Scanner;
+
+public class SistemaAccesoPuesto {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.println("¿Qué edad tenés?");
+        int edad = entrada.nextInt();
+        System.out.println("¿Sos estudiante de este colegio? (true/false)");
+        boolean esEstudiante = entrada.nextBoolean();
+        System.out.println("¿Cuál es el monto que vas a gastar?");
+        double monto = entrada.nextDouble();
+
+        if (edad < 12) {
+            System.out.println("Entrada libre, sin cargo");
+        } else if (esEstudiante) {
+            if (monto >= 20000) {
+                System.out.println("Estudiante con compra grande: 15% de descuento");
+            } else {
+                System.out.println("Estudiante: 10% de descuento");
+            }
+        } else if (edad >= 65) {
+            System.out.println("Entrada con descuento de jubilado");
+        } else {
+            System.out.println("Entrada general, sin descuento");
+        }
+    }
+}`,
+    solutionNote: "Este ejercicio combina todo: else if para las categorías principales, y un if anidado adentro de una de esas ramas para una decisión más fina. El orden de las condiciones importa: la de menores de 12 va primero porque tiene prioridad sobre las demás.",
+    inputs: [
+      { label: "Edad (nextInt)", placeholder: "16" },
+      { label: "Es estudiante (true/false)", placeholder: "true" },
+      { label: "Monto (nextDouble)", placeholder: "25000" },
+    ],
   },
 ];
 
@@ -1004,8 +2086,23 @@ public class Vuelto {
    RENDER Y EJECUCIÓN
    ========================================================= */
 const container = document.getElementById("exercises");
+let exerciseCounter = 0;
 
-exercises.forEach((ex, idx) => {
+exercises.forEach((ex) => {
+  if (ex.section) {
+    const div = document.createElement("div");
+    div.className = "section-divider";
+    div.innerHTML = `
+      <div class="kicker">${ex.section}</div>
+      <h2>${ex.sectionTitle}</h2>
+      <p>${ex.sectionDesc}</p>
+      <hr>
+    `;
+    container.appendChild(div);
+  }
+  exerciseCounter++;
+  const idx = exerciseCounter;
+
   const el = document.createElement("section");
   el.className = "exercise";
 
@@ -1022,7 +2119,7 @@ exercises.forEach((ex, idx) => {
 
   el.innerHTML = `
     <div class="exercise-head">
-      <div class="badge">${idx + 1}</div>
+      <div class="badge">${idx}</div>
       <div>
         <div class="concept">${ex.concept}</div>
         <h2>${ex.title}</h2>
@@ -1041,7 +2138,7 @@ exercises.forEach((ex, idx) => {
       <div class="solution">
         <h4>Solución</h4>
         <pre>${ex.solution}</pre>
-        <div class="note">${ex.solutionNote}</div>
+        ${ex.solutionNote ? `<div class="note">${ex.solutionNote}</div>` : ""}
       </div>
     </div>
   `;
