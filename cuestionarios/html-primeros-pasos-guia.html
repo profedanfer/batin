@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML: primeros pasos · Guía · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+.guia-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.guia-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--naranja-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+.guia-hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+
+.guia-ruta { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.guia-ruta a { color: var(--naranja); text-decoration: none; }
+.guia-ruta a:hover { text-decoration: underline; }
+.guia-ruta .sep { color: var(--borde3); }
+
+.guia-nivel-badge {
+  font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 4px;
+  background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b);
+  margin-bottom: 8px; display: inline-block;
+}
+.guia-titulo { font-family: var(--font-title); font-size: clamp(1.3rem, 3.2vw, 1.9rem); font-weight: 800; color: #fff; margin-bottom: 8px; line-height: 1.2; }
+.guia-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 16px; max-width: 640px; line-height: 1.6; }
+.guia-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.guia-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
+
+.indice { max-width: 820px; margin: 32px auto 0; padding: 0 56px; }
+.indice-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--naranja); margin-bottom: 12px; }
+.indice-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+.indice-item {
+  font-family: var(--font-mono); font-size: 11px; padding: 6px 12px; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--borde); color: var(--texto2); text-decoration: none; transition: all .15s;
+}
+.indice-item:hover { border-color: var(--naranja-b); color: var(--naranja); background: var(--naranja-s); }
+
+.guia-main { max-width: 820px; margin: 0 auto; padding: 40px 56px 64px; }
+.capitulo { margin-bottom: 56px; scroll-margin-top: 24px; }
+.capitulo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.capitulo-num {
+  font-family: var(--font-mono); font-size: 11px; color: var(--naranja);
+  border: 1px solid var(--naranja-b); background: var(--naranja-s); border-radius: 6px; padding: 4px 10px; flex-shrink: 0;
+}
+.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: #fff; }
+.capitulo-texto { font-size: 14.5px; color: var(--texto2); line-height: 1.8; margin-bottom: 18px; }
+.capitulo-texto p { margin-bottom: 14px; }
+.capitulo-texto p:last-child { margin-bottom: 0; }
+.capitulo-texto strong { color: #fff; font-weight: 600; }
+
+.codigo-box {
+  background: var(--bg); border: 1px solid var(--borde2); border-radius: var(--r2);
+  padding: 18px 20px; margin: 16px 0; font-family: var(--font-mono); font-size: 13px;
+  color: var(--texto); line-height: 1.75; overflow-x: auto;
+}
+.codigo-box .tag { color: var(--naranja2); }
+.codigo-box .attr { color: var(--azul2); }
+.codigo-box .str  { color: #7fce9a; }
+.codigo-box .cmt  { color: var(--texto3); font-style: italic; }
+
+.tabla-etiquetas { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.fila-etiqueta {
+  display: flex; align-items: center; gap: 16px; background: var(--bg3); border: 1px solid var(--borde);
+  border-radius: var(--r); padding: 10px 16px;
+}
+.fila-etiqueta .cod { font-family: var(--font-mono); font-size: 13px; color: var(--naranja2); min-width: 150px; }
+.fila-etiqueta .desc { font-size: 13px; color: var(--texto2); }
+
+.definicion {
+  background: var(--bg3); border: 1px solid var(--borde); border-left: 3px solid var(--azul2);
+  border-radius: var(--r2); padding: 16px 20px; margin: 18px 0;
+}
+.definicion-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--azul2); margin-bottom: 6px; }
+.definicion-texto { font-size: 13.5px; color: var(--texto); line-height: 1.7; }
+.definicion-texto strong { color: var(--azul2); }
+
+.char-dice {
+  background: var(--bg4); border: 1px solid var(--borde); border-radius: var(--r2);
+  padding: 16px 20px; margin: 18px 0; display: flex; gap: 14px; align-items: flex-start;
+}
+.char-dice img { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; }
+.char-dice-body { flex: 1; }
+.char-dice-nombre { font-family: var(--font-title); font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+.char-dice-nombre.techi { color: var(--naranja); }
+.char-dice-nombre.bit { color: var(--azul2); }
+.char-dice-nombre.gatiel { color: var(--violeta2); }
+.char-dice-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; font-style: italic; }
+
+.errores-grid { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.error-fila {
+  display: flex; align-items: center; gap: 16px; background: var(--bg3); border: 1px solid var(--borde);
+  border-radius: var(--r); padding: 12px 18px; flex-wrap: wrap;
+}
+.error-mal, .error-bien { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12.5px; }
+.error-mal { color: #e08080; }
+.error-bien { color: #7fce9a; }
+.error-desc { font-size: 12px; color: var(--texto3); flex-basis: 100%; margin-top: 2px; }
+
+.actividad {
+  background: var(--violeta-s); border: 1px solid var(--violeta-b); border-radius: var(--r2);
+  padding: 16px 20px; margin: 18px 0; display: flex; gap: 12px; align-items: flex-start;
+}
+.actividad-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.actividad-body { flex: 1; }
+.actividad-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--violeta); margin-bottom: 6px; }
+.actividad-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.actividad-texto strong { color: var(--texto); }
+.actividad-lista { margin: 10px 0 0; padding-left: 18px; }
+.actividad-lista li { font-size: 13px; color: var(--texto2); line-height: 1.8; }
+
+.sep-capitulo { height: 1px; background: linear-gradient(90deg, transparent, var(--borde2), transparent); margin: 40px 0; }
+
+.cta-final { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 32px 28px; text-align: center; margin-top: 20px; }
+.cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
+.cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-azul { color: var(--azul2); border-color: var(--azul-b); background: var(--azul-s); }
+.btn-azul:hover { background: var(--azul-m); }
+
+.volver-arriba {
+  position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--borde2); color: var(--azul2);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; font-size: 16px; text-decoration: none;
+}
+.volver-arriba.visible { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .guia-hero { padding: 32px 20px 28px; }
+  .indice { padding: 0 20px; }
+  .guia-main { padding: 28px 20px 48px; }
+  .fila-etiqueta, .error-fila { flex-direction: column; align-items: flex-start; gap: 4px; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="guia-hero">
+  <div class="guia-hero-inner">
+    <div class="guia-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ruta-web">Ruta Web</a>
+      <span class="sep">/</span>
+      <span>HTML: primeros pasos · 1er curso</span>
+    </div>
+    <span class="guia-nivel-badge">// Guía · HTML — Laboratorio 1</span>
+    <h1 class="guia-titulo">HTML: primeros pasos</h1>
+    <p class="guia-subtitulo">Etiquetas, encabezados, énfasis y enlaces: el alfabeto de toda página web. Techi piensa distinto. Bit ordena la lógica. Gatiel encuentra el camino.</p>
+    <div class="guia-meta">
+      <span class="guia-meta-item">📖 5 bloques</span>
+      <span class="guia-meta-item">⏱ ~8 minutos de lectura</span>
+      <span class="guia-meta-item">🎯 1er curso</span>
+    </div>
+  </div>
+</div>
+
+<div class="indice">
+  <div class="indice-titulo">// En esta guía</div>
+  <div class="indice-lista">
+    <a href="#c1" class="indice-item">1. ¿Qué es una etiqueta?</a>
+    <a href="#c2" class="indice-item">2. Apertura y cierre</a>
+    <a href="#c3" class="indice-item">3. El esqueleto de un HTML</a>
+    <a href="#c4" class="indice-item">4. Encabezados y énfasis</a>
+    <a href="#c5" class="indice-item">5. Enlaces y errores comunes</a>
+  </div>
+</div>
+
+<div class="guia-main">
+
+  <!-- ═══════ CAPÍTULO 1 ═══════ -->
+  <div class="capitulo" id="c1">
+    <div class="capitulo-header">
+      <span class="capitulo-num">01</span>
+      <h2 class="capitulo-titulo">¿Qué es una etiqueta HTML?</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Una etiqueta <em>(tag)</em> le dice al navegador qué es cada parte del contenido: un título, un párrafo, una imagen, un enlace. HTML no decide cómo se ve nada — solo dice qué es cada cosa.</p>
+    </div>
+    <div class="codigo-box">
+&lt;<span class="tag">p</span>&gt;Este es un párrafo.&lt;/<span class="tag">p</span>&gt;
+    </div>
+    <div class="char-dice">
+      <img src="../img/techi_explicando.png" alt="Techi">
+      <div class="char-dice-body">
+        <div class="char-dice-nombre techi">TECHI DICE</div>
+        <div class="char-dice-texto">"Pensá en las etiquetas como carteles que colocás sobre cada objeto de una habitación: uno dice 'puerta', otro dice 'ventana'. El navegador lee los carteles, no adivina."</div>
+      </div>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Cada etiqueta tiene una forma</div>
+      <div class="definicion-texto">etiqueta de apertura → texto o contenido → etiqueta de cierre</div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 2 ═══════ -->
+  <div class="capitulo" id="c2">
+    <div class="capitulo-header">
+      <span class="capitulo-num">02</span>
+      <h2 class="capitulo-titulo">Etiquetas con apertura y cierre</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>La mayoría de las etiquetas trabajan en pareja: una abre el contenido y otra lo cierra. La de cierre lleva una barra ( / ).</p>
+    </div>
+    <div class="tabla-etiquetas">
+      <div class="fila-etiqueta"><span class="cod">&lt;p&gt; ... &lt;/p&gt;</span><span class="desc">Párrafo de texto</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;h1&gt; ... &lt;/h1&gt;</span><span class="desc">Encabezado principal</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;strong&gt; ... &lt;/strong&gt;</span><span class="desc">Texto en negrita</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;em&gt; ... &lt;/em&gt;</span><span class="desc">Texto en cursiva</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;a&gt; ... &lt;/a&gt;</span><span class="desc">Enlace a otra página</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;body&gt; ... &lt;/body&gt;</span><span class="desc">Cuerpo del documento</span></div>
+    </div>
+    <div class="capitulo-texto">
+      <p>No todas las etiquetas encierran contenido. Algunas representan un elemento único que no necesita nada adentro: se escriben <strong>solas.</strong></p>
+    </div>
+    <div class="codigo-box">
+&lt;<span class="tag">br</span>&gt;  <span class="cmt">→ salto de línea</span><br>
+&lt;<span class="tag">hr</span>&gt;  <span class="cmt">→ línea divisoria</span><br>
+&lt;<span class="tag">img</span> <span class="attr">src</span>=<span class="str">"logo.png"</span>&gt;  <span class="cmt">→ imagen</span>
+    </div>
+    <div class="char-dice">
+      <img src="../img/bit_explicando.png" alt="Bit">
+      <div class="char-dice-body">
+        <div class="char-dice-nombre bit">BIT DICE</div>
+        <div class="char-dice-texto">"Son etiquetas vacías: no tienen texto adentro, así que no hay nada que cerrar. Si buscás su etiqueta de cierre, no la vas a encontrar — y está bien."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 3 ═══════ -->
+  <div class="capitulo" id="c3">
+    <div class="capitulo-header">
+      <span class="capitulo-num">03</span>
+      <h2 class="capitulo-titulo">La estructura básica de un HTML</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Todo documento HTML nace con la misma base: un esqueleto de tres etiquetas que envuelve absolutamente todo.</p>
+    </div>
+    <div class="codigo-box">
+&lt;<span class="tag">html</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="tag">head</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="tag">title</span>&gt;Nombre de la página&lt;/<span class="tag">title</span>&gt;<br>
+&nbsp;&nbsp;&lt;/<span class="tag">head</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="tag">body</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">&lt;!-- Todo lo visible va aquí --&gt;</span><br>
+&nbsp;&nbsp;&lt;/<span class="tag">body</span>&gt;<br>
+&lt;/<span class="tag">html</span>&gt;
+    </div>
+    <div class="tabla-etiquetas">
+      <div class="fila-etiqueta"><span class="cod">&lt;html&gt;</span><span class="desc">Envuelve todo el documento</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;head&gt;</span><span class="desc">Información que no se ve (título de la pestaña, configuración)</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;body&gt;</span><span class="desc">Todo el contenido visible: textos, imágenes, enlaces</span></div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 4 ═══════ -->
+  <div class="capitulo" id="c4">
+    <div class="capitulo-header">
+      <span class="capitulo-num">04</span>
+      <h2 class="capitulo-titulo">Encabezados y énfasis</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Los encabezados marcan la <strong>importancia</strong> del texto. <code>h1</code> es el título principal; <code>h6</code>, el más pequeño. No se eligen por tamaño, se eligen por jerarquía.</p>
+    </div>
+    <div class="tabla-etiquetas">
+      <div class="fila-etiqueta"><span class="cod">&lt;h1&gt;</span><span class="desc">Título del proyecto</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;h2&gt;</span><span class="desc">Sección principal</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;h3&gt;</span><span class="desc">Subsección</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;h4&gt; &lt;h5&gt; &lt;h6&gt;</span><span class="desc">Detalle, nota y texto de referencia</span></div>
+    </div>
+    <div class="char-dice">
+      <img src="../img/gatiel_explicando.png" alt="Gatiel">
+      <div class="char-dice-body">
+        <div class="char-dice-nombre gatiel">GATIEL DICE</div>
+        <div class="char-dice-texto">"No uses h1 solo porque querés letra grande. Un buen documento tiene un único h1, y el resto de los encabezados ordenados como el índice de un libro."</div>
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Para el énfasis, dos parejas de etiquetas se ven igual pero significan cosas distintas para el navegador:</p>
+    </div>
+    <div class="tabla-etiquetas">
+      <div class="fila-etiqueta"><span class="cod">&lt;strong&gt;</span><span class="desc">Importancia real del contenido — recomendado</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;b&gt;</span><span class="desc">Solo estilo visual, sin importancia especial</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;em&gt;</span><span class="desc">Énfasis real: cambia el tono de la frase — recomendado</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;i&gt;</span><span class="desc">Solo estilo visual: nombres, términos técnicos</span></div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 5 ═══════ -->
+  <div class="capitulo" id="c5">
+    <div class="capitulo-header">
+      <span class="capitulo-num">05</span>
+      <h2 class="capitulo-titulo">Enlaces básicos y errores comunes</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>La etiqueta <strong>&lt;a&gt;</strong> crea un enlace. El destino se indica dentro del <strong>atributo href</strong>.</p>
+    </div>
+    <div class="codigo-box">
+&lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="str">"equipo.html"</span>&gt;Conocé al equipo&lt;/<span class="tag">a</span>&gt;
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Dos tipos de destino</div>
+      <div class="definicion-texto"><strong>Interno:</strong> "equipo.html" → otra página de mi sitio<br><strong>Externo:</strong> "https://..." → otro sitio en internet</div>
+    </div>
+    <div class="char-dice">
+      <img src="../img/techi_explicando.png" alt="Techi">
+      <div class="char-dice-body">
+        <div class="char-dice-nombre techi">TECHI DICE</div>
+        <div class="char-dice-texto">"El texto que va entre &lt;a&gt; y &lt;/a&gt; es lo único que el visitante ve y puede tocar. El href es el mapa; el texto es el cartel que invita a caminar."</div>
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Antes de seguir, cuatro errores que aparecen apenas se empieza a escribir HTML:</p>
+    </div>
+    <div class="errores-grid">
+      <div class="error-fila">
+        <span class="error-mal">✗ &lt;p&gt;Texto sin cerrar</span>
+        <span class="error-bien">✓ &lt;p&gt;Texto&lt;/p&gt;</span>
+        <span class="error-desc">Olvidar la etiqueta de cierre</span>
+      </div>
+      <div class="error-fila">
+        <span class="error-mal">✗ &lt;P&gt;Texto&lt;/p&gt;</span>
+        <span class="error-bien">✓ &lt;p&gt;Texto&lt;/p&gt;</span>
+        <span class="error-desc">Mezclar mayúsculas y minúsculas</span>
+      </div>
+      <div class="error-fila">
+        <span class="error-mal">✗ &lt;a&gt;Enlace&lt;/a&gt;</span>
+        <span class="error-bien">✓ &lt;a href="..."&gt;Enlace&lt;/a&gt;</span>
+        <span class="error-desc">Enlace sin destino (href)</span>
+      </div>
+      <div class="error-fila">
+        <span class="error-mal">✗ &lt;h1&gt;&lt;h2&gt;Título&lt;/h2&gt;&lt;/h1&gt;</span>
+        <span class="error-bien">✓ &lt;h1&gt;Título&lt;/h1&gt;</span>
+        <span class="error-desc">Anidar encabezados entre sí</span>
+      </div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">✏️</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Para practicar</div>
+        <div class="actividad-texto">Con estas etiquetas ya podés armar tu primera página:</div>
+        <ol class="actividad-lista">
+          <li>Abrí el editor local y creá un archivo .html</li>
+          <li>Armá la estructura básica: html, head, body</li>
+          <li>Agregá un h1 con el nombre de tu proyecto</li>
+          <li>Escribí un párrafo con una palabra en negrita</li>
+          <li>Sumá un enlace hacia la página del equipo</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="cta-final">
+    <img src="../img/bit_motivando.png" alt="Bit">
+    <div class="cta-final-titulo">Ya sabés qué es cada cosa. Ahora falta cómo se ve.</div>
+    <p class="cta-final-texto">Con la estructura resuelta, el siguiente paso es darle estilo: colores, tipografías y distribución visual con CSS.</p>
+    <div class="cta-final-acciones">
+      <a href="html-css-principiantes-guia.html" class="btn btn-azul">🎯 Ver HTML y CSS</a>
+      <a href="../ejercicios/editor-html-css-practica.html" class="btn btn-naranja">💻 Practicar en el editor</a>
+    </div>
+  </div>
+
+</div>
+
+<a href="#top" class="volver-arriba" id="volver-arriba">↑</a>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+  const btnArriba = document.getElementById('volver-arriba');
+  window.addEventListener('scroll', () => {
+    btnArriba.classList.toggle('visible', window.scrollY > 500);
+  });
+</script>
+</body>
+</html>

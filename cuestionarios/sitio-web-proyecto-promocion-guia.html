@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construyendo nuestro sitio web · Guía · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+.guia-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.guia-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--naranja-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+.guia-hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+
+.guia-ruta { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.guia-ruta a { color: var(--naranja); text-decoration: none; }
+.guia-ruta a:hover { text-decoration: underline; }
+.guia-ruta .sep { color: var(--borde3); }
+
+.guia-nivel-badge {
+  font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 4px;
+  background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b);
+  margin-bottom: 8px; display: inline-block;
+}
+.guia-titulo { font-family: var(--font-title); font-size: clamp(1.3rem, 3.2vw, 1.9rem); font-weight: 800; color: #fff; margin-bottom: 8px; line-height: 1.2; }
+.guia-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 16px; max-width: 640px; line-height: 1.6; }
+.guia-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.guia-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
+
+.indice { max-width: 820px; margin: 32px auto 0; padding: 0 56px; }
+.indice-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--naranja); margin-bottom: 12px; }
+.indice-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+.indice-item {
+  font-family: var(--font-mono); font-size: 11px; padding: 6px 12px; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--borde); color: var(--texto2); text-decoration: none; transition: all .15s;
+}
+.indice-item:hover { border-color: var(--naranja-b); color: var(--naranja); background: var(--naranja-s); }
+
+.guia-main { max-width: 820px; margin: 0 auto; padding: 40px 56px 64px; }
+.capitulo { margin-bottom: 56px; scroll-margin-top: 24px; }
+.capitulo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.capitulo-num {
+  font-family: var(--font-mono); font-size: 11px; color: var(--naranja);
+  border: 1px solid var(--naranja-b); background: var(--naranja-s); border-radius: 6px; padding: 4px 10px; flex-shrink: 0;
+}
+.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: #fff; }
+.capitulo-texto { font-size: 14.5px; color: var(--texto2); line-height: 1.8; margin-bottom: 18px; }
+.capitulo-texto p { margin-bottom: 14px; }
+.capitulo-texto p:last-child { margin-bottom: 0; }
+.capitulo-texto strong { color: #fff; font-weight: 600; }
+
+.dos-col { display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0; }
+.dos-col > div { flex: 1 1 260px; }
+
+.card-oscura {
+  background: var(--bg4); border: 1px solid var(--borde); border-radius: var(--r2); padding: 18px 20px;
+}
+.card-oscura h4 { font-family: var(--font-title); font-size: 1rem; color: #fff; margin: 0 0 6px; }
+.card-oscura .kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--naranja); margin-bottom: 10px; }
+.card-oscura p { font-size: 13px; line-height: 1.75; color: var(--texto2); }
+
+.card-naranja {
+  background: var(--naranja-s); border: 1px solid var(--naranja-b); border-radius: var(--r2); padding: 18px 20px;
+}
+.card-naranja .kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--naranja); margin-bottom: 10px; }
+.card-naranja p { font-size: 13px; line-height: 1.75; color: var(--texto); font-style: italic; }
+
+.char-dice {
+  background: var(--bg4); border: 1px solid var(--borde); border-radius: var(--r2);
+  padding: 16px 20px; margin: 18px 0; display: flex; gap: 14px; align-items: flex-start;
+}
+.char-dice img { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; }
+.char-dice-body { flex: 1; }
+.char-dice-nombre { font-family: var(--font-title); font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+.char-dice-nombre.techi { color: var(--naranja); }
+.char-dice-nombre.bit { color: var(--azul2); }
+.char-dice-nombre.gatiel { color: var(--violeta2); }
+.char-dice-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; font-style: italic; }
+
+.tabla-etiquetas { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.fila-etiqueta {
+  display: flex; align-items: center; gap: 16px; background: var(--bg3); border: 1px solid var(--borde);
+  border-radius: var(--r); padding: 10px 16px;
+}
+.fila-etiqueta .cod { font-family: var(--font-mono); font-size: 13px; color: var(--naranja2); min-width: 190px; }
+.fila-etiqueta .desc { font-size: 13px; color: var(--texto2); }
+
+.extensiones-grid { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.ext-card { flex: 1 1 140px; background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 14px 16px; text-align: center; }
+.ext-card .ext-nombre { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--naranja2); margin-bottom: 4px; }
+.ext-card .ext-desc { font-size: 11.5px; color: var(--texto2); line-height: 1.5; }
+
+.dominios-grid { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.dom-grupo { flex: 1 1 300px; background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 16px 18px; }
+.dom-grupo .kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--azul2); margin-bottom: 10px; }
+.dom-item { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; font-size: 12.5px; }
+.dom-item:last-child { margin-bottom: 0; }
+.dom-item .dom-code { font-family: var(--font-mono); color: var(--naranja2); font-weight: 700; min-width: 42px; }
+.dom-item .dom-ej { color: var(--texto2); }
+
+.numerado-grid { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.numerado-item { display: flex; gap: 16px; align-items: flex-start; background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 16px 18px; }
+.numerado-num { width: 32px; height: 32px; border-radius: 50%; background: var(--naranja2); color: #1a1a1a; font-family: var(--font-title); font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+.numerado-body h5 { font-family: var(--font-title); font-size: .95rem; color: #fff; margin: 0 0 4px; }
+.numerado-body p { font-size: 12.5px; color: var(--texto2); line-height: 1.6; margin: 0; }
+
+.pasos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.paso-mini { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 14px 16px; }
+.paso-mini .num-circ { width: 26px; height: 26px; border-radius: 50%; background: var(--naranja2); color: #1a1a1a; font-family: var(--font-title); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-bottom: 10px; }
+.paso-mini p { font-size: 12.5px; color: var(--texto); font-weight: 600; margin: 0; line-height: 1.5; }
+
+.actividad {
+  background: var(--violeta-s); border: 1px solid var(--violeta-b); border-radius: var(--r2);
+  padding: 16px 20px; margin: 18px 0; display: flex; gap: 12px; align-items: flex-start;
+}
+.actividad-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.actividad-body { flex: 1; }
+.actividad-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--violeta); margin-bottom: 6px; }
+.actividad-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; }
+.actividad-texto strong { color: var(--texto); }
+.actividad-lista { margin: 10px 0 0; padding-left: 18px; }
+.actividad-lista li { font-size: 13px; color: var(--texto2); line-height: 1.8; }
+
+.definicion {
+  background: var(--bg3); border: 1px solid var(--borde); border-left: 3px solid var(--azul2);
+  border-radius: var(--r2); padding: 16px 20px; margin: 18px 0;
+}
+.definicion-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--azul2); margin-bottom: 6px; }
+.definicion-texto { font-size: 13.5px; color: var(--texto); line-height: 1.7; }
+.definicion-texto strong { color: var(--azul2); }
+
+.sintesis-lista { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.sintesis-item { display: flex; gap: 10px; align-items: center; font-size: 13.5px; color: var(--texto2); }
+.sintesis-item .flecha { color: var(--naranja2); }
+
+.sep-capitulo { height: 1px; background: linear-gradient(90deg, transparent, var(--borde2), transparent); margin: 40px 0; }
+
+.cta-final { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 32px 28px; text-align: center; margin-top: 20px; }
+.cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
+.cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-mono); font-size: 12px; padding: 11px 20px; border-radius: var(--r); border: 1.5px solid; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-naranja { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-naranja:hover { background: var(--naranja-m); }
+.btn-azul { color: var(--azul2); border-color: var(--azul-b); background: var(--azul-s); }
+.btn-azul:hover { background: var(--azul-m); }
+
+.volver-arriba {
+  position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--borde2); color: var(--azul2);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; font-size: 16px; text-decoration: none;
+}
+.volver-arriba.visible { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .guia-hero { padding: 32px 20px 28px; }
+  .indice { padding: 0 20px; }
+  .guia-main { padding: 28px 20px 48px; }
+  .fila-etiqueta { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .pasos-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<div class="guia-hero">
+  <div class="guia-hero-inner">
+    <div class="guia-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ruta-web">Ruta Web</a>
+      <span class="sep">/</span>
+      <span>Construyendo nuestro sitio web · 1er curso</span>
+    </div>
+    <span class="guia-nivel-badge">// Guía · Hosting y publicación — Laboratorio 1</span>
+    <h1 class="guia-titulo">Construyendo nuestro sitio web</h1>
+    <p class="guia-subtitulo">De la idea al repositorio: cómo pensar, estructurar y publicar el sitio del Proyecto de Promoción. Techi aporta pensamiento lateral, Bit lógica y datos, Gatiel siempre encuentra otro camino.</p>
+    <div class="guia-meta">
+      <span class="guia-meta-item">📖 5 bloques</span>
+      <span class="guia-meta-item">⏱ ~10 minutos de lectura</span>
+      <span class="guia-meta-item">🎯 1er curso</span>
+    </div>
+  </div>
+</div>
+
+<div class="indice">
+  <div class="indice-titulo">// En esta guía</div>
+  <div class="indice-lista">
+    <a href="#c1" class="indice-item">1. La nube, el dominio y el hosting</a>
+    <a href="#c2" class="indice-item">2. Cómo pensar una página</a>
+    <a href="#c3" class="indice-item">3. Estructura del sitio</a>
+    <a href="#c4" class="indice-item">4. Repositorio, GitHub y GitHub Pages</a>
+    <a href="#c5" class="indice-item">5. El camino hasta publicar</a>
+  </div>
+</div>
+
+<div class="guia-main">
+
+  <!-- ═══════ CAPÍTULO 1 — NUBE, DOMINIO, HOSTING ═══════ -->
+  <div class="capitulo" id="c1">
+    <div class="capitulo-header">
+      <span class="capitulo-num">01</span>
+      <h2 class="capitulo-titulo">La nube, el dominio y el hosting</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Antes de tocar código, una pregunta que parece obvia y no lo es: cuando decimos que algo "está en internet" o "está en la nube", <strong>¿dónde están en realidad esos datos?</strong></p>
+      <p>La nube no es un lugar abstracto flotando en ningún sitio. Son discos duros reales, guardados en edificios reales llamados <strong>centros de datos</strong>, ubicados en algún punto físico del planeta. Cuando subís una foto o publicás un sitio, esos archivos viajan y quedan guardados en una computadora concreta, en algún país concreto.</p>
+    </div>
+    <div class="char-dice">
+      <img src="../img/bit_explicando.png" alt="Bit">
+      <div class="char-dice-body">
+        <div class="char-dice-nombre bit">BIT DICE</div>
+        <div class="char-dice-texto">"Si la nube se fue lejos, tarda más en descargar un archivo ;) — la distancia física entre tu computadora y el centro de datos importa, aunque no la veas."</div>
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Con eso claro, dos palabras que se confunden todo el tiempo — <strong>hosting</strong> y <strong>dominio</strong> — dejan de ser abstractas si pensamos en una casa:</p>
+    </div>
+    <div class="dos-col">
+      <div class="card-oscura">
+        <div class="kicker">Hosting</div>
+        <h4>Mi casa</h4>
+        <p>Es el espacio real donde viven los archivos del sitio — el terreno y la construcción. Sin hosting, el sitio no existe en ningún lado; solo está en tu computadora.</p>
+      </div>
+      <div class="card-naranja">
+        <div class="kicker">Dominio</div>
+        <h4 style="color:var(--texto); font-family:var(--font-title)">Los datos de la dirección</h4>
+        <p>Es la ubicación: el nombre que alguien escribe para llegar hasta ahí, en vez de memorizar una dirección numérica. No es la casa — es cómo la encontrás.</p>
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Los archivos que arman esa "casa" tienen distintos formatos, y cada extensión le dice a la computadora qué programa usar para abrirlos:</p>
+    </div>
+    <div class="extensiones-grid">
+      <div class="ext-card"><div class="ext-nombre">.html</div><div class="ext-desc">Página web</div></div>
+      <div class="ext-card"><div class="ext-nombre">.docx</div><div class="ext-desc">Documento de Word</div></div>
+      <div class="ext-card"><div class="ext-nombre">.xlsx</div><div class="ext-desc">Planilla de Excel</div></div>
+      <div class="ext-card"><div class="ext-nombre">.pptx</div><div class="ext-desc">Presentación de PowerPoint</div></div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Y esa "dirección" (el dominio) suele terminar en un grupo de letras que también dice algo — a veces sobre el tipo de sitio, a veces sobre el país:</p>
+    </div>
+    <div class="dominios-grid">
+      <div class="dom-grupo">
+        <div class="kicker">Genéricos</div>
+        <div class="dom-item"><span class="dom-code">.com</span><span class="dom-ej">comercial — ej. mercadolibre.com</span></div>
+        <div class="dom-item"><span class="dom-code">.edu</span><span class="dom-ej">educativo — ej. mit.edu</span></div>
+        <div class="dom-item"><span class="dom-code">.org</span><span class="dom-ej">organización — ej. wikipedia.org</span></div>
+      </div>
+      <div class="dom-grupo">
+        <div class="kicker">De país</div>
+        <div class="dom-item"><span class="dom-code">.py</span><span class="dom-ej">Paraguay — ej. mec.gov.py</span></div>
+        <div class="dom-item"><span class="dom-code">.ar</span><span class="dom-ej">Argentina — ej. uba.ar</span></div>
+        <div class="dom-item"><span class="dom-code">.mx</span><span class="dom-ej">México — ej. unam.mx</span></div>
+        <div class="dom-item"><span class="dom-code">.es</span><span class="dom-ej">España — ej. rae.es</span></div>
+      </div>
+    </div>
+    <div class="definicion">
+      <div class="definicion-titulo">// Para recordar</div>
+      <div class="definicion-texto">GitHub Pages —que vamos a usar en este proyecto— actúa como <strong>hosting gratuito</strong>, y te da un <strong>dominio</strong> del tipo <code>usuario.github.io/proyecto</code> sin costo.</div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 2 ═══════ -->
+  <div class="capitulo" id="c2">
+    <div class="capitulo-header">
+      <span class="capitulo-num">02</span>
+      <h2 class="capitulo-titulo">Cómo pensar una página, antes de escribir código</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Ficha de planificación en papel — antes de abrir el editor de HTML. Cuatro preguntas en orden:</p>
+    </div>
+    <div class="numerado-grid">
+      <div class="numerado-item">
+        <div class="numerado-num">1</div>
+        <div class="numerado-body"><h5>El propósito en una frase</h5><p>¿Qué tiene que entender alguien en los primeros 10 segundos?</p></div>
+      </div>
+      <div class="numerado-item">
+        <div class="numerado-num">2</div>
+        <div class="numerado-body"><h5>Inventario de contenido</h5><p>Del anteproyecto: ¿qué va al sitio y qué queda solo en el documento?</p></div>
+      </div>
+      <div class="numerado-item">
+        <div class="numerado-num">3</div>
+        <div class="numerado-body"><h5>Mapa de páginas</h5><p>Cuántas páginas, cómo se llaman, cómo se conectan entre sí.</p></div>
+      </div>
+      <div class="numerado-item">
+        <div class="numerado-num">4</div>
+        <div class="numerado-body"><h5>Boceto de cada página</h5><p>Encabezado, contenido principal y pie de página, sin colores todavía.</p></div>
+      </div>
+    </div>
+    <div class="actividad">
+      <div class="actividad-ico">💬</div>
+      <div class="actividad-body">
+        <div class="actividad-titulo">Discusión en pareja — El caso de Techi, Bit y Gatiel</div>
+        <div class="actividad-texto">
+          <strong>Bit:</strong> "Yo pongo todo en una sola página: el problema, la propuesta, el equipo y el cronograma, uno abajo del otro. Así el visitante no tiene que hacer clic en nada."<br>
+          <strong>Gatiel:</strong> "No sé... eso puede quedar muy largo."<br>
+          <strong>Techi:</strong> "Puede funcionar, pero solo si la página no queda demasiado larga y confusa."
+        </div>
+        <ol class="actividad-lista">
+          <li>¿Qué problema puede tener la idea de Bit si alguien entra buscando solamente quién integra el equipo?</li>
+          <li>Reescriban la propuesta de Bit en una versión mejorada: ¿una sola página o varias?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 3 ═══════ -->
+  <div class="capitulo" id="c3">
+    <div class="capitulo-header">
+      <span class="capitulo-num">03</span>
+      <h2 class="capitulo-titulo">Estructura del sitio del proyecto</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Arquitectura mínima común — misma estructura para todas las parejas; el tema y el contenido son libres.</p>
+    </div>
+    <div class="dos-col" style="gap:12px">
+      <div class="card-oscura" style="flex:1 1 200px">
+        <div class="kicker">index.html — Inicio</div>
+        <p>→ Título del proyecto<br>→ Frase de propósito<br>→ Imagen o ícono representativo<br>→ Menú hacia las otras páginas</p>
+      </div>
+      <div class="card-oscura" style="flex:1 1 200px">
+        <div class="kicker">proyecto.html — El proyecto</div>
+        <p>→ El problema / motivación<br>→ Nuestra propuesta<br>→ Objetivos (lista)<br>→ Enlace de vuelta a Inicio</p>
+      </div>
+      <div class="card-oscura" style="flex:1 1 200px">
+        <div class="kicker">equipo.html — Equipo</div>
+        <p>→ Integrantes y su rol<br>→ Contacto de referencia<br>→ Enlace de vuelta a Inicio</p>
+      </div>
+    </div>
+    <div class="capitulo-texto">
+      <p>Cada etiqueta aprendida en clase tiene un uso concreto en el sitio del proyecto:</p>
+    </div>
+    <div class="tabla-etiquetas">
+      <div class="fila-etiqueta"><span class="cod">&lt;h1&gt;</span><span class="desc">Título del proyecto</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;p&gt;</span><span class="desc">Frase de propósito / descripción del problema</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;img&gt;</span><span class="desc">Imagen o ícono representativo</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;a href="..."&gt;</span><span class="desc">Enlaces del menú entre páginas</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;h2&gt;</span><span class="desc">Encabezados de sección: "El problema", "Nuestra propuesta"</span></div>
+      <div class="fila-etiqueta"><span class="cod">&lt;ul&gt; / &lt;li&gt;</span><span class="desc">Listas: objetivos, integrantes del equipo</span></div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 4 ═══════ -->
+  <div class="capitulo" id="c4">
+    <div class="capitulo-header">
+      <span class="capitulo-num">04</span>
+      <h2 class="capitulo-titulo">Repositorio, GitHub y GitHub Pages</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Tres conceptos, sin conexión todavía — la práctica llega en el momento con conexión a internet.</p>
+    </div>
+    <div class="numerado-grid">
+      <div class="numerado-item">
+        <div class="numerado-num">1</div>
+        <div class="numerado-body"><h5>Repositorio</h5><p>Una carpeta especial en internet donde vive el proyecto completo, con el historial de cada cambio guardado. Es como la carpeta digital del estudiante, pero accesible desde cualquier lugar.</p></div>
+      </div>
+      <div class="numerado-item">
+        <div class="numerado-num">2</div>
+        <div class="numerado-body"><h5>GitHub</h5><p>La plataforma donde viven millones de repositorios. Crear una cuenta y subir un proyecto es gratuito.</p></div>
+      </div>
+      <div class="numerado-item">
+        <div class="numerado-num">3</div>
+        <div class="numerado-body"><h5>GitHub Pages</h5><p>Un servicio de GitHub que toma los archivos HTML del repositorio y los publica como un sitio web real, con una dirección propia (URL) — el hosting gratuito del que hablamos en el capítulo 1.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-capitulo"></div>
+
+  <!-- ═══════ CAPÍTULO 5 ═══════ -->
+  <div class="capitulo" id="c5">
+    <div class="capitulo-header">
+      <span class="capitulo-num">05</span>
+      <h2 class="capitulo-titulo">El camino hasta el sitio publicado</h2>
+    </div>
+    <div class="capitulo-texto">
+      <p>Guía paso a paso — momento con conexión puntual. El QR final se integra en la última diapositiva del PPT del proyecto.</p>
+    </div>
+    <div class="pasos-grid">
+      <div class="paso-mini"><div class="num-circ">1</div><p>Crear cuenta en github.com</p></div>
+      <div class="paso-mini"><div class="num-circ">2</div><p>Crear un repositorio nuevo</p></div>
+      <div class="paso-mini"><div class="num-circ">3</div><p>Subir los archivos del sitio</p></div>
+      <div class="paso-mini"><div class="num-circ">4</div><p>Settings → Pages → activar</p></div>
+      <div class="paso-mini"><div class="num-circ">5</div><p>Copiar la URL generada</p></div>
+      <div class="paso-mini"><div class="num-circ">6</div><p>Generar el código QR</p></div>
+    </div>
+    <div class="capitulo-texto" style="margin-top:20px">
+      <p><strong>En síntesis, de la ficha en papel al sitio publicado:</strong></p>
+    </div>
+    <div class="sintesis-lista">
+      <div class="sintesis-item"><span class="flecha">→</span> Ficha de planificación completa (sitemap + boceto)</div>
+      <div class="sintesis-item"><span class="flecha">→</span> Sitio con al menos 3 páginas navegables</div>
+      <div class="sintesis-item"><span class="flecha">→</span> Repositorio creado y publicado en GitHub Pages</div>
+      <div class="sintesis-item"><span class="flecha">→</span> URL real + código QR integrado en el PPT</div>
+    </div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="cta-final">
+    <img src="../img/techi_saludando.png" alt="Techi">
+    <div class="cta-final-titulo">De la idea al sitio publicado</div>
+    <p class="cta-final-texto">Con HTML, CSS, hosting y dominio ya claros, es momento de poner las manos en el editor y practicar antes de construir el sitio real.</p>
+    <div class="cta-final-acciones">
+      <a href="../ejercicios/editor-html-css-practica.html" class="btn btn-naranja">💻 Practicar en el editor</a>
+      <a href="../aprendiendo.html#ruta-web" class="btn btn-azul">📚 Volver a las rutas</a>
+    </div>
+  </div>
+
+</div>
+
+<a href="#top" class="volver-arriba" id="volver-arriba">↑</a>
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+  const btnArriba = document.getElementById('volver-arriba');
+  window.addEventListener('scroll', () => {
+    btnArriba.classList.toggle('visible', window.scrollY > 500);
+  });
+</script>
+</body>
+</html>

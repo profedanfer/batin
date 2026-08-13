@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruta Web · Autoevaluación · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a { color: var(--naranja); text-decoration: none; }
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* Instrucciones */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* Bloque badge dentro de pregunta */
+.bloque-badge {
+  font-family: var(--font-mono); font-size: 10px; padding: 2px 9px; border-radius: 4px;
+  display: inline-block; margin-bottom: 8px; letter-spacing: .5px;
+}
+.bloque-badge.html { background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); }
+.bloque-badge.css { background: var(--azul-s); color: var(--azul2); border: 1px solid var(--azul-b); }
+.bloque-badge.hosting { background: var(--violeta-s); color: var(--violeta2); border: 1px solid var(--violeta-b); }
+
+/* Progreso */
+.quiz-progreso { margin-bottom: 28px; }
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* Pregunta */
+.pregunta-panel { display: none; }
+.pregunta-panel.act { display: block; animation: fadeInUp .3s ease; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones { display: flex; flex-direction: column; gap: 10px; }
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover { border-color: var(--violeta-b); background: var(--violeta-s); }
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label.selected .opcion-circulo { background: var(--violeta); border-color: var(--violeta); }
+.opcion-label.selected { border-color: var(--violeta-b); background: var(--violeta-s); }
+.opcion-label.selected .opcion-circulo::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+
+.opcion-label.correcta { border-color: #50c878 !important; background: rgba(80,200,120,.1) !important; }
+.opcion-label.correcta .opcion-circulo { background: #50c878 !important; border-color: #50c878 !important; }
+.opcion-label.correcta .opcion-circulo::after { content: '✓'; font-size: 11px; color: #fff; border-radius: 0; width: auto; height: auto; background: transparent; }
+
+.opcion-label.incorrecta { border-color: #e05050 !important; background: rgba(224,80,80,.08) !important; }
+.opcion-label.incorrecta .opcion-circulo { background: #e05050 !important; border-color: #e05050 !important; }
+.opcion-label.incorrecta .opcion-circulo::after { content: '✗'; font-size: 11px; color: #fff; border-radius: 0; width: auto; height: auto; background: transparent; }
+
+.opcion-texto { font-size: 14px; color: var(--texto); line-height: 1.5; }
+.opcion-letra { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); min-width: 14px; margin-top: 2px; }
+
+.feedback { display: none; padding: 12px 16px; border-radius: var(--r); margin-top: 14px; font-size: 13px; line-height: 1.6; }
+.feedback.correcto { display: block; background: rgba(80,200,120,.1); border: 1px solid rgba(80,200,120,.3); color: #50c878; }
+.feedback.incorrecto { display: block; background: rgba(224,80,80,.08); border: 1px solid rgba(224,80,80,.2); color: #e08080; }
+.feedback strong { color: #fff; }
+
+/* Navegación */
+.pregunta-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+
+.btn-nav {
+  font-family: var(--font-mono); font-size: 12px; padding: 9px 20px; border-radius: var(--r);
+  border: 1.5px solid; cursor: pointer; background: transparent; transition: all .15s;
+}
+.btn-nav.anterior { color: var(--texto3); border-color: var(--borde2); }
+.btn-nav.anterior:hover { color: var(--texto); border-color: var(--borde3); }
+.btn-nav.siguiente { color: var(--violeta); border-color: var(--violeta-b); background: var(--violeta-s); }
+.btn-nav.siguiente:hover { background: var(--violeta-m); }
+.btn-nav.siguiente:disabled { opacity: .4; cursor: not-allowed; }
+.btn-nav.finalizar { color: var(--naranja); border-color: var(--naranja-b); background: var(--naranja-s); }
+.btn-nav.finalizar:hover { background: var(--naranja-m); }
+.btn-nav.finalizar:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Dots */
+.pregunta-dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--borde2); border: 1px solid var(--borde); cursor: pointer; transition: all .15s; }
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act { background: var(--violeta); border-color: var(--violeta); }
+.dot.ok { background: #50c87850; border-color: #50c878; }
+.dot.mal { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* Resultado final */
+#resultado-panel { display: none; }
+
+.resultado-card { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 36px 32px; text-align: center; margin-bottom: 24px; }
+.resultado-char img { width: 130px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.3)); }
+.resultado-score { font-family: var(--font-title); font-size: 3.5rem; font-weight: 900; margin-bottom: 6px; line-height: 1; }
+.resultado-score.verde { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo { color: #e05050; }
+.resultado-nivel { font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.resultado-nivel.verde { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo { color: #e05050; }
+.resultado-mensaje { font-size: 15px; color: var(--texto2); line-height: 1.75; max-width: 520px; margin: 0 auto 20px; font-weight: 300; }
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+.resultado-detalle { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+.rd-item { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; }
+.rd-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* Diagnóstico y ruta recomendada */
+.diagnostico { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 24px 28px; margin-bottom: 16px; }
+.diagnostico-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.diagnostico-titulo.verde { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo { color: #e05050; }
+.diagnostico-char { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
+.diagnostico-char img { width: 70px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+.diagnostico-char-texto { font-size: 13px; color: var(--texto2); line-height: 1.75; font-style: italic; }
+
+.ruta-recomendada { background: var(--bg4); border: 1px solid var(--borde); border-radius: var(--r); padding: 16px 18px; margin-top: 14px; }
+.ruta-recomendada-titulo { font-family: var(--font-mono); font-size: 10px; color: var(--naranja); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+.ruta-subtitulo { font-family: var(--font-mono); font-size: 10px; color: var(--texto3); letter-spacing: 1px; text-transform: uppercase; margin: 16px 0 8px; }
+.ruta-subtitulo:first-child { margin-top: 0; }
+.ruta-paso { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--texto2); }
+.ruta-paso:last-child { margin-bottom: 0; }
+.ruta-paso-num { font-family: var(--font-mono); font-size: 10px; background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+.ruta-paso a { color: var(--naranja); text-decoration: none; border-bottom: 1px solid var(--naranja-b); }
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+.resultado-acciones { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
+
+.revision-panel { display: none; margin-top: 24px; }
+.revision-item { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 18px 20px; margin-bottom: 12px; }
+.revision-item.ok { border-left: 3px solid #50c878; }
+.revision-item.mal { border-left: 3px solid #e05050; }
+.revision-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.revision-icono { font-size: 16px; flex-shrink: 0; }
+.revision-pregunta { font-size: 13px; font-weight: 500; color: #fff; flex: 1; }
+.revision-respuestas { font-size: 12px; color: var(--texto3); line-height: 1.7; }
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html#ruta-web">Ruta Web</a>
+      <span class="sep">/</span>
+      <span>Autoevaluación</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/techi_idea.png" alt="Techi con idea">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Ruta Web · Autoevaluación</span>
+        <h1 class="quiz-titulo">Evaluación Formativa<br>HTML, CSS y publicación</h1>
+        <p class="quiz-subtitulo">No es para calificar — es para que sepas dónde estás y qué sigue.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 12 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~6 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🤖</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Bit dice:</strong> Leé cada pregunta con calma. Seleccioná la opción que consideres correcta y hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para ver el resultado al instante. Cuando termines, vas a recibir tu diagnóstico.</p>
+      <p>Este cuestionario recorre los tres bloques de la Ruta Web: preguntas 1-4 sobre <strong style="color:var(--texto)">HTML</strong>, 5-8 sobre <strong style="color:var(--texto)">CSS</strong>, y 9-12 sobre <strong style="color:var(--texto)">nube, dominio, hosting y publicación</strong>.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 12</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra"><div class="progreso-fill" id="progreso-fill"></div></div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <span class="bloque-badge html">HTML</span>
+        <div class="pregunta-num">// Pregunta 01</div>
+        <div class="pregunta-texto">¿Qué le dice una etiqueta HTML al navegador?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">Qué color debe usar.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">Qué es cada parte del contenido.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">En qué servidor guardar el archivo.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">Cuánto tarda en cargar la página.</span></label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','HTML dice qué es cada cosa (título, párrafo, imagen), no cómo se ve.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <span class="bloque-badge html">HTML</span>
+        <div class="pregunta-num">// Pregunta 02</div>
+        <div class="pregunta-texto">¿Cuál de estas etiquetas NO necesita cierre?</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">&lt;p&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">&lt;strong&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">&lt;img&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">&lt;a&gt;</span></label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'c','&lt;img&gt; es una etiqueta vacía: no envuelve contenido, así que no necesita cierre.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <span class="bloque-badge html">HTML</span>
+        <div class="pregunta-num">// Pregunta 03</div>
+        <div class="pregunta-texto">¿Dónde va todo el contenido visible de una página HTML?</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">&lt;head&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">&lt;title&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">&lt;body&gt;</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">&lt;html&gt;</span></label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'c','El &lt;body&gt; contiene todo lo visible: textos, imágenes, enlaces.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <span class="bloque-badge html">HTML</span>
+        <div class="pregunta-num">// Pregunta 04</div>
+        <div class="pregunta-texto">¿Qué atributo indica el destino de un enlace?</div>
+        <div class="pregunta-codigo">&lt;a ____="equipo.html"&gt;Ver equipo&lt;/a&gt;</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">src</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">href</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">link</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">alt</span></label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','El atributo href indica el destino del enlace, interno o externo.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <span class="bloque-badge css">CSS</span>
+        <div class="pregunta-num">// Pregunta 05</div>
+        <div class="pregunta-texto">¿Qué define CSS en una página web?</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">Qué contenido hay y en qué orden.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">Cómo se ve cada elemento: colores, tipografías, espacios.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">Dónde se aloja el sitio.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">El nombre de dominio del sitio.</span></label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'b','CSS responde \'cómo se ve\', no \'qué es\' — eso es trabajo de HTML.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <span class="bloque-badge css">CSS</span>
+        <div class="pregunta-num">// Pregunta 06</div>
+        <div class="pregunta-texto">¿Cuál es la forma recomendada de conectar CSS con un sitio de varias páginas?</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">Atributo style en cada etiqueta.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">Etiqueta &lt;style&gt; repetida en cada página.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">Un archivo style.css externo, enlazado desde cada página.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">No hace falta conectarlo, el navegador lo adivina.</span></label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'c','Un solo archivo externo controla el estilo de todo el sitio — es el método usado en el proyecto de promoción.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <span class="bloque-badge css">CSS</span>
+        <div class="pregunta-num">// Pregunta 07</div>
+        <div class="pregunta-texto">¿Qué selector aplica el estilo a un único elemento y no se repite?</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">p { }</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">.destacado { }</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">#titulo-principal { }</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">* { }</span></label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'c','El selector de ID (#) apunta a un único elemento; la clase (.) se puede reutilizar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <span class="bloque-badge css">CSS</span>
+        <div class="pregunta-num">// Pregunta 08</div>
+        <div class="pregunta-texto">En el modelo de caja, ¿qué representa el padding?</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">El espacio externo, entre el elemento y sus vecinos.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">El borde visible del elemento.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">El espacio interno, entre el contenido y el borde.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">El texto o la imagen en sí.</span></label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'c','El orden es: contenido → padding (interno) → border → margin (externo).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <span class="bloque-badge hosting">NUBE Y HOSTING</span>
+        <div class="pregunta-num">// Pregunta 09</div>
+        <div class="pregunta-texto">Cuando algo "está en la nube", ¿dónde está en realidad?</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">En ningún lugar físico, flota en internet.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">En discos reales, en centros de datos ubicados en algún lugar del mundo.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">Solo en tu computadora.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">En el navegador, temporalmente.</span></label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','La nube son centros de datos reales — por eso, si están lejos, hasta se nota en la velocidad de descarga.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <span class="bloque-badge hosting">NUBE Y HOSTING</span>
+        <div class="pregunta-num">// Pregunta 10</div>
+        <div class="pregunta-texto">Con la analogía de la casa: hosting es la casa, ¿qué es el dominio?</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">Los muebles de la casa.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">Los datos de la dirección: cómo la encontrás.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">El terreno donde está construida.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">Es lo mismo que el hosting.</span></label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-10" onclick="responderYSiguiente(10,'b','Hosting es dónde vive el sitio (la casa); dominio es cómo lo encontrás (la dirección).')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P11 -->
+    <div class="pregunta-panel" id="p11">
+      <div class="pregunta-card">
+        <span class="bloque-badge hosting">NUBE Y HOSTING</span>
+        <div class="pregunta-num">// Pregunta 11</div>
+        <div class="pregunta-texto">¿Qué tipo de dominio corresponde a Paraguay?</div>
+        <div class="opciones" id="ops-11">
+          <label class="opcion-label" onclick="seleccionar(this,11,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">.com</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">.ar</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">.py</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">.edu</span></label>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(10)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-11" onclick="responderYSiguiente(11,'c','.py es el dominio de país de Paraguay, como .ar en Argentina o .mx en México.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P12 -->
+    <div class="pregunta-panel" id="p12">
+      <div class="pregunta-card">
+        <span class="bloque-badge hosting">NUBE Y HOSTING</span>
+        <div class="pregunta-num">// Pregunta 12</div>
+        <div class="pregunta-texto">¿Qué hace GitHub Pages con los archivos de un repositorio?</div>
+        <div class="opciones" id="ops-12">
+          <label class="opcion-label" onclick="seleccionar(this,12,'a')"><div class="opcion-circulo"></div><span class="opcion-letra">a)</span><span class="opcion-texto">Los borra automáticamente cada semana.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'b')"><div class="opcion-circulo"></div><span class="opcion-letra">b)</span><span class="opcion-texto">Los convierte en un archivo comprimido.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'c')"><div class="opcion-circulo"></div><span class="opcion-letra">c)</span><span class="opcion-texto">Los publica como un sitio web real, con una URL propia.</span></label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'d')"><div class="opcion-circulo"></div><span class="opcion-letra">d)</span><span class="opcion-texto">Los envía por correo a los integrantes del equipo.</span></label>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(11)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-12" onclick="responderYFinalizar(12,'c','GitHub Pages toma los archivos HTML del repositorio y los publica como sitio real — es el hosting gratuito del proyecto.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char"><img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado"></div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html#ruta-web" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+const TOTAL = 12;
+const CORRECTAS = { 1:'b', 2:'c', 3:'c', 4:'b', 5:'b', 6:'c', 7:'c', 8:'c', 9:'b', 10:'b', 11:'c', 12:'c' };
+const TEXTOS_CORRECTAS = {
+  1: 'Qué es cada parte del contenido.',
+  2: '<img> — no envuelve contenido, no necesita cierre.',
+  3: '<body>',
+  4: 'href',
+  5: 'Cómo se ve cada elemento: colores, tipografías, espacios.',
+  6: 'Un archivo style.css externo, enlazado desde cada página.',
+  7: '#titulo-principal { } (selector de ID)',
+  8: 'El espacio interno, entre el contenido y el borde.',
+  9: 'En discos reales, en centros de datos ubicados en algún lugar del mundo.',
+  10: 'Los datos de la dirección: cómo la encontrás.',
+  11: '.py',
+  12: 'Los publica como un sitio web real, con una URL propia.'
+};
+const PREGUNTAS_TEXTO = {
+  1: '¿Qué le dice una etiqueta HTML al navegador?',
+  2: '¿Cuál etiqueta NO necesita cierre?',
+  3: '¿Dónde va el contenido visible?',
+  4: '¿Qué atributo indica el destino de un enlace?',
+  5: '¿Qué define CSS?',
+  6: '¿Cómo conectar CSS en un sitio de varias páginas?',
+  7: '¿Qué selector aplica a un único elemento?',
+  8: 'Modelo de caja: ¿qué es el padding?',
+  9: '¿Dónde está realmente "la nube"?',
+  10: 'Analogía de la casa: ¿qué es el dominio?',
+  11: '¿Qué dominio corresponde a Paraguay?',
+  12: '¿Qué hace GitHub Pages?'
+};
+
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 800);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 900);
+}
+
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 12 respuestas correctas</strong>. HTML, CSS, nube y hosting están claros. ¡Estás listo para construir el sitio real del proyecto de promoción!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> Arrancá con la ficha de planificación de tu sitio</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Practicá en el <a href="../ejercicios/editor-html-css-practica.html">editor HTML/CSS interactivo</a></div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 12 respuestas correctas</strong>. Hay conceptos que ya entendiste bien, pero conviene repasar antes de avanzar al sitio real.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá la guía: <a href="html-primeros-pasos-guia.html">HTML — primeros pasos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Repasá la guía: <a href="html-css-principiantes-guia.html">Estructura y estilo (HTML+CSS)</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Practicá en el <a href="../ejercicios/editor-html-css-practica.html">editor HTML/CSS interactivo</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Cuando te sientas seguro, volvé a intentar este cuestionario</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 12 respuestas correctas</strong>. Los conceptos de esta ruta todavía no están afianzados — es normal al principio de la Ruta Web.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📄 Guías para repasar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="html-primeros-pasos-guia.html">HTML — primeros pasos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="html-css-principiantes-guia.html">Estructura y estilo (HTML+CSS)</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> <a href="sitio-web-proyecto-promocion-guia.html">Construyendo nuestro sitio web</a></div>
+      <div class="ruta-subtitulo">📝 Para practicar</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> Recorré el <a href="../ejercicios/editor-html-css-practica.html">editor HTML/CSS interactivo</a> desde el ejercicio 1</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">05</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar el cuestionario</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Ruta Web · HTML, CSS y publicación';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% — eso habla de comprensión real, no de suerte. Los fundamentos de la web están claros. ¡A construir el sitio del proyecto!"`,
+    amarillo: `"Hay conceptos que ya entendiste bien. Los que fallaste tienen un patrón — revisalos con calma y volvé. El aprendizaje no es lineal."`,
+    rojo:     `"A mí también me costó al principio. Lo que importa no es el primer intento — es el recorrido que hacés después. Seguí la ruta y volvé a intentarlo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>
