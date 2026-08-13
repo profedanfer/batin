@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es-PY">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Editor Interactivo — Práctica HTML y CSS · BATIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #10101a;
+  --bg2: #16161f;
+  --panel: #1c1c28;
+  --panel2: #20202e;
+  --console: #0b0b12;
+  --border: #2d2d3d;
+  --text: #e9e7f2;
+  --text-dim: #9b97b3;
+  --violet: #9b7fd4;
+  --violet-dim: #6E4C9E;
+  --blue: #5fa8e0;
+  --blue-dim: #2E6FA3;
+  --orange: #eda05a;
+  --orange-dim: #D97B29;
+  --green: #6fcf97;
+  --red: #e8748a;
+}
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: radial-gradient(circle at 15% 0%, #1a1a2c 0%, var(--bg) 45%) fixed;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
+::selection{ background: var(--violet-dim); color: white; }
+
+.topbar{
+  padding: 22px clamp(16px,4vw,40px) 18px;
+  border-bottom: 1px solid var(--border);
+  display:flex; flex-direction:column; gap:4px;
+}
+.topbar .eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.topbar h1{
+  font-family:'Orbitron', sans-serif;
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 2px 0 0;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--violet), var(--blue) 55%, var(--orange));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.topbar p.sub{ margin: 6px 0 0; color: var(--text-dim); font-size: 14px; max-width: 760px; }
+
+.layout{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 96px);
+}
+@media (max-width: 900px){
+  .layout{ grid-template-columns: 1fr; }
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  border-right: 1px solid var(--border);
+  padding: 18px 14px 40px;
+  overflow-y:auto;
+  max-height: calc(100vh - 96px);
+  position: sticky; top:0;
+}
+@media (max-width: 900px){
+  .sidebar{ position:static; max-height:none; border-right:none; border-bottom:1px solid var(--border); }
+}
+.block-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 18px 6px 8px;
+}
+.block-label:first-child{ margin-top: 4px; }
+.trail{ list-style:none; margin:0; padding:0; position:relative; }
+.trail::before{
+  content:""; position:absolute; left:17px; top:6px; bottom:6px; width:2px;
+  background: linear-gradient(var(--violet-dim), var(--orange-dim));
+  opacity:0.35;
+}
+.trail li{ position:relative; }
+.node-btn{
+  all:unset; cursor:pointer; display:flex; align-items:center; gap:10px;
+  width:100%; padding:7px 8px 7px 4px; border-radius: 8px;
+  position:relative; z-index:1; box-sizing:border-box;
+}
+.node-btn:hover{ background: var(--panel); }
+.node-btn.active{ background: var(--panel2); }
+.dot{
+  width: 14px; height:14px; border-radius:50%; flex:0 0 auto;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--dotcolor);
+  background: var(--dotcolor);
+}
+.dot.done{ background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+.node-text{ display:flex; flex-direction:column; min-width:0; }
+.node-text .num{ font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--text-dim); }
+.node-text .ttl{ font-size: 13px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.node-btn.active .ttl{ color: var(--violet); font-weight:600; }
+
+.progreso-sidebar{ margin: 10px 6px 20px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim); }
+.progreso-barra-side{ height:5px; background:var(--panel2); border-radius:3px; margin-top:6px; overflow:hidden; }
+.progreso-fill-side{ height:100%; background: linear-gradient(90deg, var(--orange), var(--violet)); width:0%; transition: width .3s; }
+
+/* ---------- Main ---------- */
+.main{ padding: 22px clamp(16px,4vw,36px) 60px; min-width:0; }
+.tags{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 10px; }
+.tag{
+  font-family:'JetBrains Mono', monospace; font-size: 12px;
+  padding: 4px 10px; border-radius:999px; border:1px solid var(--border);
+  color: var(--text-dim); background: var(--panel);
+}
+.tag.ctx-html{ color: var(--orange); border-color: var(--orange-dim); }
+.tag.ctx-css{ color: var(--blue); border-color: var(--blue-dim); }
+
+.main h2{ font-family:'Orbitron', sans-serif; font-size: 22px; margin: 4px 0 14px; }
+.enunciado{
+  background: var(--panel); border:1px solid var(--border); border-radius: 12px;
+  padding: 16px 18px; line-height:1.6; font-size:14.5px; margin-bottom: 18px; color: var(--text);
+}
+.enunciado code{ font-family:'JetBrains Mono', monospace; color: var(--orange); background: var(--console); padding: 1px 5px; border-radius: 4px; }
+
+.editores{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 700px){ .editores{ grid-template-columns: 1fr; } }
+.editor-wrap{ display:flex; flex-direction:column; }
+.editor-label{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-dim); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+.editor-label .filetag{ color: var(--orange); }
+.editor-label.css .filetag{ color: var(--blue); }
+textarea.editor{
+  width:100%; min-height: 200px; resize: vertical; flex: 1;
+  background: var(--console); color:#dfe6ff; border:1px solid var(--border); border-radius: 10px;
+  font-family:'JetBrains Mono', monospace; font-size: 13px; line-height:1.5;
+  padding: 14px; tab-size: 2;
+}
+textarea.editor:focus{ outline: 2px solid var(--violet-dim); outline-offset: 1px; }
+
+.preview-wrap{ margin-bottom: 14px; }
+.preview-frame{
+  width:100%; min-height: 180px; background:#fff; border:1px solid var(--border); border-radius: 10px;
+}
+
+.btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 20px; }
+button{
+  font-family:'DM Sans', sans-serif; font-weight:600; font-size: 14px;
+  border:none; border-radius:9px; padding: 10px 16px; cursor:pointer;
+  transition: transform .08s ease, filter .15s ease;
+}
+button:active{ transform: scale(0.97); }
+button:focus-visible{ outline: 2px solid white; outline-offset:2px; }
+.btn-run{ background: linear-gradient(90deg, var(--violet-dim), var(--blue-dim)); color:white; }
+.btn-run:hover{ filter:brightness(1.12); }
+.btn-check{ background: linear-gradient(90deg, var(--orange-dim), var(--orange)); color:#1a1206; }
+.btn-check:hover{ filter:brightness(1.08); }
+.btn-secondary{ background: var(--panel2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover{ background: var(--panel); }
+.btn-secondary:disabled{ opacity:0.4; cursor:not-allowed; }
+
+.console{
+  background: var(--console); border:1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; min-height: 60px; max-height: 260px; overflow-y:auto;
+  font-family:'JetBrains Mono', monospace; font-size: 13px; line-height:1.6;
+  white-space: pre-wrap; word-break: break-word;
+}
+.console .placeholder{ color: var(--text-dim); }
+.console .err{ color: var(--red); }
+.console .done{ color: var(--green); }
+
+details.solution{
+  margin-top: 18px; border:1px solid var(--border); border-radius: 12px; overflow:hidden;
+  background: var(--panel);
+}
+details.solution > summary{
+  cursor:pointer; padding: 12px 16px; font-weight:600; font-size:14px;
+  list-style:none; display:flex; align-items:center; gap:8px; color: var(--text-dim);
+}
+details.solution > summary::-webkit-details-marker{ display:none; }
+details.solution > summary:before{ content:"🤖"; }
+details.solution[open] > summary{ border-bottom:1px solid var(--border); color: var(--text); }
+.solution-body{ padding: 14px 16px 18px; }
+.solution-body pre{
+  background: var(--console); border:1px solid var(--border); border-radius:8px;
+  padding: 12px 14px; overflow-x:auto; font-family:'JetBrains Mono', monospace; font-size:13px; line-height:1.5;
+  margin: 0 0 10px;
+}
+
+.footer-note{
+  margin-top: 26px; font-size: 12.5px; color: var(--text-dim); line-height:1.5;
+  border-top: 1px solid var(--border); padding-top: 14px;
+}
+.footer-note a{ color: var(--orange); }
+
+.done-banner{
+  display:none; background: linear-gradient(90deg, var(--violet-dim), var(--orange-dim));
+  border-radius: 12px; padding: 22px; text-align:center; margin-bottom: 20px;
+}
+.done-banner.show{ display:block; }
+.done-banner h3{ font-family:'Orbitron', sans-serif; margin:0 0 8px; font-size:19px; }
+.done-banner p{ margin:0; color:#f0eefb; font-size:13.5px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="eyebrow">Ruta Web · Práctica</span>
+  <h1>Editor Interactivo HTML + CSS</h1>
+  <p class="sub">Completá el código, ejecutá para ver el resultado y verificá si cumple la consigna. Seis ejercicios progresivos: de la primera etiqueta al mini-sitio con estilo.</p>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="progreso-sidebar">
+      <span id="progreso-side-texto">0 / 6 completados</span>
+      <div class="progreso-barra-side"><div class="progreso-fill-side" id="progreso-fill-side"></div></div>
+    </div>
+    <div class="block-label">Ejercicios</div>
+    <ul class="trail" id="trail"></ul>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <div class="done-banner" id="done-banner">
+      <h3>🎉 ¡Completaste los 6 ejercicios!</h3>
+      <p>Ya podés escribir HTML y CSS con confianza. El siguiente paso es armar el sitio real del proyecto de promoción.</p>
+    </div>
+
+    <div class="tags" id="ex-tags"></div>
+    <h2 id="ex-title"></h2>
+    <div class="enunciado" id="ex-enunciado"></div>
+
+    <div class="editores">
+      <div class="editor-wrap">
+        <div class="editor-label"><span>index.html <span class="filetag">HTML</span></span></div>
+        <textarea class="editor" id="editor-html" spellcheck="false"></textarea>
+      </div>
+      <div class="editor-wrap">
+        <div class="editor-label css"><span>style.css <span class="filetag">CSS</span></span></div>
+        <textarea class="editor" id="editor-css" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <div class="preview-wrap">
+      <div class="editor-label"><span>Vista previa en vivo</span></div>
+      <iframe class="preview-frame" id="preview" title="Vista previa"></iframe>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-run" onclick="ejecutar()">▶ Ejecutar</button>
+      <button class="btn-check" onclick="verificar()">✓ Verificar</button>
+      <button class="btn-secondary" onclick="reiniciarEjercicio()">↺ Reiniciar código</button>
+      <button class="btn-secondary" id="btn-siguiente" onclick="irSiguienteEjercicio()" disabled>Siguiente ejercicio →</button>
+    </div>
+
+    <div class="console" id="console"><span class="placeholder">Escribí tu código, ejecutá y verificá cuando estés listo.</span></div>
+
+    <details class="solution" id="solution">
+      <summary>Ver pista / solución de referencia</summary>
+      <div class="solution-body" id="solution-body"></div>
+    </details>
+
+    <div class="footer-note">
+      Este editor corre directo en tu navegador — no guarda nada en un servidor. Si cerrás la pestaña, tu progreso de ejercicios completados se recuerda en este dispositivo, pero el código escrito no. 📘 Guías relacionadas: <a href="../cuestionarios/html-primeros-pasos-guia.html">HTML primeros pasos</a> · <a href="../cuestionarios/html-css-principiantes-guia.html">Estructura y estilo</a> · <a href="../cuestionarios/sitio-web-proyecto-promocion-guia.html">Construyendo nuestro sitio web</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATOS DE EJERCICIOS
+// ══════════════════════════════════════
+const EJERCICIOS = [
+  {
+    id: 1,
+    titulo: "Tu primera etiqueta",
+    tags: ["HTML"],
+    enunciado: `Completá el código para que la página tenga un título principal con el texto <code>Mi primer sitio</code> usando la etiqueta correcta, y un párrafo debajo con la palabra <code>aprendiendo</code> en negrita.`,
+    startHtml: `<h1>Mi primer sitio</h1>\n<p>Estoy [completar] HTML.</p>`,
+    startCss: ``,
+    hint: `Usá &lt;h1&gt;...&lt;/h1&gt; para el título, y &lt;strong&gt;...&lt;/strong&gt; para la palabra en negrita dentro del párrafo.`,
+    solucionHtml: `<h1>Mi primer sitio</h1>\n<p>Estoy <strong>aprendiendo</strong> HTML.</p>`,
+    check(doc) {
+      const h1 = doc.querySelector('h1');
+      if (!h1) return { ok:false, msg:'Falta una etiqueta &lt;h1&gt; con el título.' };
+      if (!h1.textContent.toLowerCase().includes('mi primer sitio')) return { ok:false, msg:'El &lt;h1&gt; debe decir "Mi primer sitio".' };
+      const strong = doc.querySelector('p strong, p b');
+      if (!strong) return { ok:false, msg:'Falta una palabra en negrita (&lt;strong&gt;) dentro del párrafo.' };
+      if (!strong.textContent.toLowerCase().includes('aprendiendo')) return { ok:false, msg:'La palabra en negrita debería ser "aprendiendo".' };
+      return { ok:true, msg:'¡Bien! El h1 y el strong están donde tienen que estar.' };
+    }
+  },
+  {
+    id: 2,
+    titulo: "El esqueleto completo",
+    tags: ["HTML"],
+    enunciado: `Armá la estructura básica completa: <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code> con un <code>&lt;title&gt;</code>, y <code>&lt;body&gt;</code> con un <code>&lt;h1&gt;</code> adentro.`,
+    startHtml: `<!-- Completá la estructura -->\n<h1>Mi proyecto</h1>`,
+    startCss: ``,
+    hint: `&lt;html&gt;&lt;head&gt;&lt;title&gt;...&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;...&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;`,
+    solucionHtml: `<html>\n  <head>\n    <title>Mi proyecto</title>\n  </head>\n  <body>\n    <h1>Mi proyecto</h1>\n  </body>\n</html>`,
+    check(doc) {
+      const title = doc.querySelector('title');
+      if (!title || !title.textContent.trim()) return { ok:false, msg:'Falta un &lt;title&gt; con texto dentro del &lt;head&gt;.' };
+      const h1 = doc.querySelector('body h1');
+      if (!h1) return { ok:false, msg:'Falta un &lt;h1&gt; dentro del &lt;body&gt;.' };
+      return { ok:true, msg:'¡Estructura completa! title en el head, h1 en el body.' };
+    }
+  },
+  {
+    id: 3,
+    titulo: "Enlaces entre páginas",
+    tags: ["HTML"],
+    enunciado: `Agregá un enlace hacia <code>equipo.html</code> con el texto visible <code>Conocé al equipo</code>.`,
+    startHtml: `<h1>Inicio</h1>\n<p>Bienvenidos al sitio del proyecto.</p>\n<!-- Agregá el enlace acá -->`,
+    startCss: ``,
+    hint: `&lt;a href="equipo.html"&gt;Conocé al equipo&lt;/a&gt;`,
+    solucionHtml: `<h1>Inicio</h1>\n<p>Bienvenidos al sitio del proyecto.</p>\n<a href="equipo.html">Conocé al equipo</a>`,
+    check(doc) {
+      const a = doc.querySelector('a[href]');
+      if (!a) return { ok:false, msg:'Falta una etiqueta &lt;a&gt; con atributo href.' };
+      if (a.getAttribute('href') !== 'equipo.html') return { ok:false, msg:'El href debería ser exactamente "equipo.html".' };
+      if (!a.textContent.toLowerCase().includes('conocé al equipo') && !a.textContent.toLowerCase().includes('conoce al equipo')) {
+        return { ok:false, msg:'El texto del enlace debería ser "Conocé al equipo".' };
+      }
+      return { ok:true, msg:'¡El enlace apunta bien a equipo.html!' };
+    }
+  },
+  {
+    id: 4,
+    titulo: "Selectores y color",
+    tags: ["HTML", "CSS"],
+    enunciado: `El &lt;h1&gt; ya tiene <code>class="titulo"</code>. Escribí en el CSS un selector de clase que le ponga <code>color: #FF8C42;</code>.`,
+    startHtml: `<h1 class="titulo">Reciclaje Kiosco</h1>\n<p>Menos residuos, más chipá</p>`,
+    startCss: `/* Escribí acá el selector .titulo */\n`,
+    hint: `.titulo {\n  color: #FF8C42;\n}`,
+    solucionHtml: null,
+    solucionCss: `.titulo {\n  color: #FF8C42;\n}`,
+    check(doc, win) {
+      const h1 = doc.querySelector('.titulo');
+      if (!h1) return { ok:false, msg:'No se encontró ningún elemento con class="titulo". No borres esa clase del HTML.' };
+      const color = win.getComputedStyle(h1).color;
+      const target = 'rgb(255, 140, 66)';
+      if (color !== target) return { ok:false, msg:`El color del .titulo debería ser #FF8C42 (${target}). Ahora es ${color}.` };
+      return { ok:true, msg:'¡El selector de clase funciona y el color es el correcto!' };
+    }
+  },
+  {
+    id: 5,
+    titulo: "El modelo de caja",
+    tags: ["CSS"],
+    enunciado: `Al <code>&lt;div class="tarjeta"&gt;</code> agregale <code>padding: 16px;</code> y <code>border: 2px solid #333;</code> en el CSS.`,
+    startHtml: `<div class="tarjeta">Contenido de la tarjeta</div>`,
+    startCss: `.tarjeta {\n  /* agregá padding y border acá */\n}`,
+    hint: `.tarjeta {\n  padding: 16px;\n  border: 2px solid #333;\n}`,
+    solucionHtml: null,
+    solucionCss: `.tarjeta {\n  padding: 16px;\n  border: 2px solid #333;\n}`,
+    check(doc, win) {
+      const el = doc.querySelector('.tarjeta');
+      if (!el) return { ok:false, msg:'No se encontró el .tarjeta. No borres esa clase del HTML.' };
+      const cs = win.getComputedStyle(el);
+      if (parseInt(cs.paddingTop) < 10) return { ok:false, msg:'Falta (o es muy chico) el padding — probá con 16px.' };
+      if (parseInt(cs.borderTopWidth) < 1) return { ok:false, msg:'Falta el border — probá con 2px solid.' };
+      return { ok:true, msg:'¡Padding y border aplicados! Así se arma el modelo de caja.' };
+    }
+  },
+  {
+    id: 6,
+    titulo: "Integrador: mini sitio de proyecto",
+    tags: ["HTML", "CSS"],
+    enunciado: `Armá desde cero un mini sitio con: un &lt;h1 class="titulo"&gt; con el nombre de un proyecto inventado, un &lt;p class="lema"&gt; con una frase corta, y en el CSS: el título en color <code>#FF8C42</code> y el lema con <code>font-size: 18px;</code>.`,
+    startHtml: `<!-- Armá acá tu mini sitio -->\n`,
+    startCss: `/* Estilos para .titulo y .lema */\n`,
+    hint: `&lt;h1 class="titulo"&gt;...&lt;/h1&gt;\n&lt;p class="lema"&gt;...&lt;/p&gt;\n\n.titulo { color: #FF8C42; }\n.lema { font-size: 18px; }`,
+    solucionHtml: `<h1 class="titulo">Reciclaje Kiosco</h1>\n<p class="lema">Menos residuos, más chipá</p>`,
+    solucionCss: `.titulo {\n  color: #FF8C42;\n}\n.lema {\n  font-size: 18px;\n}`,
+    check(doc, win) {
+      const h1 = doc.querySelector('.titulo');
+      const p = doc.querySelector('.lema');
+      if (!h1) return { ok:false, msg:'Falta un elemento con class="titulo".' };
+      if (!p) return { ok:false, msg:'Falta un elemento con class="lema".' };
+      const colorOk = win.getComputedStyle(h1).color === 'rgb(255, 140, 66)';
+      if (!colorOk) return { ok:false, msg:'El .titulo debería tener color: #FF8C42.' };
+      const fs = parseInt(win.getComputedStyle(p).fontSize);
+      if (fs < 17 || fs > 19) return { ok:false, msg:'El .lema debería tener font-size: 18px.' };
+      return { ok:true, msg:'¡Mini sitio completo! HTML con estructura clara y CSS aplicado con selectores de clase.' };
+    }
+  }
+];
+
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let actual = 0;
+let completados = new Set();
+
+try {
+  const guardado = localStorage.getItem('batin-editor-html-css-completados');
+  if (guardado) completados = new Set(JSON.parse(guardado));
+} catch(e) {}
+
+function guardarProgreso() {
+  try {
+    localStorage.setItem('batin-editor-html-css-completados', JSON.stringify([...completados]));
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════
+// SIDEBAR / TRAIL
+// ══════════════════════════════════════
+function renderTrail() {
+  const trail = document.getElementById('trail');
+  trail.innerHTML = '';
+  EJERCICIOS.forEach((ej, i) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'node-btn' + (i === actual ? ' active' : '');
+    const done = completados.has(ej.id);
+    btn.innerHTML = `
+      <span class="dot${done ? ' done' : ''}" style="--dotcolor: ${i % 2 === 0 ? 'var(--orange-dim)' : 'var(--blue-dim)'}"></span>
+      <span class="node-text">
+        <span class="num">EJ ${String(ej.id).padStart(2,'0')} ${done ? '✓' : ''}</span>
+        <span class="ttl">${ej.titulo}</span>
+      </span>
+    `;
+    btn.onclick = () => cargarEjercicio(i);
+    li.appendChild(btn);
+    trail.appendChild(li);
+  });
+  actualizarProgresoSidebar();
+}
+
+function actualizarProgresoSidebar() {
+  const pct = Math.round((completados.size / EJERCICIOS.length) * 100);
+  document.getElementById('progreso-side-texto').textContent = `${completados.size} / ${EJERCICIOS.length} completados`;
+  document.getElementById('progreso-fill-side').style.width = pct + '%';
+  document.getElementById('done-banner').classList.toggle('show', completados.size === EJERCICIOS.length);
+}
+
+// ══════════════════════════════════════
+// CARGAR EJERCICIO
+// ══════════════════════════════════════
+function cargarEjercicio(i) {
+  actual = i;
+  const ej = EJERCICIOS[i];
+  document.getElementById('ex-title').textContent = `Ejercicio ${ej.id} · ${ej.titulo}`;
+  document.getElementById('ex-enunciado').innerHTML = ej.enunciado;
+  document.getElementById('ex-tags').innerHTML = ej.tags.map(t => `<span class="tag ctx-${t.toLowerCase()}">${t}</span>`).join('');
+  document.getElementById('editor-html').value = ej.startHtml;
+  document.getElementById('editor-css').value = ej.startCss;
+  document.getElementById('solution').open = false;
+  let solBody = '';
+  if (ej.solucionHtml) solBody += `<pre>${escapeHtml(ej.solucionHtml)}</pre>`;
+  if (ej.solucionCss) solBody += `<pre>${escapeHtml(ej.solucionCss)}</pre>`;
+  if (!ej.solucionHtml && !ej.solucionCss) solBody = `<p style="font-size:13px;color:var(--text-dim)">${ej.hint}</p>`;
+  else solBody = `<p style="font-size:13px;color:var(--text-dim);margin:0 0 10px">${ej.hint}</p>` + solBody;
+  document.getElementById('solution-body').innerHTML = solBody;
+  document.getElementById('console').innerHTML = '<span class="placeholder">Escribí tu código, ejecutá y verificá cuando estés listo.</span>';
+  document.getElementById('btn-siguiente').disabled = (i >= EJERCICIOS.length - 1) || !completados.has(ej.id);
+  renderTrail();
+  ejecutar();
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════
+// EJECUTAR (preview)
+// ══════════════════════════════════════
+function ejecutar() {
+  const html = document.getElementById('editor-html').value;
+  const css = document.getElementById('editor-css').value;
+  const iframe = document.getElementById('preview');
+  const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    body{ font-family: Arial, sans-serif; margin: 16px; color:#1a1a1a; }
+    ${css}
+  </style></head><body>${html}</body></html>`;
+  iframe.srcdoc = doc;
+}
+
+// ══════════════════════════════════════
+// VERIFICAR
+// ══════════════════════════════════════
+function verificar() {
+  ejecutar();
+  const iframe = document.getElementById('preview');
+  const consoleEl = document.getElementById('console');
+
+  setTimeout(() => {
+    try {
+      const idoc = iframe.contentDocument;
+      const iwin = iframe.contentWindow;
+      const ej = EJERCICIOS[actual];
+      const resultado = ej.check(idoc, iwin);
+
+      if (resultado.ok) {
+        consoleEl.innerHTML = `<span class="done">✓ ${resultado.msg}</span>`;
+        completados.add(ej.id);
+        guardarProgreso();
+        renderTrail();
+        if (actual < EJERCICIOS.length - 1) {
+          document.getElementById('btn-siguiente').disabled = false;
+        }
+      } else {
+        consoleEl.innerHTML = `<span class="err">✗ ${resultado.msg}</span>`;
+      }
+    } catch (e) {
+      consoleEl.innerHTML = `<span class="err">✗ Error al verificar: ${e.message}</span>`;
+    }
+  }, 100);
+}
+
+function reiniciarEjercicio() {
+  const ej = EJERCICIOS[actual];
+  document.getElementById('editor-html').value = ej.startHtml;
+  document.getElementById('editor-css').value = ej.startCss;
+  ejecutar();
+  document.getElementById('console').innerHTML = '<span class="placeholder">Código reiniciado. Escribí y ejecutá de nuevo.</span>';
+}
+
+function irSiguienteEjercicio() {
+  if (actual < EJERCICIOS.length - 1) {
+    cargarEjercicio(actual + 1);
+  }
+}
+
+// ══════════════════════════════════════
+// ARRANCAR
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  cargarEjercicio(0);
+});
+</script>
+</body>
+</html>
