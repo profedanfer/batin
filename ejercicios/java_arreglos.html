@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Java: arreglos — 3º BATIN</title>
+<style>
+  @font-face { font-family: 'Cambria-fallback'; src: local('Cambria'); }
+  :root {
+    --orange: #C0511E;
+    --orange-light: #e8734a;
+    --darkgray: #3a3a3a;
+    --lightgray: #f2efe9;
+    --midgray: #ccc4b8;
+    --green: #2e7d32;
+    --red: #b3261e;
+    --amber: #b8791a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Calibri, 'Trebuchet MS', sans-serif;
+    background: var(--lightgray);
+    color: #2a2a2a;
+    padding-bottom: 60px;
+  }
+  header {
+    background: linear-gradient(135deg, var(--darkgray) 0%, #2a2a2a 100%);
+    color: white;
+    padding: 22px 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 6px solid var(--orange);
+  }
+  header img { width: 62px; height: 62px; border-radius: 6px; background: white; padding: 4px; }
+  header .titles h1 {
+    font-family: Cambria, Georgia, serif;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-size: 1.5em;
+    color: white;
+  }
+  header .titles h1 span { color: var(--orange-light); }
+  header .titles p { margin: 0; font-size: 0.9em; color: #d8d3c9; }
+
+  .intro {
+    max-width: 920px;
+    margin: 22px auto 10px auto;
+    padding: 18px 22px;
+    background: white;
+    border-left: 6px solid var(--orange);
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .intro h2 { font-family: Cambria, serif; color: var(--orange); margin-top: 0; }
+  .intro p { line-height: 1.5; }
+  .intro .personajes { font-size: 0.92em; color: var(--darkgray); font-style: italic; }
+
+  .progress-bar-wrap {
+    max-width: 920px;
+    margin: 0 auto 20px auto;
+    padding: 0 22px;
+  }
+  .progress-track {
+    background: var(--midgray);
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    background: var(--orange);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .progress-label { font-size: 0.82em; color: var(--darkgray); margin-top: 4px; text-align: right; }
+
+  main { max-width: 920px; margin: 0 auto; padding: 0 18px; }
+
+  .exercise {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e2ddd2;
+  }
+  .exercise-header {
+    background: var(--lightgray);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e2ddd2;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .exercise-header .num-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .exercise-num {
+    background: var(--orange);
+    color: white;
+    font-weight: bold;
+    font-family: Cambria, serif;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .exercise-title { font-family: Cambria, serif; font-weight: bold; color: var(--darkgray); font-size: 1.05em; }
+  .badge { font-size: 0.72em; padding: 3px 10px; border-radius: 12px; font-weight: bold; color: white; white-space: nowrap; }
+  .badge.facil { background: var(--green); }
+  .badge.medio { background: var(--amber); }
+  .badge.dificil { background: var(--red); }
+  .status-check { font-size: 0.95em; margin-left: 4px; }
+
+  .exercise-body { padding: 16px 18px; }
+  .context { line-height: 1.5; margin-bottom: 12px; color: #333; }
+  .context b { color: var(--orange); }
+  .hint-note { font-size: 0.85em; color: var(--darkgray); background: #fdf6ee; border: 1px dashed var(--midgray); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; }
+
+  .inputs-row { margin-bottom: 10px; font-size: 0.88em; }
+  .inputs-row label { display: block; margin-bottom: 4px; color: var(--darkgray); font-weight: bold; }
+  .inputs-row input[type=text] {
+    font-family: 'Courier New', monospace;
+    padding: 6px 8px;
+    border: 1px solid var(--midgray);
+    border-radius: 5px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  textarea.code {
+    width: 100%;
+    min-height: 130px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.92em;
+    background: #2b2b2b;
+    color: #e8e8e2;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    resize: vertical;
+    line-height: 1.45;
+    tab-size: 2;
+  }
+  textarea.code:focus { outline: 2px solid var(--orange-light); }
+
+  .btn-row { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    font-family: Calibri, sans-serif;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: filter 0.15s;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:active { filter: brightness(0.95); }
+  .btn-run { background: var(--orange); color: white; }
+  .btn-reset { background: var(--midgray); color: #2a2a2a; }
+  .btn-sol { background: var(--darkgray); color: white; }
+
+  .output {
+    margin-top: 12px;
+    background: #111;
+    color: #baffc9;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    padding: 10px 14px;
+    border-radius: 6px;
+    min-height: 22px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .output.error { color: #ff9d8a; }
+  .output.empty { color: #666; font-style: italic; }
+
+  .solution {
+    display: none;
+    margin-top: 14px;
+    background: #fdf6ee;
+    border: 1px solid var(--midgray);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .solution.show { display: block; }
+  .solution pre {
+    background: #2b2b2b;
+    color: #e8e8e2;
+    padding: 10px 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.88em;
+    line-height: 1.45;
+  }
+  .solution .note { font-size: 0.9em; color: var(--darkgray); margin-top: 8px; line-height: 1.4; }
+  .solution .note b { color: var(--orange); }
+
+  footer {
+    text-align: center;
+    color: var(--darkgray);
+    font-style: italic;
+    font-family: Cambria, serif;
+    padding: 30px 10px 10px 10px;
+    font-size: 0.95em;
+  }
+
+  @media print {
+    textarea.code { background: white; color: black; border: 1px solid #999; }
+    .output, .btn-row { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD/wAARCAFQAVADACIAAREBAhEB/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMAAAERAhEAPwD3+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiqF7rGm6Ym++v7W3X/prKq/zrnbr4o+ErZyn9p+cR/zxhdx+YGKAOxorzW6+NGhx/8AHrp+oT/8BVB+prKn+Nz7f9H0DB7ebc/0C0Aev0V4hJ8adab/AFWl6en+87t/hVWT4xeJ3YbIdOj+kLHP/j1AHvNFeCf8Lg8U/wBzT/8Avw3/AMVR/wALf8U/3NP/AO/Df/FUAe90V4Onxi8TJ96305/+2LD/ANmq0nxq1kf63SdPb/dkcf40Ae3UV41H8brvd+90ODZ/sXJz/wCg1p2nxs05/wDj70i7h/65Osg/XFAHqVFcNb/FrwnP9+6uYP8Arrbt/wCy5rYsfHHhjUZAltrdmznorvsY/g2KAOhopiOkiBkYMD0KnI/On0AFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRXCeLvibpvh5pLOzxfakvBjU/u4j/tsO/sOfpQB3DMEUsxAA5JPAArktZ+JnhrRpTC1213OOsdovmbfq33R+deI674u1zxJJt1C9d4WPy20Xyx/TaPvfjmtTQ/hp4k1nY/2UafbH/lrdfK34IPm/lQBtar8ZdYuGdNLsbazj/hklzK/wDRf51yGoeMPEOqZS71u8bd/wAso38sf98rivWdJ+Dug2eG1Ga51GTuGby4/wDvlef1rtNP0LSdJiWOw061t1H/ADziAP4nqaAPnGw8JeIdV+e00a7lH9902D/vp8V0ll8IPE9z/wAfDWVp/wBdJi5/JQf5175iigDxu2+CV23/AB965Cn/AFxtyf1LVt2/wY0FF/0i+1GU+zqg/Ra9JooA4OP4Q+FY/vRXkn+/ct/TFXIvhf4Qj/5hO/8A66TyH/2auwooA5X/AIVv4Q/6AUH/AH03+NH/AArfwh/0AoP++m/xrqqKAOSb4ZeD2/5g0Y+ksg/9mqtJ8KPCL/dsZo/925k/qa7aigDzyb4N+G5P9XNqMP8Auzhv5g1kXXwRh/5c9cmT2mgVv1BFetUUAeIS/BfWkz5Wp6fJ/vB0/wAaxL74X+LLPP8AxLkuk/6d5lb9Dg19FUUAfLLW+vaA3zRanpxH/XSIfpxW1pvxM8VWC7V1P7WnpdIJP/Hhg/rX0UQCMHkGsTUvB3hzVf8Aj80e1dz/ABomxv8AvpcGgDgdK+NSbVTV9Jfd3ltGBH/fLHI/Ou40fxx4d1whLPU4vPP/ACxl/dv9MN1/CuQ1b4MWE2X0nUZ7V+0cw8xPz4I/WuD1r4ceJdHVnex+2QD+O0PmY/4Djd+lAH0dRXzZofj3xF4ek2Q3rzwpx9mu8uB7f3l/OvV/DnxT0XWdkF6f7Nu242zH92x/2X6fnigDvKKQHNLQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAec/FvxBqGj6PZ21hM0H213WWVOHCqAcA9s5615V4U8H6h4tv3htNkUEOPtFxJyI857dWY4P9a9E+N0Z/s/Rpf4FnkX8Sox/I1B8EH+bW0/64n/ANDoA7jw14G0Xwuge1t/Ou8fNdzfNIfp/dH0rpqKKACioBdQGLzlmjMXPz7hjjOefwP5Gs+6123/ALBvtU02SC/W2id8RTAqzKudu4ZxQBr0VxN34tvv7E/0e3QX8tpcXKu+6GNFTGCBKoLfeXsAeTTv+Ewu7i5jgs7aGa4k3NFD82ZIjbebG/sC/wAhNAHaVBJdQRMEknjRmIVQzAEk5wB7nB/KuNS+1q60qNo5tSmdbiM3fl2H2eREKtuWMSfew+3PU4zyar22ha7NcwX1z5/n7Ilk8+dc4juiw3beMmJj070Aeg5qlqWqWmkWv2m9l8qHeqZCsxLMcKAACTknFcnJ4T1aW1mS5uor3bcx+XDcyNsmtow21ZMfxZfJODkqua0D4bvf+ETttNW6h+2W08c6M25o12TeYEHO7aB8o5zgUAbFtrWmXdkl5Few/Z3YoHZtnzZwVIOCG9jzU/2+0+1/ZPtcH2g9IfMG/wBfu9a5K68DT3aedNqELXcks0s/7lhE3mqinaocMMBB355z1ot/Bs39sXLvJDFZLdW88X7vdM/lQog/eZyoypz1OO/NAHUDWNMIcjUbTEZw/wC/X5TnGDzxzxUdtrmmXUPnJewiPzpIQXcDc6EhgOeen5c1z1v4E8ua2aa9hdLb7OiKlmE3JFJvG7k5Y9M/jimah4De6t5oobu1zNHdRP8AaLXzAomkZ8qNwwwzjPcAelAHY/aIdxXzo8gZI3DgetTZri5PAsUl79of7JLm4lmfzIOWVoRGqH1AIBqCz8F6hbarYXUt0kv2aO3XzfNKunlxhSqgqcqxGTyPvHIoA7d5EiXc7hRkDLHHJOAKkrzyLwbqcdtaW0kkkif6E9x/pjt+9SVnkcZPptA9fTio5rfxTdW9xa3Kal++h2XGTH5fmtNGuYinzBQm8/TrzQB6PRXGeItcv7HxHZyWyTPZW2I5oUU/6RLMGWNf+AlRn03UmleLZrfSYv7YT7Rdxws88tuBhm+0GFVVeOp6fSgDtKK5/wD4TDSz9rCGd5LfzPk8kr5vlv5beWzYVvmIHB7itszxIju8iIifeJYAL9fSgDF1/wAHaH4jj/4mFmnndriP5JF/4EP65FeQ+KfhdquhxyXNj/xMbJeu1f3qD3Xv+H5V74DmloA+ffB3xG1Dw55dpd773S/7nWSEf7B9P9k/hivdtN1Kz1bT4b6xuEnt5RlXQ8fQ+h9q8S+Lmn2dh4qt2tIEhe5t/Om2cB23EZx68V6D8Jlx4AtfeaY/+PmgDuKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPNPjTFnwvYS/3L0D80eua+D97FZalrck77Yo7ITOfRVY5Ndj8YYvM8Db/APnldxN+pX+tcJ8IoornxPqFpMm6KfTnR1/vDcoI/I0AerT+Jbi10O71a50i4ggiRHiWSRSzhjj5guduMgnrgVkPq3iLWY4/sP8AojbZ0/cbZV89ArR7mYfKrcgqQDW/Y+G4bWaKWa9vb3yEMcKXUgZY1IweABuOOMtk1rwwRW8SxQxJHGv3URQAPoBQBxNl4MeWS4+0J9nt7iO4TZvLPGs4jc46gFX8we4NdDpugrZ/bnu7g3c99tWdtgjUhV2gBR047/4CtqigDHtfDOjWlpHbJYRyQo29VuMzFTgDIL5I4AFaqIkahUUAAYAAwAKfRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAVnz6Nptzc29zNYwPPbndE5QZQ5zwfrz9ea0KKAOek8H6cfs/leZEkOwBN24bVlEpHPqwBP0Fc9L4bm0LR7h5orHy12/a72LcJJ7ZWMkplU8M7Bdvf7x6CvQqQjPWgDg9H8UanCv8AxMYZrjMSfuVtPIeK4eTCwDcQrcHr2C5J5ro7TxLY3UkMP72K5kne38iRDuWRF3ODjIwBjkHHI5rQvbK21C2a3u4RLCSDtPqDkEHscgVQ03w7ZaVefaLff8sXkxIxz5ali74J5JZjkk9cD0oA8c+Ltz5/jnyv+eFpEv5lm/rXqXw3j8v4e6QuMZiLfmzH+teP/FOTf8QNS2/wRwr/AOOA/wBa9x8J262vhHRoV/hs4v8A0EE0AbNFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHGfFOHzfh7qLZx5Zif8pF/wAa80+Ecvl+Owv/AD0tJV/Iqf6V6p8R4/N+Husr6QhvyZT/AErx34aT+T8RNM/2/Nj/ADRv8KAPoyiiigAooooASuE8beP5vCepW1pFYR3HnRGTc8pXHOMdDXd14n8Zf+Ri0/8A69T/AOhGsq0nGDaPRynD08Ri4Uqqun/kWv8AhdF3/wBAWD/wIb/4mvRPCOvP4l8Pw6m9uIGkZ12BtwG1iOuPavmmvf8A4V/8iHZ/9dJf/QzXPh60pztI9/PMpwmEwvtKMbO66s7aiiiu0+PCiiigAqpqGoW+l2E17dv5dvCu52AJwPoKt1zfjz/kRtY/64H+YoAqH4m+Fh/y/Tf+A0n+FN/4Wf4W/wCf2b/wGk/wpvhjwroN54Y0u4uNIspZZLWNnd4QSx28k1rf8Ib4b/6Adh/34FAGZ/ws7wt/z+zf+A0n+FH/AAs7wt/z/Tf+A0n+FTav4T8PwaLfzRaNZLIltIysIRkEKcV4KvKj6CgD3T/hZ3hb/n9m/wDAaT/Cj/hZ3hb/AJ/Zv/AaT/CvDNtG2gD6N0PxDp3iK2luNNmeSON9jFo2TBwD0P1Fa1edfCD/AJAWof8AX3/7Itei0AFFFFAHzR8QJvtHjfXH9Jyn/fKhf6V9F6Wgh0mzjHRIEUf98gV80eI5PtnizVH/AOet/L/6GRX1BGgjiRB0UAUAPooooAKKKKACiiigAooooAKKKKACiiigAooooAxfFkJuPB+sxKMlrKXA99pr598FTeV430KX/p7Rf++gV/rX0hqkQn0m9hPR4HU491Ir5n8Kv5fijRH9L2D/ANCFAH1JRRRQAUUUUAJWB4hsPDsii81y2tJPLAVZJ1BIBIGBn3NSWfivSL7Wp9Kt7tHuogPl/vdcgfTHP1FYmqy+GfHVzJoc10ryWrh/3WN5+U52t1GO/wBMVap3dprQSrSpvmpuzLF34d8FWNt9on03TI4shd2xe7BR+protNsrGwskg0+GGG2BJVYcBevbFcXPbeFPFtunh37Wjf2dj/UqqscJ1XA4AzzjuMVvaF4j0O583TNPu4pGsVCERrgEBQSwA7c4+oNDoxivdWvp0LljK1X3ak21631OiorF0jxPpWuXd1bWF2kslu21gpzkYB3D25x9Qa2qlprchNPYWiiikMK5zx5/yIusf9e5/mK6Oub8e/8AIj6x/wBe5/mKAMiDV7uw8EeGrHTdn9p6jFHBbNIMrF8mWkI7hRzj6U3UPCGmpc6Zb3F99q1C5m/fS39zL5s6AZfywrAKenQYFUfMGmaZ4G16b/jys4vKuX/55CSPaHPtnrXQXVpdv4zt9aFt9ssI7AxW/kSL8rs2WY7iByoABBoApKl1pMevaFLdzXVqNOa5tHmbdIikMrIzd8EDH1rxOP8A1afQV79eWs7WGtandokc01i0UUSnd5caqx5PdiWOfwHNeBRf6pPoP5UCHUUUGgD1z4Q/8gLUP+vv/wBkWvRa86+EX/IC1D/r7/8AZFr0WgYUUVDcy+RbSyn+BC35DNAHy/ao174ogRes+oL+stfU1fMPg9fP8ZaJu/ivY2/XNfT1ABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAyVd8Lr6qRXypp0n2fVrN/+ed1GfycV9XV8nXStaX9wveK4f8A8dc/4UAfWNFRxSCWFHHRlB/MVJQAUhpaQ0AcNouo6LP491O3trC6j1NV/fzMp+fPXd2wMJt+vFHh3UtEn8aatDZafdRagv8Ax8TMp/eZ5+f0weB+lGjay9144v7D+wkgEQb/AEkMOT/H82PnySnHbHNO8P61LeeLtSsjoSWvk7sXG4fNz8/zY+fLY+neuprffbucqe3qM8M6nolx4s1eLTtPu4r9GP2qRkP7z+L589CGyB7e1HhXU9Fn8Qa0mmaddxXcb/6UzIf3h+9l89H3FwP8Kd4b1qS98T6laf2Elp5G7bPuUbhn5vmx8+XB57d+aTwvrUl/rmqW66BHZ+RnZLuVd4zyMgfP+8Dnd2z60SjvvsuoJ7eo7wVqGiXWravHpVjcwTRy7bhpFb5yOdz56PuLjHtXb1xPg3WG1PVNTiOiLYCFtqyjaN6ZIHT7/wAwkO7pzXbVlWVpGtH4RaKKKyNQrm/Hv/Ij6x/17n+YrpK5zx3/AMiRq/8A1wP8xQA/wpEk3gnSYpVDo1lGGVhkEbfSoD4B8M8/8SzEbdYVmkEf/fAbb+leFre3qKES+ulQcBUncAD2APFH2++/6CF7/wCBMn+NMZ9EaxGkXhu/ijG1Vs5FUDsNhxXzdH/qx9B/KrJvr4qVa+vCDwQbhyCPpmtvwl4Rl8VSXaRXiW32YJ96Mtu3Z9CMdKBHPUV2Op+CNP0eXyr7xPbxSDGV+xuxGen3Sauaf8MhqkPnWfiG3mjBwdlu3B/76pAb/wAIP+QFqH/X3/7Itei1538JF8vR9TT+7elfyVRXolABWV4lmEHhfVpc42Wcp/8AHDWrXN+PpjB4E1pwM/6Ky/nx/WgDw74ew+b470RP7su7/vlGNfStfPXwqi834gWjf884Jn/8d2/+zV9C0AFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXy14ri8jxPrcX928m/8AQif619S18zePIvK8c66nXNwW/NQf60AfRejSebodhL/eto2/8dFXqyvDMqzeFdJlXkNZxH/xwVq0AFFFFADdo9K5jxlqer6Rpscui2K3dw8mzauS47khQOeAc8iuorgfHPj268KalbWsFlFcCWEyFncjHOMcCn7RQ96WyLpYapiJqlSXvPYteIdd12y8O2V7p2mxT3U5UtDCzMUH3jj5eRtGD0rqLB3nsYJpoo45XQNiMllXPYEgfyryT/hc+of9Ai2/7/N/hXpHg/XpPEnh2DUpYUheRmXYrZAwxHX8KhYinU92O504jKcXhY+0rxstum5vBFHQDgY/CnUUVRxhRRRQAVz3jhd/gjV8f8+zH+tdDVXUbNNQ026s5PuTxNGfxGP60AfN9la/bb2C23iPzXC7iCQvvgdfpWzPpGl/aZraG4uovstqt1JNtEgnj2IxKrwVb5+ASR6kVnaYPsGv26Xb+T5FxslZ+iEZU5rpYbPTriS4mTVoWkm08WkixbW8s7ETd8xU7fk64pjMS+0yy/sWHU7KWZc8NBN8zffZA24AD+HpXZfB7/j51n/dh/8AZ65jVG0+30D7FbajBdFPLUbD8zfvHdjjGMDcO9bPw2ku47TXP7PQNduLeOPd0XczDcfoMn8KAOx8U6pDqXhK4lt937vUIYvT7twgz9D1FdlXD+MbL+z9CkSFP3DG0H/AknjHPuQf/Ha6XxDqaaP4ev8AUHOPIhZh/vYwo/MikI5L4Tj/AIlOrP2OoP8A+grXoNcn8ONMfTPBVisv+tuM3L/8DOR+mK6ygArkviXKIvh7q/8AtRqn5uorra4r4rybPh/eL/fkiX/yIp/pQB598Got/jG5l/552Tfq6V7tXiPwWT/ipdSf0swPzcf4V7dQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFfNnxCXZ8QNZz3lX/0Ba+k6+d/iijJ8QtQ/wBpYWH02Af0NAHsngKbz/AeiP8A9OiL+XH9K6SuO+F03m/D3TB/zz8xPykauxoAKKKKAErxP4y/8jFp/wD16n/0M17ZWJq/hTRNeuY7jUrFbiSNdikswwM5xwazqwc4NI78sxUMLio1p7L/ACPmavf/AIVf8iHaf9dJf/QzVr/hW3hL/oEJ/wB/X/xre0vSrLRrJbOwgENupJVAScEnJ5Nc9DDypzuz2s4zvD43D+yppp3vrb/MvUUUV2HywUUUUAFFFFAHjvxN8MPZaidctU/0W5I8/H/LOTpk+zfz+tefnmvp2WKOeJopUWSNgQysMhh6EGvOtd+FNvcM02i3P2Un/l3my0f4Hqv60xnlGa9E+FEby/22ibN5SHG4Er1f0I/nWBdfD3xPatj+zPOH96GVWH6kH9K2PCun+NfD32r+z9CRnudqlrpwAm3PbcPWi4HbXFs00cqXNl53XEUlo5jYoxIbO/AzxjPpXO3Z/wCE21iDQLF/M0Wzl8/ULnnEh/hi6nP1z79udD/hEfEviH/kZ9c8u0/isrD5A/szf/rrstL0ux0awjsrC3SC3Toqdz3JPc+9Ai2iqihFUAAYAHQCn0UUgCvPvjE23wQF/vXkQ/8AQj/SvQa86+Mzf8Ubbj1vk/8AQXoA5/4JR/8AEx1mX0hhX9WP9K9lryT4IL+51t+++Ff0avW6ACiiigAooooAKKKKACiiigAopKimuIbdQZpUjBOAXYDNAE1FVP7Tsf8An8t/+/i/40f2nY/8/lv/AN/F/wAaVwsWqWqf9qWH/P5b/wDf1f8AGvKPi5qVzBqOmXGm6rJHG8Toy210V5BByQp9D1ouOzPY68D+L0Pl+Od//PSzjb8iw/pXJ/29rP8A0GNQ/wDAuT/GqtxdXN5J5tzcTTyYxulcucemT2piPdvhE2fAkXtczf8AoVd5XydHeXcEeyG7uYk/uxzMo/IGn/2lqH/QRvf/AAIf/GgD6uor5R/tHUP+gje/+BD/AONH9paj/wBBG9/8CX/xoA+rqK+Uf7S1D/oI3v8A4EP/AI0f2jqH/QRvf/Ah/wDGgD6uozXyl/aeo/8AQRvf/Al/8ab/AGhff8/15/4EP/jQB9X5or5Q/tC+/wCf68/8CH/xo+3Xv/P9df8Af9/8aAPq/NGa+T/t16P+X66/7/v/AI0v2+9/5/rz/wACH/xoA+r80V8mm6uf+fmf/v8AN/jTvtl3/wA/dz/3/b/GgD6wor5MNzcn71zOf+2zf405Ly7j+5e3S/Sdh/WgD6wor5RN/ev96+uz/wBvD/40z7Tcfe+0z5/67N/jQB9ZZor5P+3Xv/P7df8Af9/8aYbi4P3rmc/9tm/xoA+s6K+TRdXI+7c3I/7bN/jQbq5P3ru5P/bZv8aAPrKvM/jTJ/xTmnxf3r3P5I3+NeL+fN/z8Tf9/W/xpGkd/vyu3++xP86APXfgj/x561/12i/9BNesZr5MiuJoM+TNNFu6+W5XP1x1qQalqCfc1C8H/bw/+NAH1fRXm/wn1Nj4YuJdR1Iu7XbBPPuNxChVHGTxzmu8/tOx/wCfy3/7+L/jSuOzLlFVP7Tsf+fy3/7+L/jR/adj/wA/lv8A9/F/xouKxboqGGeKdN8MqSLnGUYEfpU1MAooooASqOq6VaazYSWd7CJIn/NT2I9DV6ik1fQabTujwfxH4Zn8O3vlTJvt3z5M+3hh6H0NY2xP7o/KvoXU9NttWspLO6jDxOOR3B7EHsa8X8SeGrnw7e7HzLbOf3U+Pvex96+fx2DnS9+D938j7bJ80p4lKjWS5/z/AOCYexf7q/lWbq6L5cTbf4j/ACrUqlqib7Jm/ukGuTCVGq0Wz08yoxlhaiS1sYdLSUV9afmwUUUUgO5vfCthc2Xh24sIvI+0LH/aS72fylePzN/zdBsWT8qTXNG0q2ufEyadaQJBZ2VvLD5vmPJh8NvVs4BO4DB/xrJuvF17KskVpbw2cU1ilhMkbM/mRJkLyehwSMj1qS+8Xfav7R/4k1tH9tsks2/0iQ7VT7pHvwv/AHzQA648IJaR3iTavGt3YrC15B9nYiISMq8Pn5iNwyAKhvPCk1p/a4+1xyz6ddxWzRLGR5hkICkHp17e1bet65p76Lq3+nadd39+lvH51rDIk0mxlYvLu+VcbcYXqeazL7xp9siv/wDiU2sFxfvFNLOs0mfOjOVcA8df4elAGjbeDP7H1rSjeyw3kb6lHY3NvNauiMWHzeWW/wBYo/vDjNZ9t4Uivr397qEdil7qE1nYx+Q0nmFGI5xjao4Gabc+MPtetW2q/wBjQG/imE+/7TMwdh6KThVzzgelFr4weCSCVtGtpmtb2S8tP3sn7lpG3MOPvDPTNAFfwlptrqOvy2N3ZfbP9GnZI/NZP3iLkcrjrjH41paj4Whlu9Kt4bf+yrue1lur6CSZpktok5D55PIzxmsXTNcTS9YutQTTIJROksfkNK+2NX+9g9TwSOauW3i6S2h0yIaZa/6DBJbfO7/voHzujb29D2oAX/hEfO8i4h1ONtKls5Lw3pgZTGkbbWBTru3EADPNaWp+HdP1W/sxY3NrZR/2It8zfZXRZtrPvbaCSpwBxk1lxeLmgkSFNOtv7MW0ez+weaxDRu29sv8Ae3buc1YHjDyrlH/sK1Ty7BtN2efL/qSeR1zu680AImi/8Sq7g0m+s9Q+039vY+b5DK3zjcu0twoz17/LinJ4Nt7ieKK21yOXdqH9nSH7K4CTFWYY5+ZflxniqOk679itI9P+zxwb76G7+27nLQlD8rbejBRnjvW7q3iO0sraB9OfS5bxdYGof6CkvlttUjL7/wCJi3ReBQBgweFri7hsPs1zHJLd6g+n7NpXy3TkknuuOeKuXPg+G0ns/M1lYo7tJDH51lKkjsjqm1YvvHdu+X1xSf8ACYtF9n/s/R7W0+zXxvotkskn7xhh85PII49u1JH4ritNcTVIdDgS4RXH726mkbc38W5jkYGQPTNAGTrmlf2NrE+nJdx3kkWFZolIG/8AufUVv+LtA06wtI7ixtpLT7Lcizv8l3XeUV967udud44/u1jprFuuuWeow6Nbotts22odyruvIZm6s2cE+uKvy+Mru7tNVs9QtftsF7LuMc91Kfs+DkKnPHP+FAEtz4JEeow6Xb61a3GoSTIvk+U8eyNkL+YSeoCjJx7Uy28IW9/Ppn2HW45YNReaOKVrR0+eMAkYznB7GobjxZLJ4nt9et9PgguIQFaLzGdZAF2c56fJxx9afF4vWz/sz7Do1rbR6bcvPCvnyP8AfXDq2fX17cUASaD4cSW98O3TzWtxHqrTKsFxE+3enG1sdeT1HpUdl4Qa7trRP7Rhi1G+gkurOz8lj5iJnq/RSdpwOa0tB8R6Y99pP2mKy0my0ad54E3yySSBwdyjrk5wecVkW3i2WC0tf9Bga/tIZLa1vTI26GN88bfulhuODQBzoOVDetFKBhdtFABSGlppoA3tPjX7FH8o5yf1q1sX+6v5Uy2XZbQr6KP5VLXyWKqN1pPzP0rLqMY4WCa6IbsX+6v5VueGfC83iK92ovl2kZ/ezbensPU0/wANeF7vxFd4XMVmh/ez4/RfevZtP0+20yyjtLWIRxRjAA/mfWurBYSdZ80n7v5nnZtmdLCx9nTSc3+Aafp1rpdlHaWcSxwRjAUfzPvVuiivoopRVkfDSk5NyfUWiiimIKKKKAErlvG2q6bY6NJb3sa3Ek6kR2+eWP8Aez2A9as+KPFFt4dssnbLdyA+TBnlj6n0FeMX9/c6neyXl1KZJ5DyewHoB2FefjsZGjHlWrZ7OUZXUxU1UekV1/yK9RXK77aYf7J/lU1IRldvrXzcZWkmffThzQcfI5c0UrrsYr6cUlfZwd46H5ZUjyyaYUUUtMgSilFFIBK39F1uy0/R7yyu4Zp/tD52p027NuM7hg59j0455rBopgdTFrujW9/Fcw2jxvHKjlhaxgsoJ4Ubvl7c9+9PsvEmmWce1IZ4/uM3lQqq7swM3G7uYm/76rk6lUW/2Kdnab7VlfKUKChHO7cTyD0x+NAG8+r6J9m2RaWnmeWinzYFJY7gXO7dwSu7Bxxn2qV9a0P/AFSafgbt277HH12uAcbu25OM/NjmkubbQZGn/wBIso4U3fZvs8zB3TBwZMg5fIUbePvMewqVtM8LR3L/APEz/dDH/L0D0kIPRc8rg9PWmBWs/ENrbR3FuyXP2GS/Ey2ke3Hk/NuTPrkqf+A0/wDtvR/tPm/2enKvvX7GjbpC2d+WbPTt60kWn+HnuY4Zb0RbgXeX7aGRf323Z9z/AJ5/MPWoEs9ESONvtCSPth/5egu/P3yRs42njb3HNAE8usaJIyf6C/y7V/eQK52gYXHzfLtPOP4uhrIvrq0na/8AJsUXz2XyZMlfJx97Cr8vzfp2rbj07w29z8+ojZzyLgKPvL22/LjLYHcLmq8lhoCWT7NR8y4FoX/1oCtN/d24z7fkfegC/H4m0cXsN29pI06SpJ5v2aMv8pTvu9Fb8x6VQk1rTHtpP9BRrx4v9bLbIw8w7NxPPOcSHPbeB0FSJFofkJ5r2XkfZU/1cp+0vJ+73ht2QD/rMfpxUsVn4cHnW7ahB5e4xmfduf70PzpwDj/W49qQBPrmgeeJbfTvJdGLRslrGNh/ebT975sbo+P9ig+INE2vF9hkWA/8svs8f/PZpAzHd83ysBg+lZ2rWmjQWQl0+58yf7QymIzCT93jg/KOn49xWNQBqalfafcWUMVtbbbgOC8nkLGOjbuhP3iVOP4cYFZdFFABSUuKKACikopALSYzhfU4paktV33cK/7Q/wAaUnZXZUIuUkl1OjFPjKCRPNUtGGG5QcEjPIB7Uylr42bvNs/U6cOWmo+R7x4eudNudGt20rYtsF2qg4KnuCPWtavB/D3iG78P3/nQ/PC+POhzw4/ofQ17VpWqWmr2Ed5Zy74n/NT3BHY19NgsVCtDlWjXQ/P82y6rhKrk9YvZ/wCfmX6KKK7jyQooooASqt/JdRWMr2cKzXGP3aM20E+57VaopdAW55BfeC/FepXsl5dxwyTSdT5w/AD0FQf8K88Rf8+8P/f4f4V7NRXnzyylN80mz3KXEGJpQUIRikvL/gnjP/CvfEX/AD7w/wDf4f4Uf8K98Rf8+8P/AH+H+Fez0VH9k0O7NP8AWTGdl93/AAT5c8S6Rc6HrUtneKiy7RJhWyMMOOfwNZNe3fEnwLqPiXUrG+0lIDIkRim82TZxnK4456tXE/8ACpPFn/PKx/8AAn/7GvSpx5IqPY8StVdWbm+pxFFb/iDwXrfhmGK41O3jEErbA8Uu8BsZAPp3/Ks7SNIudb1GOws2g+0SA7BLKIwxHYHuaoyKNLXa/wDCp/Fn/PvZ/wDgSP8ACk/4VP4t/wCfWz/8CR/hQBxdFdp/wqfxb/z72X/gSP8ACj/hU/i7/n2s/wDwKH+FAHF5ozXaf8Kn8Xf8+1n/AOBQ/wAKP+FTeLv+fWz/APAsf4UCOLzRmu0/4VN4u/597L/wJH+FH/CpvFv/AD72f/gSP8KAOLzSZrtf+FTeLv8An2s//Akf4Uf8Km8Xf8+9p/4FD/CgDis0Zrtf+FTeLv8An2sv/Akf4Uf8Km8Xf8+9l/4Ej/CgDiqWu0/4VP4t/wCfey/8Ch/hR/wqfxb/AM+9l/4FD/CgZxdFdp/wqfxb/wA+tl/4Fj/Cj/hU/i7/AJ9bL/wJH+FAji6M12n/AAqfxb/z62X/AIFj/Cj/AIVP4t/597L/AMCh/hQM4rNFdt/wqfxd/wA+9l/4Ej/Cj/hU/iz/AJ97L/wJH+FAHE0VLcw/ZrmaEvHIY2Klom3KSODg9x710+mfDfxLq+mwX1vbQLBMu+PzptrFT0OMHGaAOTrZ8LaNc67rQtLPYZVjaTDHAIGB17Hmt/8A4VJ4s/55WP8A4E//AGNdl8N/A+s+Gtau7zU1tVSS28pPKk3nO4E9uBxUyipJxfUunUcJqa6GN/wrzxF/z7w/9/h/hR/wr3xF/wA+8P8A3+H+Fez0V539lUO7Pd/1kxfZfd/wTxj/AIV74i/594f+/wAP8K2fDfh/xX4ev/Nit4Xt3x50XnjDj1HofevTaKunl1KnJSi3cxr57iK9N06kYtPy/wCCC9KWiivQPFCiiigAooooAKKKKACiiigAooooAz9Y0m01zSbjTbxN0E6lT6qexHoQcEfSvm/xBoV/4V1w2dzkSIfMguE48xQflZT2I/Q19QVieJfDVh4p0p7K9jwwyYplHzxN6j/DvQBznw/8exeIrdNP1B1j1aJfoJ1H8S+/qPxrva+Ydd0HVPCWsC3ucxSK2+3uIsgSY6Mp7H27V6j4H+J8OoLHpuvSpDfcLHc9I5vr/db9D7UDPTqKKKBBRRUTzxRyRxPKiySZ2KWAL4GTgd6AJaKKKACiiqj6jYx3qWL3kC3bjcsBlUSMPULnJHB/KgC3RRRQAUUUUAFFFFABRRUNxcQ2kDz3EqRRINzyOcBR6kmgCavHfiR8Q/O83QdEm+T7l3dRnr6oh/mfwql44+J8uq+bpmgu8VkflkuujzDuF/ur79T7Vi+BfAVz4quUuLgPBoyH55ejTY/gT+rdvrQBN8PPA7eJ7/7bexEaRbN83bz3/uD/AGfX8q+gERY0CIoVVAAAGABUVnZ29haRWlpCkMEShUjQYCj0FWKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDN1nRNP1/TZLHUbcTQt+DIfVT2PvXg3i/wDqfhZnm/4+9MP3bhV5j9pB2+vT6V9F0x0WRCjqGVhggjIIoA8D8IfEvUfD+y0vt9/pvRRu/eRD/ZJ6j2P4V7Vouv6Z4hsxdabdpMn8S9GQ+jL1FcL4t+E9rfeZe6AUtLg8tbHiF/p/dP6fSvK5Idc8J6t84utNvl6N93cPY9GX8xQM+o6wNatb59a0W+s7T7Slq8vmr5ioVDrtyM9fpXAeG/jFjbb+Ibf/t6tl/8AQk/qPyr0/TNY07Wbf7Rp15DcxesbZx9R1H40CONXRPE5spYZPOf7OkcW37cVN4omLvhhymUwMnB7dOait7HxHcWEsVtFdR73u7UrLeNmDdKhR9zcsFUMMjJ9K9GooA4qw0bX4/Et9cT3k8aM0zRzbw8bK3+rXy85+QY7Dp1Oank8L3N3rz6hdz7pYraHyZkARXnTzfnK8kAbxgZx9a66igDzqw8P6+L2z8+O7t7RJLf7Qram0nmlBLvbrnDMY+O/cdqhbSPEVpa3klx9qXbayLcTpfySfan82M5RFyY8orLkDK56d69LooA8ys7TxBdadcT6bFdrFJNcRQQy3r5jR4Y1Rwz8lVdW/PjNaX9g60dej8z7Q8H2geZdpfsF+z+SU8vy89Q/Ocdec13dFAHNeDodQ/ss3mpzzSTzYRA+4ARx/IrbT0Z8Fz/ve1dLWVrXiHS/D1p9o1O8jt1/hU8s/sqjk15J4n+Ll/qO+10OJ7GD/n4fBmYew6L+p+lAHpnifxto3hWH/TJt92RlLSLmRvTI/hHua8L8VeNtW8W3H+kt5NmG/d2cRO323f3m/wAgVW0Tw5rPiy9f7DDJOWb97dSk7FPqznqfbk17Z4R+HGl+Gdt1L/puo/8APeReE/3F7fXrQBxHgv4VT3/k6j4gRobT7yWfIkk/3/7q+3X6V7PBBFbQJDDGkUSAKqIAAo9ABUtFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABVDVNI0/WrQ2uo2kdzCezj7p9QeoPuKv0UAeN+Ivg7NFvuPD1z5qf8APrctgj/dfv8Aj+deeyRav4X1T5/tWm3ydxlCfoRww/MV9S1Uv9Ns9UtjbX1pDcwnqkqhh+vSgDx7QvjDqdp5cOs2iXsXeeL93J9SPun9K9I0Xx54c13CWuoxxzn/AJYXH7t/wB6/hmuU134OWNy5m0W8ezf/AJ4S5eP8D94frXnWteBPEWi7/temPNAv/LaD96n145H4igD6Vor5k0fxp4h0PCWOqTeUv/LGX96n5N0/DFd1pfxrkG1NW0nd6y2j/wDsrf40Aew0V5TqvxqtEXbpGlzTP/z0uiI1H4DJP6VwGteP/Ems7/tGpvbQN/yxtf3S/ifvH8TQB7lrvjXQPDu5L7UE+0D/AJd4v3kh/wCAjp+OK8w1/wCMOqX2+HRrdNPh/wCe0mJJT9P4V/WuT0Pwdr3iD5tO0+QxH/l4l/dx/wDfR6/hmvT9B+DmnWjRza1cvfSDrBH8kWffu36fSgZ5PZ2Gt+KdSf7PFdajdsfnlJLY/wB5jwor1Lwz8HraHbc+IphdSdrSEkRr/vN1b9B9a9MsrC0062FvZW0NvCvRIkCj8hVmgRBa2tvZW0dvawxwwIMKkahQo9hU9FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFUYNVtLm7mt4ZfMeHPmY6LgleT9Qw/wCAt6VerF1C5tor5NLjgge5vo5GZZMKvlr98t3blxx/tHpyaAEHiWxk2tBFeT25YL9oit2MXJxkN/EPcZrbrh948Lf8eepz3thbL/pFg/78wqBx5b/eU5wArk/h1qTT/F91Jq11DeRR+VFaeey2/wA2GLMqxo2cyt8j5IAUY49aAN+fX7KDV49LLSNctt3eWhKx7idu49i2DgdeCenNateW6brdxp4/tW5svtlzc5u5YY/v2zzbUhQnp5jbkTnoq54GQdTVdZ1oaVJ9ouYrW5+1RLGtqPvOSAsJJP8AE+Mn5TsDEhcgUAd9Wfqmq22kW6S3JfMjiOKKNdzyueiqO5wCfYAk4ANLpl2bqzj82aKW4CDzDENqsf7yqSSFJBxmuB1TUrjU/Fc0v7j7Pa3iaXAtx/q+R5lwzHPXYuMZ6Lg/eK0AejWlwl5aQ3MefLlQOuRg4IyKnrhbjxrLJeWpsY4/s014tvH5g+dxuIaVskCJMK+3OWbbwAKsS+MP3V/qiPHBo+nyOjM8Zea7ZPv+WuRgDoDzk88DkgGnrPg3QNdjP27TofMP/LaIeXID67hzXC6r8FYT82katJH/ANM7pd4/76GD+lbuoa7q40TUZNQk/spfJD/6MBJNbjPIznBYjCjgfMeOF3Vsprdxp/hJ9Q1CNJ7uFQrJbfKkkpYKqKxJ/iYKWzjOTQB57pvwUu2k/wCJrq0Mcf8AdtFLE/i2Mfka7vRfh54a0NvNg08Tz/8APa6PmsPpngfgKj03xReX3iWPTPKtWhitA91JDubdMzYAjzj92ArksRzxjqM1dSup9S8Uz7LvyINI+SJCn37l49zSnn7kaMvUfxt1OKAO3AAHHSlrzvSvFt5HpNrb/aPtUs0YmjuZojuWA4CF1U/PM/LBFxgHnGObEHjxzZaP+6ja4urOW/uF/wCeNui7lZtuQpO5MjnuBzigDvKz9U1a10mGJ7kuWmkEMMca7nlc9FUDqcAn0ABJ4Fc02s6hd6Lp095dpZI2z+0JrRfuPJgJEm7PdhuIyR265GTqEl1dXNxO9hdXFtY/8S62a5lT9/LJIFbkEkKcopbrtDDqTQB6LbXEd3bRXERzHKgdT6gjI/nU1cJqOvXP/COXSfbPLntrpIftFnFt835kCooJ+Xc7eXnP3QWyKjk8X61L9usrC0t7y8s47aIzRxP5UlzJ97bz9wAg8npkk4xkA7+iuMTxv9osbeSGGGO5umlaPzJC0ccKNtEjkDOW4wg5JYD1IqyeKJr3wTd3c11NZSbpP38MS+akSybM7MkK7kFVGc857HAB12papBpcaNMsr784WJNx4Gen5D6kDvV+srRJbi70uCS/8h7teJGhU+Xu9FJJyB0znqDWrQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAVSv8ASdO1VY1v7G2uwhynnRK+0+oyOKu0UAQQWlrbQeRb20MUP/PONAq/kKPsltvD/Z4t4TywdgyF9AfSp6KAKyWNpFbtbpbQpA2cxBAFOeuRQbK0a2+zm2hMAIPlbBtznOcdKs0UAV4rSGG5muET99Nje3cgDAH0GT+Z9aGtLZ1CNbxMgfzApQEBuufr71YooArvaW8qkPbxsCwcgoDlvX6+9H2K18ySX7ND5kgw7bBlh7nvViigCsLG0Fu1uLaEQP8Aej8sbW+o6Vn6/dSWWmqlvavKJP3f7uDzNgweidyegzxkjPFbNFAGB4W0V9K015rz5tUvHM95Jncdx+6m7uqLhR244xmtkW8KySSrDGJJMB22jLDtk96mooAgitLeFY0it4kWPOwKgATPXHpTY7K1hXZFbRINpXCoAMen09qs0UAZF/ZW1naSX1tpcdxc2sJNvDHGNxKglVXsDkkfjTtG002ugWtneIsk3lhrjOGDysdzn3+ck1q0UAQy20E8PkywRyQ8fI6gjjpxTkiSPdsQLuOTgYycdT+Q/KpKKAIEtLeNQEt41AYuAEA+b1+vvSfYrXyJIfs0PlSEl02Da5PUkd6sUUAMVQihVAAAwAOgFPoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z" alt="Logo CEDMR">
+  <div class="titles">
+    <h1>Java: <span>arreglos</span></h1>
+    <p>Laboratorio — 3º BATIN — Feria Estudiantil con Bit, Techi y Gatil</p>
+  </div>
+</header>
+
+<div class="intro">
+  <h2>Antes de empezar</h2>
+  <p>Un <b>arreglo</b> (<code>array</code>) es una caja con varios casilleros numerados, todos del mismo tipo de dato, donde cada casillero guarda un valor. En vez de crear <code>edad1</code>, <code>edad2</code>, <code>edad3</code>... usamos <b>un solo nombre</b> y accedemos a cada casillero por su posición (empezando en <b>0</b>).</p>
+  <p class="personajes">Bit, Techi y Gatil están organizando la feria estudiantil y necesitan guardar listas de datos: precios de los puestos, edades de los expositores, cantidad de ventas, nombres de los stands... Vas a ayudarlos usando arreglos.</p>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 20 ejercicios ejecutados</div>
+</div>
+
+<main id="exercisesContainer"></main>
+
+<footer>"Saber, hacer y transformar"</footer>
+
+<script>
+// ---------- Mini Java interpreter v4 (adds arrays: declare, literal, new, index get/set, .length) ----------
+
+function tokenizeExpr(str) {
+  const re = /\s*(?:("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\d+\.\d+|\d+)|([A-Za-z_]\w*)|(==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|\*=|\/=|%=|[+\-*/%(),.<>!=\[\]{}]))/g;
+  let tokens = [];
+  let m;
+  let idx = 0;
+  while (idx < str.length) {
+    re.lastIndex = idx;
+    m = re.exec(str);
+    if (!m || m.index !== idx) {
+      if (/\s/.test(str[idx])) { idx++; continue; }
+      throw new Error("Token inesperado cerca de: " + str.slice(idx, idx + 15));
+    }
+    idx = re.lastIndex;
+    if (m[1] !== undefined) tokens.push({ type: "string", value: JSON.parse(m[1].replace(/\\'/g, "'")) });
+    else if (m[2] !== undefined) tokens.push({ type: "char", value: m[2].slice(1, -1).replace(/\\n/g, "\n").replace(/\\t/g, "\t") });
+    else if (m[3] !== undefined) tokens.push({ type: "number", value: m[3].includes(".") ? parseFloat(m[3]) : parseInt(m[3], 10), isFloat: m[3].includes(".") });
+    else if (m[4] !== undefined) {
+      if (m[4] === "true" || m[4] === "false") tokens.push({ type: "bool", value: m[4] === "true" });
+      else tokens.push({ type: "id", value: m[4] });
+    }
+    else if (m[5] !== undefined) tokens.push({ type: "op", value: m[5] });
+  }
+  return tokens;
+}
+
+class Parser {
+  constructor(tokens) { this.tokens = tokens; this.pos = 0; }
+  peek() { return this.tokens[this.pos]; }
+  next() { return this.tokens[this.pos++]; }
+  expect(val) {
+    const t = this.next();
+    if (!t || t.value !== val) throw new Error("Se esperaba '" + val + "'");
+    return t;
+  }
+  parseExpression() { return this.parseOr(); }
+  parseOr() {
+    let left = this.parseAnd();
+    while (this.peek() && this.peek().value === "||") { this.next(); left = { type: "logical", op: "||", left, right: this.parseAnd() }; }
+    return left;
+  }
+  parseAnd() {
+    let left = this.parseEquality();
+    while (this.peek() && this.peek().value === "&&") { this.next(); left = { type: "logical", op: "&&", left, right: this.parseEquality() }; }
+    return left;
+  }
+  parseEquality() {
+    let left = this.parseRelational();
+    while (this.peek() && (this.peek().value === "==" || this.peek().value === "!=")) {
+      const op = this.next().value; left = { type: "binary", op, left, right: this.parseRelational() };
+    }
+    return left;
+  }
+  parseRelational() {
+    let left = this.parseAdditive();
+    while (this.peek() && ["<", ">", "<=", ">="].includes(this.peek().value)) {
+      const op = this.next().value; left = { type: "binary", op, left, right: this.parseAdditive() };
+    }
+    return left;
+  }
+  parseAdditive() {
+    let left = this.parseMultiplicative();
+    while (this.peek() && (this.peek().value === "+" || this.peek().value === "-")) {
+      const op = this.next().value; left = { type: "binary", op, left, right: this.parseMultiplicative() };
+    }
+    return left;
+  }
+  parseMultiplicative() {
+    let left = this.parseUnary();
+    while (this.peek() && ["*", "/", "%"].includes(this.peek().value)) {
+      const op = this.next().value; left = { type: "binary", op, left, right: this.parseUnary() };
+    }
+    return left;
+  }
+  parseUnary() {
+    if (this.peek() && (this.peek().value === "!" || this.peek().value === "-")) {
+      const op = this.next().value; return { type: "unary", op, expr: this.parseUnary() };
+    }
+    return this.parsePostfix();
+  }
+  parsePostfix() {
+    let expr = this.parsePrimary();
+    while (this.peek() && (this.peek().value === "[" || this.peek().value === ".")) {
+      if (this.peek().value === "[") {
+        this.next();
+        const indexExpr = this.parseExpression();
+        this.expect("]");
+        expr = { type: "index", array: expr, index: indexExpr };
+      } else if (this.peek().value === ".") {
+        this.next();
+        const prop = this.next();
+        if (prop.value === "length") {
+          expr = { type: "length", array: expr };
+        } else {
+          // method call like sc.nextInt()
+          this.expect("(");
+          const args = [];
+          if (this.peek() && this.peek().value !== ")") {
+            args.push(this.parseExpression());
+            while (this.peek() && this.peek().value === ",") { this.next(); args.push(this.parseExpression()); }
+          }
+          this.expect(")");
+          expr = { type: "methodcall", obj: expr, method: prop.value, args };
+        }
+      }
+    }
+    return expr;
+  }
+  parsePrimary() {
+    const t = this.next();
+    if (!t) throw new Error("Expresión incompleta");
+    if (t.type === "number") return { type: "lit", kind: t.isFloat ? "double" : "int", value: t.value };
+    if (t.type === "string") return { type: "lit", kind: "String", value: t.value };
+    if (t.type === "char") return { type: "lit", kind: "char", value: t.value };
+    if (t.type === "bool") return { type: "lit", kind: "boolean", value: t.value };
+    if (t.value === "(") { const e = this.parseExpression(); this.expect(")"); return e; }
+    if (t.value === "{") {
+      // array literal {1,2,3}
+      const items = [];
+      if (this.peek() && this.peek().value !== "}") {
+        items.push(this.parseExpression());
+        while (this.peek() && this.peek().value === ",") { this.next(); items.push(this.parseExpression()); }
+      }
+      this.expect("}");
+      return { type: "arraylit", items };
+    }
+    if (t.type === "id") {
+      if (t.value === "new") {
+        // new int[5] or new int[]{...}
+        const typeTok = this.next(); // int/double/etc
+        this.expect("[");
+        let sizeExpr = null;
+        if (this.peek() && this.peek().value !== "]") sizeExpr = this.parseExpression();
+        this.expect("]");
+        if (this.peek() && this.peek().value === "{") {
+          this.next();
+          const items = [];
+          if (this.peek() && this.peek().value !== "}") {
+            items.push(this.parseExpression());
+            while (this.peek() && this.peek().value === ",") { this.next(); items.push(this.parseExpression()); }
+          }
+          this.expect("}");
+          return { type: "arraylit", items };
+        }
+        return { type: "newarray", elemType: typeTok.value, size: sizeExpr };
+      }
+      return { type: "id", name: t.value };
+    }
+    throw new Error("Token inesperado: " + JSON.stringify(t));
+  }
+}
+
+function parseExpr(str) {
+  const tokens = tokenizeExpr(str);
+  const p = new Parser(tokens);
+  const e = p.parseExpression();
+  return e;
+}
+
+// ---- evaluation ----
+function evalExpr(node, env, io) {
+  switch (node.type) {
+    case "lit": return { kind: node.kind, value: node.value };
+    case "id": {
+      if (!(node.name in env.vars)) throw new Error("Variable no definida: " + node.name);
+      return env.vars[node.name];
+    }
+    case "arraylit": {
+      const items = node.items.map(it => evalExpr(it, env, io));
+      const kind = items.length ? items[0].kind : "int";
+      return { kind: kind + "[]", value: items.map(i => i.value) };
+    }
+    case "newarray": {
+      const size = evalExpr(node.size, env, io).value;
+      const defaultVal = node.elemType === "int" ? 0 : node.elemType === "double" ? 0.0 : node.elemType === "boolean" ? false : node.elemType === "String" ? null : "\u0000";
+      return { kind: node.elemType + "[]", value: new Array(size).fill(defaultVal) };
+    }
+    case "index": {
+      const arr = evalExpr(node.array, env, io);
+      const idx = evalExpr(node.index, env, io).value;
+      if (!Array.isArray(arr.value)) throw new Error("No es un arreglo");
+      if (idx < 0 || idx >= arr.value.length) throw new Error("ArrayIndexOutOfBoundsException: índice " + idx + " fuera de rango (tamaño " + arr.value.length + ")");
+      const elemKind = arr.kind.replace("[]", "");
+      return { kind: elemKind, value: arr.value[idx] };
+    }
+    case "length": {
+      const arr = evalExpr(node.array, env, io);
+      if (!Array.isArray(arr.value)) throw new Error("No es un arreglo");
+      return { kind: "int", value: arr.value.length };
+    }
+    case "methodcall": {
+      const objName = node.obj.name;
+      if (node.method === "nextInt") return { kind: "int", value: io.readInt() };
+      if (node.method === "nextDouble") return { kind: "double", value: io.readDouble() };
+      if (node.method === "nextBoolean") return { kind: "boolean", value: io.readBoolean() };
+      if (node.method === "nextLine") return { kind: "String", value: io.readLine() };
+      if (node.method === "next") return { kind: "String", value: io.readToken() };
+      if (node.method === "equals") {
+        const obj = evalExpr(node.obj, env, io);
+        const arg = evalExpr(node.args[0], env, io);
+        return { kind: "boolean", value: obj.value === arg.value };
+      }
+      throw new Error("Método no soportado: " + node.method);
+    }
+    case "unary": {
+      const v = evalExpr(node.expr, env, io);
+      if (node.op === "!") return { kind: "boolean", value: !v.value };
+      if (node.op === "-") return { kind: v.kind, value: -v.value };
+      break;
+    }
+    case "logical": {
+      const l = evalExpr(node.left, env, io);
+      if (node.op === "&&") { if (!l.value) return { kind: "boolean", value: false }; const r = evalExpr(node.right, env, io); return { kind: "boolean", value: !!r.value }; }
+      if (node.op === "||") { if (l.value) return { kind: "boolean", value: true }; const r = evalExpr(node.right, env, io); return { kind: "boolean", value: !!r.value }; }
+      break;
+    }
+    case "binary": {
+      const l = evalExpr(node.left, env, io);
+      const r = evalExpr(node.right, env, io);
+      switch (node.op) {
+        case "+":
+          if (l.kind === "String" || r.kind === "String") return { kind: "String", value: formatJavaValue(l) + formatJavaValue(r) };
+          return { kind: (l.kind === "double" || r.kind === "double") ? "double" : "int", value: l.value + r.value };
+        case "-": return { kind: (l.kind === "double" || r.kind === "double") ? "double" : "int", value: l.value - r.value };
+        case "*": return { kind: (l.kind === "double" || r.kind === "double") ? "double" : "int", value: l.value * r.value };
+        case "/": {
+          if (l.kind !== "double" && r.kind !== "double") return { kind: "int", value: Math.trunc(l.value / r.value) };
+          return { kind: "double", value: l.value / r.value };
+        }
+        case "%": return { kind: l.kind, value: l.value % r.value };
+        case "==": return { kind: "boolean", value: l.value === r.value };
+        case "!=": return { kind: "boolean", value: l.value !== r.value };
+        case "<": return { kind: "boolean", value: l.value < r.value };
+        case ">": return { kind: "boolean", value: l.value > r.value };
+        case "<=": return { kind: "boolean", value: l.value <= r.value };
+        case ">=": return { kind: "boolean", value: l.value >= r.value };
+      }
+      break;
+    }
+  }
+  throw new Error("No se pudo evaluar expresión");
+}
+
+// ---- statement splitting (respects strings/chars and brace nesting) ----
+function splitStatements(code) {
+  const stmts = [];
+  let depth = 0, parenDepth = 0, cur = "", inStr = false, inChar = false;
+  for (let i = 0; i < code.length; i++) {
+    const c = code[i];
+    cur += c;
+    if (inStr) { if (c === "\\") { cur += code[++i]; } else if (c === '"') inStr = false; continue; }
+    if (inChar) { if (c === "\\") { cur += code[++i]; } else if (c === "'") inChar = false; continue; }
+    if (c === '"') { inStr = true; continue; }
+    if (c === "'") { inChar = true; continue; }
+    if (c === "(") { parenDepth++; continue; }
+    if (c === ")") { parenDepth--; continue; }
+    if (c === "{") { depth++; continue; }
+    if (c === "}") {
+      depth--;
+      if (depth === 0) {
+        // Look ahead: if this '}' is followed by 'else'/'while' (chained control
+        // structure) or by ';' (array literal like {1,2,3};), keep accumulating —
+        // don't treat this brace as the end of the statement.
+        let k = i + 1;
+        while (k < code.length && /\s/.test(code[k])) k++;
+        const ahead = code.slice(k, k + 5);
+        const isElseOrWhile = /^else\b/.test(ahead) || /^while\b/.test(ahead);
+        const isSemi = code[k] === ";";
+        if (!isElseOrWhile && !isSemi) { stmts.push(cur.trim()); cur = ""; }
+      }
+      continue;
+    }
+    if (c === ";" && depth === 0 && parenDepth === 0) { stmts.push(cur.trim()); cur = ""; }
+  }
+  if (cur.trim()) stmts.push(cur.trim());
+  return stmts.filter(s => s.length > 0);
+}
+
+function stripComments(code) {
+  return code.split("\n").map(line => {
+    let inStr = false, inChar = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (inStr) { if (c === "\\") i++; else if (c === '"') inStr = false; continue; }
+      if (inChar) { if (c === "\\") i++; else if (c === "'") inChar = false; continue; }
+      if (c === '"') { inStr = true; continue; }
+      if (c === "'") { inChar = true; continue; }
+      if (c === "/" && line[i + 1] === "/") return line.slice(0, i);
+    }
+    return line;
+  }).join("\n");
+}
+
+// Formats output values for println/print. For doubles, rounds display to
+// up to 2 decimal places (avoids confusing IEEE-754 artifacts like
+// 13200.000000000002 for beginners) while keeping full precision internally.
+function formatJavaValue(val) {
+  if (val.kind === "double" && typeof val.value === "number") {
+    const rounded = Math.round(val.value * 100) / 100;
+    return String(rounded);
+  }
+  return String(val.value);
+}
+
+class StepLimit extends Error {}
+
+function execBlock(stmts, env, io, budget) {
+  for (const stmt of stmts) execStatement(stmt, env, io, budget);
+}
+
+function execStatement(stmt, env, io, budget) {
+  budget.count++;
+  if (budget.count > budget.max) throw new StepLimit("Se alcanzó el límite de pasos (posible ciclo infinito). Revisá la condición de corte.");
+  stmt = stmt.trim();
+  if (!stmt) return;
+  if (/^if\s*\(/.test(stmt)) return execIf(stmt, env, io, budget);
+  if (/^while\s*\(/.test(stmt)) return execWhile(stmt, env, io, budget);
+  if (/^do\s*\{/.test(stmt)) return execDoWhile(stmt, env, io, budget);
+  if (/^for\s*\(/.test(stmt)) return execFor(stmt, env, io, budget);
+  if (stmt.endsWith(";")) stmt = stmt.slice(0, -1);
+
+  // Scanner declaration - ignore
+  if (/^Scanner\s+\w+\s*=\s*new\s+Scanner/.test(stmt)) return;
+
+  // System.out.println / print
+  let m = stmt.match(/^System\.out\.(println|print)\s*\((.*)\)$/s);
+  if (m) {
+    const val = m[2].trim() === "" ? { value: "" } : evalExpr(parseExpr(m[2]), env, io);
+    io.print(formatJavaValue(val) + (m[1] === "println" ? "\n" : ""));
+    return;
+  }
+
+  // Array declaration: type[] name = expr;
+  m = stmt.match(/^(int|double|boolean|char|String)\s*\[\s*\]\s+([A-Za-z_]\w*)\s*=\s*(.+)$/s);
+  if (m) {
+    const val = evalExpr(parseExpr(m[3]), env, io);
+    env.vars[m[2]] = { kind: m[1] + "[]", value: val.value.slice() };
+    return;
+  }
+
+  // Simple declaration: type name = expr;
+  m = stmt.match(/^(int|double|boolean|char|String)\s+([A-Za-z_]\w*)\s*=\s*(.+)$/s);
+  if (m) {
+    const val = evalExpr(parseExpr(m[3]), env, io);
+    env.vars[m[2]] = { kind: m[1], value: val.value };
+    return;
+  }
+  // declaration without init
+  m = stmt.match(/^(int|double|boolean|char|String)\s+([A-Za-z_]\w*)$/);
+  if (m) {
+    env.vars[m[2]] = { kind: m[1], value: m[1] === "int" ? 0 : m[1] === "double" ? 0.0 : m[1] === "boolean" ? false : null };
+    return;
+  }
+
+  // array element assignment: name[expr] = expr;  or  name[expr] OP= expr;
+  m = stmt.match(/^([A-Za-z_]\w*)\s*\[(.+?)\]\s*(\+=|-=|\*=|\/=|%=|=)\s*(.+)$/s);
+  if (m) {
+    const arr = env.vars[m[1]];
+    if (!arr) throw new Error("Variable no definida: " + m[1]);
+    const idx = evalExpr(parseExpr(m[2]), env, io).value;
+    if (idx < 0 || idx >= arr.value.length) throw new Error("ArrayIndexOutOfBoundsException: índice " + idx + " fuera de rango (tamaño " + arr.value.length + ")");
+    const rhs = evalExpr(parseExpr(m[4]), env, io).value;
+    const op = m[3];
+    if (op === "=") arr.value[idx] = rhs;
+    else if (op === "+=") arr.value[idx] = arr.value[idx] + rhs;
+    else if (op === "-=") arr.value[idx] = arr.value[idx] - rhs;
+    else if (op === "*=") arr.value[idx] = arr.value[idx] * rhs;
+    else if (op === "/=") arr.value[idx] = arr.value[idx] / rhs;
+    else if (op === "%=") arr.value[idx] = arr.value[idx] % rhs;
+    return;
+  }
+  // array element ++/--
+  m = stmt.match(/^([A-Za-z_]\w*)\s*\[(.+?)\]\s*(\+\+|--)$/);
+  if (m) {
+    const arr = env.vars[m[1]];
+    const idx = evalExpr(parseExpr(m[2]), env, io).value;
+    if (idx < 0 || idx >= arr.value.length) throw new Error("ArrayIndexOutOfBoundsException");
+    arr.value[idx] += (m[3] === "++") ? 1 : -1;
+    return;
+  }
+
+  // increment / decrement
+  m = stmt.match(/^([A-Za-z_]\w*)(\+\+|--)$/);
+  if (m) {
+    const v = env.vars[m[1]];
+    if (!v) throw new Error("Variable no definida: " + m[1]);
+    v.value += (m[2] === "++") ? 1 : -1;
+    return;
+  }
+
+  // compound assignment
+  m = stmt.match(/^([A-Za-z_]\w*)\s*(\+=|-=|\*=|\/=|%=)\s*(.+)$/s);
+  if (m) {
+    const v = env.vars[m[1]];
+    if (!v) throw new Error("Variable no definida: " + m[1]);
+    const rhs = evalExpr(parseExpr(m[3]), env, io).value;
+    if (m[2] === "+=") v.value = (v.kind === "String") ? String(v.value) + String(rhs) : v.value + rhs;
+    else if (m[2] === "-=") v.value -= rhs;
+    else if (m[2] === "*=") v.value *= rhs;
+    else if (m[2] === "/=") v.value = (v.kind === "int") ? Math.trunc(v.value / rhs) : v.value / rhs;
+    else if (m[2] === "%=") v.value %= rhs;
+    return;
+  }
+
+  // plain assignment
+  m = stmt.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/s);
+  if (m) {
+    const v = env.vars[m[1]];
+    if (!v) throw new Error("Variable no definida: " + m[1]);
+    const rhs = evalExpr(parseExpr(m[2]), env, io);
+    v.value = rhs.value;
+    return;
+  }
+
+  // bare method call statement, e.g. sc.nextInt();  scanner discard
+  m = stmt.match(/^([A-Za-z_]\w*)\.(\w+)\s*\((.*)\)$/s);
+  if (m) { evalExpr(parseExpr(stmt), env, io); return; }
+
+  throw new Error("No se entendió la instrucción: " + stmt);
+}
+
+function matchBraceBlock(str, startIdx) {
+  // str[startIdx] === '{'
+  let depth = 0;
+  for (let i = startIdx; i < str.length; i++) {
+    if (str[i] === "{") depth++;
+    else if (str[i] === "}") { depth--; if (depth === 0) return i; }
+  }
+  throw new Error("Llave sin cerrar");
+}
+
+function execIf(stmt, env, io, budget) {
+  let rest = stmt;
+  while (true) {
+    let mm = rest.match(/^if\s*\(/);
+    if (mm) {
+      const parenStart = rest.indexOf("(");
+      let depth = 0, i = parenStart;
+      for (; i < rest.length; i++) { if (rest[i] === "(") depth++; else if (rest[i] === ")") { depth--; if (depth === 0) break; } }
+      const condStr = rest.slice(parenStart + 1, i);
+      let j = i + 1; while (/\s/.test(rest[j])) j++;
+      let blockEnd, blockBody;
+      if (rest[j] === "{") { blockEnd = matchBraceBlock(rest, j); blockBody = rest.slice(j + 1, blockEnd); }
+      else { const semi = rest.indexOf(";", j); blockEnd = semi; blockBody = rest.slice(j, semi + 1); }
+      const cond = evalExpr(parseExpr(condStr), env, io);
+      let after = rest.slice(blockEnd + 1).trim();
+      let elseMatch = after.match(/^else\s+if\s*\(/) || after.match(/^else\b/);
+      if (cond.value) {
+        execBlock(splitStatements(blockBody), env, io, budget);
+        return;
+      } else {
+        if (after.match(/^else\s+if/)) { rest = after.replace(/^else\s+/, ""); continue; }
+        else if (after.match(/^else\b/)) {
+          let k = after.indexOf("else") + 4; while (/\s/.test(after[k])) k++;
+          let eEnd, eBody;
+          if (after[k] === "{") { eEnd = matchBraceBlock(after, k); eBody = after.slice(k + 1, eEnd); }
+          else { const semi = after.indexOf(";", k); eEnd = semi; eBody = after.slice(k, semi + 1); }
+          execBlock(splitStatements(eBody), env, io, budget);
+          return;
+        } else return;
+      }
+    } else return;
+  }
+}
+
+function execWhile(stmt, env, io, budget) {
+  const parenStart = stmt.indexOf("(");
+  let depth = 0, i = parenStart;
+  for (; i < stmt.length; i++) { if (stmt[i] === "(") depth++; else if (stmt[i] === ")") { depth--; if (depth === 0) break; } }
+  const condStr = stmt.slice(parenStart + 1, i);
+  let j = i + 1; while (/\s/.test(stmt[j])) j++;
+  let blockEnd, blockBody;
+  if (stmt[j] === "{") { blockEnd = matchBraceBlock(stmt, j); blockBody = stmt.slice(j + 1, blockEnd); }
+  else { const semi = stmt.indexOf(";", j); blockEnd = semi; blockBody = stmt.slice(j, semi + 1); }
+  const bodyStmts = splitStatements(blockBody);
+  while (true) {
+    budget.count++;
+    if (budget.count > budget.max) throw new StepLimit("Se alcanzó el límite de pasos (posible ciclo infinito). Revisá la condición de corte.");
+    const cond = evalExpr(parseExpr(condStr), env, io);
+    if (!cond.value) break;
+    execBlock(bodyStmts, env, io, budget);
+  }
+}
+
+function execDoWhile(stmt, env, io, budget) {
+  let j = 2; while (/\s/.test(stmt[j])) j++;
+  let blockEnd, blockBody;
+  if (stmt[j] === "{") { blockEnd = matchBraceBlock(stmt, j); blockBody = stmt.slice(j + 1, blockEnd); }
+  else { const semi = stmt.indexOf(";", j); blockEnd = semi; blockBody = stmt.slice(j, semi + 1); }
+  let after = stmt.slice(blockEnd + 1).trim();
+  after = after.replace(/^while\s*/, "");
+  const parenStart = after.indexOf("(");
+  let depth = 0, i = parenStart;
+  for (; i < after.length; i++) { if (after[i] === "(") depth++; else if (after[i] === ")") { depth--; if (depth === 0) break; } }
+  const condStr = after.slice(parenStart + 1, i);
+  const bodyStmts = splitStatements(blockBody);
+  while (true) {
+    budget.count++;
+    if (budget.count > budget.max) throw new StepLimit("Se alcanzó el límite de pasos (posible ciclo infinito). Revisá la condición de corte.");
+    execBlock(bodyStmts, env, io, budget);
+    const cond = evalExpr(parseExpr(condStr), env, io);
+    if (!cond.value) break;
+  }
+}
+
+function execFor(stmt, env, io, budget) {
+  const parenStart = stmt.indexOf("(");
+  let depth = 0, i = parenStart;
+  for (; i < stmt.length; i++) { if (stmt[i] === "(") depth++; else if (stmt[i] === ")") { depth--; if (depth === 0) break; } }
+  const header = stmt.slice(parenStart + 1, i);
+  const parts = [];
+  { let d = 0, cur = ""; for (const c of header) { if (c === "(") d++; if (c === ")") d--; if (c === ";" && d === 0) { parts.push(cur); cur = ""; } else cur += c; } parts.push(cur); }
+  const [initStr, condStr, updStr] = parts;
+  let j = i + 1; while (/\s/.test(stmt[j])) j++;
+  let blockEnd, blockBody;
+  if (stmt[j] === "{") { blockEnd = matchBraceBlock(stmt, j); blockBody = stmt.slice(j + 1, blockEnd); }
+  else { const semi = stmt.indexOf(";", j); blockEnd = semi; blockBody = stmt.slice(j, semi + 1); }
+  const bodyStmts = splitStatements(blockBody);
+  if (initStr.trim()) execStatement(initStr.trim() + ";", env, io, budget);
+  while (true) {
+    budget.count++;
+    if (budget.count > budget.max) throw new StepLimit("Se alcanzó el límite de pasos (posible ciclo infinito). Revisá la condición de corte.");
+    if (condStr.trim()) { const cond = evalExpr(parseExpr(condStr), env, io); if (!cond.value) break; }
+    execBlock(bodyStmts, env, io, budget);
+    if (updStr.trim()) execStatement(updStr.trim() + ";", env, io, budget);
+  }
+}
+
+function runProgram(code, inputValues) {
+  const env = { vars: {} };
+  const output = { text: "" };
+  let inputQueue = (inputValues || []).slice();
+  const io = {
+    print(s) { output.text += s; },
+    readInt() { const v = inputQueue.shift(); if (v === undefined) throw new Error("No hay más datos de entrada simulados"); return parseInt(v, 10); },
+    readDouble() { const v = inputQueue.shift(); if (v === undefined) throw new Error("No hay más datos de entrada simulados"); return parseFloat(v); },
+    readBoolean() { const v = inputQueue.shift(); if (v === undefined) throw new Error("No hay más datos de entrada simulados"); return v === "true" || v === "1"; },
+    readLine() { const v = inputQueue.shift(); if (v === undefined) return ""; return String(v); },
+    readToken() { const v = inputQueue.shift(); if (v === undefined) throw new Error("No hay más datos de entrada simulados"); return String(v); },
+  };
+  const clean = stripComments(code);
+  const stmts = splitStatements(clean);
+  const budget = { count: 0, max: 200000 };
+  execBlock(stmts, env, io, budget);
+  return { output: output.text, vars: env.vars };
+}
+
+
+
+</script>
+
+<script>
+const EXERCISES = [
+{
+  id: 1,
+  title: "El primer casillero",
+  difficulty: "facil",
+  context: "Bit anotó las edades de los expositores de un puesto en un arreglo. Mostrá la <b>primera</b> edad de la lista (recordá: el primer casillero es la posición <b>0</b>).",
+  starter: `int[] edades = {15, 16, 14, 17};
+System.out.println(/* completá acá */);`,
+  solution: `int[] edades = {15, 16, 14, 17};
+System.out.println(edades[0]);`,
+  note: "El primer elemento de un arreglo siempre está en la posición <b>0</b>, no en la 1. Es el error más común al empezar con arreglos.",
+  inputs: null
+},
+{
+  id: 2,
+  title: "El último dato sin contar a mano",
+  difficulty: "facil",
+  context: "Techi quiere mostrar la <b>última</b> edad de la lista, pero no sabe de antemano cuántos expositores hay. Usá <code>.length</code> para calcular la última posición sin contarla a mano.",
+  starter: `int[] edades = {15, 16, 14, 17, 18};
+System.out.println(edades[edades.length /* completá acá */]);`,
+  solution: `int[] edades = {15, 16, 14, 17, 18};
+System.out.println(edades[edades.length - 1]);`,
+  note: "<code>.length</code> te da la <b>cantidad</b> de elementos (5), pero la última posición es cantidad − 1, porque se empieza a contar desde 0.",
+  inputs: null
+},
+{
+  id: 3,
+  title: "Corregir un precio",
+  difficulty: "facil",
+  context: "Techi anotó mal un precio en el puesto de kiosco: el segundo precio (posición 1) debería ser <b>4000</b>, no el que está. Corregilo asignando el nuevo valor a esa posición.",
+  starter: `int[] precios = {5000, 3000, 8000};
+/* completá acá: cambiar el precio de la posición 1 a 4000 */
+System.out.println(precios[1]);`,
+  solution: `int[] precios = {5000, 3000, 8000};
+precios[1] = 4000;
+System.out.println(precios[1]);`,
+  note: "A diferencia de leer un valor (<code>precios[1]</code>), para <b>modificar</b> un casillero se escribe <code>precios[1] = nuevoValor;</code>",
+  inputs: null
+},
+{
+  id: 4,
+  title: "Mostrar todo el puesto",
+  difficulty: "facil",
+  context: "Gatil quiere ver todas las ventas del día, una por línea, sin escribir <code>System.out.println</code> cinco veces. Completá la condición del <code>for</code> para recorrer todo el arreglo.",
+  starter: `int[] ventas = {2, 5, 3, 8, 1};
+for (int i = 0; /* completá acá */; i++) {
+  System.out.println(ventas[i]);
+}`,
+  solution: `int[] ventas = {2, 5, 3, 8, 1};
+for (int i = 0; i < ventas.length; i++) {
+  System.out.println(ventas[i]);
+}`,
+  note: "El patrón para recorrer <b>todo</b> un arreglo con <code>for</code> es siempre el mismo: <code>i</code> arranca en 0 y la condición de corte es <code>i &lt; arreglo.length</code> (no <code>&lt;=</code>, porque el último índice válido es length − 1).",
+  inputs: null
+},
+{
+  id: 5,
+  title: "Total de ventas del día",
+  difficulty: "medio",
+  context: "El puesto de comidas necesita saber cuánto vendió en total. Sumá todos los elementos del arreglo dentro del <code>for</code>.",
+  starter: `int[] ventas = {12000, 8000, 15000, 6000};
+int total = 0;
+for (int i = 0; i < ventas.length; i++) {
+  total = total + /* completá acá */;
+}
+System.out.println(total);`,
+  solution: `int[] ventas = {12000, 8000, 15000, 6000};
+int total = 0;
+for (int i = 0; i < ventas.length; i++) {
+  total = total + ventas[i];
+}
+System.out.println(total);`,
+  note: "Este es el patrón de <b>acumulador</b>: una variable arranca en 0 y en cada vuelta del ciclo le sumamos un elemento del arreglo — el mismo patrón que ya usaron con ciclos, ahora aplicado a cada casillero.",
+  inputs: null
+},
+{
+  id: 6,
+  title: "Promedio del puesto",
+  difficulty: "medio",
+  context: "Techi tiene las notas de evaluación de los expositores y quiere el promedio. Usá <code>double</code> para que el resultado no se trunque.",
+  starter: `double[] notas = {8.5, 7.0, 9.5, 6.0};
+double suma = 0;
+for (int i = 0; i < notas.length; i++) {
+  suma += notas[i];
+}
+double promedio = /* completá acá */;
+System.out.println(promedio);`,
+  solution: `double[] notas = {8.5, 7.0, 9.5, 6.0};
+double suma = 0;
+for (int i = 0; i < notas.length; i++) {
+  suma += notas[i];
+}
+double promedio = suma / notas.length;
+System.out.println(promedio);`,
+  note: "Promedio = suma total dividido cantidad de elementos (<code>.length</code>). Como <code>suma</code> es <code>double</code>, la división da un resultado con decimales.",
+  inputs: null
+},
+{
+  id: 7,
+  title: "El puesto más vendido",
+  difficulty: "medio",
+  context: "Bit quiere saber cuál fue la mayor cantidad de ventas registrada en el día. Completá la condición que compara cada elemento con el máximo encontrado hasta el momento.",
+  starter: `int[] ventas = {12, 30, 8, 45, 20};
+int max = ventas[0];
+for (int i = 1; i < ventas.length; i++) {
+  if (/* completá acá */) {
+    max = ventas[i];
+  }
+}
+System.out.println(max);`,
+  solution: `int[] ventas = {12, 30, 8, 45, 20};
+int max = ventas[0];
+for (int i = 1; i < ventas.length; i++) {
+  if (ventas[i] > max) {
+    max = ventas[i];
+  }
+}
+System.out.println(max);`,
+  note: "Truco clásico: arrancar suponiendo que el <b>primer</b> elemento es el máximo (por eso el <code>for</code> empieza en <code>i = 1</code>, no en 0) y actualizar cada vez que encontramos algo más grande.",
+  inputs: null
+},
+{
+  id: 8,
+  title: "El puesto con menos gente",
+  difficulty: "medio",
+  context: "Ahora al revés: Gatil anotó cuánta gente pasó por cada puesto y quiere saber cuál tuvo <b>menos</b> visitas.",
+  starter: `int[] visitas = {40, 15, 28, 9, 33};
+int min = visitas[0];
+for (int i = 1; i < visitas.length; i++) {
+  if (/* completá acá */) {
+    min = visitas[i];
+  }
+}
+System.out.println(min);`,
+  solution: `int[] visitas = {40, 15, 28, 9, 33};
+int min = visitas[0];
+for (int i = 1; i < visitas.length; i++) {
+  if (visitas[i] < min) {
+    min = visitas[i];
+  }
+}
+System.out.println(min);`,
+  note: "Mismo patrón que el máximo, pero invirtiendo la comparación: actualizamos <code>min</code> cuando encontramos algo <b>más chico</b>.",
+  inputs: null
+},
+{
+  id: 9,
+  title: "¿Cuántos son menores de edad?",
+  difficulty: "medio",
+  context: "Para el puesto de bebidas, Techi necesita saber cuántos expositores son menores de 18 años. Contá cuántos elementos cumplen la condición.",
+  starter: `int[] edades = {12, 15, 17, 20, 22, 11, 19};
+int menores = 0;
+for (int i = 0; i < edades.length; i++) {
+  if (/* completá acá */) {
+    menores++;
+  }
+}
+System.out.println(menores);`,
+  solution: `int[] edades = {12, 15, 17, 20, 22, 11, 19};
+int menores = 0;
+for (int i = 0; i < edades.length; i++) {
+  if (edades[i] < 18) {
+    menores++;
+  }
+}
+System.out.println(menores);`,
+  note: "Patrón de <b>conteo condicional</b>: un acumulador que arranca en 0 y suma 1 solo cuando se cumple la condición — muy parecido a la suma, pero con <code>menores++</code> en vez de sumar el valor.",
+  inputs: null
+},
+{
+  id: 10,
+  title: "¿Está Techi en la lista?",
+  difficulty: "medio",
+  context: "Bit tiene la lista de responsables de cada puesto y quiere saber si Techi está a cargo de alguno. En Java, para comparar el <b>contenido</b> de dos <code>String</code> se usa <code>.equals()</code>, no <code>==</code>.",
+  starter: `String[] nombres = {"Bit", "Ana", "Carlos", "Marta"};
+boolean encontrada = false;
+for (int i = 0; i < nombres.length; i++) {
+  if (/* completá acá */) {
+    encontrada = true;
+  }
+}
+System.out.println(encontrada);`,
+  solution: `String[] nombres = {"Bit", "Ana", "Carlos", "Marta"};
+boolean encontrada = false;
+for (int i = 0; i < nombres.length; i++) {
+  if (nombres[i].equals("Techi")) {
+    encontrada = true;
+  }
+}
+System.out.println(encontrada);`,
+  note: "<b>Ojo:</b> para comparar el contenido de dos <code>String</code> en Java se usa <code>nombre.equals(\"otroTexto\")</code>, no <code>==</code>. Es una de las trampas más comunes del lenguaje.",
+  inputs: null
+},
+{
+  id: 11,
+  title: "Cargar edades desde el kiosco",
+  difficulty: "medio",
+  context: "En vez de escribir las edades a mano en el código, Bit quiere pedirlas por teclado con <code>Scanner</code> y guardarlas en un arreglo. Completá la línea que lee cada valor dentro del <code>for</code>.",
+  starter: `Scanner sc = new Scanner(System.in);
+int[] edades = new int[4];
+for (int i = 0; i < edades.length; i++) {
+  edades[i] = /* completá acá */;
+}
+System.out.println(edades[0] + edades[1] + edades[2] + edades[3]);`,
+  solution: `Scanner sc = new Scanner(System.in);
+int[] edades = new int[4];
+for (int i = 0; i < edades.length; i++) {
+  edades[i] = sc.nextInt();
+}
+System.out.println(edades[0] + edades[1] + edades[2] + edades[3]);`,
+  note: "Cada vuelta del <code>for</code> lee <b>un</b> dato con <code>sc.nextInt()</code> y lo guarda en el casillero <code>i</code> correspondiente. Así se llena un arreglo completo con pocos datos escritos por el usuario.",
+  inputs: { label: "Entradas simuladas (una por vuelta del ciclo, separadas por coma):", default: "15, 16, 14, 17" }
+},
+{
+  id: 12,
+  title: "Cargar ventas hasta terminar",
+  difficulty: "dificil",
+  context: "Gatil no sabe de antemano cuántas ventas va a cargar exactamente en este turno del puesto — sabe que van a ser 3. Usá un <code>while</code> en vez de un <code>for</code> para cargarlas.",
+  starter: `Scanner sc = new Scanner(System.in);
+int[] ventas = new int[3];
+int i = 0;
+while (/* completá acá */) {
+  ventas[i] = sc.nextInt();
+  i++;
+}
+System.out.println(ventas[0] + ventas[1] + ventas[2]);`,
+  solution: `Scanner sc = new Scanner(System.in);
+int[] ventas = new int[3];
+int i = 0;
+while (i < ventas.length) {
+  ventas[i] = sc.nextInt();
+  i++;
+}
+System.out.println(ventas[0] + ventas[1] + ventas[2]);`,
+  note: "Con <code>while</code> hay que acordarse de declarar el contador <b>antes</b> del ciclo (<code>int i = 0;</code>) y de incrementarlo <b>dentro</b> (<code>i++;</code>) — si te olvidás del incremento, el ciclo no termina nunca.",
+  inputs: { label: "Entradas simuladas (separadas por coma):", default: "4000, 7000, 3000" }
+},
+{
+  id: 13,
+  title: "Nombres de los puestos",
+  difficulty: "facil",
+  context: "Techi armó la lista de puestos de la feria. Mostralos todos, uno por línea, con un <code>for</code>.",
+  starter: `String[] puestos = {"Robótica", "Reciclaje", "Cocina", "Arte"};
+for (int i = 0; i < puestos.length; i++) {
+  System.out.println(/* completá acá */);
+}`,
+  solution: `String[] puestos = {"Robótica", "Reciclaje", "Cocina", "Arte"};
+for (int i = 0; i < puestos.length; i++) {
+  System.out.println(puestos[i]);
+}`,
+  note: "Un arreglo de <code>String</code> funciona igual que uno de <code>int</code>: cada casillero guarda un texto y se accede de la misma forma, con <code>[i]</code>.",
+  inputs: null
+},
+{
+  id: 14,
+  title: "Armar el cartel de bienvenida",
+  difficulty: "medio",
+  context: "Bit quiere armar un solo cartel con todos los nombres de los puestos separados por espacio, para imprimirlo. Completá el acumulador de texto.",
+  starter: `String[] puestos = {"Robótica", "Reciclaje", "Cocina"};
+String cartel = "";
+for (int i = 0; i < puestos.length; i++) {
+  cartel = /* completá acá */;
+}
+System.out.println(cartel);`,
+  solution: `String[] puestos = {"Robótica", "Reciclaje", "Cocina"};
+String cartel = "";
+for (int i = 0; i < puestos.length; i++) {
+  cartel = cartel + puestos[i] + " ";
+}
+System.out.println(cartel);`,
+  note: "Es el mismo patrón acumulador de la suma (ejercicio 5), pero en vez de sumar números vamos <b>concatenando texto</b>: <code>cartel</code> arranca vacío (<code>\"\"</code>) y en cada vuelta se le agrega un puesto más.",
+  inputs: null
+},
+{
+  id: 15,
+  title: "Recaudación total del día",
+  difficulty: "medio",
+  context: "El puesto de artesanías vendió distintos montos en guaraníes durante el día. Calculá el total recaudado.",
+  starter: `double[] montos = {45000, 12000, 78000, 33000, 9000};
+double total = 0;
+for (int i = 0; i < montos.length; i++) {
+  total = /* completá acá */;
+}
+System.out.println(total);`,
+  solution: `double[] montos = {45000, 12000, 78000, 33000, 9000};
+double total = 0;
+for (int i = 0; i < montos.length; i++) {
+  total = total + montos[i];
+}
+System.out.println(total);`,
+  note: "Mismo patrón acumulador de siempre — cambia el tipo de dato (<code>double</code> para manejar montos con decimales) pero la lógica del <code>for</code> es idéntica.",
+  inputs: null
+},
+{
+  id: 16,
+  title: "Aumento de precios",
+  difficulty: "dificil",
+  context: "A último momento, el comité de la feria decide aumentar todos los precios un 10% para cubrir gastos. Modificá <b>cada casillero</b> del arreglo directamente (no uses una variable nueva).",
+  starter: `double[] precios = {5000, 8000, 3000, 12000};
+for (int i = 0; i < precios.length; i++) {
+  precios[i] = /* completá acá */;
+}
+System.out.println(precios[0]);
+System.out.println(precios[3]);`,
+  solution: `double[] precios = {5000, 8000, 3000, 12000};
+for (int i = 0; i < precios.length; i++) {
+  precios[i] = precios[i] * 1.10;
+}
+System.out.println(precios[0]);
+System.out.println(precios[3]);`,
+  note: "Acá no acumulamos en una variable aparte: <b>reescribimos cada casillero</b> con su propio valor aumentado un 10% (multiplicar por 1.10 equivale a sumar el 10%).",
+  inputs: null
+},
+{
+  id: 17,
+  title: "Puestos por encima del promedio",
+  difficulty: "dificil",
+  context: "Bit quiere saber cuántos puestos vendieron más que el promedio general del día. Este ejercicio combina dos recorridos: primero calculás el promedio, después contás cuántos lo superan.",
+  starter: `int[] ventas = {10000, 25000, 18000, 30000, 5000, 40000};
+double suma = 0;
+for (int i = 0; i < ventas.length; i++) {
+  suma += ventas[i];
+}
+double promedio = suma / ventas.length;
+
+int superanPromedio = 0;
+for (int i = 0; i < ventas.length; i++) {
+  if (/* completá acá */) {
+    superanPromedio++;
+  }
+}
+System.out.println(promedio);
+System.out.println(superanPromedio);`,
+  solution: `int[] ventas = {10000, 25000, 18000, 30000, 5000, 40000};
+double suma = 0;
+for (int i = 0; i < ventas.length; i++) {
+  suma += ventas[i];
+}
+double promedio = suma / ventas.length;
+
+int superanPromedio = 0;
+for (int i = 0; i < ventas.length; i++) {
+  if (ventas[i] > promedio) {
+    superanPromedio++;
+  }
+}
+System.out.println(promedio);
+System.out.println(superanPromedio);`,
+  note: "Muchos problemas reales necesitan <b>dos pasadas</b> por el mismo arreglo: una para calcular algo (el promedio) y otra para usar ese resultado (comparar cada elemento contra él). No se puede hacer en una sola pasada porque hasta que no termina la primera, no sabés el promedio.",
+  inputs: null
+},
+{
+  id: 18,
+  title: "¿Quién vendió más? (la posición, no el valor)",
+  difficulty: "dificil",
+  context: "Techi no quiere solo el monto máximo — quiere saber <b>qué puesto</b> (qué posición) fue el que más vendió, para premiarlo. Guardá el <b>índice</b> del máximo, no el valor.",
+  starter: `int[] ventas = {12000, 45000, 8000, 30000, 20000};
+int indiceMax = 0;
+for (int i = 1; i < ventas.length; i++) {
+  if (/* completá acá */) {
+    indiceMax = i;
+  }
+}
+System.out.println("Puesto ganador: " + indiceMax);
+System.out.println("Monto: " + ventas[indiceMax]);`,
+  solution: `int[] ventas = {12000, 45000, 8000, 30000, 20000};
+int indiceMax = 0;
+for (int i = 1; i < ventas.length; i++) {
+  if (ventas[i] > ventas[indiceMax]) {
+    indiceMax = i;
+  }
+}
+System.out.println("Puesto ganador: " + indiceMax);
+System.out.println("Monto: " + ventas[indiceMax]);`,
+  note: "Sutil pero importante: en vez de guardar el <b>valor</b> máximo, guardamos su <b>posición</b> (<code>indiceMax</code>). Con la posición podés recuperar el valor cuando quieras (<code>ventas[indiceMax]</code>) y además sabés a qué puesto corresponde.",
+  inputs: null
+},
+{
+  id: 19,
+  title: "Lista de asistencia",
+  difficulty: "medio",
+  context: "Gatil pasó lista en la reunión de coordinadores de la feria usando un arreglo de <code>boolean</code>: <code>true</code> si vino, <code>false</code> si faltó. Contá cuántos coordinadores estuvieron presentes.",
+  starter: `boolean[] presentes = {true, false, true, true, false, true};
+int cantidadPresentes = 0;
+for (int i = 0; i < presentes.length; i++) {
+  if (/* completá acá */) {
+    cantidadPresentes++;
+  }
+}
+System.out.println(cantidadPresentes);`,
+  solution: `boolean[] presentes = {true, false, true, true, false, true};
+int cantidadPresentes = 0;
+for (int i = 0; i < presentes.length; i++) {
+  if (presentes[i]) {
+    cantidadPresentes++;
+  }
+}
+System.out.println(cantidadPresentes);`,
+  note: "Como <code>presentes[i]</code> ya es un valor <code>boolean</code> (verdadero o falso), no hace falta comparar con <code>== true</code> — el propio valor alcanza como condición del <code>if</code>.",
+  inputs: null
+},
+{
+  id: 20,
+  title: "Cierre del día — reporte completo (integradora)",
+  difficulty: "dificil",
+  context: "Es el cierre del ICIENTEC. Bit, Techi y Gatil necesitan un reporte completo de las ventas del día: <b>total recaudado</b>, <b>promedio</b>, <b>venta máxima</b> y <b>cuántos puestos superaron el promedio</b>. Combiná todo lo que aprendiste en los ejercicios anteriores.",
+  starter: `int[] ventas = {15000, 8000, 22000, 5000, 30000, 12000};
+
+double total = 0;
+for (int i = 0; i < ventas.length; i++) {
+  total += /* completá acá */;
+}
+
+double promedio = /* completá acá */;
+
+int max = ventas[0];
+for (int i = 1; i < ventas.length; i++) {
+  if (/* completá acá */) {
+    max = ventas[i];
+  }
+}
+
+int superanPromedio = 0;
+for (int i = 0; i < ventas.length; i++) {
+  if (/* completá acá */) {
+    superanPromedio++;
+  }
+}
+
+System.out.println("Total: " + total);
+System.out.println("Promedio: " + promedio);
+System.out.println("Máximo: " + max);
+System.out.println("Puestos sobre el promedio: " + superanPromedio);`,
+  solution: `int[] ventas = {15000, 8000, 22000, 5000, 30000, 12000};
+
+double total = 0;
+for (int i = 0; i < ventas.length; i++) {
+  total += ventas[i];
+}
+
+double promedio = total / ventas.length;
+
+int max = ventas[0];
+for (int i = 1; i < ventas.length; i++) {
+  if (ventas[i] > max) {
+    max = ventas[i];
+  }
+}
+
+int superanPromedio = 0;
+for (int i = 0; i < ventas.length; i++) {
+  if (ventas[i] > promedio) {
+    superanPromedio++;
+  }
+}
+
+System.out.println("Total: " + total);
+System.out.println("Promedio: " + promedio);
+System.out.println("Máximo: " + max);
+System.out.println("Puestos sobre el promedio: " + superanPromedio);`,
+  note: "Este ejercicio junta <b>cuatro patrones</b> que ya usaste por separado: acumulador de suma, promedio, búsqueda de máximo y conteo condicional — los mismos cuatro bloques con los que se resuelve la gran mayoría de problemas reales con arreglos.",
+  inputs: null
+}
+];
+
+const DIFF_LABEL = { facil: "Fácil", medio: "Medio", dificil: "Difícil" };
+const runCount = new Set();
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderExercises() {
+  const container = document.getElementById("exercisesContainer");
+  let html = "";
+  EXERCISES.forEach(ex => {
+    const inputsHtml = ex.inputs
+      ? `<div class="inputs-row">
+           <label>${escapeHtml(ex.inputs.label)}</label>
+           <input type="text" id="inputs-${ex.id}" value="${escapeHtml(ex.inputs.default)}">
+         </div>`
+      : "";
+    html += `
+    <div class="exercise" id="exercise-${ex.id}">
+      <div class="exercise-header">
+        <div class="num-title">
+          <div class="exercise-num">${ex.id}</div>
+          <div class="exercise-title">${escapeHtml(ex.title)}</div>
+          <span class="status-check" id="check-${ex.id}"></span>
+        </div>
+        <span class="badge ${ex.difficulty}">${DIFF_LABEL[ex.difficulty]}</span>
+      </div>
+      <div class="exercise-body">
+        <div class="context">${ex.context}</div>
+        ${inputsHtml}
+        <textarea class="code" id="code-${ex.id}" spellcheck="false">${escapeHtml(ex.starter)}</textarea>
+        <div class="btn-row">
+          <button class="btn-run" onclick="runExercise(${ex.id})">▶ Ejecutar</button>
+          <button class="btn-reset" onclick="resetExercise(${ex.id})">↺ Reiniciar</button>
+          <button class="btn-sol" onclick="toggleSolution(${ex.id})">👁 Ver solución</button>
+        </div>
+        <div class="output empty" id="output-${ex.id}">La salida del programa va a aparecer acá.</div>
+        <div class="solution" id="solution-${ex.id}">
+          <pre>${escapeHtml(ex.solution)}</pre>
+          <div class="note"><b>Por qué:</b> ${ex.note}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function runExercise(id) {
+  const ex = EXERCISES.find(e => e.id === id);
+  const code = document.getElementById("code-" + id).value;
+  const outputEl = document.getElementById("output-" + id);
+  let inputs = [];
+  if (ex.inputs) {
+    const raw = document.getElementById("inputs-" + id).value;
+    inputs = raw.split(",").map(s => s.trim()).filter(s => s.length > 0);
+  }
+  try {
+    const result = runProgram(code, inputs);
+    outputEl.className = "output" + (result.output.trim() === "" ? " empty" : "");
+    outputEl.textContent = result.output.trim() === "" ? "(el programa no imprimió nada — ¿faltó un System.out.println?)" : result.output;
+    runCount.add(id);
+    document.getElementById("check-" + id).textContent = "✓";
+    updateProgress();
+  } catch (e) {
+    outputEl.className = "output error";
+    outputEl.textContent = "⚠ " + e.message;
+  }
+}
+
+function resetExercise(id) {
+  const ex = EXERCISES.find(e => e.id === id);
+  document.getElementById("code-" + id).value = ex.starter;
+  const outputEl = document.getElementById("output-" + id);
+  outputEl.className = "output empty";
+  outputEl.textContent = "La salida del programa va a aparecer acá.";
+  if (ex.inputs) document.getElementById("inputs-" + id).value = ex.inputs.default;
+}
+
+function toggleSolution(id) {
+  document.getElementById("solution-" + id).classList.toggle("show");
+}
+
+function updateProgress() {
+  const pct = Math.round((runCount.size / EXERCISES.length) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = runCount.size + " / " + EXERCISES.length + " ejercicios ejecutados";
+}
+
+renderExercises();
+
+</script>
+
+</body>
+</html>
