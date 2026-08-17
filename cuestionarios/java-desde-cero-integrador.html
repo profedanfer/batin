@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java desde cero · Repaso Integrador · BATIN</title>
+<link rel="stylesheet" href="../batin.css">
+<style>
+
+/* ══════════════════════════════════════
+   HERO DEL CUESTIONARIO
+══════════════════════════════════════ */
+.quiz-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borde);
+  padding: 40px 56px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, var(--violeta-s) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quiz-hero-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.quiz-ruta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quiz-ruta a {
+  color: var(--naranja);
+  text-decoration: none;
+}
+
+.quiz-ruta a:hover { text-decoration: underline; }
+.quiz-ruta .sep { color: var(--borde3); }
+
+.quiz-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.quiz-hero-char img {
+  width: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  flex-shrink: 0;
+}
+
+.quiz-nivel-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--violeta-s);
+  color: var(--violeta);
+  border: 1px solid var(--violeta-b);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.quiz-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.quiz-subtitulo {
+  font-size: 14px;
+  color: var(--texto2);
+  margin-bottom: 14px;
+}
+
+.quiz-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+══════════════════════════════════════ */
+.quiz-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 56px 64px;
+}
+
+/* ══════════════════════════════════════
+   INSTRUCCIONES
+══════════════════════════════════════ */
+.instrucciones {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.instrucciones-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.instrucciones-texto p {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.instrucciones-texto p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════ */
+.quiz-progreso {
+  margin-bottom: 28px;
+}
+
+.progreso-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progreso-barra {
+  height: 4px;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violeta), var(--naranja));
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ══════════════════════════════════════
+   PREGUNTA
+══════════════════════════════════════ */
+.pregunta-panel {
+  display: none;
+}
+
+.pregunta-panel.act {
+  display: block;
+  animation: fadeInUp .3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pregunta-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+}
+
+.pregunta-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violeta);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pregunta-texto {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.pregunta-codigo {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+  line-height: 1.8;
+}
+
+/* Opciones */
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcion-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg4);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.opcion-label:hover {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label input[type="radio"],
+.opcion-label input[type="checkbox"] {
+  display: none;
+}
+
+.opcion-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--borde2);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion-label input:checked ~ .opcion-contenido .opcion-circulo,
+.opcion-label.selected .opcion-circulo {
+  background: var(--violeta);
+  border-color: var(--violeta);
+}
+
+.opcion-label.selected {
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.opcion-label.selected .opcion-circulo::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Estados después de responder */
+.opcion-label.correcta {
+  border-color: #50c878 !important;
+  background: rgba(80,200,120,.1) !important;
+}
+
+.opcion-label.correcta .opcion-circulo {
+  background: #50c878 !important;
+  border-color: #50c878 !important;
+}
+
+.opcion-label.correcta .opcion-circulo::after {
+  content: '✓';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-label.incorrecta {
+  border-color: #e05050 !important;
+  background: rgba(224,80,80,.08) !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo {
+  background: #e05050 !important;
+  border-color: #e05050 !important;
+}
+
+.opcion-label.incorrecta .opcion-circulo::after {
+  content: '✗';
+  font-size: 11px;
+  color: #fff;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.opcion-texto {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.opcion-letra {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--texto3);
+  min-width: 14px;
+  margin-top: 2px;
+}
+
+/* Feedback inmediato */
+.feedback {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback.correcto {
+  display: block;
+  background: rgba(80,200,120,.1);
+  border: 1px solid rgba(80,200,120,.3);
+  color: #50c878;
+}
+
+.feedback.incorrecto {
+  display: block;
+  background: rgba(224,80,80,.08);
+  border: 1px solid rgba(224,80,80,.2);
+  color: #e08080;
+}
+
+.feedback strong { color: #fff; }
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN ENTRE PREGUNTAS
+══════════════════════════════════════ */
+.pregunta-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-nav {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 9px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: all .15s;
+}
+
+.btn-nav.anterior {
+  color: var(--texto3);
+  border-color: var(--borde2);
+}
+
+.btn-nav.anterior:hover {
+  color: var(--texto);
+  border-color: var(--borde3);
+}
+
+.btn-nav.siguiente {
+  color: var(--violeta);
+  border-color: var(--violeta-b);
+  background: var(--violeta-s);
+}
+
+.btn-nav.siguiente:hover {
+  background: var(--violeta-m);
+}
+
+.btn-nav.siguiente:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-nav.finalizar {
+  color: var(--naranja);
+  border-color: var(--naranja-b);
+  background: var(--naranja-s);
+}
+
+.btn-nav.finalizar:hover {
+  background: var(--naranja-m);
+}
+
+.btn-nav.finalizar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Dots indicadores */
+.pregunta-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--borde2);
+  border: 1px solid var(--borde);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.dot.respondida { background: var(--violeta-m); border-color: var(--violeta-b); }
+.dot.act        { background: var(--violeta);   border-color: var(--violeta); }
+.dot.ok         { background: #50c87850;         border-color: #50c878; }
+.dot.mal        { background: rgba(224,80,80,.4); border-color: #e05050; }
+
+/* ══════════════════════════════════════
+   RESULTADO FINAL
+══════════════════════════════════════ */
+#resultado-panel {
+  display: none;
+}
+
+.resultado-card {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 36px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.resultado-char img {
+  width: 130px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.3));
+}
+
+.resultado-score {
+  font-family: var(--font-title);
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.resultado-score.verde  { color: #50c878; }
+.resultado-score.amarillo { color: var(--naranja2); }
+.resultado-score.rojo   { color: #e05050; }
+
+.resultado-nivel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.amarillo { color: var(--naranja2); }
+.resultado-nivel.rojo   { color: #e05050; }
+
+.resultado-mensaje {
+  font-size: 15px;
+  color: var(--texto2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 20px;
+  font-weight: 300;
+}
+
+.resultado-mensaje strong { color: var(--texto); font-weight: 500; }
+
+/* Barras de detalle */
+.resultado-detalle {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.rd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.rd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO Y RUTA RECOMENDADA
+══════════════════════════════════════ */
+.diagnostico {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.amarillo { color: var(--naranja2); }
+.diagnostico-titulo.rojo     { color: #e05050; }
+
+.diagnostico-char {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.diagnostico-char img {
+  width: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+}
+
+.diagnostico-char-texto {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.diagnostico-char-nombre {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Ruta recomendada */
+.ruta-recomendada {
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+
+.ruta-recomendada-titulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--naranja);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.ruta-subtitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--texto3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+}
+
+.ruta-subtitulo:first-child { margin-top: 0; }
+
+.ruta-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--texto2);
+}
+
+.ruta-paso:last-child { margin-bottom: 0; }
+
+.ruta-paso-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--naranja-s);
+  color: var(--naranja);
+  border: 1px solid var(--naranja-b);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ruta-paso a {
+  color: var(--naranja);
+  text-decoration: none;
+  border-bottom: 1px solid var(--naranja-b);
+}
+
+.ruta-paso a:hover { border-bottom-color: var(--naranja); }
+
+/* Botones de acción al final */
+.resultado-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Revisión de respuestas */
+.revision-panel {
+  display: none;
+  margin-top: 24px;
+}
+
+.revision-item {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.revision-item.ok   { border-left: 3px solid #50c878; }
+.revision-item.mal  { border-left: 3px solid #e05050; }
+
+.revision-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.revision-icono {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.revision-pregunta {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.revision-respuestas {
+  font-size: 12px;
+  color: var(--texto3);
+  line-height: 1.7;
+}
+
+.revision-respuestas .correcta-texto { color: #50c878; }
+.revision-respuestas .incorrecta-texto { color: #e08080; }
+
+/* ══════════════════════════════════════
+   LINK FORMULARIO GOOGLE
+══════════════════════════════════════ */
+.google-form-link {
+  background: var(--bg3);
+  border: 1px solid var(--borde);
+  border-radius: var(--r2);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gfl-texto {
+  flex: 1;
+  font-size: 13px;
+  color: var(--texto3);
+}
+
+.gfl-texto strong { color: var(--texto2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .quiz-hero { padding: 32px 20px 28px; }
+  .quiz-main { padding: 28px 20px 48px; }
+  .pregunta-card { padding: 20px 18px 18px; }
+  .quiz-hero-char { display: none; }
+  .resultado-acciones { flex-direction: column; }
+}
+.pregunta-codigo, code {
+  background: var(--bg);
+  border: 1px solid var(--borde2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--azul2);
+}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="quiz-hero">
+  <div class="quiz-hero-inner">
+    <div class="quiz-ruta">
+      <a href="../aprendiendo.html">Estoy aprendiendo</a>
+      <span class="sep">/</span>
+      <a href="../aprendiendo.html">Java — el puente y la llegada</a>
+      <span class="sep">/</span>
+      <span>Repaso Integrador</span>
+    </div>
+    <div class="quiz-hero-header">
+      <div class="quiz-hero-char">
+        <img src="../img/bit_idea.png" alt="Bit, Techi y Gatiel">
+      </div>
+      <div>
+        <span class="quiz-nivel-badge">// Java desde cero · Repaso Integrador</span>
+        <h1 class="quiz-titulo">Bit, Techi y Gatiel<br>repasan todo Java</h1>
+        <p class="quiz-subtitulo">Variables, operadores, condicionales, ciclos y arreglos — todo lo que trabajamos en Java, en un solo repaso.</p>
+        <div class="quiz-meta">
+          <span class="quiz-meta-item">📝 20 preguntas</span>
+          <span class="quiz-meta-item">⏱ ~12 minutos</span>
+          <span class="quiz-meta-item">🎯 Diagnóstico inmediato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="quiz-main">
+
+  <!-- Instrucciones -->
+  <div class="instrucciones">
+    <div class="instrucciones-ico">🐱</div>
+    <div class="instrucciones-texto">
+      <p><strong style="color:var(--texto)">Gatiel dice:</strong> Este repaso junta las cinco clases de Java que dimos — variables y Scanner, operadores, condicionales, ciclos y arreglos — en la feria estudiantil de siempre. Elegí tu respuesta y hacé clic en <strong style="color:var(--violeta)">"Responder"</strong> para ver la corrección al instante.</p>
+      <p>Cada pregunta muestra código Java real, tal como lo escribirías en VS Code. Si te trabás en alguna, no pasa nada — al final vas a ver exactamente en qué bloque conviene repasar.</p>
+    </div>
+  </div>
+
+  <!-- Progreso -->
+  <div class="quiz-progreso">
+    <div class="progreso-label">
+      <span id="progreso-texto">Pregunta 1 de 16</span>
+      <span id="progreso-pct">0%</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="pregunta-dots" id="dots-container" style="margin-bottom:24px"></div>
+
+  <!-- ══════ PREGUNTAS ══════ -->
+  <div id="preguntas-container">
+
+    <!-- P1 -->
+    <div class="pregunta-panel" id="p1">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 01 · Bloque 1 · Ítem 1.1</div>
+        <div class="pregunta-texto">Techi necesita guardar el precio de una entrada a la feria, que puede tener centavos (por ejemplo, 2500.50 guaraníes). ¿Qué tipo de dato es el más adecuado?</div>
+        <div class="opciones" id="ops-1">
+          <label class="opcion-label" onclick="seleccionar(this,1,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">int</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">double</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">boolean</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,1,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">String</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(0)" style="visibility:hidden">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-1" onclick="responderYSiguiente(1,'b','<code>double</code> permite guardar números con decimales — <code>int</code> trunca la parte decimal, y los otros dos tipos no representan cantidades numéricas.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="pregunta-panel" id="p2">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 02 · Bloque 1 · Ítem 1.2</div>
+        <div class="pregunta-texto">¿Qué método de <code>Scanner</code> completa correctamente la línea para leer un número entero por teclado?</div>
+        <div class="pregunta-codigo">Scanner sc = new Scanner(System.in);<br>int edad = /* completá acá */;</div>
+        <div class="opciones" id="ops-2">
+          <label class="opcion-label" onclick="seleccionar(this,2,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">sc.nextLine()</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">sc.nextInt()</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">sc.next()</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,2,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">sc.nextDouble()</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(1)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-2" onclick="responderYSiguiente(2,'b','<code>nextInt()</code> lee específicamente un número entero; <code>nextLine()</code> y <code>next()</code> leen texto, y <code>nextDouble()</code> lee un decimal.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="pregunta-panel" id="p3">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 03 · Bloque 1 · Ítem 1.3</div>
+        <div class="pregunta-texto">¿Qué imprime este programa?</div>
+        <div class="pregunta-codigo">String nombre = &quot;Bit&quot;;<br>int edad = 15;<br>System.out.println(nombre + &quot; tiene &quot; + edad + &quot; años&quot;);</div>
+        <div class="opciones" id="ops-3">
+          <label class="opcion-label" onclick="seleccionar(this,3,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Error de compilación, no se puede sumar texto con números</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Bit tiene 15 años</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">BitEdad</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,3,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">nombre + " tiene " + edad + " años" (tal cual, sin reemplazar)</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(2)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-3" onclick="responderYSiguiente(3,'b','El operador <code>+</code> entre un <code>String</code> y otro tipo de dato concatena, convirtiendo automáticamente el número a texto.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="pregunta-panel" id="p4">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 04 · Bloque 1 · Ítem 1.4</div>
+        <div class="pregunta-texto">En Java, ¿qué diferencia hay entre <code>=</code> y <code>==</code>?</div>
+        <div class="opciones" id="ops-4">
+          <label class="opcion-label" onclick="seleccionar(this,4,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Son lo mismo, se puede usar cualquiera</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">= asigna un valor, == compara dos valores</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">== asigna un valor, = compara dos valores</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,4,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Ambos comparan valores, pero == es más rápido</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(3)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-4" onclick="responderYSiguiente(4,'b','<code>=</code> es el operador de <strong>asignación</strong> (guarda un valor en una variable); <code>==</code> es el operador de <strong>comparación</strong> (pregunta si dos valores son iguales). Confundirlos es uno de los errores más comunes al empezar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="pregunta-panel" id="p5">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 05 · Bloque 2 · Ítem 2.1</div>
+        <div class="pregunta-texto">¿Cuál es el resultado de <code>10 % 3</code> en Java?</div>
+        <div class="opciones" id="ops-5">
+          <label class="opcion-label" onclick="seleccionar(this,5,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">3</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">3.33</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">1</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,5,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">0</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(4)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-5" onclick="responderYSiguiente(5,'c','<code>%</code> es el operador módulo: da el <strong>resto</strong> de la división. 10 dividido 3 es 3, y sobra 1.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="pregunta-panel" id="p6">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 06 · Bloque 2 · Ítem 2.2</div>
+        <div class="pregunta-texto">¿Qué condición debe cumplirse para que se imprima el mensaje?</div>
+        <div class="pregunta-codigo">int stock = 5;<br>boolean hayStock = stock &gt; 0;<br>boolean esFeria = true;<br>if (hayStock &amp;&amp; esFeria) {<br>  System.out.println(&quot;Se puede vender&quot;);<br>}</div>
+        <div class="opciones" id="ops-6">
+          <label class="opcion-label" onclick="seleccionar(this,6,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Que hayStock O esFeria sean verdaderos</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Que hayStock Y esFeria sean verdaderos, ambos a la vez</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Solo que esFeria sea verdadero</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,6,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Solo que stock sea mayor a 0</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(5)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-6" onclick="responderYSiguiente(6,'b','<code>&&</code> es el operador lógico Y: solo es verdadero cuando <strong>ambas</strong> condiciones son verdaderas.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="pregunta-panel" id="p7">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 07 · Bloque 2 · Ítem 2.3</div>
+        <div class="pregunta-texto">Gatiel escribió <code>boolean encontrado = false;</code> y luego <code>if (!encontrado) { ... }</code>. ¿Cuándo entra al bloque del if?</div>
+        <div class="opciones" id="ops-7">
+          <label class="opcion-label" onclick="seleccionar(this,7,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Cuando encontrado es true</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Cuando encontrado es false</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Nunca, porque hay un error de sintaxis</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,7,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Siempre, sin importar el valor</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(6)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-7" onclick="responderYSiguiente(7,'b','<code>!</code> es el operador de negación: invierte el valor booleano. <code>!encontrado</code> es verdadero cuando <code>encontrado</code> es <code>false</code>.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="pregunta-panel" id="p8">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 08 · Bloque 2 · Ítem 2.4</div>
+        <div class="pregunta-texto">¿Por qué esta comparación NO es la forma correcta de comparar dos <code>String</code> en Java?</div>
+        <div class="pregunta-codigo">String[] nombres = {&quot;Bit&quot;, &quot;Techi&quot;};<br>if (nombres[0] == &quot;Bit&quot;) {<br>  System.out.println(&quot;Es Bit&quot;);<br>}</div>
+        <div class="opciones" id="ops-8">
+          <label class="opcion-label" onclick="seleccionar(this,8,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Porque == solo funciona con números</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Porque hay que usar .equals() para comparar el contenido de dos String, no ==</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Porque nombres[0] siempre vale null</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,8,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">No hay ningún problema, el código es correcto</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(7)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-8" onclick="responderYSiguiente(8,'b','<code>==</code> compara si son el mismo objeto en memoria, no si dicen lo mismo. Para comparar el <strong>contenido</strong> de dos <code>String</code>, Java usa <code>.equals()</code>.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="pregunta-panel" id="p9">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 09 · Bloque 3 · Ítem 3.1</div>
+        <div class="pregunta-texto">¿Qué imprime este programa?</div>
+        <div class="pregunta-codigo">int nota = 7;<br>if (nota &gt;= 9) {<br>  System.out.println(&quot;Excelente&quot;);<br>} else if (nota &gt;= 6) {<br>  System.out.println(&quot;Aprobado&quot;);<br>} else {<br>  System.out.println(&quot;Reprobado&quot;);<br>}</div>
+        <div class="opciones" id="ops-9">
+          <label class="opcion-label" onclick="seleccionar(this,9,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Excelente</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Aprobado</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Reprobado</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,9,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Excelente y Aprobado, las dos</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(8)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-9" onclick="responderYSiguiente(9,'b','nota=7 no cumple <code>&gt;= 9</code>, pero sí cumple <code>&gt;= 6</code>, así que entra en el <code>else if</code>. En una cadena if/else if/else se ejecuta <strong>una sola</strong> rama.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="pregunta-panel" id="p10">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 10 · Bloque 3 · Ítem 3.2</div>
+        <div class="pregunta-texto">¿Qué imprime este programa?</div>
+        <div class="pregunta-codigo">boolean socio = true;<br>int monto = 15000;<br>if (socio) {<br>  if (monto &gt;= 20000) {<br>    System.out.println(&quot;15%&quot;);<br>  } else {<br>    System.out.println(&quot;10%&quot;);<br>  }<br>} else {<br>  System.out.println(&quot;0%&quot;);<br>}</div>
+        <div class="opciones" id="ops-10">
+          <label class="opcion-label" onclick="seleccionar(this,10,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">15%</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">10%</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">0%</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,10,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Error, no se puede anidar un if dentro de otro if</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(9)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-10" onclick="responderYSiguiente(10,'b','<code>socio</code> es <code>true</code>, así que entra al primer if. Adentro, <code>monto</code> (15000) no cumple <code>&gt;= 20000</code>, así que va al <code>else</code> interno: 10%.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P11 -->
+    <div class="pregunta-panel" id="p11">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 11 · Bloque 3 · Ítem 3.3</div>
+        <div class="pregunta-texto">¿Cuál de las siguientes condiciones verifica correctamente que la edad esté entre 12 y 17 años (inclusive)?</div>
+        <div class="opciones" id="ops-11">
+          <label class="opcion-label" onclick="seleccionar(this,11,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">edad &gt;= 12 &amp;&amp; edad &lt;= 17</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">edad &gt;= 12 || edad &lt;= 17</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">edad &gt; 12 &amp;&amp; edad &lt; 17</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,11,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">edad = 12 &amp;&amp; edad = 17</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(10)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-11" onclick="responderYSiguiente(11,'a','Hay que usar <code>&amp;&amp;</code> (Y) para exigir ambos límites a la vez, con <code>&gt;=</code> y <code>&lt;=</code> para incluir los extremos 12 y 17.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P12 -->
+    <div class="pregunta-panel" id="p12">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 12 · Bloque 3 · Ítem 3.4</div>
+        <div class="pregunta-texto">Este código no compila. ¿Cuál es el error?</div>
+        <div class="pregunta-codigo">int monto = 8000;<br>if (monto &gt; 5000)<br>  System.out.println(&quot;Supera el mínimo&quot;)</div>
+        <div class="opciones" id="ops-12">
+          <label class="opcion-label" onclick="seleccionar(this,12,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Falta el punto y coma al final de la línea del println</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Falta usar else</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">monto debería ser double</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,12,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El operador &gt; no existe en Java</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(11)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-12" onclick="responderYSiguiente(12,'a','Toda instrucción en Java termina en punto y coma (<code>;</code>) — olvidarlo es uno de los errores de sintaxis más comunes al empezar.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P13 -->
+    <div class="pregunta-panel" id="p13">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 13 · Bloque 4 · Ítem 4.1</div>
+        <div class="pregunta-texto">¿Cuál es la diferencia principal entre <code>while</code> y <code>do-while</code>?</div>
+        <div class="opciones" id="ops-13">
+          <label class="opcion-label" onclick="seleccionar(this,13,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">No hay ninguna diferencia real</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">do-while siempre ejecuta el bloque al menos una vez, aunque la condición sea falsa desde el inicio</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">while es más rápido que do-while</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,13,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">do-while no puede usarse con contadores</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-13"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(12)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-13" onclick="responderYSiguiente(13,'b','En <code>do-while</code>, el bloque se ejecuta primero y la condición se evalúa después — por eso corre al menos una vez. En <code>while</code>, la condición se evalúa antes, así que puede no ejecutarse nunca.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P14 -->
+    <div class="pregunta-panel" id="p14">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 14 · Bloque 4 · Ítem 4.2</div>
+        <div class="pregunta-texto">¿Qué hace exactamente <code>i++</code> en este for?</div>
+        <div class="pregunta-codigo">for (int i = 0; i &lt; 5; i++) {<br>  System.out.println(i);<br>}</div>
+        <div class="opciones" id="ops-14">
+          <label class="opcion-label" onclick="seleccionar(this,14,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Compara i con 5</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Suma 1 a i después de cada vuelta del ciclo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Inicializa i en 0</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,14,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Detiene el ciclo</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-14"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(13)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-14" onclick="responderYSiguiente(14,'b','<code>i++</code> es el incremento: se ejecuta al final de cada vuelta y suma 1 a <code>i</code>. Es lo que hace que el ciclo eventualmente termine.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P15 -->
+    <div class="pregunta-panel" id="p15">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 15 · Bloque 4 · Ítem 4.3</div>
+        <div class="pregunta-texto">¿Cuál de las dos variables es el <strong>acumulador</strong> y cuál el <strong>contador</strong>?</div>
+        <div class="pregunta-codigo">int contador = 0;<br>int total = 0;<br>for (int i = 0; i &lt; ventas.length; i++) {<br>  contador++;<br>  total = total + ventas[i];<br>}</div>
+        <div class="opciones" id="ops-15">
+          <label class="opcion-label" onclick="seleccionar(this,15,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">contador es el acumulador, total es el contador</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">total es el acumulador, contador es el contador</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Las dos son acumuladores</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,15,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Las dos son contadores</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-15"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(14)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-15" onclick="responderYSiguiente(15,'b','Un <strong>contador</strong> suma siempre lo mismo (<code>contador++</code> suma 1 cada vez, cuenta vueltas). Un <strong>acumulador</strong> suma un valor que cambia en cada vuelta (<code>total</code> suma cada <code>ventas[i]</code>) — junta un total real.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P16 -->
+    <div class="pregunta-panel" id="p16">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 16 · Bloque 4 · Ítem 4.4</div>
+        <div class="pregunta-texto">¿Qué problema tiene este ciclo?</div>
+        <div class="pregunta-codigo">int i = 0;<br>while (i &lt; 5) {<br>  System.out.println(i);<br>}</div>
+        <div class="opciones" id="ops-16">
+          <label class="opcion-label" onclick="seleccionar(this,16,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Ninguno, funciona perfecto</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Es un ciclo infinito: falta incrementar i dentro del while</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">Debería usar for en vez de while</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,16,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">La condición debería ser i <= 5</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-16"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(15)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-16" onclick="responderYSiguiente(16,'b','<code>i</code> nunca cambia dentro del ciclo, así que <code>i &lt; 5</code> siempre es verdadero y el programa nunca termina. Es el error más común al usar <code>while</code>: olvidarse de actualizar la variable de corte.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P17 -->
+    <div class="pregunta-panel" id="p17">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 17 · Bloque 5 · Ítem 5.1</div>
+        <div class="pregunta-texto">¿Qué imprime este programa?</div>
+        <div class="pregunta-codigo">int[] edades = {15, 16, 14, 17};<br>System.out.println(edades[1]);</div>
+        <div class="opciones" id="ops-17">
+          <label class="opcion-label" onclick="seleccionar(this,17,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">15</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">16</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">1</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,17,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Error, el índice debería empezar en 1</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-17"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(16)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-17" onclick="responderYSiguiente(17,'b','El índice de un arreglo empieza en 0. <code>edades[0]</code> es 15, <code>edades[1]</code> es 16 — el segundo casillero.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P18 -->
+    <div class="pregunta-panel" id="p18">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 18 · Bloque 5 · Ítem 5.2</div>
+        <div class="pregunta-texto">¿Qué imprime este programa?</div>
+        <div class="pregunta-codigo">int[] precios = {5000, 3000, 8000, 12000};<br>System.out.println(precios[precios.length - 1]);</div>
+        <div class="opciones" id="ops-18">
+          <label class="opcion-label" onclick="seleccionar(this,18,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">4</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">3</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">12000</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,18,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Error de compilación</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-18"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(17)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-18" onclick="responderYSiguiente(18,'c','<code>precios.length</code> es 4, así que <code>precios.length - 1</code> es 3 — el último índice válido, que guarda 12000.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P19 -->
+    <div class="pregunta-panel" id="p19">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 19 · Bloque 5 · Ítem 5.3</div>
+        <div class="pregunta-texto">¿Qué pasa al ejecutar este código?</div>
+        <div class="pregunta-codigo">int[] arr = {10, 20, 30};<br>System.out.println(arr[3]);</div>
+        <div class="opciones" id="ops-19">
+          <label class="opcion-label" onclick="seleccionar(this,19,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">Imprime 30</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">Imprime 0</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El programa se detiene con ArrayIndexOutOfBoundsException</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,19,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">Imprime null</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-19"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(18)">← Anterior</button>
+        <button class="btn-nav siguiente" id="btn-sig-19" onclick="responderYSiguiente(19,'c','<code>arr</code> tiene 3 elementos, con índices válidos 0, 1 y 2. Pedir <code>arr[3]</code> pide un casillero que no existe — Java corta la ejecución con esa excepción.')" disabled>Responder →</button>
+      </div>
+    </div>
+
+    <!-- P20 -->
+    <div class="pregunta-panel" id="p20">
+      <div class="pregunta-card">
+        <div class="pregunta-num">// Pregunta 20 · Bloque 5 · Ítem 5.4</div>
+        <div class="pregunta-texto">¿Qué calcula este código?</div>
+        <div class="pregunta-codigo">int[] ventas = {12, 30, 8, 45, 20};<br>int max = ventas[0];<br>for (int i = 1; i &lt; ventas.length; i++) {<br>  if (ventas[i] &gt; max) {<br>    max = ventas[i];<br>  }<br>}</div>
+        <div class="opciones" id="ops-20">
+          <label class="opcion-label" onclick="seleccionar(this,20,'a')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">a)</span>
+            <span class="opcion-texto">La suma de todas las ventas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'b')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">b)</span>
+            <span class="opcion-texto">La cantidad de ventas</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'c')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">c)</span>
+            <span class="opcion-texto">El valor máximo del arreglo</span>
+          </label>
+          <label class="opcion-label" onclick="seleccionar(this,20,'d')">
+            <div class="opcion-circulo"></div>
+            <span class="opcion-letra">d)</span>
+            <span class="opcion-texto">El valor mínimo del arreglo</span>
+          </label>
+        </div>
+        <div class="feedback" id="fb-20"></div>
+      </div>
+      <div class="pregunta-nav">
+        <button class="btn-nav anterior" onclick="irA(19)">← Anterior</button>
+        <button class="btn-nav finalizar" id="btn-fin-20" onclick="responderYFinalizar(20,'c','<code>max</code> arranca con el primer elemento, y se actualiza cada vez que aparece un valor mayor — es el patrón estándar para encontrar el máximo de un arreglo.')" disabled>Finalizar evaluación ✓</button>
+      </div>
+    </div>
+
+  </div><!-- fin preguntas-container -->
+
+  <!-- ══════ RESULTADO ══════ -->
+  <div id="resultado-panel">
+
+    <div class="resultado-card" id="resultado-card">
+      <div class="resultado-char">
+        <img id="resultado-char-img" src="../img/bit_ok.png" alt="Resultado">
+      </div>
+      <div class="resultado-score" id="resultado-score"></div>
+      <div class="resultado-nivel" id="resultado-nivel-txt"></div>
+      <p class="resultado-mensaje" id="resultado-mensaje"></p>
+      <div class="resultado-detalle">
+        <span class="rd-item"><span class="rd-dot" style="background:#50c878"></span><span id="rd-correctas"></span> correctas</span>
+        <span class="rd-item"><span class="rd-dot" style="background:#e05050"></span><span id="rd-incorrectas"></span> incorrectas</span>
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="diagnostico" id="diagnostico-card">
+      <div class="diagnostico-titulo" id="diag-titulo"></div>
+      <div class="diagnostico-char">
+        <img id="diag-char-img" src="../img/bit_ok.png" alt="Diagnóstico">
+        <div class="char-guia-body">
+          <div class="char-guia-name" id="diag-char-nombre"></div>
+          <p class="diagnostico-char-texto" id="diag-char-texto"></p>
+        </div>
+      </div>
+      <div class="ruta-recomendada" id="ruta-recomendada">
+        <div class="ruta-recomendada-titulo">// Tu ruta recomendada</div>
+        <div id="ruta-pasos"></div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="resultado-acciones">
+      <button class="btn btn-azul" onclick="toggleRevision()">📋 Ver revisión completa</button>
+      <a href="../aprendiendo.html" class="btn btn-naranja">📚 Volver a las rutas</a>
+      <button class="btn btn-violeta" onclick="reiniciar()">🔄 Intentar de nuevo</button>
+    </div>
+
+    <!-- Revisión -->
+    <div class="revision-panel" id="revision-panel">
+      <h3 class="titulo-h3" style="margin:24px 0 16px">Revisión detallada</h3>
+      <div id="revision-lista"></div>
+    </div>
+
+  </div><!-- fin resultado-panel -->
+
+</div><!-- fin quiz-main -->
+
+<div id="batin-footer"></div>
+<script src="../batin.js"></script>
+<script>
+
+// ══════════════════════════════════════
+// DATOS
+// ══════════════════════════════════════
+const TOTAL = 20;
+const TEXTOS_CORRECTAS = {
+  1: 'double',
+  2: 'sc.nextInt()',
+  3: 'Bit tiene 15 años',
+  4: '= asigna, == compara',
+  5: '1',
+  6: 'hayStock Y esFeria, ambos verdaderos',
+  7: 'Cuando encontrado es false',
+  8: 'Hay que usar .equals()',
+  9: 'Aprobado',
+  10: '10%',
+  11: 'edad >= 12 && edad <= 17',
+  12: 'Falta el punto y coma ;',
+  13: 'do-while ejecuta al menos una vez',
+  14: 'Suma 1 a i en cada vuelta',
+  15: 'total = acumulador, contador = contador',
+  16: 'Ciclo infinito: falta i++',
+  17: '16',
+  18: '12000',
+  19: 'ArrayIndexOutOfBoundsException',
+  20: 'El valor máximo'
+};
+const PREGUNTAS_TEXTO = {
+  1: '[Variables, tipos y Scanner] Techi necesita guardar el precio de una entrada a la feria, que puede tener centavos (por ejemplo...',
+  2: '[Variables, tipos y Scanner] ¿Qué método de Scanner completa correctamente la línea para leer un número entero por teclado?',
+  3: '[Variables, tipos y Scanner] ¿Qué imprime este programa?',
+  4: '[Variables, tipos y Scanner] En Java, ¿qué diferencia hay entre = y ==?',
+  5: '[Operadores] ¿Cuál es el resultado de 10 % 3 en Java?',
+  6: '[Operadores] ¿Qué condición debe cumplirse para que se imprima el mensaje?',
+  7: '[Operadores] Gatiel escribió boolean encontrado = false; y luego if (!encontrado) { ... }. ¿Cuándo entra al bl...',
+  8: '[Operadores] ¿Por qué esta comparación NO es la forma correcta de comparar dos String en Java?',
+  9: '[Condicionales] ¿Qué imprime este programa?',
+  10: '[Condicionales] ¿Qué imprime este programa?',
+  11: '[Condicionales] ¿Cuál de las siguientes condiciones verifica correctamente que la edad esté entre 12 y 17 años (i...',
+  12: '[Condicionales] Este código no compila. ¿Cuál es el error?',
+  13: '[Ciclos] ¿Cuál es la diferencia principal entre while y do-while?',
+  14: '[Ciclos] ¿Qué hace exactamente i++ en este for?',
+  15: '[Ciclos] ¿Cuál de las dos variables es el acumulador y cuál el contador?',
+  16: '[Ciclos] ¿Qué problema tiene este ciclo?',
+  17: '[Arreglos] ¿Qué imprime este programa?',
+  18: '[Arreglos] ¿Qué imprime este programa?',
+  19: '[Arreglos] ¿Qué pasa al ejecutar este código?',
+  20: '[Arreglos] ¿Qué calcula este código?'
+};
+
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let preguntaActual = 1;
+let seleccionActual = {};
+let respondidas = {};
+
+function initDots() {
+  const cont = document.getElementById('dots-container');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' act' : '');
+    d.id = 'dot-' + i;
+    d.title = 'Pregunta ' + i;
+    d.onclick = () => irA(i);
+    cont.appendChild(d);
+  }
+}
+
+function irA(num) {
+  if (num < 1 || num > TOTAL) return;
+  document.getElementById('p' + preguntaActual)?.classList.remove('act');
+  document.getElementById('dot-' + preguntaActual)?.classList.remove('act');
+  preguntaActual = num;
+  document.getElementById('p' + num)?.classList.add('act');
+  document.getElementById('dot-' + num)?.classList.add('act');
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const resp = Object.keys(respondidas).length;
+  const pct = Math.round((resp / TOTAL) * 100);
+  document.getElementById('progreso-texto').textContent = `Pregunta ${preguntaActual} de ${TOTAL}`;
+  document.getElementById('progreso-pct').textContent = pct + '%';
+  document.getElementById('progreso-fill').style.width = pct + '%';
+}
+
+function seleccionar(label, nro, opcion) {
+  if (respondidas[nro]) return;
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  seleccionActual[nro] = opcion;
+  const btn = document.getElementById('btn-sig-' + nro) || document.getElementById('btn-fin-' + nro);
+  if (btn) btn.disabled = false;
+}
+
+function responder(nro, correcta, explicacion) {
+  if (respondidas[nro]) return;
+  const sel = seleccionActual[nro];
+  if (!sel) return;
+  const esCorrecta = sel === correcta;
+  respondidas[nro] = { seleccion: sel, correcto: esCorrecta };
+
+  document.querySelectorAll(`#ops-${nro} .opcion-label`).forEach(l => {
+    l.style.pointerEvents = 'none';
+    const letra = l.querySelector('.opcion-letra').textContent.replace(')','').trim();
+    if (letra === correcta || letra === (correcta === 'v' ? '✓' : correcta === 'f' ? '✗' : correcta)) {
+      l.classList.add('correcta');
+    } else if (l.classList.contains('selected') && !esCorrecta) {
+      l.classList.add('incorrecta');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + nro);
+  if (esCorrecta) {
+    fb.className = 'feedback correcto';
+    fb.innerHTML = `✓ <strong>¡Correcto!</strong> ${explicacion}`;
+  } else {
+    fb.className = 'feedback incorrecto';
+    fb.innerHTML = `✗ <strong>No era esa.</strong> La respuesta correcta es: <strong>${TEXTOS_CORRECTAS[nro]}</strong>. ${explicacion}`;
+  }
+
+  const dot = document.getElementById('dot-' + nro);
+  if (dot) {
+    dot.classList.remove('respondida');
+    dot.classList.add(esCorrecta ? 'ok' : 'mal');
+  }
+}
+
+function responderYSiguiente(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => irA(nro + 1), 900);
+}
+
+function responderYFinalizar(nro, correcta, explicacion) {
+  responder(nro, correcta, explicacion);
+  setTimeout(() => mostrarResultado(), 1000);
+}
+
+function mostrarResultado() {
+  document.getElementById('preguntas-container').style.display = 'none';
+  document.getElementById('dots-container').style.display = 'none';
+  document.querySelector('.quiz-progreso').style.display = 'none';
+  document.querySelector('.instrucciones').style.display = 'none';
+  document.getElementById('resultado-panel').style.display = 'block';
+
+  const correctas = Object.values(respondidas).filter(r => r.correcto).length;
+  const incorrectas = TOTAL - correctas;
+  const pct = Math.round((correctas / TOTAL) * 100);
+
+  document.getElementById('resultado-score').textContent = pct + '%';
+  document.getElementById('rd-correctas').textContent = correctas;
+  document.getElementById('rd-incorrectas').textContent = incorrectas;
+
+  let nivel, colorClass, charImg, charNombre, mensaje, rutaHTML;
+
+  if (pct >= 80) {
+    nivel = '🟢 Dominado';
+    colorClass = 'verde';
+    charImg = '../img/bit_motivando.png';
+    charNombre = 'BIT';
+    mensaje = `Lograste <strong>${correctas} de 20 respuestas correctas</strong>. Dominás variables y Scanner, operadores, condicionales, ciclos y arreglos en Java. ¡Vas más que listo/a para arrancar con Swing y la interfaz gráfica del sistema propio!`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">→</span> Repasá también <a href="../materiales/java_arreglos.pdf" target="_blank">Java arreglos</a> si te quedó alguna duda puntual de los últimos bloques</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">+</span> Practicá un poco más en <a href="../ejercicios/java_arreglos.html" target="_blank">la práctica interactiva de arreglos</a> antes de la próxima clase</div>
+    `;
+  } else if (pct >= 60) {
+    nivel = '🟡 En desarrollo';
+    colorClass = 'amarillo';
+    charImg = '../img/gatiel_idea.png';
+    charNombre = 'GATIEL';
+    mensaje = `Lograste <strong>${correctas} de 20 respuestas correctas</strong>. Hay bloques firmes y otros que conviene repasar antes de seguir con Swing. Revisá la revisión detallada para ver exactamente cuáles.`;
+    rutaHTML = `
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> Repasá el PDF del bloque que más te costó: <a href="../materiales/java_desde_cero_laboratorio.pdf" target="_blank">Java desde cero</a> · <a href="../materiales/java_condicionales.pdf" target="_blank">Condicionales</a> · <a href="../materiales/java_ciclos.pdf" target="_blank">Ciclos</a> · <a href="../materiales/java_arreglos.pdf" target="_blank">Arreglos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> Practicá de nuevo con las páginas interactivas de <a href="../ejercicios/practica_java_ciclos.html" target="_blank">ciclos</a> y <a href="../ejercicios/java_arreglos.html" target="_blank">arreglos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> Volvé a intentar este repaso cuando te sientas más seguro/a</div>
+    `;
+  } else {
+    nivel = '🔴 Necesita refuerzo';
+    colorClass = 'rojo';
+    charImg = '../img/techi_estudiando.png';
+    charNombre = 'TECHI';
+    mensaje = `Lograste <strong>${correctas} de 20 respuestas correctas</strong>. Varios conceptos de Java todavía no están firmes — es momento de volver a las bases antes de seguir con Swing.`;
+    rutaHTML = `
+      <div class="ruta-subtitulo">📄 Archivos para repasar, en orden</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">01</span> <a href="../materiales/java_desde_cero_laboratorio.pdf" target="_blank">Java desde cero — variables, tipos y Scanner</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">02</span> <a href="../materiales/java_condicionales.pdf" target="_blank">Java condicionales</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">03</span> <a href="../materiales/java_ciclos.pdf" target="_blank">Java ciclos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">04</span> <a href="../materiales/java_arreglos.pdf" target="_blank">Java arreglos</a></div>
+      <div class="ruta-subtitulo">📝 Para practicar de nuevo</div>
+      <div class="ruta-paso"><span class="ruta-paso-num">05</span> <a href="../ejercicios/java-desde-cero-practica.html" target="_blank">Práctica interactiva · Java desde cero</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">06</span> <a href="../ejercicios/practica_java_ciclos.html" target="_blank">Práctica interactiva · Ciclos</a> y <a href="../ejercicios/java_arreglos.html" target="_blank">Arreglos</a></div>
+      <div class="ruta-paso"><span class="ruta-paso-num">07</span> Pedile ayuda a la profe o a un compañero, y volvé a intentar este repaso</div>
+    `;
+  }
+
+  document.getElementById('resultado-score').className = `resultado-score ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').className = `resultado-nivel ${colorClass}`;
+  document.getElementById('resultado-nivel-txt').textContent = nivel;
+  document.getElementById('resultado-mensaje').innerHTML = mensaje;
+  document.getElementById('resultado-char-img').src = charImg;
+  document.getElementById('resultado-char-img').alt = charNombre;
+  document.getElementById('diag-titulo').className = `diagnostico-titulo ${colorClass}`;
+  document.getElementById('diag-titulo').textContent = '// Diagnóstico · Repaso Integrador · Java';
+  document.getElementById('diag-char-img').src = charImg;
+  document.getElementById('diag-char-nombre').className = `char-guia-name ${colorClass === 'verde' ? 'bit' : colorClass === 'amarillo' ? 'gatiel' : 'techi'}`;
+  document.getElementById('diag-char-nombre').textContent = charNombre;
+  document.getElementById('ruta-pasos').innerHTML = rutaHTML;
+
+  const diagTextos = {
+    verde:    `"${pct}% en un repaso que junta cinco bloques distintos de Java — eso es dominio real. Vas más que listo/a para Swing y la interfaz gráfica."`,
+    amarillo: `"Hay bloques que ya dominás y otros con un patrón de error puntual. Mirá la revisión detallada, identificá cuál bloque falló más, y volvé a esa parte del apunte."`,
+    rojo:     `"Cinco bloques juntos es exigente — es normal que cueste al principio. Andá de a un bloque por vez, con el apunte al lado, y volvé a intentarlo."`
+  };
+
+  document.getElementById('diag-char-texto').textContent = diagTextos[colorClass];
+
+  construirRevision();
+  document.getElementById('resultado-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function construirRevision() {
+  const lista = document.getElementById('revision-lista');
+  lista.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const r = respondidas[i];
+    const item = document.createElement('div');
+    item.className = 'revision-item ' + (r?.correcto ? 'ok' : 'mal');
+    item.innerHTML = `
+      <div class="revision-item-header">
+        <span class="revision-icono">${r?.correcto ? '✅' : '❌'}</span>
+        <span class="revision-pregunta">Pregunta ${i}: ${PREGUNTAS_TEXTO[i]}</span>
+      </div>
+      <div class="revision-respuestas">
+        <span class="correcta-texto">✓ Correcta: ${TEXTOS_CORRECTAS[i]}</span>
+        ${!r?.correcto && r?.seleccion ? `<br><span class="incorrecta-texto">✗ Tu respuesta: opción ${r.seleccion}</span>` : ''}
+        ${!r ? '<br><span style="color:var(--texto3)">— No respondida</span>' : ''}
+      </div>
+    `;
+    lista.appendChild(item);
+  }
+}
+
+function toggleRevision() {
+  const panel = document.getElementById('revision-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reiniciar() {
+  preguntaActual = 1;
+  seleccionActual = {};
+  respondidas = {};
+
+  document.getElementById('resultado-panel').style.display = 'none';
+  document.getElementById('preguntas-container').style.display = 'block';
+  document.querySelector('.quiz-progreso').style.display = 'block';
+  document.querySelector('.instrucciones').style.display = 'flex';
+  document.getElementById('dots-container').style.display = 'flex';
+
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('p' + i)?.classList.remove('act');
+    document.querySelectorAll(`#ops-${i} .opcion-label`).forEach(l => {
+      l.className = 'opcion-label';
+      l.style.pointerEvents = '';
+    });
+    const fb = document.getElementById('fb-' + i);
+    if (fb) { fb.className = 'feedback'; fb.innerHTML = ''; }
+    const btnSig = document.getElementById('btn-sig-' + i);
+    const btnFin = document.getElementById('btn-fin-' + i);
+    if (btnSig) btnSig.disabled = true;
+    if (btnFin) btnFin.disabled = true;
+  }
+
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  document.getElementById('p1').classList.add('act');
+  actualizarProgreso();
+});
+</script>
+</body>
+</html>
