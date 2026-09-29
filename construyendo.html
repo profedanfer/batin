@@ -212,6 +212,30 @@
 .ic-externo.azul:hover { background: var(--azul-m); }
 
 /* Método científico */
+/* Juegos ICIENTEC */
+.juegos-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--violeta-s);
+  border: 1px solid var(--violeta-b);
+  border-radius: var(--r2);
+  padding: 24px 28px;
+  margin-top: 36px;
+}
+.juegos-section .jg-icon { font-size: 40px; line-height: 1; }
+.juegos-section .jg-texto { flex: 1; }
+.juegos-section .jg-titulo { font-weight: 700; font-size: 18px; color: var(--violeta); }
+.juegos-section .jg-desc { color: var(--texto2); font-size: 14px; margin-top: 6px; line-height: 1.6; }
+.juegos-section .jg-lista { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); margin-top: 8px; }
+.juegos-section .rec-btn-jg {
+  display: inline-block; white-space: nowrap;
+  font-weight: 600; font-size: 14px; text-decoration: none;
+  color: var(--violeta); border: 1px solid var(--violeta-b);
+  border-radius: 8px; padding: 10px 18px;
+}
+.juegos-section .rec-btn-jg:hover { background: var(--violeta-m); }
+
 .metodo-section {
   background: var(--bg3);
   border: 1px solid var(--borde);
@@ -607,6 +631,7 @@
   .icientec-header { grid-template-columns: 1fr; }
   .icientec-char { display: none; }
   .icientec-cursos { grid-template-columns: 1fr; }
+  .juegos-section { flex-direction: column; align-items: flex-start; }
   .metodo-pasos { grid-template-columns: 1fr; }
   .metodo-paso::after { display: none; }
   .promo-intro { grid-template-columns: 1fr; }
@@ -712,6 +737,17 @@
         <span style="font-family:var(--font-mono);font-size:11px;color:var(--texto3);margin-top:14px;display:inline-block">Guía del staff · próximamente</span>
       </div>
 
+    </div>
+
+    <!-- Juegos de la feria -->
+    <div class="juegos-section">
+      <div class="jg-icon">🎮</div>
+      <div class="jg-texto">
+        <div class="jg-titulo">Juegos de la feria</div>
+        <p class="jg-desc">Cuatro juegos para el stand de Informática. Funcionan en la computadora y en el celular, sin instalar nada.</p>
+        <div class="jg-lista">Memoria · Programa al robot · Descifra el mensaje · Quiz con ranking</div>
+      </div>
+      <a href="juegos/index.html" target="_blank" class="rec-btn-jg">⚡ Jugar</a>
     </div>
 
     <!-- Método científico -->
