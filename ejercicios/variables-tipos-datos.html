@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Variables y Tipos de Datos · Algorítmica 2 · BATIN</title>
 <meta name="description" content="Material interactivo: variables, tipos de datos, nombres válidos, constantes, ámbito y conversión de tipos.">
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -181,8 +182,8 @@
   color: var(--texto3);
   min-height: 20px;
 }
-.vt-resultado.ok { color: #6fcf7c; border-color: rgba(111,207,124,.35); background: rgba(111,207,124,.08); }
-.vt-resultado.err { color: #ff6b6b; border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.08); }
+.vt-resultado.ok { color: var(--t-ok, #6fcf7c); border-color: rgba(111,207,124,.35); background: rgba(111,207,124,.08); }
+.vt-resultado.err { color: var(--t-mal, #ff6b6b); border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.08); }
 .vt-reglas { margin-top: 18px; }
 .vt-regla { font-size: 13px; color: var(--texto2); padding: 4px 0; }
 .vt-regla b { color: var(--texto); }

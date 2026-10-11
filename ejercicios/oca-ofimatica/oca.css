@@ -1,0 +1,292 @@
+/* ═══════════════════════════════════════════
+   BATIN · OCA de Ofimática y Proyectos
+   Estilos propios (todo dentro de #oca para no pisar batin.css)
+═══════════════════════════════════════════ */
+
+#oca {
+  /* Colores por tema — cada tema tiene además una LETRA (X W P ★)
+     para que se distinga en escala de grises o con daltonismo */
+  --t-excel:    #36a573;
+  --t-word:     var(--azul, #3b9de8);
+  --t-ppt:      var(--naranja, #e8650a);
+  --t-proyecto: var(--violeta, #9b6bff);
+
+  --o-bg:      var(--bg, #0e0e0e);
+  --o-bg2:     var(--bg2, #161616);
+  --o-bg3:     var(--bg3, #1e1e1e);
+  --o-bg4:     var(--bg4, #242424);
+  --o-txt:     var(--texto, #ede8e0);
+  --o-txt2:    var(--texto2, #a09880);
+  --o-txt3:    var(--texto3, #6a6050);
+  --o-borde:   var(--borde2, #383028);
+  --o-borde2:  var(--borde3, #4a3e30);
+  --o-ok:      #4fbf85;
+  --o-mal:     #f05a4a;
+  --o-acento:  var(--naranja, #e8650a);
+
+  background: var(--o-bg);
+  color: var(--o-txt);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  min-height: calc(100vh - 58px);
+  position: relative;
+}
+
+/* ── SALA OSCURA → fondo claro, letra oscura (la misma regla que enseñamos) ── */
+#oca[data-sala="oscura"] {
+  --o-bg:     #f4f1ec;
+  --o-bg2:    #ffffff;
+  --o-bg3:    #ebe6de;
+  --o-bg4:    #e0d9ce;
+  --o-txt:    #1c1712;
+  --o-txt2:   #4d4438;
+  --o-txt3:   #7a6e5e;
+  --o-borde:  #cfc5b6;
+  --o-borde2: #b3a693;
+  --o-ok:     #1f8a52;
+  --o-mal:    #c43a2c;
+  --t-excel:  #1f8a52;
+  --t-word:   #1f6fc0;
+  --t-ppt:    #c0520a;
+  --t-proyecto:#6a3fd0;
+}
+
+#oca:fullscreen { overflow: auto; min-height: 100vh; }
+#oca:fullscreen .tablero { width: min(100%, calc((100vh - 110px) * 9 / 7)); }
+
+#oca button { font-family: inherit; cursor: pointer; }
+#oca .oca-hidden { display: none !important; }
+
+/* ══════════ BOTONES ══════════ */
+#oca .o-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-mono, monospace); font-size: 13px; font-weight: 700;
+  padding: 10px 18px; border-radius: 8px;
+  border: 1.5px solid var(--o-borde2); background: var(--o-bg3); color: var(--o-txt);
+  transition: background .15s, border-color .15s, transform .1s;
+}
+#oca .o-btn:hover { border-color: var(--o-acento); }
+#oca .o-btn:active { transform: translateY(1px); }
+#oca .o-btn:focus-visible { outline: 3px solid var(--o-acento); outline-offset: 2px; }
+#oca .o-btn.solid { background: var(--o-acento); border-color: var(--o-acento); color: #fff; }
+#oca .o-btn.solid:hover { filter: brightness(1.1); }
+#oca .o-btn.sm { font-size: 11px; padding: 6px 12px; }
+#oca .o-btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* ══════════ INICIO ══════════ */
+#oca .o-inicio { max-width: 920px; margin: 0 auto; padding: 36px 24px 60px; }
+#oca .o-kicker { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--o-acento); }
+#oca .o-h1 { font-family: var(--font-title, sans-serif); font-weight: 900; font-size: clamp(1.8rem, 4.5vw, 2.8rem); line-height: 1.05; margin: 8px 0 12px; color: var(--o-txt); }
+#oca .o-lead { color: var(--o-txt2); max-width: 680px; font-size: 16px; line-height: 1.7; }
+#oca .o-card { background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 22px; margin-top: 22px; }
+#oca .o-card h3 { font-family: var(--font-title, sans-serif); font-size: 13px; letter-spacing: .5px; margin-bottom: 14px; color: var(--o-txt); }
+#oca .o-fila { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+#oca label.o-campo { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--o-txt2); }
+#oca .o-campo select, #oca .o-campo input[type=text] {
+  font: inherit; font-size: 15px; color: var(--o-txt); background: var(--o-bg3);
+  border: 1px solid var(--o-borde2); border-radius: 8px; padding: 9px 12px; min-width: 150px;
+}
+#oca .o-equipos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+#oca .o-eq-input { display: flex; align-items: center; gap: 10px; background: var(--o-bg3); border: 1px solid var(--o-borde); border-radius: 10px; padding: 8px 10px; }
+#oca .o-eq-input input { flex: 1; font: inherit; font-size: 15px; background: transparent; border: none; color: var(--o-txt); min-width: 0; }
+#oca .o-eq-input input:focus { outline: none; }
+#oca .o-chk { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--o-borde); border-radius: 8px; background: var(--o-bg3); font-size: 14px; }
+#oca .o-chk input { width: 18px; height: 18px; accent-color: var(--o-acento); }
+#oca .o-reglas { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; font-size: 14px; color: var(--o-txt2); }
+#oca .o-regla { display: flex; gap: 10px; align-items: flex-start; }
+#oca .o-regla b { color: var(--o-txt); }
+#oca .o-regla .ico { font-size: 22px; line-height: 1; flex-shrink: 0; width: 28px; text-align: center; }
+#oca .o-aviso { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--o-acento); border-radius: 10px; background: color-mix(in srgb, var(--o-acento) 10%, transparent); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+/* Ficha */
+#oca .ficha {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff; line-height: 1;
+  background: var(--c); border: 2px solid rgba(255,255,255,.85);
+  box-shadow: 0 2px 6px rgba(0,0,0,.45);
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+#oca[data-sala="oscura"] .ficha { border-color: #1c1712; }
+
+/* ══════════ JUEGO ══════════ */
+#oca .o-juego { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; padding: 16px; max-width: 1600px; margin: 0 auto; }
+#oca .o-barra { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#oca .o-barra .o-titulo { font-family: var(--font-title, sans-serif); font-size: 15px; font-weight: 800; margin-right: auto; }
+#oca .o-barra .o-titulo small { font-family: var(--font-mono, monospace); font-weight: 400; color: var(--o-txt2); font-size: 11px; margin-left: 8px; }
+
+/* Tablero: 9 columnas × 7 filas = 63 casillas, en serpentina */
+#oca .tablero {
+  display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(7, 1fr);
+  gap: 5px; aspect-ratio: 9 / 7;
+  /* que entre entero en la pantalla del proyector */
+  width: min(100%, calc((100vh - 190px) * 9 / 7)); margin: 0 auto;
+  background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 8px;
+}
+#oca .cas {
+  position: relative; border-radius: 8px; overflow: hidden;
+  background: var(--o-bg3);
+  border: 2px solid color-mix(in srgb, var(--tc) 55%, transparent);
+  display: flex; flex-direction: column; padding: 4px 5px; min-width: 0; min-height: 0;
+}
+#oca .cas::before { content: ''; position: absolute; inset: 0; background: var(--tc); opacity: .14; pointer-events: none; }
+#oca .cas .num { font-family: var(--font-mono, monospace); font-weight: 700; font-size: clamp(10px, 1.1vw, 15px); color: var(--o-txt2); position: relative; }
+#oca .cas .letra { position: absolute; top: 3px; right: 6px; font-family: var(--font-mono, monospace); font-weight: 700; font-size: clamp(9px, .9vw, 13px); color: var(--tc); }
+#oca .cas .esp { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 2.6vw, 38px); opacity: .9; pointer-events: none; }
+#oca .cas .esp-nom { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-family: var(--font-mono, monospace); font-size: clamp(7px, .7vw, 10px); color: var(--o-txt2); text-transform: uppercase; letter-spacing: .5px; }
+#oca .cas .fichas { position: relative; margin-top: auto; display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; z-index: 2; }
+#oca .cas .fichas .ficha { width: clamp(16px, 1.8vw, 26px); height: clamp(16px, 1.8vw, 26px); font-size: clamp(9px, 1vw, 14px); }
+#oca .cas.especial { border-style: solid; border-width: 2px; border-color: var(--o-borde2); }
+#oca .cas.especial::before { opacity: .06; }
+#oca .cas.meta { border-color: var(--o-acento); background: color-mix(in srgb, var(--o-acento) 18%, var(--o-bg3)); }
+#oca .cas.destino { outline: 3px dashed var(--o-acento); outline-offset: -3px; }
+#oca .cas.pisa { animation: pisa .35s ease; }
+@keyframes pisa { 50% { transform: scale(1.08); } }
+
+/* Salida (antes de la casilla 1) */
+#oca .salida { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-family: var(--font-mono, monospace); font-size: 12px; color: var(--o-txt2); min-height: 30px; }
+
+/* Panel lateral */
+#oca .lateral { display: flex; flex-direction: column; gap: 12px; }
+#oca .turno-box { background: var(--o-bg2); border: 2px solid var(--c, var(--o-borde)); border-radius: 14px; padding: 16px; text-align: center; }
+#oca .turno-box .lbl { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--o-txt2); }
+#oca .turno-box .eq { font-family: var(--font-title, sans-serif); font-weight: 800; font-size: 20px; margin: 6px 0 12px; display: flex; gap: 10px; align-items: center; justify-content: center; }
+#oca .dado {
+  width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 16px;
+  background: #fafafa; color: #111; border: 3px solid #111;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 10px; gap: 2px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+#oca .dado i { display: block; width: 14px; height: 14px; border-radius: 50%; background: #111; margin: auto; visibility: hidden; }
+#oca .dado i.on { visibility: visible; }
+#oca .dado.rueda { animation: rueda .5s linear infinite; }
+@keyframes rueda { 25% { transform: rotate(12deg); } 75% { transform: rotate(-12deg); } }
+#oca .btn-tirar { width: 100%; font-size: 16px; padding: 14px; }
+#oca .nivel-guia { margin-top: 10px; font-size: 12px; color: var(--o-txt2); line-height: 1.5; }
+#oca .lista-eq { background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 10px; }
+#oca .lista-eq .it { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 14px; }
+#oca .lista-eq .it.act { background: var(--o-bg4); }
+#oca .lista-eq .it .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#oca .lista-eq .it .ps { font-family: var(--font-mono, monospace); font-weight: 700; }
+#oca .lista-eq .it .pt { font-size: 11px; font-family: var(--font-mono, monospace); color: var(--o-mal); }
+#oca .leyenda { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 12px; color: var(--o-txt2); background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 10px 12px; }
+#oca .leyenda span { display: flex; align-items: center; gap: 6px; }
+#oca .leyenda .sw { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--tc); background: color-mix(in srgb, var(--tc) 25%, transparent); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono, monospace); font-size: 10px; font-weight: 700; color: var(--tc); }
+#oca .bitacora { font-size: 12px; color: var(--o-txt2); background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 10px 12px; max-height: 150px; overflow: auto; }
+#oca .bitacora p { margin: 2px 0; line-height: 1.45; }
+
+/* ══════════ MODAL (pregunta / casilla especial / fin) ══════════ */
+#oca .velo { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: flex; align-items: center; justify-content: center; z-index: 900; padding: 16px; }
+#oca:fullscreen .velo { position: absolute; }
+#oca .modal {
+  background: var(--o-bg2); color: var(--o-txt); border: 2px solid var(--tc, var(--o-borde2));
+  border-radius: 18px; width: min(1100px, 100%); max-height: calc(100vh - 32px); overflow: auto;
+  padding: clamp(18px, 3vw, 34px); box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+#oca .m-cab { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; font-family: var(--font-mono, monospace); font-size: 13px; color: var(--o-txt2); }
+#oca .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--tc, var(--o-borde2)); color: var(--tc, var(--o-txt)); font-weight: 700; }
+#oca .m-cab .reloj { margin-left: auto; font-size: 22px; font-weight: 700; color: var(--o-txt); }
+#oca .m-cab .reloj.poco { color: var(--o-mal); }
+#oca .m-q { font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3; font-weight: 600; margin-bottom: 18px; }
+#oca .m-vis { margin: 0 0 18px; display: flex; justify-content: center; }
+#oca .m-ops { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#oca .op {
+  text-align: left; display: flex; gap: 12px; align-items: flex-start;
+  background: var(--o-bg3); color: var(--o-txt); border: 2px solid var(--o-borde2);
+  border-radius: 12px; padding: 14px 16px; font-size: clamp(16px, 1.6vw, 22px); line-height: 1.35;
+  transition: border-color .15s, background .15s;
+}
+#oca .op:hover:not([disabled]) { border-color: var(--tc, var(--o-acento)); }
+#oca .op .k { font-family: var(--font-mono, monospace); font-weight: 700; flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; background: var(--o-bg4); color: var(--o-txt); font-size: 15px; }
+#oca .op .cont { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
+#oca .op.bien { border-color: var(--o-ok); background: color-mix(in srgb, var(--o-ok) 16%, var(--o-bg3)); }
+#oca .op.bien .k { background: var(--o-ok); color: #fff; }
+#oca .op.mal  { border-color: var(--o-mal); background: color-mix(in srgb, var(--o-mal) 16%, var(--o-bg3)); }
+#oca .op.mal .k { background: var(--o-mal); color: #fff; }
+#oca .op[disabled] { cursor: default; }
+#oca .m-veredicto { margin-top: 18px; padding: 14px 16px; border-radius: 12px; border-left: 5px solid var(--o-ok); background: var(--o-bg3); font-size: clamp(15px, 1.4vw, 19px); line-height: 1.55; }
+#oca .m-veredicto.mal { border-left-color: var(--o-mal); }
+#oca .m-veredicto b.tit { display: block; font-family: var(--font-title, sans-serif); font-size: clamp(14px, 1.4vw, 18px); margin-bottom: 4px; }
+#oca .m-pie { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+#oca .m-pie .izq { margin-right: auto; }
+
+/* Casilla especial */
+#oca .esp-modal { text-align: center; }
+#oca .esp-modal .gran { font-size: clamp(56px, 8vw, 96px); line-height: 1; }
+#oca .esp-modal h2 { font-family: var(--font-title, sans-serif); font-size: clamp(22px, 3vw, 34px); margin: 10px 0; }
+#oca .esp-modal p { font-size: clamp(16px, 1.8vw, 22px); color: var(--o-txt2); max-width: 760px; margin: 0 auto; line-height: 1.55; }
+#oca .esp-modal .efecto { display: inline-block; margin-top: 14px; font-family: var(--font-mono, monospace); font-weight: 700; font-size: 16px; padding: 8px 14px; border-radius: 8px; background: var(--o-bg4); color: var(--o-txt); }
+
+/* ══════════ VISUALES ══════════ */
+/* Planilla tipo Excel (siempre clara, como el programa real) */
+#oca .xl { background: #fff; color: #1b1b1b; border-radius: 8px; overflow: hidden; border: 1px solid #b9b9b9; font-family: Calibri, 'DM Sans', sans-serif; font-size: clamp(14px, 1.4vw, 19px); box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 100%; }
+#oca .xl .fx { display: flex; align-items: center; gap: 0; border-bottom: 1px solid #c8c8c8; background: #f7f7f7; font-family: var(--font-mono, monospace); font-size: clamp(13px, 1.3vw, 18px); }
+#oca .xl .fx .ref { padding: 6px 12px; border-right: 1px solid #c8c8c8; min-width: 64px; text-align: center; color: #333; }
+#oca .xl .fx .f { padding: 6px 10px; color: #555; border-right: 1px solid #c8c8c8; font-style: italic; }
+#oca .xl .fx .val { padding: 6px 12px; color: #111; white-space: nowrap; overflow: auto; }
+#oca .xl table { border-collapse: collapse; }
+#oca .xl th { background: #efefef; color: #555; font-weight: 400; font-size: .8em; padding: 3px 8px; border: 1px solid #d4d4d4; min-width: 34px; }
+#oca .xl td { border: 1px solid #d4d4d4; padding: 4px 12px; min-width: 90px; height: 1.9em; white-space: nowrap; }
+#oca .xl td.num { text-align: right; font-variant-numeric: tabular-nums; }
+#oca .xl td.err { color: #b3261e; font-weight: 700; text-align: center; }
+#oca .xl td.act { outline: 3px solid #1d7a45; outline-offset: -2px; background: #eaf6ee; font-weight: 700; }
+#oca .xl th.act { background: #d3ebdc; color: #1d7a45; font-weight: 700; }
+#oca .xl.solo-fx { min-width: min(560px, 100%); }
+#oca .xl.solo-fx .fx { border-bottom: none; }
+
+/* Diapositiva */
+#oca .diapo { width: min(520px, 100%); aspect-ratio: 16 / 9; border-radius: 6px; padding: 5% 6%; display: flex; flex-direction: column; gap: 6%; box-shadow: 0 4px 16px rgba(0,0,0,.35); border: 1px solid rgba(128,128,128,.4); overflow: hidden; font-family: 'DM Sans', sans-serif; text-align: left; }
+#oca .diapo .dt { font-weight: 800; font-size: clamp(16px, 2.2vw, 28px); line-height: 1.1; }
+#oca .diapo ul { margin: 0; padding-left: 1.1em; font-size: clamp(12px, 1.4vw, 18px); line-height: 1.4; }
+#oca .diapo.arcoiris { font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
+#oca .diapo.arcoiris li:nth-child(5n+1) { color: #ffff00; }
+#oca .diapo.arcoiris li:nth-child(5n+2) { color: #00e5ff; transform: rotate(-2deg); }
+#oca .diapo.arcoiris li:nth-child(5n+3) { color: #ff6a00; }
+#oca .diapo.arcoiris li:nth-child(5n+4) { color: #ffffff; transform: rotate(2deg); }
+#oca .diapo.arcoiris li:nth-child(5n+5) { color: #2b00ff; }
+#oca .op .diapo { width: 100%; box-shadow: none; }
+
+/* Páginas de Word */
+#oca .pags { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; justify-content: center; }
+#oca .pag { width: clamp(110px, 12vw, 150px); aspect-ratio: 1 / 1.35; background: #fff; color: #222; border-radius: 4px; box-shadow: 0 3px 10px rgba(0,0,0,.3); display: flex; flex-direction: column; font-family: 'DM Sans', sans-serif; font-size: clamp(10px, .95vw, 13px); position: relative; }
+#oca .pag .en, #oca .pag .pi { padding: 4px 6px; min-height: 22px; color: #555; font-size: .9em; text-align: center; }
+#oca .pag .en { border-bottom: 1px dashed #9aa7b8; }
+#oca .pag .pi { border-top: 1px dashed #9aa7b8; }
+#oca .pag .cu { flex: 1; display: flex; align-items: center; justify-content: center; font-weight: 700; text-align: center; padding: 4px; }
+#oca .pag .sec { position: absolute; top: -18px; left: 0; font-family: var(--font-mono, monospace); font-size: 10px; color: var(--o-txt2); }
+#oca .corte { display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-mono, monospace); font-size: 10px; color: var(--o-acento); writing-mode: vertical-rl; transform: rotate(180deg); border-left: 2px dashed var(--o-acento); padding: 0 4px; letter-spacing: 1px; }
+#oca .m-vis .pags { padding-top: 20px; }
+
+/* ══════════ FIN ══════════ */
+#oca .fin-podio { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+#oca .fin-podio .it { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; background: var(--o-bg3); font-size: 18px; }
+#oca .fin-podio .it:first-child { border: 2px solid var(--o-acento); font-weight: 700; }
+#oca .fin-podio .it .ps { margin-left: auto; font-family: var(--font-mono, monospace); color: var(--o-txt2); font-size: 14px; }
+#oca .tabla-res { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+#oca .tabla-res th, #oca .tabla-res td { padding: 8px 10px; border-bottom: 1px solid var(--o-borde); text-align: left; }
+#oca .tabla-res th { font-family: var(--font-mono, monospace); font-size: 11px; color: var(--o-txt2); text-transform: uppercase; letter-spacing: 1px; }
+#oca .tabla-res td.num { text-align: right; font-family: var(--font-mono, monospace); }
+#oca .barra-pct { height: 8px; border-radius: 4px; background: var(--o-bg4); overflow: hidden; min-width: 80px; }
+#oca .barra-pct i { display: block; height: 100%; background: var(--o-ok); }
+#oca .estado-envio { font-size: 13px; color: var(--o-txt2); margin-top: 10px; }
+
+/* ══════════ RESPONSIVE ══════════ */
+@media (max-width: 1000px) {
+  #oca .o-juego { grid-template-columns: 1fr; }
+  #oca .lateral { display: grid; grid-template-columns: 1fr 1fr; }
+  #oca .turno-box { grid-row: span 2; }
+}
+@media (max-width: 640px) {
+  #oca .o-juego { padding: 10px; }
+  #oca .lateral { grid-template-columns: 1fr; }
+  #oca .m-ops { grid-template-columns: 1fr; }
+  #oca .tablero { gap: 3px; padding: 4px; }
+  #oca .cas { padding: 2px 3px; border-width: 1px; }
+  #oca .cas .esp-nom, #oca .cas .letra { display: none; }
+  #oca .cas.especial .num { display: none; }
+  #oca .cas .esp { font-size: 15px; }
+  #oca .tablero { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #oca .dado.rueda, #oca .cas.pisa { animation: none; }
+}

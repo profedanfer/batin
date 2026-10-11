@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Algorítmica 3 · Nivel 1 · Cuestionario · BATIN</title>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -81,7 +82,7 @@
   font-family: var(--font-title);
   font-size: clamp(1.2rem, 3vw, 1.7rem);
   font-weight: 800;
-  color: #fff;
+  color: var(--texto-fuerte);
   margin-bottom: 6px;
   line-height: 1.2;
 }
@@ -210,7 +211,7 @@
 .pregunta-texto {
   font-size: 16px;
   font-weight: 500;
-  color: #fff;
+  color: var(--texto-fuerte);
   line-height: 1.55;
   margin-bottom: 20px;
 }
@@ -304,7 +305,7 @@
 .opcion-label.correcta .opcion-circulo::after {
   content: '✓';
   font-size: 11px;
-  color: #fff;
+  color: var(--texto-fuerte);
   border-radius: 0;
   width: auto;
   height: auto;
@@ -324,7 +325,7 @@
 .opcion-label.incorrecta .opcion-circulo::after {
   content: '✗';
   font-size: 11px;
-  color: #fff;
+  color: var(--texto-fuerte);
   border-radius: 0;
   width: auto;
   height: auto;
@@ -359,17 +360,17 @@
   display: block;
   background: rgba(80,200,120,.1);
   border: 1px solid rgba(80,200,120,.3);
-  color: #50c878;
+  color: var(--t-ok, #50c878);
 }
 
 .feedback.incorrecto {
   display: block;
   background: rgba(224,80,80,.08);
   border: 1px solid rgba(224,80,80,.2);
-  color: #e08080;
+  color: var(--t-mal-suave, #e08080);
 }
 
-.feedback strong { color: #fff; }
+.feedback strong { color: var(--texto-fuerte); }
 
 /* ══════════════════════════════════════
    NAVEGACIÓN ENTRE PREGUNTAS
@@ -486,9 +487,9 @@
   line-height: 1;
 }
 
-.resultado-score.verde  { color: #50c878; }
+.resultado-score.verde  { color: var(--t-ok, #50c878); }
 .resultado-score.amarillo { color: var(--naranja2); }
-.resultado-score.rojo   { color: #e05050; }
+.resultado-score.rojo   { color: var(--t-mal, #e05050); }
 
 .resultado-nivel {
   font-family: var(--font-mono);
@@ -498,9 +499,9 @@
   margin-bottom: 16px;
 }
 
-.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.verde  { color: var(--t-ok, #50c878); }
 .resultado-nivel.amarillo { color: var(--naranja2); }
-.resultado-nivel.rojo   { color: #e05050; }
+.resultado-nivel.rojo   { color: var(--t-mal, #e05050); }
 
 .resultado-mensaje {
   font-size: 15px;
@@ -555,9 +556,9 @@
   margin-bottom: 16px;
 }
 
-.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.verde    { color: var(--t-ok, #50c878); }
 .diagnostico-titulo.amarillo { color: var(--naranja2); }
-.diagnostico-titulo.rojo     { color: #e05050; }
+.diagnostico-titulo.rojo     { color: var(--t-mal, #e05050); }
 
 .diagnostico-char {
   display: flex;
@@ -688,7 +689,7 @@
 .revision-pregunta {
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
+  color: var(--texto-fuerte);
   flex: 1;
 }
 
@@ -698,8 +699,8 @@
   line-height: 1.7;
 }
 
-.revision-respuestas .correcta-texto { color: #50c878; }
-.revision-respuestas .incorrecta-texto { color: #e08080; }
+.revision-respuestas .correcta-texto { color: var(--t-ok, #50c878); }
+.revision-respuestas .incorrecta-texto { color: var(--t-mal-suave, #e08080); }
 
 /* ══════════════════════════════════════
    LINK FORMULARIO GOOGLE

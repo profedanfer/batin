@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dilemas técnicos · IA crítica · BATIN</title>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -32,7 +33,7 @@
   font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 4px;
   background: var(--naranja-s); color: var(--naranja); border: 1px solid var(--naranja-b); margin-bottom: 8px; display: inline-block;
 }
-.quiz-titulo { font-family: var(--font-title); font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; }
+.quiz-titulo { font-family: var(--font-title); font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 800; color: var(--texto-fuerte); margin-bottom: 6px; line-height: 1.2; }
 .quiz-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 14px; }
 .quiz-meta { display: flex; gap: 16px; flex-wrap: wrap; }
 .quiz-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
@@ -62,7 +63,7 @@
   background: var(--bg); border: 1px solid var(--borde2); border-left: 3px solid var(--violeta);
   border-radius: var(--r); padding: 18px 20px; margin-bottom: 20px; font-size: 14.5px; line-height: 1.7; color: var(--texto);
 }
-.dilema-pregunta { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 18px; }
+.dilema-pregunta { font-size: 14px; font-weight: 600; color: var(--texto-fuerte); margin-bottom: 18px; }
 
 .opciones-dilema { display: flex; flex-direction: column; gap: 10px; }
 .opcion-dilema {
@@ -81,7 +82,7 @@
 }
 .consecuencia-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--violeta); margin-bottom: 10px; }
 .consecuencia-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.75; margin-bottom: 14px; }
-.consecuencia-texto strong { color: #fff; }
+.consecuencia-texto strong { color: var(--texto-fuerte); }
 .consecuencia-otras { font-size: 12.5px; color: var(--texto3); line-height: 1.7; border-top: 1px solid var(--borde); padding-top: 14px; }
 .consecuencia-otras strong { color: var(--texto2); }
 
@@ -107,7 +108,7 @@
 #resultado-panel { display: none; }
 .resultado-card { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 36px 32px; text-align: center; margin-bottom: 24px; }
 .resultado-char img { width: 130px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.3)); }
-.resultado-titulo { font-family: var(--font-title); font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+.resultado-titulo { font-family: var(--font-title); font-size: 1.4rem; font-weight: 800; color: var(--texto-fuerte); margin-bottom: 12px; }
 .resultado-mensaje { font-size: 14.5px; color: var(--texto2); line-height: 1.8; max-width: 560px; margin: 0 auto; font-weight: 300; }
 .resultado-mensaje strong { color: var(--texto); font-weight: 500; }
 

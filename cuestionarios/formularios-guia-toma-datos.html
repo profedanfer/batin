@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Formularios: de la pregunta al dato organizado · Guía · BATIN</title>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -33,7 +34,7 @@
   background: var(--azul-s); color: var(--azul); border: 1px solid var(--azul-b);
   margin-bottom: 8px; display: inline-block;
 }
-.guia-titulo { font-family: var(--font-title); font-size: clamp(1.3rem, 3.2vw, 1.9rem); font-weight: 800; color: #fff; margin-bottom: 8px; line-height: 1.2; }
+.guia-titulo { font-family: var(--font-title); font-size: clamp(1.3rem, 3.2vw, 1.9rem); font-weight: 800; color: var(--texto-fuerte); margin-bottom: 8px; line-height: 1.2; }
 .guia-subtitulo { font-size: 14px; color: var(--texto2); margin-bottom: 16px; max-width: 640px; line-height: 1.6; }
 .guia-meta { display: flex; gap: 16px; flex-wrap: wrap; }
 .guia-meta-item { font-family: var(--font-mono); font-size: 11px; color: var(--texto3); display: flex; align-items: center; gap: 5px; }
@@ -54,11 +55,11 @@
   font-family: var(--font-mono); font-size: 11px; color: var(--azul2);
   border: 1px solid var(--azul-b); background: var(--azul-s); border-radius: 6px; padding: 4px 10px; flex-shrink: 0;
 }
-.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: #fff; }
+.capitulo-titulo { font-family: var(--font-title); font-size: 1.25rem; font-weight: 700; color: var(--texto-fuerte); }
 .capitulo-texto { font-size: 14.5px; color: var(--texto2); line-height: 1.8; margin-bottom: 18px; }
 .capitulo-texto p { margin-bottom: 14px; }
 .capitulo-texto p:last-child { margin-bottom: 0; }
-.capitulo-texto strong { color: #fff; font-weight: 600; }
+.capitulo-texto strong { color: var(--texto-fuerte); font-weight: 600; }
 
 .capitulo-imagenes { display: flex; gap: 14px; flex-wrap: wrap; margin: 18px 0; }
 .capitulo-imagenes figure { flex: 1 1 320px; margin: 0; }
@@ -105,7 +106,7 @@
 
 .cta-final { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 32px 28px; text-align: center; margin-top: 20px; }
 .cta-final img { width: 90px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
-.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-final-titulo { font-family: var(--font-title); font-size: 1.2rem; font-weight: 800; color: var(--texto-fuerte); margin-bottom: 8px; }
 .cta-final-texto { font-size: 13.5px; color: var(--texto2); line-height: 1.7; max-width: 460px; margin: 0 auto 20px; }
 .cta-final-acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 

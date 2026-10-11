@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab SQL · Sistema Biblioteca · BATIN</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -126,7 +127,7 @@
   font-family: var(--font-title);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--texto-fuerte);
   margin-bottom: 6px;
   margin-top: 24px;
 }
@@ -278,8 +279,8 @@ textarea.editor-sql {
   font-family: var(--font-mono);
   font-size: 12px;
 }
-.resultado-barra.ok { background: rgba(80,200,120,.1); color: #50c878; }
-.resultado-barra.err { background: rgba(224,80,80,.08); color: #e08080; }
+.resultado-barra.ok { background: rgba(80,200,120,.1); color: var(--t-ok, #50c878); }
+.resultado-barra.err { background: rgba(224,80,80,.08); color: var(--t-mal-suave, #e08080); }
 
 .tabla-resultado { width: 100%; border-collapse: collapse; font-size: 13px; }
 .tabla-resultado th {
@@ -321,7 +322,7 @@ textarea.editor-sql {
 .ejercicio-card-header h3 {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: var(--texto-fuerte);
   flex: 1;
 }
 .ejercicio-card-body { padding: 16px 18px; }

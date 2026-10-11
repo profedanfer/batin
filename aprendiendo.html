@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Estoy aprendiendo · BATIN · profe.DanFer</title>
 <meta name="description" content="5 rutas de aprendizaje organizadas por tema. Algorítmica, Laboratorio, Programación, Sistemas y BD, Web e IA.">
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="batin.css">
 <style>
 
@@ -176,7 +177,7 @@
 .tema-card-body h4 {
   font-size: 14px;
   font-weight: 500;
-  color: #fff;
+  color: var(--texto-fuerte);
   margin-bottom: 4px;
   line-height: 1.4;
 }
@@ -214,7 +215,7 @@
 .rec-btn.pdf:hover { background: var(--naranja-s); }
 .rec-btn.web    { color: var(--azul);     border-color: var(--azul-b);     }
 .rec-btn.web:hover { background: var(--azul-s); }
-.rec-btn.yt     { color: #e87050;         border-color: rgba(232,112,80,.3); }
+.rec-btn.yt     { color: var(--t-mal, #e87050);         border-color: rgba(232,112,80,.3); }
 .rec-btn.yt:hover  { background: rgba(232,112,80,.08); }
 .rec-btn.quiz   { color: var(--violeta);  border-color: var(--violeta-b);  font-weight: 600; }
 .rec-btn.quiz:hover { background: var(--violeta-s); }
@@ -233,7 +234,7 @@
   border-radius: 4px;
   border: 1px solid rgba(80,200,160,.3);
   background: rgba(80,200,160,.07);
-  color: #50c8a0;
+  color: var(--t-verde, #50c8a0);
   white-space: nowrap;
   cursor: help;
 }
@@ -267,7 +268,7 @@
   font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--texto-fuerte);
   margin-bottom: 6px;
 }
 
@@ -435,7 +436,7 @@
 .tuning-leyenda-titulo {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: #50c8a0;
+  color: var(--t-verde, #50c8a0);
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 12px;
@@ -1166,6 +1167,25 @@
           <div class="tema-recursos">
             <a href="cuestionarios/presentaciones-guia-comunicar.html" class="rec-btn pdf">📘 Guía completa · 4 clases</a>
             <a href="https://drive.google.com/file/d/1JmLGbpYyA29LIHc-fJ0PbeAo-ekEbJ_O/preview" target="_blank" class="rec-btn pdf">📄 Presentaciones</a>
+          </div>
+        </div>
+        <div class="tema-card-right"></div>
+      </div>
+    </div>
+
+    <div class="tema-grupo">
+      <div class="tema-grupo-label">Repaso integrador — Excel, Word, PowerPoint y Proyectos</div>
+
+      <div class="tema-card">
+        <div class="tema-card-left">
+          <span class="bloom bloom-n4">N3→N5</span>
+          <span class="tema-curso-badge">1er curso</span>
+        </div>
+        <div class="tema-card-body">
+          <h4>La OCA de la Ofimática</h4>
+          <p>Juego de tablero por equipos. Fórmulas y referencias, estilos e índice automático, saltos de sección, contraste en diapositivas, objetivos, hipótesis, encuestas y viabilidad. El dado decide cuánto avanzas; tu respuesta decide si avanzas.</p>
+          <div class="tema-recursos">
+            <a href="ejercicios/oca-ofimatica/index.html" target="_blank" class="rec-btn web">⚡ Jugar la OCA</a>
           </div>
         </div>
         <div class="tema-card-right"></div>

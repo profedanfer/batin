@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de fallas · OCA · BATIN</title>
+  <script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+  <link rel="stylesheet" href="../../batin.css">
+  <link rel="stylesheet" href="oca.css">
+  <style>
+    #oca .pn { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+    #oca .pn-filtros { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    #oca .pn-filtros input[type=date] { font: inherit; font-size: 14px; color: var(--o-txt); background: var(--o-bg3); border: 1px solid var(--o-borde2); border-radius: 8px; padding: 8px 10px; color-scheme: dark; }
+    #oca[data-sala="oscura"] .pn-filtros input[type=date] { color-scheme: light; }
+    #oca .pn-fuente { display: inline-flex; border: 1px solid var(--o-borde2); border-radius: 8px; overflow: hidden; }
+    #oca .pn-fuente button { background: var(--o-bg3); color: var(--o-txt2); border: none; padding: 9px 14px; font-family: var(--font-mono, monospace); font-size: 12px; font-weight: 700; }
+    #oca .pn-fuente button.act { background: var(--o-acento); color: #fff; }
+    #oca .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 22px; }
+    #oca .kpi { background: var(--o-bg2); border: 1px solid var(--o-borde); border-radius: 14px; padding: 16px 18px; }
+    #oca .kpi .v { font-family: var(--font-title, sans-serif); font-size: 30px; font-weight: 800; line-height: 1.1; color: var(--o-txt); }
+    #oca .kpi .l { font-size: 12px; color: var(--o-txt2); margin-top: 4px; }
+    /* Barras horizontales: % de acierto por tema */
+    #oca .hb { display: flex; flex-direction: column; gap: 12px; }
+    #oca .hb-fila { display: grid; grid-template-columns: 140px 1fr 110px; align-items: center; gap: 12px; padding: 4px 6px; border-radius: 8px; }
+    #oca .hb-fila:hover { background: var(--o-bg3); }
+    #oca .hb-lbl { font-size: 14px; color: var(--o-txt); display: flex; align-items: center; gap: 8px; }
+    #oca .hb-lbl .lt { font-family: var(--font-mono, monospace); font-weight: 700; color: var(--tc); width: 16px; text-align: center; }
+    #oca .hb-pista { height: 14px; background: var(--o-bg4); border-radius: 4px; position: relative; }
+    #oca .hb-barra { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; background: var(--tc); }
+    #oca .hb-meta { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--o-txt3); }
+    #oca .hb-val { font-family: var(--font-mono, monospace); font-size: 13px; color: var(--o-txt); text-align: right; }
+    #oca .hb-val small { color: var(--o-txt3); display: block; font-size: 11px; }
+    #oca .nota { font-size: 12px; color: var(--o-txt3); margin-top: 10px; }
+    #oca .tabla-res td .tc { font-family: var(--font-mono, monospace); font-weight: 700; color: var(--tc); margin-right: 6px; }
+    #oca .tabla-res td.q { max-width: 420px; }
+    #oca .tabla-res td .mal { color: var(--o-txt2); font-size: 13px; display: block; margin-top: 3px; }
+    #oca .tabla-res tr:hover td { background: var(--o-bg3); }
+    #oca .vacio { padding: 40px 20px; text-align: center; color: var(--o-txt2); }
+    #oca .scroll-x { overflow-x: auto; }
+    @media (max-width: 640px) { #oca .hb-fila { grid-template-columns: 96px 1fr 80px; } }
+  </style>
+</head>
+<body data-page="aprendiendo">
+  <div id="batin-nav"></div>
+  <div class="breadcrumb">
+    <a href="../../index.html">Inicio</a><span class="sep">/</span>
+    <a href="index.html">La OCA de la Ofimática</a><span class="sep">/</span>
+    <span>Panel de fallas</span>
+  </div>
+
+  <main id="oca" data-sala="iluminada">
+    <div class="pn">
+      <div class="o-fila" style="justify-content:space-between;align-items:center">
+        <span class="o-kicker">BATIN · OCA · para la profe</span>
+        <span class="o-fila" style="gap:8px">
+          <button class="o-btn sm" data-sala-btn type="button"></button>
+          <a class="o-btn sm" href="index.html">← Volver al juego</a>
+        </span>
+      </div>
+      <h1 class="o-h1">Panel de fallas</h1>
+      <p class="o-lead">Qué temas y qué preguntas cuestan más. Sirve para decidir qué repasar antes del integrador.</p>
+
+      <div class="o-card">
+        <div class="pn-filtros">
+          <label class="o-campo">Datos de
+            <span class="pn-fuente" role="group" aria-label="Fuente de datos">
+              <button type="button" data-fuente="local" class="act">Este navegador</button>
+              <button type="button" data-fuente="remoto">Planilla de Google</button>
+            </span>
+          </label>
+          <label class="o-campo oca-hidden" id="f-clave-box">Clave del panel
+            <input type="text" id="f-clave" autocomplete="off" placeholder="la clave del Apps Script">
+          </label>
+          <button class="o-btn sm oca-hidden" id="f-cargar" type="button">Cargar</button>
+          <label class="o-campo">Curso<select id="f-curso"><option value="">Todos</option></select></label>
+          <label class="o-campo">Tema<select id="f-tema"><option value="">Todos</option></select></label>
+          <label class="o-campo">Desde<input type="date" id="f-desde"></label>
+          <label class="o-campo">Hasta<input type="date" id="f-hasta"></label>
+        </div>
+        <div class="nota" id="f-estado"></div>
+      </div>
+
+      <div id="pn-cuerpo"></div>
+
+      <div class="o-fila" style="margin-top:28px;justify-content:space-between">
+        <button class="o-btn sm" id="b-borrar" type="button">🗑 Borrar registro de este navegador</button>
+        <button class="o-btn sm" id="b-csv" type="button">⬇ Descargar CSV</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="batin-footer"></div>
+
+  <script src="../../batin.js"></script>
+  <script src="config.js"></script>
+  <script src="preguntas.js"></script>
+  <script src="registro.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var REG = window.OcaRegistro, BANCO = window.OCA_BANCO || [];
+    var raiz = document.getElementById('oca');
+    var TEMAS = {
+      excel:    { nom: 'Excel',      letra: 'X', v: '--t-excel' },
+      word:     { nom: 'Word',       letra: 'W', v: '--t-word' },
+      ppt:      { nom: 'PowerPoint', letra: 'P', v: '--t-ppt' },
+      proyecto: { nom: 'Proyectos',  letra: '★', v: '--t-proyecto' }
+    };
+    var ORDEN = ['excel', 'word', 'ppt', 'proyecto'];
+    var NIVEL = { 1: 'Fácil', 2: 'Media', 3: 'Difícil' };
+    var fuente = 'local', todas = [];
+
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function tc(t) { return TEMAS[t] ? 'var(' + TEMAS[t].v + ')' : 'var(--o-txt2)'; }
+    function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+    var porId = {}; BANCO.forEach(function (p) { porId[p.id] = p; });
+
+    /* Sala */
+    /* Sala = tema del sitio (sala oscura → modo claro) */
+    function salaActual() { return document.documentElement.dataset.tema === 'claro' ? 'oscura' : 'iluminada'; }
+    function pintarSala() {
+      var s = salaActual();
+      raiz.setAttribute('data-sala', s);
+      document.querySelector('[data-sala-btn]').textContent = s === 'oscura' ? '☀️ Sala iluminada' : '🌙 Sala oscura';
+    }
+    pintarSala();
+    document.addEventListener('batin-tema', pintarSala);
+    document.querySelector('[data-sala-btn]').addEventListener('click', function () {
+      if (typeof window.batinAlternarTema === 'function') window.batinAlternarTema();
+      pintarSala();
+    });
+
+    /* Filtros */
+    ORDEN.forEach(function (t) { el('f-tema').insertAdjacentHTML('beforeend', '<option value="' + t + '">' + TEMAS[t].nom + '</option>'); });
+
+    function llenarCursos() {
+      var sel = el('f-curso'), actual = sel.value;
+      var cursos = {}; todas.forEach(function (f) { if (f.curso) cursos[f.curso] = 1; });
+      sel.innerHTML = '<option value="">Todos</option>' + Object.keys(cursos).sort().map(function (c) {
+        return '<option' + (c === actual ? ' selected' : '') + '>' + esc(c) + '</option>';
+      }).join('');
+    }
+
+    function filtradas() {
+      var c = el('f-curso').value, t = el('f-tema').value, d = el('f-desde').value, h = el('f-hasta').value;
+      return todas.filter(function (f) {
+        var dia = String(f.fecha || f.t || '').slice(0, 10);
+        return (!c || f.curso === c) && (!t || f.tema === t) && (!d || dia >= d) && (!h || dia <= h);
+      });
+    }
+
+    /* Carga */
+    function cargarLocal() {
+      todas = REG.filasLocales();
+      el('f-estado').textContent = 'Partidas jugadas en esta computadora (' + REG.partidasLocales().length + ').' +
+        (REG.pendientes() ? ' Hay ' + REG.pendientes() + ' partida(s) esperando ser enviadas a la planilla.' : '');
+      llenarCursos(); pintar();
+    }
+    function cargarRemoto() {
+      if (!REG.hayEndpoint()) { el('f-estado').textContent = 'Todavía no hay endpoint en config.js. Ver LEEME.md → "Registro en Google Sheets".'; todas = []; pintar(); return; }
+      el('f-estado').textContent = 'Cargando desde la planilla…';
+      REG.filasRemotas(el('f-clave').value.trim()).then(function (filas) {
+        todas = filas;
+        try { sessionStorage.setItem('batin_oca1_clave', el('f-clave').value.trim()); } catch (e) {}
+        var partidas = {}; filas.forEach(function (f) { partidas[f.partida] = 1; });
+        el('f-estado').textContent = 'Datos de la planilla: ' + Object.keys(partidas).length + ' partidas de todas las computadoras.';
+        llenarCursos(); pintar();
+      }).catch(function (e) {
+        el('f-estado').textContent = 'No se pudo leer la planilla: ' + e.message;
+        todas = []; pintar();
+      });
+    }
+    try { el('f-clave').value = sessionStorage.getItem('batin_oca1_clave') || ''; } catch (e) {}
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (b) {
+      b.addEventListener('click', function () {
+        fuente = b.dataset.fuente;
+        Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (x) { x.classList.toggle('act', x === b); });
+        el('f-clave-box').classList.toggle('oca-hidden', fuente !== 'remoto');
+        el('f-cargar').classList.toggle('oca-hidden', fuente !== 'remoto');
+        if (fuente === 'local') cargarLocal(); else cargarRemoto();
+      });
+    });
+    el('f-cargar').addEventListener('click', cargarRemoto);
+    ['f-curso', 'f-tema', 'f-desde', 'f-hasta'].forEach(function (id) { el(id).addEventListener('change', pintar); });
+
+    /* Agrupar */
+    function agrupar(filas, clave) {
+      var g = {};
+      filas.forEach(function (f) {
+        var k = clave(f);
+        var x = g[k] || (g[k] = { k: k, ok: 0, tot: 0, filas: [] });
+        x.tot++; if (f.ok) x.ok++; x.filas.push(f);
+      });
+      return Object.keys(g).map(function (k) { return g[k]; });
+    }
+
+    function pintar() {
+      var filas = filtradas(), cuerpo = el('pn-cuerpo');
+      if (!filas.length) {
+        cuerpo.innerHTML = '<div class="o-card vacio">Todavía no hay respuestas con estos filtros.<br>Cuando terminen una partida, aparece acá.</div>';
+        return;
+      }
+      var ok = filas.filter(function (f) { return f.ok; }).length;
+      var partidas = {}; filas.forEach(function (f) { partidas[f.partida] = 1; });
+      var h = '';
+
+      /* KPIs */
+      h += '<div class="kpis">' +
+        kpi(Object.keys(partidas).length, 'partidas') +
+        kpi(filas.length, 'respuestas registradas') +
+        kpi(pct(ok, filas.length) + '%', 'de aciertos en general') +
+        kpi(filas.length - ok, 'respuestas incorrectas') +
+        '</div>';
+
+      /* Por tema */
+      var temas = agrupar(filas, function (f) { return f.tema; })
+        .sort(function (a, b) { return pct(a.ok, a.tot) - pct(b.ok, b.tot); });
+      h += '<div class="o-card"><h3>% DE ACIERTO POR TEMA <span style="font-weight:400;color:var(--o-txt3)">· de menor a mayor</span></h3><div class="hb">' +
+        temas.map(function (t) {
+          var p = pct(t.ok, t.tot), T = TEMAS[t.k] || { nom: t.k, letra: '?' };
+          return '<div class="hb-fila" style="--tc:' + tc(t.k) + '" title="' + esc(T.nom) + ': ' + t.ok + ' aciertos de ' + t.tot + ' respuestas (' + p + '%)">' +
+            '<span class="hb-lbl"><span class="lt">' + T.letra + '</span>' + esc(T.nom) + '</span>' +
+            '<span class="hb-pista"><span class="hb-barra" style="width:' + p + '%"></span><span class="hb-meta" style="left:60%"></span></span>' +
+            '<span class="hb-val">' + p + '%<small>' + t.ok + ' de ' + t.tot + '</small></span></div>';
+        }).join('') +
+        '</div><p class="nota">La línea punteada marca 60%: por debajo, el tema necesita repaso.</p></div>';
+
+      /* Subtemas */
+      var subs = agrupar(filas, function (f) { return f.tema + '|' + f.sub; })
+        .filter(function (s) { return s.tot >= 3 && s.tot > s.ok; })
+        .sort(function (a, b) { return (b.tot - b.ok) / b.tot - (a.tot - a.ok) / a.tot || b.tot - a.tot; })
+        .slice(0, 12);
+      h += '<div class="o-card"><h3>SUBTEMAS MÁS FALLADOS</h3>' +
+        (subs.length ? '<div class="scroll-x"><table class="tabla-res"><thead><tr><th>Subtema</th><th class="num">Respuestas</th><th class="num">Errores</th><th class="num">% error</th></tr></thead><tbody>' +
+          subs.map(function (s) {
+            var t = s.k.split('|')[0], sub = s.k.slice(t.length + 1);
+            return '<tr><td><span class="tc" style="--tc:' + tc(t) + '">' + (TEMAS[t] ? TEMAS[t].letra : '?') + '</span>' + esc(sub) + '</td>' +
+              '<td class="num">' + s.tot + '</td><td class="num">' + (s.tot - s.ok) + '</td><td class="num"><b>' + (100 - pct(s.ok, s.tot)) + '%</b></td></tr>';
+          }).join('') + '</tbody></table></div>' : '<p class="nota">Ningún subtema con errores todavía (se muestran los que tienen al menos 3 respuestas).</p>') +
+        '</div>';
+
+      /* Preguntas */
+      var preg = agrupar(filas, function (f) { return f.qid; })
+        .filter(function (p) { return p.tot - p.ok > 0; })
+        .sort(function (a, b) { return (b.tot - b.ok) / b.tot - (a.tot - a.ok) / a.tot || b.tot - a.tot; })
+        .slice(0, 10);
+      h += '<div class="o-card"><h3>PREGUNTAS MÁS FALLADAS</h3>' +
+        (preg.length ? '<div class="scroll-x"><table class="tabla-res"><thead><tr><th>Pregunta</th><th class="num">Veces</th><th class="num">% error</th></tr></thead><tbody>' +
+          preg.map(function (p) {
+            var b = porId[p.k] || {}, t = b.tema || (p.filas[0] && p.filas[0].tema);
+            var malas = {}; p.filas.forEach(function (f) { if (!f.ok && f.elegida) malas[f.elegida] = (malas[f.elegida] || 0) + 1; });
+            var top = Object.keys(malas).sort(function (x, y) { return malas[y] - malas[x]; })[0];
+            return '<tr><td class="q"><span class="tc" style="--tc:' + tc(t) + '">' + esc(p.k) + '</span>' + esc(b.q || '(pregunta ya no está en el banco)') +
+              (top ? '<span class="mal">Respuesta equivocada más elegida: «' + esc(top) + '»' + (malas[top] > 1 ? ' (' + malas[top] + ' veces)' : '') + '</span>' : '') +
+              '</td><td class="num">' + p.tot + '</td><td class="num"><b>' + (100 - pct(p.ok, p.tot)) + '%</b></td></tr>';
+          }).join('') + '</tbody></table></div>' : '<p class="nota">Sin errores registrados.</p>') +
+        '</div>';
+
+      /* Por nivel y por curso */
+      var niveles = agrupar(filas, function (f) { return f.n; }).sort(function (a, b) { return a.k - b.k; });
+      var cursos = agrupar(filas, function (f) { return f.curso || '—'; }).sort(function (a, b) { return a.k < b.k ? -1 : 1; });
+      h += '<div class="grid-2" style="margin-top:22px">' +
+        '<div class="o-card" style="margin-top:0"><h3>POR DIFICULTAD</h3>' + tablaSimple(niveles, function (k) { return NIVEL[k] || k; }) + '</div>' +
+        '<div class="o-card" style="margin-top:0"><h3>POR CURSO</h3>' + tablaSimple(cursos, function (k) { return k; }) + '</div>' +
+        '</div>';
+
+      cuerpo.innerHTML = h;
+    }
+
+    function kpi(v, l) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>'; }
+    function tablaSimple(grupos, nombre) {
+      return '<table class="tabla-res"><thead><tr><th></th><th class="num">Respuestas</th><th class="num">% acierto</th></tr></thead><tbody>' +
+        grupos.map(function (g) {
+          return '<tr><td>' + esc(nombre(g.k)) + '</td><td class="num">' + g.tot + '</td><td class="num"><b>' + pct(g.ok, g.tot) + '%</b></td></tr>';
+        }).join('') + '</tbody></table>';
+    }
+
+    /* CSV y borrar */
+    el('b-csv').addEventListener('click', function () {
+      var filas = filtradas();
+      if (!filas.length) { alert('No hay datos para descargar con estos filtros.'); return; }
+      var cols = ['fecha', 'curso', 'modo', 'partida', 'equipo', 'qid', 'tema', 'sub', 'n', 'ok', 'elegida'];
+      var csv = '﻿' + cols.join(';') + '\n' + filas.map(function (f) {
+        return cols.map(function (c) {
+          var v = c === 'ok' ? (f.ok ? 1 : 0) : (f[c] == null ? '' : f[c]);
+          return '"' + String(v).replace(/"/g, '""') + '"';
+        }).join(';');
+      }).join('\n');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = 'oca-respuestas-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    });
+    el('b-borrar').addEventListener('click', function () {
+      if (!REG.partidasLocales().length) { alert('No hay partidas guardadas en este navegador.'); return; }
+      if (!confirm('¿Borrar TODAS las partidas guardadas en este navegador? (Lo que ya se envió a la planilla de Google no se borra.)')) return;
+      REG.borrarLocales();
+      if (fuente === 'local') cargarLocal();
+    });
+
+    if (REG.pendientes()) REG.enviarPendientes().then(function () { if (fuente === 'local') cargarLocal(); });
+    cargarLocal();
+  })();
+  </script>
+</body>
+</html>

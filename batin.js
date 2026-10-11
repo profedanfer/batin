@@ -12,6 +12,43 @@ const BATIN_BASE = (() => {
   return srcAttr.replace(/batin\.js(\?.*)?$/, '');
 })();
 
+// ── MODO CLARO / OSCURO ──
+// Se guarda en el navegador con la clave 'batin-tema' ('claro' | 'oscuro').
+// Por defecto: oscuro (la identidad de BATIN).
+// Para evitar el "parpadeo", cada página repite estas dos líneas en su <head>:
+//   <script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+const BATIN_TEMA_CLAVE = 'batin-tema';
+
+function batinTemaActual() {
+  return document.documentElement.dataset.tema === 'claro' ? 'claro' : 'oscuro';
+}
+
+function batinAplicarTema(tema, guardar) {
+  const html = document.documentElement;
+  if (tema === 'claro') html.dataset.tema = 'claro';
+  else delete html.dataset.tema;
+  if (guardar) { try { localStorage.setItem(BATIN_TEMA_CLAVE, tema); } catch (e) {} }
+  const btn = document.getElementById('batin-tema-btn');
+  if (btn) {
+    btn.textContent = tema === 'claro' ? '🌙' : '☀️';
+    btn.title = tema === 'claro' ? 'Cambiar a modo oscuro (sala iluminada)' : 'Cambiar a modo claro (sala oscura)';
+    btn.setAttribute('aria-label', btn.title);
+  }
+  // Aviso para páginas que quieran reaccionar (por ejemplo, la OCA)
+  document.dispatchEvent(new CustomEvent('batin-tema', { detail: { tema } }));
+}
+
+function batinAlternarTema() {
+  batinAplicarTema(batinTemaActual() === 'claro' ? 'oscuro' : 'claro', true);
+}
+
+// Aplicar lo guardado lo antes posible (por si la página no tiene la línea en el <head>)
+(() => {
+  let guardado = null;
+  try { guardado = localStorage.getItem(BATIN_TEMA_CLAVE); } catch (e) {}
+  if (guardado === 'claro') document.documentElement.dataset.tema = 'claro';
+})();
+
 // ── NAV HTML ──
 const NAV_HTML = `
 <nav class="batin-nav">
@@ -27,6 +64,7 @@ const NAV_HTML = `
     <a href="${BATIN_BASE}huella.html"       data-page="huella">Estoy dejando huella</a>
   </div>
   <div class="nav-right">
+    <button type="button" class="nav-tema" id="batin-tema-btn" onclick="batinAlternarTema()">☀️</button>
     <div class="nav-chars">
       <div class="nav-char gatiel" title="Gatiel · pensamiento crítico">🐱</div>
       <div class="nav-char bit"    title="Bit · guía técnico">🤖</div>
@@ -77,6 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Footer
   const footerPlaceholder = document.getElementById('batin-footer');
   if (footerPlaceholder) footerPlaceholder.outerHTML = FOOTER_HTML;
+
+  // Botón de tema con el ícono que corresponde
+  batinAplicarTema(batinTemaActual(), false);
 
   // Marcar página activa
   const page = document.body.dataset.page;

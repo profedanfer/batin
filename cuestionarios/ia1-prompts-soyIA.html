@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La IA soy yo · Prompts con criterio · Cuestionario · BATIN</title>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 
@@ -77,7 +78,7 @@
   font-family: var(--font-title);
   font-size: clamp(1.2rem, 3vw, 1.7rem);
   font-weight: 800;
-  color: #fff;
+  color: var(--texto-fuerte);
   margin-bottom: 6px;
   line-height: 1.2;
 }
@@ -204,7 +205,7 @@
   margin-bottom: 18px;
   font-size: 17px;
   font-weight: 600;
-  color: #fff;
+  color: var(--texto-fuerte);
   font-style: italic;
 }
 
@@ -259,13 +260,13 @@
 .opcion-label.correcta { border-color: #50c878 !important; background: rgba(80,200,120,.1) !important; }
 .opcion-label.correcta .opcion-circulo { background: #50c878 !important; border-color: #50c878 !important; }
 .opcion-label.correcta .opcion-circulo::after {
-  content: '✓'; font-size: 11px; color: #fff; border-radius: 0; width: auto; height: auto; background: transparent;
+  content: '✓'; font-size: 11px; color: var(--texto-fuerte); border-radius: 0; width: auto; height: auto; background: transparent;
 }
 
 .opcion-label.incorrecta { border-color: #e05050 !important; background: rgba(224,80,80,.08) !important; }
 .opcion-label.incorrecta .opcion-circulo { background: #e05050 !important; border-color: #e05050 !important; }
 .opcion-label.incorrecta .opcion-circulo::after {
-  content: '✗'; font-size: 11px; color: #fff; border-radius: 0; width: auto; height: auto; background: transparent;
+  content: '✗'; font-size: 11px; color: var(--texto-fuerte); border-radius: 0; width: auto; height: auto; background: transparent;
 }
 
 .opcion-texto { font-size: 14px; color: var(--texto); line-height: 1.5; }
@@ -273,9 +274,9 @@
 
 /* Feedback inmediato */
 .feedback { display: none; padding: 12px 16px; border-radius: var(--r); margin-top: 14px; font-size: 13px; line-height: 1.6; }
-.feedback.correcto { display: block; background: rgba(80,200,120,.1); border: 1px solid rgba(80,200,120,.3); color: #50c878; }
-.feedback.incorrecto { display: block; background: rgba(224,80,80,.08); border: 1px solid rgba(224,80,80,.2); color: #e08080; }
-.feedback strong { color: #fff; }
+.feedback.correcto { display: block; background: rgba(80,200,120,.1); border: 1px solid rgba(80,200,120,.3); color: var(--t-ok, #50c878); }
+.feedback.incorrecto { display: block; background: rgba(224,80,80,.08); border: 1px solid rgba(224,80,80,.2); color: var(--t-mal-suave, #e08080); }
+.feedback strong { color: var(--texto-fuerte); }
 
 /* ══════════════════════════════════════
    REESCRIBIR EL PEDIDO
@@ -358,7 +359,7 @@
   font-style: italic;
 }
 
-.sugerencia-box strong { color: #50c878; font-style: normal; }
+.sugerencia-box strong { color: var(--t-ok, #50c878); font-style: normal; }
 
 /* ══════════════════════════════════════
    NAVEGACIÓN ENTRE PREGUNTAS
@@ -416,14 +417,14 @@
 .resultado-char img { width: 130px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.3)); }
 
 .resultado-score { font-family: var(--font-title); font-size: 3.5rem; font-weight: 900; margin-bottom: 6px; line-height: 1; }
-.resultado-score.verde  { color: #50c878; }
+.resultado-score.verde  { color: var(--t-ok, #50c878); }
 .resultado-score.amarillo { color: var(--naranja2); }
-.resultado-score.rojo   { color: #e05050; }
+.resultado-score.rojo   { color: var(--t-mal, #e05050); }
 
 .resultado-nivel { font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-.resultado-nivel.verde  { color: #50c878; }
+.resultado-nivel.verde  { color: var(--t-ok, #50c878); }
 .resultado-nivel.amarillo { color: var(--naranja2); }
-.resultado-nivel.rojo   { color: #e05050; }
+.resultado-nivel.rojo   { color: var(--t-mal, #e05050); }
 
 .resultado-mensaje { font-size: 15px; color: var(--texto2); line-height: 1.75; max-width: 520px; margin: 0 auto 20px; font-weight: 300; }
 .resultado-mensaje strong { color: var(--texto); font-weight: 500; }
@@ -437,9 +438,9 @@
 ══════════════════════════════════════ */
 .diagnostico { background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--r2); padding: 24px 28px; margin-bottom: 16px; }
 .diagnostico-titulo { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-.diagnostico-titulo.verde    { color: #50c878; }
+.diagnostico-titulo.verde    { color: var(--t-ok, #50c878); }
 .diagnostico-titulo.amarillo { color: var(--naranja2); }
-.diagnostico-titulo.rojo     { color: #e05050; }
+.diagnostico-titulo.rojo     { color: var(--t-mal, #e05050); }
 
 .diagnostico-char { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
 .diagnostico-char img { width: 70px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
@@ -513,10 +514,10 @@
 .revision-item.mal  { border-left: 3px solid #e05050; }
 .revision-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .revision-icono { font-size: 16px; flex-shrink: 0; }
-.revision-pregunta { font-size: 13px; font-weight: 500; color: #fff; flex: 1; }
+.revision-pregunta { font-size: 13px; font-weight: 500; color: var(--texto-fuerte); flex: 1; }
 .revision-respuestas { font-size: 12px; color: var(--texto3); line-height: 1.7; }
-.revision-respuestas .correcta-texto { color: #50c878; }
-.revision-respuestas .incorrecta-texto { color: #e08080; }
+.revision-respuestas .correcta-texto { color: var(--t-ok, #50c878); }
+.revision-respuestas .incorrecta-texto { color: var(--t-mal-suave, #e08080); }
 .revision-respuestas .reescritura-texto { color: var(--texto2); display: block; margin-top: 4px; }
 
 /* ══════════════════════════════════════

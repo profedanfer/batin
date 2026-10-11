@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Regiones de una Matriz · Arreglos y Matrices · BATIN</title>
 <meta name="description" content="Visualización interactiva: diagonal principal, diagonal secundaria y triángulos de una matriz 10×10, con sus condiciones lógicas.">
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="../batin.css">
 <style>
 .mr-ruta {
@@ -40,7 +41,7 @@
   color: var(--texto2); transition: all 0.15s; font-family: var(--font-body);
 }
 .mr-btn:hover { background: var(--bg3); border-color: var(--borde3); }
-.mr-btn.active { color: #fff; border-color: transparent; font-weight: 600; }
+.mr-btn.active { color: var(--texto-fuerte); border-color: transparent; font-weight: 600; }
 .mr-grid-wrap { padding: 0 24px; overflow-x: auto; }
 .mr-grid { display: inline-grid; grid-template-columns: repeat(10, 36px); gap: 2px; }
 .mr-cell {
@@ -49,7 +50,7 @@
   background: var(--bg2);
   color: var(--texto3); transition: background 0.15s, color 0.15s;
 }
-.mr-cell.lit { color: #fff; }
+.mr-cell.lit { color: var(--texto-fuerte); }
 .mr-desc {
   margin: 18px 24px 0; font-size: 14px; color: var(--texto2);
   line-height: 1.7; max-width: 560px;
