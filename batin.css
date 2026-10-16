@@ -69,6 +69,12 @@
   --bloom5:    #f07050;
   --bloom6:    #e05040;
 
+  /* Juegos: un color propio para reconocerlos de un vistazo */
+  --juego:     #ff5ca8;
+  --juego-s:   rgba(255,92,168,.10);
+  --juego-m:   rgba(255,92,168,.20);
+  --juego-b:   rgba(255,92,168,.45);
+
   color-scheme: dark;
 }
 
@@ -129,6 +135,11 @@
   --t-mal-suave: #a2433b;
   --t-ambar:     #9a5200;
   --t-amarillo:  #735c00;
+
+  --juego:     #b0127a;
+  --juego-s:   rgba(176,18,122,.07);
+  --juego-m:   rgba(176,18,122,.14);
+  --juego-b:   rgba(176,18,122,.42);
 
   color-scheme: light;
 }
@@ -557,6 +568,49 @@ em.azul    { font-style: normal; color: var(--azul); }
 .bloom-n4 { color: var(--naranja2); border-color: var(--naranja-b); background: var(--naranja-s); }
 .bloom-n5 { color: var(--bloom5);   border-color: color-mix(in srgb, var(--bloom5) 35%, transparent); background: color-mix(in srgb, var(--bloom5) 9%, transparent); }
 .bloom-n6 { color: var(--bloom6);   border-color: color-mix(in srgb, var(--bloom6) 35%, transparent); background: color-mix(in srgb, var(--bloom6) 9%, transparent); }
+
+/* ══════════════════════════════════════
+   JUEGOS — tarjetas, botones y etiqueta
+   Color propio (magenta) + etiqueta «🎮 Juego»: se reconocen
+   también en escala de grises o con daltonismo.
+══════════════════════════════════════ */
+.juego-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--juego);
+  border: 1px solid var(--juego-b);
+  background: var(--juego-s);
+  white-space: nowrap;
+}
+.tema-card.juego {
+  border: 1.5px solid var(--juego-b);
+  border-left: 5px solid var(--juego);
+  background: linear-gradient(90deg, var(--juego-s), transparent 70%), var(--bg3);
+}
+.tema-card.juego:hover { border-color: var(--juego); }
+.tema-card.juego h4 { color: var(--juego); font-weight: 700; }
+.rec-btn.juego {
+  color: var(--juego);
+  border: 1.5px solid var(--juego-b);
+  background: var(--juego-s);
+  font-weight: 700;
+}
+.rec-btn.juego:hover { background: var(--juego-m); border-color: var(--juego); }
+.tl-item a.tl-consigna-link.juego {
+  color: var(--juego);
+  border-color: var(--juego-b);
+  background: var(--juego-s);
+  font-weight: 700;
+}
+.tl-item a.tl-consigna-link.juego:hover { background: var(--juego-m); }
 
 /* ══════════════════════════════════════
    FOOTER COMPARTIDO
