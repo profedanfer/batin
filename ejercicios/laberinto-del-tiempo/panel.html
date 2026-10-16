@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de fallas · Laberinto del Tiempo · BATIN</title>
+  <script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+  <link rel="stylesheet" href="../../batin.css">
+  <link rel="stylesheet" href="lab.css">
+  <style>
+    #lab .pn { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+    #lab .pn-filtros { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    #lab .pn-filtros input[type=date] { font: inherit; font-size: 14px; color: var(--texto); background: var(--bg3); border: 1px solid var(--borde3); border-radius: var(--r); padding: 8px 10px; }
+    #lab .pn-fuente { display: inline-flex; border: 1px solid var(--borde3); border-radius: var(--r); overflow: hidden; }
+    #lab .pn-fuente button { background: var(--bg3); color: var(--texto2); border: none; padding: 9px 14px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+    #lab .pn-fuente button.act { background: var(--naranja); color: #fff; }
+    #lab .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 18px; }
+    #lab .kpi { background: var(--bg2); border: 1px solid var(--borde2); border-radius: var(--r2); padding: 16px 18px; }
+    #lab .kpi .v { font-family: var(--font-title); font-size: 28px; font-weight: 800; line-height: 1.1; color: var(--texto-fuerte); }
+    #lab .kpi .l { font-size: 12px; color: var(--texto2); margin-top: 4px; }
+    #lab .kpi.pasado { border-top: 3px solid var(--naranja); }
+    #lab .kpi.futuro { border-top: 3px solid var(--azul); }
+    #lab .tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+    #lab .tabla th, #lab .tabla td { padding: 9px 10px; border-bottom: 1px solid var(--borde2); text-align: left; vertical-align: middle; }
+    #lab .tabla th { font-family: var(--font-mono); font-size: 10px; color: var(--texto2); text-transform: uppercase; letter-spacing: 1px; }
+    #lab .tabla td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+    #lab .tabla tr:hover td { background: var(--bg3); }
+    #lab .par { display: grid; grid-template-columns: 1fr 52px; gap: 3px 8px; align-items: center; min-width: 170px; }
+    #lab .par .pista { height: 10px; background: var(--bg4); border-radius: 0 4px 4px 0; position: relative; }
+    #lab .par .pista i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; }
+    #lab .par .pista.pasado i { background: var(--naranja); }
+    #lab .par .pista.futuro i { background: var(--azul); }
+    #lab .par .pista .meta { position: absolute; top: -3px; bottom: -3px; left: 60%; border-left: 2px dashed var(--texto3); }
+    #lab .par span { font-family: var(--font-mono); font-size: 12px; text-align: right; }
+    #lab .badge { font-family: var(--font-mono); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-right: 6px; white-space: nowrap; }
+    #lab .badge.pasado { color: var(--naranja); border: 1px solid var(--naranja-b); background: var(--naranja-s); }
+    #lab .badge.futuro { color: var(--azul); border: 1px solid var(--azul-b); background: var(--azul-s); }
+    #lab .q-txt { max-width: 520px; }
+    #lab .q-mal { display: block; color: var(--texto2); font-size: 12px; margin-top: 3px; }
+    #lab .nota { font-size: 12px; color: var(--texto3); margin-top: 10px; }
+    #lab .lectura { margin-top: 12px; padding: 10px 14px; border-left: 4px solid var(--naranja); background: var(--bg3); border-radius: 8px; font-size: 14px; line-height: 1.55; }
+    #lab .scroll-x { overflow-x: auto; }
+    #lab .vacio { padding: 36px 20px; text-align: center; color: var(--texto2); }
+    #lab .bug-i { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-mono); font-weight: 700; font-size: 11px; margin-right: 8px; vertical-align: middle; }
+    #lab .grid-2x { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 800px) { #lab .grid-2x { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-page="aprendiendo">
+  <div id="batin-nav"></div>
+  <div class="breadcrumb">
+    <a href="../../aprendiendo.html">Estoy aprendiendo</a><span class="sep">/</span>
+    <a href="index.html">Laberinto del Tiempo</a><span class="sep">/</span>
+    <span>Panel de fallas</span>
+  </div>
+
+  <main id="lab" data-era="pasado">
+    <div class="pn">
+      <div class="l-fila" style="justify-content:space-between;align-items:center">
+        <span class="l-kicker">BATIN · Laberinto del Tiempo · para la profe</span>
+        <a class="l-btn sm" href="index.html">← Volver al juego</a>
+      </div>
+      <h1 class="l-h1">Panel de fallas</h1>
+      <p class="l-lead">¿Fallan en el análisis o en el código? Compara el pasado con el futuro, caso por caso.</p>
+
+      <div class="l-card">
+        <div class="pn-filtros">
+          <label class="l-campo">Datos de
+            <span class="pn-fuente" role="group" aria-label="Fuente de datos">
+              <button type="button" data-fuente="local" class="act">Este navegador</button>
+              <button type="button" data-fuente="remoto">Planilla de Google</button>
+            </span>
+          </label>
+          <label class="l-campo oculto" id="f-clave-box">Clave del panel
+            <input type="text" id="f-clave" autocomplete="off" placeholder="la clave del Apps Script">
+          </label>
+          <button class="l-btn sm oculto" id="f-cargar" type="button">Cargar</button>
+          <label class="l-campo">Curso<select id="f-curso"><option value="">Todos</option></select></label>
+          <label class="l-campo">Caso<select id="f-caso"><option value="">Todos</option></select></label>
+          <label class="l-campo">Desde<input type="date" id="f-desde"></label>
+          <label class="l-campo">Hasta<input type="date" id="f-hasta"></label>
+        </div>
+        <div class="nota" id="f-estado"></div>
+      </div>
+
+      <div id="pn-cuerpo"></div>
+
+      <div class="l-fila" style="margin-top:26px;justify-content:space-between">
+        <button class="l-btn sm" id="b-borrar" type="button">🗑 Borrar registro de este navegador</button>
+        <button class="l-btn sm" id="b-csv" type="button">⬇ Descargar CSV</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="batin-footer"></div>
+
+  <script src="../../batin.js"></script>
+  <script src="config.js"></script>
+  <script src="casos.js"></script>
+  <script src="registro.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var REG = window.LabRegistro, CASOS = window.LAB_CASOS || [];
+    var BUGS = {
+      dato: ['D', 'Dato olvidado', '#c2410c', 'pasado'], cond: ['<', 'Condición al revés', '#a16207', 'pasado'],
+      init: ['0', 'Sin inicializar', '#7c3aed', 'pasado'], sinfin: ['∞', 'Bucle sin fin', '#be185d', 'pasado'],
+      indent: ['I', 'IndentationError', '#dc2626', 'futuro'], type: ['T', 'TypeError', '#0e7490', 'futuro'],
+      name: ['N', 'NameError', '#4d7c0f', 'futuro'], index: ['[', 'IndexError', '#9333ea', 'futuro']
+    };
+    var fuente = 'local', todas = [];
+    var porId = {}, casoDe = {};
+    CASOS.forEach(function (c) { c.preguntas.forEach(function (p) { porId[p.id] = p; casoDe[p.id] = c; }); });
+
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function pct(a, b) { return b ? Math.round(100 * a / b) : null; }
+    function eraNom(e) { return e === 'futuro' ? '🚀 Futuro' : '⏳ Pasado'; }
+
+    CASOS.forEach(function (c) { el('f-caso').insertAdjacentHTML('beforeend', '<option value="' + c.id + '">Caso ' + c.id + ' · ' + esc(c.titulo) + '</option>'); });
+
+    function llenarCursos() {
+      var sel = el('f-curso'), actual = sel.value, cursos = {};
+      todas.forEach(function (f) { if (f.curso) cursos[f.curso] = 1; });
+      sel.innerHTML = '<option value="">Todos</option>' + Object.keys(cursos).sort().map(function (c) { return '<option' + (c === actual ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+    }
+    function pasaFiltro(f) {
+      var c = el('f-curso').value, k = el('f-caso').value, d = el('f-desde').value, h = el('f-hasta').value;
+      var dia = String(f.fecha || f.t || '').slice(0, 10);
+      return (!c || f.curso === c) && (!k || String(f.n) === k) && (!d || dia >= d) && (!h || dia <= h);
+    }
+    function filtradas() { return todas.filter(pasaFiltro); }
+
+    function cargarLocal() {
+      todas = REG.filasLocales();
+      el('f-estado').textContent = 'Partidas jugadas en esta computadora (' + REG.partidasLocales().length + ').' + (REG.hayEndpoint() && REG.pendientes() ? ' Hay ' + REG.pendientes() + ' esperando para enviarse a la planilla.' : '');
+      llenarCursos(); pintar();
+    }
+    function cargarRemoto() {
+      if (!REG.hayEndpoint()) { el('f-estado').textContent = 'Todavía no hay endpoint en config.js. Ver LEEME.md.'; todas = []; pintar(); return; }
+      el('f-estado').textContent = 'Cargando desde la planilla…';
+      REG.filasRemotas(el('f-clave').value.trim()).then(function (filas) {
+        todas = filas;
+        try { sessionStorage.setItem('batin_lab2_clave', el('f-clave').value.trim()); } catch (e) {}
+        var p = {}; filas.forEach(function (f) { p[f.partida] = 1; });
+        el('f-estado').textContent = 'Datos de la planilla: ' + Object.keys(p).length + ' partidas de todas las computadoras.';
+        llenarCursos(); pintar();
+      }).catch(function (e) { el('f-estado').textContent = 'No se pudo leer la planilla: ' + e.message; todas = []; pintar(); });
+    }
+    try { el('f-clave').value = sessionStorage.getItem('batin_lab2_clave') || ''; } catch (e) {}
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (b) {
+      b.addEventListener('click', function () {
+        fuente = b.dataset.fuente;
+        Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (x) { x.classList.toggle('act', x === b); });
+        el('f-clave-box').classList.toggle('oculto', fuente !== 'remoto');
+        el('f-cargar').classList.toggle('oculto', fuente !== 'remoto');
+        if (fuente === 'local') cargarLocal(); else cargarRemoto();
+      });
+    });
+    el('f-cargar').addEventListener('click', cargarRemoto);
+    ['f-curso', 'f-caso', 'f-desde', 'f-hasta'].forEach(function (id) { el(id).addEventListener('change', pintar); });
+
+    function agrupar(filas, clave) {
+      var g = {};
+      filas.forEach(function (f) { var k = clave(f), x = g[k] || (g[k] = { k: k, ok: 0, tot: 0, filas: [] }); x.tot++; if (f.ok) x.ok++; x.filas.push(f); });
+      return Object.keys(g).map(function (k) { return g[k]; });
+    }
+    function barra(era, ok, tot) {
+      var p = pct(ok, tot);
+      return '<div class="pista ' + era + '"><i style="width:' + (p || 0) + '%"></i><span class="meta"></span></div><span>' + (p == null ? '—' : p + '%') + '</span>';
+    }
+
+    function pintar() {
+      var filas = filtradas(), cuerpo = el('pn-cuerpo');
+      if (!filas.length) { cuerpo.innerHTML = '<div class="l-card vacio">Todavía no hay respuestas con estos filtros.<br>Cuando alguien juegue un caso, aparece acá.</div>'; return; }
+      var P = filas.filter(function (f) { return f.tema === 'pasado'; }), F = filas.filter(function (f) { return f.tema === 'futuro'; });
+      var okP = P.filter(function (f) { return f.ok; }).length, okF = F.filter(function (f) { return f.ok; }).length;
+      var partidas = {}, jugadores = {}; filas.forEach(function (f) { partidas[f.partida] = 1; jugadores[f.equipo + '|' + f.curso] = 1; });
+      var h = '<div class="kpis">' +
+        kpi(Object.keys(partidas).length, 'partidas', '') + kpi(Object.keys(jugadores).length, 'jugadores (alias)', '') +
+        kpi(pct(okP, P.length) == null ? '—' : pct(okP, P.length) + '%', 'aciertos en el pasado · análisis', 'pasado') +
+        kpi(pct(okF, F.length) == null ? '—' : pct(okF, F.length) + '%', 'aciertos en el futuro · Python', 'futuro') + '</div>';
+
+      // Lectura automática
+      var lec = '';
+      if (P.length >= 5 && F.length >= 5) {
+        var dp = okP / P.length - okF / F.length;
+        if (dp >= 0.15) lec = 'Analizan mejor de lo que verifican: el problema aparece al pasar del pseudocódigo a Python. Conviene trabajar la traducción línea por línea y ejecutar las pruebas de escritorio en Python.';
+        else if (dp <= -0.15) lec = 'Leen mejor el código que el análisis previo: les cuesta identificar entradas, salidas y armar la prueba de escritorio antes de programar.';
+        else lec = 'El rendimiento en análisis y en código es parecido: las dificultades están en los temas, no en una de las dos etapas.';
+      }
+
+      // Por caso: pasado vs futuro
+      var casos = CASOS.map(function (c) {
+        var fc = filas.filter(function (f) { return Number(f.n) === c.id; });
+        var p = fc.filter(function (f) { return f.tema === 'pasado'; }), fu = fc.filter(function (f) { return f.tema === 'futuro'; });
+        return { c: c, p: p, f: fu };
+      }).filter(function (x) { return x.p.length || x.f.length; });
+      h += '<div class="l-card"><h3>Pasado vs futuro, por caso</h3><div class="scroll-x"><table class="tabla"><thead><tr><th>Caso</th><th>⏳ Pasado · análisis</th><th>🚀 Futuro · Python</th><th class="num">Resp.</th></tr></thead><tbody>' +
+        casos.map(function (x) {
+          var op = x.p.filter(function (f) { return f.ok; }).length, of = x.f.filter(function (f) { return f.ok; }).length;
+          return '<tr><td><b>' + x.c.id + '.</b> ' + esc(x.c.titulo) + '<br><small style="color:var(--texto3)">' + esc(x.c.tema) + '</small></td>' +
+            '<td><div class="par">' + barra('pasado', op, x.p.length) + '</div></td>' +
+            '<td><div class="par">' + barra('futuro', of, x.f.length) + '</div></td>' +
+            '<td class="num">' + (x.p.length + x.f.length) + '</td></tr>';
+        }).join('') + '</tbody></table></div>' +
+        '<p class="nota">La línea punteada marca 60 %. Un caso con el pasado alto y el futuro bajo indica que el análisis está, pero el código no lo respeta.</p>' +
+        (lec ? '<div class="lectura">' + lec + '</div>' : '') + '</div>';
+
+      // Subtemas
+      var subs = agrupar(filas, function (f) { return f.tema + '|' + f.sub; }).filter(function (s) { return s.tot >= 3 && s.tot > s.ok; })
+        .sort(function (a, b) { return (b.tot - b.ok) / b.tot - (a.tot - a.ok) / a.tot || b.tot - a.tot; }).slice(0, 12);
+      h += '<div class="l-card"><h3>Subtemas más fallados</h3>' + (subs.length ?
+        '<div class="scroll-x"><table class="tabla"><thead><tr><th>Subtema</th><th class="num">Resp.</th><th class="num">Errores</th><th class="num">% error</th></tr></thead><tbody>' +
+        subs.map(function (s) {
+          var era = s.k.split('|')[0], sub = s.k.slice(era.length + 1);
+          return '<tr><td><span class="badge ' + era + '">' + (era === 'futuro' ? 'FUTURO' : 'PASADO') + '</span>' + esc(sub) + '</td><td class="num">' + s.tot + '</td><td class="num">' + (s.tot - s.ok) + '</td><td class="num"><b>' + (100 - pct(s.ok, s.tot)) + '%</b></td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="nota">Ningún subtema con errores todavía (se muestran los que tienen al menos 3 respuestas).</p>') + '</div>';
+
+      // Preguntas
+      var preg = agrupar(filas, function (f) { return f.qid; }).filter(function (p) { return p.tot > p.ok; })
+        .sort(function (a, b) { return (b.tot - b.ok) / b.tot - (a.tot - a.ok) / a.tot || b.tot - a.tot; }).slice(0, 10);
+      h += '<div class="l-card"><h3>Preguntas más falladas</h3>' + (preg.length ?
+        '<div class="scroll-x"><table class="tabla"><thead><tr><th>Pregunta</th><th class="num">Veces</th><th class="num">% error</th></tr></thead><tbody>' +
+        preg.map(function (p) {
+          var b = porId[p.k] || {}, era = b.era || (p.filas[0] && p.filas[0].tema), c = casoDe[p.k];
+          var malas = {}; p.filas.forEach(function (f) { if (!f.ok && f.elegida) malas[f.elegida] = (malas[f.elegida] || 0) + 1; });
+          var top = Object.keys(malas).sort(function (x, y) { return malas[y] - malas[x]; })[0];
+          return '<tr><td class="q-txt"><span class="badge ' + era + '">' + esc(p.k) + '</span>' + (c ? '<small style="color:var(--texto3)">Caso ' + c.id + ' · </small>' : '') + esc(b.q || '(ya no está en casos.js)') +
+            (top ? '<span class="q-mal">Respuesta equivocada más elegida: «' + esc(top) + '»' + (malas[top] > 1 ? ' (' + malas[top] + ' veces)' : '') + '</span>' : '') +
+            '</td><td class="num">' + p.tot + '</td><td class="num"><b>' + (100 - pct(p.ok, p.tot)) + '%</b></td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="nota">Sin errores registrados.</p>') + '</div>';
+
+      // Bugs (solo datos de este navegador) y por curso
+      var bugs = {};
+      if (fuente === 'local') {
+        var cs = el('f-curso').value, ks = el('f-caso').value;
+        REG.partidasLocales().forEach(function (p) {
+          if (cs && p.curso !== cs) return; if (ks && String(p.caso) !== ks) return;
+          Object.keys(p.atrapadas || {}).forEach(function (k) { bugs[k] = (bugs[k] || 0) + p.atrapadas[k]; });
+        });
+      }
+      var listaBugs = Object.keys(bugs).sort(function (a, b) { return bugs[b] - bugs[a]; });
+      var cursos = agrupar(filas, function (f) { return f.curso || '—'; }).sort(function (a, b) { return a.k < b.k ? -1 : 1; });
+      h += '<div class="grid-2x" style="margin-top:18px">' +
+        '<div class="l-card" style="margin-top:0"><h3>Bugs que más atrapan</h3>' + (listaBugs.length ?
+          '<table class="tabla"><tbody>' + listaBugs.map(function (k) { var b = BUGS[k] || ['?', k, '#888', 'pasado']; return '<tr><td><span class="bug-i" style="background:' + b[2] + '">' + esc(b[0]) + '</span>' + esc(b[1]) + ' <span class="badge ' + b[3] + '">' + (b[3] === 'futuro' ? 'FUTURO' : 'PASADO') + '</span></td><td class="num">' + bugs[k] + '</td></tr>'; }).join('') + '</tbody></table>' +
+          '<p class="nota">Mide reflejos más que conocimiento, pero muestra qué errores «ven» más los chicos.</p>'
+          : '<p class="nota">' + (fuente === 'local' ? 'Nadie fue atrapado todavía.' : 'Este dato se guarda solo en el navegador donde se juega.') + '</p>') + '</div>' +
+        '<div class="l-card" style="margin-top:0"><h3>Por curso</h3><table class="tabla"><thead><tr><th></th><th class="num">Resp.</th><th class="num">% acierto</th></tr></thead><tbody>' +
+          cursos.map(function (g) { return '<tr><td>' + esc(g.k) + '</td><td class="num">' + g.tot + '</td><td class="num"><b>' + pct(g.ok, g.tot) + '%</b></td></tr>'; }).join('') + '</tbody></table></div>' +
+        '</div>';
+      cuerpo.innerHTML = h;
+    }
+    function kpi(v, l, cls) { return '<div class="kpi ' + cls + '"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>'; }
+
+    el('b-csv').addEventListener('click', function () {
+      var filas = filtradas();
+      if (!filas.length) { alert('No hay datos para descargar con estos filtros.'); return; }
+      var cols = [['fecha', 'fecha'], ['curso', 'curso'], ['equipo', 'alias'], ['partida', 'partida'], ['n', 'caso'], ['tema', 'epoca'], ['qid', 'pregunta'], ['sub', 'subtema'], ['ok', 'acierto'], ['elegida', 'respuesta_elegida']];
+      var csv = '﻿' + cols.map(function (c) { return c[1]; }).join(';') + '\n' + filas.map(function (f) {
+        return cols.map(function (c) { var v = c[0] === 'ok' ? (f.ok ? 1 : 0) : (f[c[0]] == null ? '' : f[c[0]]); return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+      }).join('\n');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = 'laberinto-respuestas-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    });
+    el('b-borrar').addEventListener('click', function () {
+      if (!REG.partidasLocales().length) { alert('No hay partidas guardadas en este navegador.'); return; }
+      if (!confirm('¿Borrar TODAS las partidas guardadas en este navegador? (Lo que ya se envió a la planilla no se borra.)')) return;
+      REG.borrarLocales(); if (fuente === 'local') cargarLocal();
+    });
+
+    if (REG.pendientes()) REG.enviarPendientes().then(function () { if (fuente === 'local') cargarLocal(); });
+    cargarLocal();
+  })();
+  </script>
+</body>
+</html>
