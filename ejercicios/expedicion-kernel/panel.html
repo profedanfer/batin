@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel · Expedición Kernel · BATIN</title>
+  <script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+  <link rel="stylesheet" href="../../batin.css">
+  <link rel="stylesheet" href="ek.css">
+  <style>
+    #ek .pn { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+    #ek .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 18px; }
+    #ek .kpi { background: var(--bg2); border: 1px solid var(--borde2); border-radius: var(--r2); padding: 16px 18px; }
+    #ek .kpi .v { font-family: var(--font-title); font-size: 28px; font-weight: 800; color: var(--texto-fuerte); line-height: 1.1; }
+    #ek .kpi .l { font-size: 12px; color: var(--texto2); margin-top: 4px; }
+    #ek .tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+    #ek .tabla th, #ek .tabla td { padding: 9px 10px; border-bottom: 1px solid var(--borde2); text-align: left; vertical-align: middle; }
+    #ek .tabla th { font-family: var(--font-mono); font-size: 10px; color: var(--texto2); text-transform: uppercase; letter-spacing: 1px; }
+    #ek .tabla td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+    #ek .celda-p { font-family: var(--font-mono); font-size: 13px; text-align: center; border-radius: 6px; padding: 6px 4px; }
+    #ek .celda-p small { display: block; font-size: 10px; color: var(--texto3); }
+    #ek .q-mal { display: block; color: var(--texto2); font-size: 12px; margin-top: 3px; font-family: var(--font-mono); white-space: pre-wrap; word-break: break-word; }
+    #ek .nota { font-size: 12px; color: var(--texto3); margin-top: 10px; }
+    #ek .scroll-x { overflow-x: auto; }
+    #ek .vacio { padding: 36px 20px; text-align: center; color: var(--texto2); }
+    #ek .barra { display: grid; grid-template-columns: 1fr 46px; gap: 8px; align-items: center; min-width: 140px; }
+    #ek .barra .p { height: 10px; background: var(--bg4); border-radius: 0 4px 4px 0; position: relative; }
+    #ek .barra .p i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--acento); border-radius: 0 4px 4px 0; }
+    #ek .barra span { font-family: var(--font-mono); font-size: 12px; text-align: right; }
+  </style>
+</head>
+<body data-page="construyendo">
+  <div id="batin-nav"></div>
+  <div class="breadcrumb">
+    <a href="../../construyendo.html">Estoy construyendo</a><span class="sep">/</span>
+    <a href="index.html">Expedición Kernel</a><span class="sep">/</span>
+    <span>Panel</span>
+  </div>
+
+  <main id="ek">
+    <div class="pn">
+      <div class="k-fila" style="justify-content:space-between;align-items:center">
+        <span class="k-kicker">BATIN · Expedición Kernel · para la profe</span>
+        <a class="k-btn sm" href="index.html">← Volver al juego</a>
+      </div>
+      <h1 class="k-h1">Panel de fallas</h1>
+      <p class="k-lead">Qué región y qué nivel cuestan más antes del examen, qué desafíos fallan más y qué respuestas equivocadas se repiten. Incluye las notas de los simulacros.</p>
+
+      <div class="k-card">
+        <div class="k-fila">
+          <div class="k-campo">Datos de
+            <span class="k-seg" role="group" aria-label="Fuente de datos">
+              <button type="button" data-fuente="local" class="act">Este navegador</button>
+              <button type="button" data-fuente="remoto">Planilla de Google</button>
+            </span>
+          </div>
+          <label class="k-campo oculto" id="f-clave-box">Clave del panel<input type="text" id="f-clave" autocomplete="off"></label>
+          <button class="k-btn sm oculto" id="f-cargar" type="button">Cargar</button>
+          <label class="k-campo">Curso<select id="f-curso"><option value="">Todos</option></select></label>
+          <label class="k-campo">Modo<select id="f-modo"><option value="">Todos</option><option value="expedicion">Expedición</option><option value="simulacro">Simulacro</option></select></label>
+        </div>
+        <div class="nota" id="f-estado"></div>
+      </div>
+
+      <div id="pn-cuerpo"></div>
+
+      <div class="k-fila" style="margin-top:26px;justify-content:space-between">
+        <button class="k-btn sm" id="b-borrar" type="button">🗑 Borrar todo lo guardado en este navegador</button>
+        <button class="k-btn sm" id="b-csv" type="button">⬇ Descargar CSV</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="batin-footer"></div>
+
+  <script src="../../batin.js"></script>
+  <script src="config.js"></script>
+  <script src="desafios.js"></script>
+  <script src="registro.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var REG = window.EkRegistro, CFG = window.EK_CONFIG || {};
+    var REGIONES = window.EK_REGIONES || [], RETO = {}, REGION = {};
+    REGIONES.forEach(function (rg, i) { REGION[rg.id] = rg; rg.retos.forEach(function (r) { RETO[r.id] = r; }); });
+    var PESO = (CFG.simulacro && CFG.simulacro.peso) || { 3: 1, 4: 2, 5: 3, 6: 3 };
+    var ESCALA = ((CFG.simulacro && CFG.simulacro.escala) || [{ desde: 0, nota: 1 }, { desde: 60, nota: 2 }, { desde: 70, nota: 3 }, { desde: 80, nota: 4 }, { desde: 90, nota: 5 }]).slice().sort(function (a, b) { return a.desde - b.desde; });
+    var fuente = 'local', todas = [];
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+    function nivel(f) { var m = /N(\d)\s*$/.exec(f.sub || ''); return m ? Number(m[1]) : (RETO[f.qid] ? RETO[f.qid].nv : 0); }
+    function notaDe(p) { var n = ESCALA[0].nota; ESCALA.forEach(function (x) { if (p >= x.desde) n = x.nota; }); return n; }
+    function colorP(p) { return 'background:color-mix(in srgb, ' + (p >= 70 ? 'var(--ok)' : p >= 50 ? 'var(--acento)' : 'var(--mal)') + ' ' + (18 + Math.round(Math.abs(p - 60) / 3)) + '%, var(--bg3))'; }
+
+    function llenarCursos() {
+      var sel = el('f-curso'), act = sel.value, c = {};
+      todas.forEach(function (f) { if (f.curso) c[f.curso] = 1; });
+      sel.innerHTML = '<option value="">Todos</option>' + Object.keys(c).sort().map(function (x) { return '<option' + (x === act ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('');
+    }
+    function filtradas() { var c = el('f-curso').value, m = el('f-modo').value; return todas.filter(function (f) { return (!c || f.curso === c) && (!m || f.modo === m); }); }
+    function cargarLocal() {
+      todas = REG.filasLocales();
+      el('f-estado').textContent = 'Respuestas registradas en esta computadora.' + (REG.hayEndpoint() && REG.pendientes() ? ' Hay ' + REG.pendientes() + ' esperando para enviarse a la planilla.' : '');
+      llenarCursos(); pintar();
+    }
+    function cargarRemoto() {
+      if (!REG.hayEndpoint()) { el('f-estado').textContent = 'Todavía no hay endpoint en config.js. Ver LEEME.md.'; todas = []; pintar(); return; }
+      el('f-estado').textContent = 'Cargando desde la planilla…';
+      REG.filasRemotas(el('f-clave').value.trim()).then(function (f) {
+        todas = f; try { sessionStorage.setItem('batin_ek3_clave', el('f-clave').value.trim()); } catch (e) {}
+        el('f-estado').textContent = 'Datos de la planilla: todas las computadoras.'; llenarCursos(); pintar();
+      }).catch(function (e) { el('f-estado').textContent = 'No se pudo leer la planilla: ' + e.message; todas = []; pintar(); });
+    }
+    try { el('f-clave').value = sessionStorage.getItem('batin_ek3_clave') || ''; } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (b) {
+      b.addEventListener('click', function () {
+        fuente = b.dataset.fuente;
+        Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (x) { x.classList.toggle('act', x === b); });
+        el('f-clave-box').classList.toggle('oculto', fuente !== 'remoto'); el('f-cargar').classList.toggle('oculto', fuente !== 'remoto');
+        if (fuente === 'local') cargarLocal(); else cargarRemoto();
+      });
+    });
+    el('f-cargar').addEventListener('click', cargarRemoto);
+    el('f-curso').addEventListener('change', pintar);
+    el('f-modo').addEventListener('change', pintar);
+
+    function kpi(v, l) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>'; }
+    function barra(p) { return '<div class="barra"><div class="p"><i style="width:' + p + '%"></i></div><span>' + p + '%</span></div>'; }
+
+    function simulacros(filas) {
+      var g = {};
+      filas.filter(function (f) { return f.modo === 'simulacro'; }).forEach(function (f) {
+        var x = g[f.partida] || (g[f.partida] = { nombre: f.equipo, curso: f.curso, fecha: f.fecha, tot: 0, ok: 0, porReg: {} });
+        var w = PESO[nivel(f)] || 1; x.tot += w; if (f.ok) x.ok += w;
+        var pr = x.porReg[f.tema] || (x.porReg[f.tema] = { ok: 0, n: 0 }); pr.n++; if (f.ok) pr.ok++;
+      });
+      return Object.keys(g).map(function (k) { var x = g[k]; x.pct = pct(x.ok, x.tot); x.nota = notaDe(x.pct); return x; })
+        .sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; });
+    }
+
+    function pintar() {
+      var filas = filtradas(), cuerpo = el('pn-cuerpo');
+      if (!filas.length) { cuerpo.innerHTML = '<div class="k-card vacio">Todavía no hay respuestas con estos filtros.<br>Cada desafío respondido en la expedición o en un simulacro aparece aquí.</div>'; return; }
+      var jug = {}; filas.forEach(function (f) { jug[f.equipo + '|' + f.curso] = 1; });
+      var ok = filas.filter(function (f) { return f.ok; }).length;
+      var sims = simulacros(filas);
+      var notaProm = sims.length ? (sims.reduce(function (a, s) { return a + s.nota; }, 0) / sims.length).toFixed(1) : '—';
+      var h = '<div class="kpis">' + kpi(Object.keys(jug).length, 'jugadores o equipos') + kpi(filas.length, 'desafíos respondidos') +
+        kpi(pct(ok, filas.length) + '%', 'de aciertos') + kpi(sims.length, 'simulacros') + kpi(notaProm, 'nota promedio del simulacro') + '</div>';
+
+      // Región × nivel
+      h += '<div class="k-card"><h3>Aciertos por región y nivel</h3><div class="scroll-x"><table class="tabla"><thead><tr><th>Región</th><th>Total</th>' + [3, 4, 5, 6].map(function (n) { return '<th style="text-align:center">N' + n + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        REGIONES.map(function (rg) {
+          var fs = filas.filter(function (f) { return f.tema === rg.id; });
+          if (!fs.length) return '';
+          return '<tr><td>' + rg.ico + ' <b>' + esc(rg.nombre) + '</b><br><small style="color:var(--texto3)">' + esc(rg.area) + '</small></td><td>' + barra(pct(fs.filter(function (f) { return f.ok; }).length, fs.length)) + '</td>' +
+            [3, 4, 5, 6].map(function (n) {
+              var x = fs.filter(function (f) { return nivel(f) === n; });
+              if (!x.length) return '<td></td>';
+              var p = pct(x.filter(function (f) { return f.ok; }).length, x.length);
+              return '<td><div class="celda-p" style="' + colorP(p) + '">' + p + '%<small>' + x.length + ' resp.</small></div></td>';
+            }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div><p class="nota">Verde: 70 % o más · magenta: entre 50 % y 70 % · rojo: menos de 50 %. N3 aplicar · N4 analizar · N5 evaluar · N6 crear.</p></div>';
+
+      // Desafíos más fallados
+      var g = {};
+      filas.forEach(function (f) { var x = g[f.qid] || (g[f.qid] = { qid: f.qid, tot: 0, ok: 0, malas: {} }); x.tot++; if (f.ok) x.ok++; var e = String(f.elegida || '').replace(/^\[pista\] /, ''); if (!f.ok && e) x.malas[e] = (x.malas[e] || 0) + 1; });
+      var dif = Object.keys(g).map(function (k) { return g[k]; }).filter(function (x) { return x.ok < x.tot; })
+        .sort(function (a, b) { return (a.ok / a.tot) - (b.ok / b.tot) || b.tot - a.tot; }).slice(0, 12);
+      h += '<div class="k-card"><h3>Desafíos con más fallas</h3>' + (dif.length ? '<div class="scroll-x"><table class="tabla"><thead><tr><th>Desafío</th><th class="num">Nivel</th><th class="num">Aciertos</th><th class="num">Resp.</th></tr></thead><tbody>' +
+        dif.map(function (x) {
+          var r = RETO[x.qid] || {}, top = Object.keys(x.malas).sort(function (a, b) { return x.malas[b] - x.malas[a]; })[0];
+          return '<tr><td><small style="color:var(--texto3)">' + esc(x.qid) + ' · ' + esc(r.sub || '') + '</small><br>' + esc(r.q || '(ya no está en desafios.js)') +
+            (top ? '<span class="q-mal">Respuesta equivocada más común: ' + esc(top) + (x.malas[top] > 1 ? ' (' + x.malas[top] + ' veces)' : '') + '</span>' : '') +
+            '</td><td class="num">N' + (r.nv || '?') + '</td><td class="num">' + pct(x.ok, x.tot) + '%</td><td class="num">' + x.tot + '</td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="nota">No hay desafíos fallados.</p>') + '</div>';
+
+      // Simulacros
+      if (sims.length) {
+        h += '<div class="k-card"><h3>Simulacros</h3><div class="scroll-x"><table class="tabla"><thead><tr><th>Estudiante</th><th>Curso</th><th>Fecha</th>' + REGIONES.map(function (rg) { return '<th style="text-align:center">' + rg.ico + '</th>'; }).join('') + '<th class="num">%</th><th class="num">Nota</th></tr></thead><tbody>' +
+          sims.map(function (s) {
+            return '<tr><td><b>' + esc(s.nombre) + '</b></td><td>' + esc(s.curso) + '</td><td>' + esc(String(s.fecha || '').slice(0, 10)) + '</td>' +
+              REGIONES.map(function (rg) { var p = s.porReg[rg.id]; return '<td style="text-align:center;font-family:var(--font-mono);font-size:12px">' + (p ? p.ok + '/' + p.n : '') + '</td>'; }).join('') +
+              '<td class="num">' + s.pct + '%</td><td class="num"><b>' + s.nota + '</b></td></tr>';
+          }).join('') + '</tbody></table></div><p class="nota">La nota usa la escala y los pesos de config.js (N3 = ' + (PESO[3] || 1) + ' pt, N4 = ' + (PESO[4] || 2) + ', N5 = ' + (PESO[5] || 3) + ').</p></div>';
+      }
+      cuerpo.innerHTML = h;
+    }
+
+    el('b-csv').addEventListener('click', function () {
+      var f = filtradas(); if (!f.length) return;
+      var cols = [['fecha', 'fecha'], ['curso', 'curso'], ['modo', 'modo'], ['equipo', 'jugador_o_equipo'], ['tema', 'region'], ['qid', 'desafio'], ['sub', 'subtema_nivel'], ['ok', 'acierto'], ['elegida', 'respuesta_equivocada']];
+      var csv = '﻿' + cols.map(function (c) { return c[1]; }).join(';') + '\n' + f.map(function (x) {
+        return cols.map(function (c) { var v = c[0] === 'ok' ? (x.ok ? 1 : 0) : (x[c[0]] == null ? '' : x[c[0]]); return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+      }).join('\n');
+      var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = 'expedicion-kernel-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+    });
+    el('b-borrar').addEventListener('click', function () {
+      var b = el('b-borrar');
+      if (!b.dataset.conf) { b.dataset.conf = '1'; b.textContent = '⚠ ¿Seguro? Se borran partidas y respuestas de este navegador (no la planilla). Clic otra vez para confirmar'; return; }
+      REG.borrarTodo(); b.dataset.conf = ''; b.textContent = '🗑 Borrar todo lo guardado en este navegador'; cargarLocal();
+    });
+
+    if (REG.pendientes()) REG.enviarPendientes();
+    cargarLocal();
+  })();
+  </script>
+</body>
+</html>
