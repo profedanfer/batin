@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Estoy aprendiendo · BATIN · profe.DanFer</title>
 <meta name="description" content="5 rutas de aprendizaje organizadas por tema. Algorítmica, Laboratorio, Programación, Sistemas y BD, Web e IA.">
-<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <link rel="stylesheet" href="batin.css">
 <style>
 
@@ -177,7 +176,7 @@
 .tema-card-body h4 {
   font-size: 14px;
   font-weight: 500;
-  color: var(--texto-fuerte);
+  color: #fff;
   margin-bottom: 4px;
   line-height: 1.4;
 }
@@ -215,7 +214,7 @@
 .rec-btn.pdf:hover { background: var(--naranja-s); }
 .rec-btn.web    { color: var(--azul);     border-color: var(--azul-b);     }
 .rec-btn.web:hover { background: var(--azul-s); }
-.rec-btn.yt     { color: var(--t-mal, #e87050);         border-color: rgba(232,112,80,.3); }
+.rec-btn.yt     { color: #e87050;         border-color: rgba(232,112,80,.3); }
 .rec-btn.yt:hover  { background: rgba(232,112,80,.08); }
 .rec-btn.quiz   { color: var(--violeta);  border-color: var(--violeta-b);  font-weight: 600; }
 .rec-btn.quiz:hover { background: var(--violeta-s); }
@@ -234,7 +233,7 @@
   border-radius: 4px;
   border: 1px solid rgba(80,200,160,.3);
   background: rgba(80,200,160,.07);
-  color: var(--t-verde, #50c8a0);
+  color: #50c8a0;
   white-space: nowrap;
   cursor: help;
 }
@@ -268,7 +267,7 @@
   font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--texto-fuerte);
+  color: #fff;
   margin-bottom: 6px;
 }
 
@@ -436,7 +435,7 @@
 .tuning-leyenda-titulo {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--t-verde, #50c8a0);
+  color: #50c8a0;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 12px;
@@ -809,22 +808,6 @@
         <div class="tema-card-right"></div>
       </div>
 
-      <div class="tema-card juego">
-        <div class="tema-card-left">
-          <span class="bloom bloom-n4">N3→N4</span>
-          <span class="tema-curso-badge">2do curso</span>
-          <span class="juego-badge">🎮 Juego</span>
-        </div>
-        <div class="tema-card-body">
-          <h4>Bit y el Laberinto del Tiempo — del análisis al código</h4>
-          <p>Juego integrador. Cada caso existe en dos épocas: en el pasado lo analizas (entradas, salidas, pseudocódigo, prueba de escritorio) y en el futuro verificas el mismo problema en Python. Variables, condiciones, for, while y listas.</p>
-          <div class="tema-recursos">
-            <a href="ejercicios/laberinto-del-tiempo/index.html" target="_blank" class="rec-btn juego">🎮 Entrar al laberinto</a>
-          </div>
-        </div>
-        <div class="tema-card-right"></div>
-      </div>
-
     </div>
 
     <div class="tema-grupo">
@@ -987,22 +970,6 @@
             <span class="tuning" title="Desempeñar roles en proyectos informáticos multidisciplinarios">T5</span>
             <span class="tuning" title="Aplicar estándares de calidad en desarrollo de soluciones">T9</span>
             <span class="tuning" title="Identificar oportunidades de mejora con TI">T7</span>
-          </div>
-        </div>
-        <div class="tema-card-right"></div>
-      </div>
-
-      <div class="tema-card juego">
-        <div class="tema-card-left">
-          <span class="bloom bloom-n5">N4→N6</span>
-          <span class="tema-curso-badge">3er curso</span>
-          <span class="juego-badge">🎮 Juego</span>
-        </div>
-        <div class="tema-card-body">
-          <h4>Sistema en Producción — escape room integrador</h4>
-          <p>Por equipos: construyen capa por capa el sistema de la biblioteca. Requerimientos, planilla, normalización, SQL en vivo, algoritmo y Python, estructuras de datos, Java en consola y defensa ante el jurado.</p>
-          <div class="tema-recursos">
-            <a href="ejercicios/sistema-en-produccion/index.html" target="_blank" class="rec-btn juego">🎮 Entrar al escape room</a>
           </div>
         </div>
         <div class="tema-card-right"></div>
@@ -1206,26 +1173,6 @@
     </div>
 
     <div class="tema-grupo">
-      <div class="tema-grupo-label">Repaso integrador — Excel, Word, PowerPoint y Proyectos</div>
-
-      <div class="tema-card juego">
-        <div class="tema-card-left">
-          <span class="bloom bloom-n4">N3→N5</span>
-          <span class="tema-curso-badge">1er curso</span>
-          <span class="juego-badge">🎮 Juego</span>
-        </div>
-        <div class="tema-card-body">
-          <h4>La OCA de la Ofimática</h4>
-          <p>Juego de tablero por equipos. Fórmulas y referencias, estilos e índice automático, saltos de sección, contraste en diapositivas, objetivos, hipótesis, encuestas y viabilidad. El dado decide cuánto avanzas; tu respuesta decide si avanzas.</p>
-          <div class="tema-recursos">
-            <a href="ejercicios/oca-ofimatica/index.html" target="_blank" class="rec-btn juego">🎮 Jugar la OCA</a>
-          </div>
-        </div>
-        <div class="tema-card-right"></div>
-      </div>
-    </div>
-
-    <div class="tema-grupo">
       <div class="tema-grupo-label">Identidad digital y seguridad</div>
 
       <div class="tema-card">
@@ -1322,7 +1269,6 @@
             <a href="https://drive.google.com/file/d/1y1AWVLgLm56nhbCPKubsX03cyKjYfoC6/preview" target="_blank" class="rec-btn pdf">📄 Nivel 3 · Bucles WHILE</a>
             <a href="https://drive.google.com/file/d/1f1qpqBQgtIAOTjMai-li-FvGsOmeTk57/preview" target="_blank" class="rec-btn pdf">📄 Ejercitario 1</a>
             <a href="https://drive.google.com/file/d/11BdkZC0IWuvWdtgeQgHHZOY_ZLoG63Sl/preview" target="_blank" class="rec-btn pdf">📄 Ejercitario 2</a>
-            <a href="ejercicios/laberinto-del-tiempo/index.html" target="_blank" class="rec-btn juego">🎮 Laberinto del Tiempo</a>
           </div>
         </div>
         <div class="tema-card-right"></div>
@@ -1375,12 +1321,12 @@
           <h4>Java — estructuras, condicionales y métodos</h4>
           <p>IF-ELSE, FOR, WHILE en Java. Arrays unidimensionales y bidimensionales. Funciones con parámetros y retorno. Sintaxis específica y atajos del lenguaje.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/1DN5BNxA3suy5OYfqvFzUwF1PIrGvVSvj/preview" target="_blank" class="rec-btn pdf">📄 Clase 15</a>
-            <a href="https://drive.google.com/file/d/1S8FIZsXtiheytx-9t5HOs1eSgtxNJZmU/preview" target="_blank" class="rec-btn pdf">📄 C16 · Java (introducción)</a>
-            <a href="https://drive.google.com/file/d/1tfbwi8mspielEXnjM7uIetn9aAmFfKjr/preview" target="_blank" class="rec-btn pdf">📄 C17 · Java parte 2</a>
-            <a href="https://drive.google.com/file/d/1R_7kNt6y9UyYJXk-MdNS0ELcoT5DL5NK/preview" target="_blank" class="rec-btn pdf">📄 C18 · Ciclos en Java</a>
-            <a href="https://drive.google.com/file/d/1-EXgN8ufCxNuttMEiRAwO4Q_6g1HIwpA/preview" target="_blank" class="rec-btn pdf">📄 C19 · Ciclos en Java (parte 2)</a>
-            <a href="https://drive.google.com/file/d/1LD924CvWDyK1M21ERpE-WJwI0UT4rMJc/preview" target="_blank" class="rec-btn pdf">📄 C20 · Arrays en Java</a>
+            <a href="https://drive.google.com/file/d/1_0-PLtTEDYaXkPEBLgdCJWU_jutkRqpb/preview" target="_blank" class="rec-btn pdf">📄 Clase 15</a>
+            <a href="https://drive.google.com/file/d/1LNe_jjuM5E0bvmkseRxjkM5okm9n-N0y/preview" target="_blank" class="rec-btn pdf">📄 C16 · Java (introducción)</a>
+            <a href="https://drive.google.com/file/d/1ym_sCZsNG96eZexJdAsdbC5g24I0ew8e/preview" target="_blank" class="rec-btn pdf">📄 C17 · Java parte 2</a>
+            <a href="https://drive.google.com/file/d/1moe7263hFgSbh99nV5jCvCzeUHMGk6mM/preview" target="_blank" class="rec-btn pdf">📄 C18 · Ciclos en Java</a>
+            <a href="https://drive.google.com/file/d/1lCDAnD30G3PXWngTYiW48FZjTD522W8y/preview" target="_blank" class="rec-btn pdf">📄 C19 · Ciclos en Java (parte 2)</a>
+            <a href="https://drive.google.com/file/d/1wl59hqOA8LMlU4JSrXcCrp-UbHaAnS1r/preview" target="_blank" class="rec-btn pdf">📄 C20 · Arrays en Java</a>
             <a href="ejercicios/practica_java_ciclos.html" target="_blank" class="rec-btn web">⚡ Práctica interactiva · Ciclos en Java</a>
             <a href="ejercicios/java_arreglos.html" target="_blank" class="rec-btn web">⚡ Práctica interactiva · Arreglos en Java</a>
             <a href="materiales/java_desde_cero_laboratorio.pdf" target="_blank" class="rec-btn pdf">📄 Java desde cero</a>
@@ -1426,12 +1372,12 @@
           <h4>Ciclo de vida del software y sistemas de información</h4>
           <p>Qué es un sistema informático. Etapas del ciclo de vida. Datos vs. información. Sistemas de información en organizaciones reales.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/1tVs0h2LgkLQjwv0W4vayh-7w80y3-8MR/preview" target="_blank" class="rec-btn pdf">📄 Clase 01 · Repaso</a>
-            <a href="https://drive.google.com/file/d/1V7Jt8tZ_VvMHJzMydp1Xoy77au_AGIYZ/preview" target="_blank" class="rec-btn pdf">📄 Clase 02 · Datos</a>
-            <a href="https://drive.google.com/file/d/1zyYA6H5ia6IajgdZsljZuWMrCsWMHK3X/preview" target="_blank" class="rec-btn pdf">📄 Cómo crear BD en Excel</a>
-            <a href="https://drive.google.com/file/d/1JaxJ2-DhE314XHU8hdtP00cg1Pmj-RCz/preview" target="_blank" class="rec-btn pdf">📄 Sistema de Información</a>
-            <a href="https://drive.google.com/file/d/1J7JCOxjlc2OswC7Wr3zv_HmmI791Mdp0/preview" target="_blank" class="rec-btn pdf">📄 Ciclo de Vida</a>
-            <a href="https://drive.google.com/file/d/18jT8uiP0Zc0GDNKGHnIp4Tl4AHaReUSO/preview" target="_blank" class="rec-btn pdf">📄 Especificación de Requerimientos</a>
+            <a href="https://drive.google.com/file/d/1a7shVoDsULbvyR4IU0CkoDKPZq6k42pu/preview" target="_blank" class="rec-btn pdf">📄 Clase 01 · Repaso</a>
+            <a href="https://drive.google.com/file/d/16wY4cxduce76Ph1SjO8eJYj1hEzH06Pz/preview" target="_blank" class="rec-btn pdf">📄 Clase 02 · Datos</a>
+            <a href="https://drive.google.com/file/d/1ShTDJxQ8-NhbNCe1rjwidJT6zVodv4VM/preview" target="_blank" class="rec-btn pdf">📄 Cómo crear BD en Excel</a>
+            <a href="https://drive.google.com/file/d/1DBBVm_X9S5SQfgj5V6Lp5XDIJBHl-gVM/preview" target="_blank" class="rec-btn pdf">📄 Sistema de Información</a>
+            <a href="https://drive.google.com/file/d/1DGv8Hq4I-dn5XEIEhOLqsJNVrV0_t7Ii/preview" target="_blank" class="rec-btn pdf">📄 Ciclo de Vida</a>
+            <a href="https://drive.google.com/file/d/1ra_vjLbIxDEukCidtqaMjg-0qxmOTQ8Z/preview" target="_blank" class="rec-btn pdf">📄 Especificación de Requerimientos</a>
             <a href="https://youtu.be/8WVd37hiHFc" target="_blank" class="rec-btn yt">▶️ Video: De la Idea al Plan de Acción</a>
             <a href="https://youtu.be/SHC8RyfgRzM" target="_blank" class="rec-btn yt">▶️ Video: Teoría · Factibilidad</a>
           </div>
@@ -1475,11 +1421,11 @@
           <h4>Normalización — 1FN, 2FN, 3FN</h4>
           <p>Dependencias funcionales. Proceso de normalización hasta tercera forma normal. Sin redundancias, sin anomalías, sin inconsistencias.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/1IfDaIVWL90R_hks8J3KZn3v3jeL4mzyt/preview" target="_blank" class="rec-btn pdf">📄 Solo normalización · teoría</a>
-            <a href="https://drive.google.com/file/d/1YuPlqctPJuNkXWfTKXU8bp4szvCdxFMM/preview" target="_blank" class="rec-btn pdf">📄 Normalización · fijemos</a>
-            <a href="https://drive.google.com/file/d/1f3o5K8czv-X2WYfTbDwZ0lHNqj6yXLW9/preview" target="_blank" class="rec-btn pdf">📄 Refuerzo · Normalización</a>
+            <a href="https://drive.google.com/file/d/1mL5Imml9-gJwzSdh6EBpIdzDfHKhPHBD/preview" target="_blank" class="rec-btn pdf">📄 Solo normalización · teoría</a>
+            <a href="https://drive.google.com/file/d/11wR5Ay9rpsYgPYpziSDLVVUqQy8vvN05/preview" target="_blank" class="rec-btn pdf">📄 Normalización · fijemos</a>
+            <a href="https://drive.google.com/file/d/1WsW-rLRKnMs_yYbR8N8h3YFCs2Cz0QEQ/preview" target="_blank" class="rec-btn pdf">📄 Refuerzo · Normalización</a>
             <a href="https://drive.google.com/file/d/1tuu10j9ioa-GjipnkFBVYbyQ2x1flLYa/preview" target="_blank" class="rec-btn pdf">📄 De conceptual a lógico</a>
-            <a href="https://drive.google.com/file/d/11DMJml93o_dViCCnPBR_lyuPJcyNMqL-/preview" target="_blank" class="rec-btn pdf">📄 Revisión tareas C2 y C3</a>
+            <a href="https://drive.google.com/file/d/1f9sjreWZL40L_Wn69HCBjhR41JeKVYv5/preview" target="_blank" class="rec-btn pdf">📄 Revisión tareas C2 y C3</a>
           </div>
         </div>
         <div class="tema-card-right"></div>
@@ -1498,10 +1444,11 @@
           <h4>Bases de datos relacionales — fundamentos</h4>
           <p>Modelo relacional. Tablas, registros, campos. Relaciones entre tablas. Herramienta SQLite para práctica. Manual de referencia MySQL.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/1DqYPx4LLchRuR00aDyvlOiEYoniMeJPO/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 1</a>
-            <a href="https://drive.google.com/file/d/1Vlb4dh4qPlhn0QRHPBV50f4TKkvP90_L/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 2</a>
-            <a href="https://drive.google.com/file/d/1VVzCtqOUPMxE8MQd1zXu2lCFz-XKb31o/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 3</a>
-            <a href="https://drive.google.com/file/d/1dpI6Bi9vhXmTpJQ1PH8OOfA0DW5DJFUk/preview" target="_blank" class="rec-btn pdf">📄 Refuerzo BD</a>
+            <a href="https://drive.google.com/file/d/194W5OL-EzR_xCnYM9vDxANDjnJ9t6RRS/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 1</a>
+            <a href="https://drive.google.com/file/d/1ErNhhy5Jf8ixeIapNzqlPcgfMU7M_5op/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 2</a>
+            <a href="https://drive.google.com/file/d/1c6eOIYjkFN46yxi816P3B9tfkkwoLLjf/preview" target="_blank" class="rec-btn pdf">📄 Base de Datos · parte 3</a>
+            <!-- PENDIENTE: la carpeta "Clase 13. Refuerzo" está vacía en Drive — subir el archivo y poner aquí su enlace
+            <a href="https://drive.google.com/file/d/1dpI6Bi9vhXmTpJQ1PH8OOfA0DW5DJFUk/preview" target="_blank" class="rec-btn pdf">📄 Refuerzo BD</a> -->
             <a href="https://drive.google.com/file/d/1BvtPFDfKw53DpoG641Hw8DXvTU3EERR7/preview" target="_blank" class="rec-btn pdf">📄 Gabinete de Informática</a>
           </div>
         </div>
@@ -1549,10 +1496,10 @@
           <h4>Programación Orientada a Objetos — POO</h4>
           <p>Clases, objetos, encapsulamiento, abstracción, herencia, polimorfismo. Manejo de excepciones. Diseño orientado a objetos en Java.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/1S8FIZsXtiheytx-9t5HOs1eSgtxNJZmU/preview" target="_blank" class="rec-btn pdf">📄 Introducción Java</a>
-            <a href="https://drive.google.com/file/d/1tfbwi8mspielEXnjM7uIetn9aAmFfKjr/preview" target="_blank" class="rec-btn pdf">📄 Java p2</a>
-            <a href="https://drive.google.com/file/d/1R_7kNt6y9UyYJXk-MdNS0ELcoT5DL5NK/preview" target="_blank" class="rec-btn pdf">📄 Java p3</a>
-            <a href="https://drive.google.com/file/d/1LD924CvWDyK1M21ERpE-WJwI0UT4rMJc/preview" target="_blank" class="rec-btn pdf">📄 Matrices Java</a>
+            <a href="https://drive.google.com/file/d/1LNe_jjuM5E0bvmkseRxjkM5okm9n-N0y/preview" target="_blank" class="rec-btn pdf">📄 Introducción Java</a>
+            <a href="https://drive.google.com/file/d/1ym_sCZsNG96eZexJdAsdbC5g24I0ew8e/preview" target="_blank" class="rec-btn pdf">📄 Java p2</a>
+            <a href="https://drive.google.com/file/d/1moe7263hFgSbh99nV5jCvCzeUHMGk6mM/preview" target="_blank" class="rec-btn pdf">📄 Java p3</a>
+            <a href="https://drive.google.com/file/d/1wl59hqOA8LMlU4JSrXcCrp-UbHaAnS1r/preview" target="_blank" class="rec-btn pdf">📄 Matrices Java</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
@@ -1584,7 +1531,7 @@
             <a href="https://drive.google.com/file/d/1kfcip-xttSk_qOZ8Q68FbTr5qeqINwMK/preview" target="_blank" class="rec-btn pdf">🖼️ Diagrama · Regado Inteligente</a>
             <a href="https://drive.google.com/file/d/1Y4qvx6Ql0y1DtUJxMYrQsYQD7hF5-z_A/preview" target="_blank" class="rec-btn pdf">📄 Casos de Uso · Sitio Web Institucional</a>
             <a href="https://drive.google.com/file/d/1UZQhtDbkWcNjTs07fSYKi0heqJ3s0TPA/preview" target="_blank" class="rec-btn pdf">🖼️ Diagrama · Sitio Web Institucional</a>
-            <a href="https://drive.google.com/file/d/1B3uK4jmVRxFYPfRECeiuzTN_oLQ8SPvR/preview" target="_blank" class="rec-btn pdf">📄 Desafío ICIENTEC · UML</a>
+            <a href="https://drive.google.com/file/d/1Tq5h5yLMERSIONqQrBtrhX5DQMyJ5lMd/preview" target="_blank" class="rec-btn pdf">📄 Desafío ICIENTEC · UML</a>
           </div>
           <div class="tuning-grupo">
             <span class="tuning" title="Concebir, diseñar, desarrollar y operar soluciones informáticas">T2</span>
@@ -1604,7 +1551,7 @@
           <h4>Caso integrador — Java + Base de datos</h4>
           <p>Proyecto completo: normalización → DER → SQL → Java. Caso ICIENTEC 2025 como referencia. El sistema que construye el técnico.</p>
           <div class="tema-recursos">
-            <a href="https://drive.google.com/file/d/11MS7AcyyEqxPfx543qTRTw6psnHK6_RO/preview" target="_blank" class="rec-btn pdf">📄 Caso ICIENTEC BD 2025</a>
+            <a href="https://drive.google.com/file/d/1XWg6QojUTbQ58I1k0hPCbrVf_GBzvZ1F/preview" target="_blank" class="rec-btn pdf">📄 Caso ICIENTEC BD 2025</a>
             <a href="https://drive.google.com/file/d/1S31Q7XmtbBe0b7K8evLQ4GdelDIUKTPS/preview" target="_blank" class="rec-btn pdf">📄 Ejercicios fijación SQL</a>
             <a href="ejercicios/java-jdbc-patafeliz.html" class="rec-btn quiz">💻 Guía interactiva: Java + JDBC · Clínica PataFeliz</a>
           </div>
