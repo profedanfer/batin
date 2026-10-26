@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel · Arcade de 2° · BATIN</title>
+  <script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+  <link rel="stylesheet" href="../../batin.css">
+  <link rel="stylesheet" href="arcade.css">
+  <style>
+    #ar .pn { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+    #ar .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 18px; }
+    #ar .kpi { background: var(--bg2); border: 1px solid var(--borde2); border-radius: var(--r2); padding: 16px 18px; }
+    #ar .kpi .v { font-family: var(--font-title); font-size: 28px; font-weight: 800; color: var(--texto-fuerte); line-height: 1.1; }
+    #ar .kpi .l { font-size: 12px; color: var(--texto2); margin-top: 4px; }
+    #ar .tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+    #ar .tabla th, #ar .tabla td { padding: 9px 10px; border-bottom: 1px solid var(--borde2); text-align: left; vertical-align: middle; }
+    #ar .tabla th { font-family: var(--font-mono); font-size: 10px; color: var(--texto2); text-transform: uppercase; letter-spacing: 1px; }
+    #ar .tabla td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+    #ar .celda-p { font-family: var(--font-mono); font-size: 13px; text-align: center; border-radius: 6px; padding: 6px 4px; }
+    #ar .celda-p small { display: block; font-size: 10px; color: var(--texto3); }
+    #ar .q-mal { display: block; color: var(--texto2); font-size: 12px; margin-top: 3px; font-family: var(--font-mono); white-space: pre-wrap; word-break: break-word; }
+    #ar .nota { font-size: 12px; color: var(--texto3); margin-top: 10px; }
+    #ar .scroll-x { overflow-x: auto; }
+    #ar .vacio { padding: 36px 20px; text-align: center; color: var(--texto2); }
+    #ar .barra { display: grid; grid-template-columns: 1fr 46px; gap: 8px; align-items: center; min-width: 140px; }
+    #ar .barra .p { height: 10px; background: var(--bg4); border-radius: 0 4px 4px 0; position: relative; }
+    #ar .barra .p i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--juego); border-radius: 0 4px 4px 0; }
+    #ar .barra span { font-family: var(--font-mono); font-size: 12px; text-align: right; }
+  </style>
+</head>
+<body data-page="aprendiendo">
+  <div id="batin-nav"></div>
+  <div class="breadcrumb">
+    <a href="../../aprendiendo.html">Estoy aprendiendo</a><span class="sep">/</span>
+    <a href="index.html">Arcade de 2°</a><span class="sep">/</span>
+    <span>Panel</span>
+  </div>
+
+  <main id="ar">
+    <div class="pn">
+      <div class="a-fila" style="justify-content:space-between;align-items:center">
+        <span class="a-kicker">BATIN · Arcade de 2° · para la profe</span>
+        <a class="a-btn sm" href="index.html">← Volver al arcade</a>
+      </div>
+      <h1 class="a-h1">Panel de fallas</h1>
+      <p class="a-lead">Qué tema y qué nivel cuestan más antes del examen, en cuál de los tres juegos, qué desafíos fallan más y qué respuestas equivocadas se repiten.</p>
+
+      <div class="a-card">
+        <div class="a-fila">
+          <div class="a-campo">Datos de
+            <span class="a-seg" role="group" aria-label="Fuente de datos">
+              <button type="button" data-fuente="local" class="act">Este navegador</button>
+              <button type="button" data-fuente="remoto">Planilla de Google</button>
+            </span>
+          </div>
+          <label class="a-campo oculto" id="f-clave-box">Clave del panel<input type="text" id="f-clave" autocomplete="off"></label>
+          <button class="a-btn sm oculto" id="f-cargar" type="button">Cargar</button>
+          <label class="a-campo">Curso<select id="f-curso"><option value="">Todos</option></select></label>
+          <label class="a-campo">Juego<select id="f-modo"><option value="">Todos</option><option value="detective">🐱 Detective</option><option value="flota">🤖 Flota</option><option value="copa">👩‍💻 Copa</option></select></label>
+        </div>
+        <div class="nota" id="f-estado"></div>
+      </div>
+
+      <div id="pn-cuerpo"></div>
+
+      <div class="a-fila" style="margin-top:26px;justify-content:space-between">
+        <button class="a-btn sm" id="b-borrar" type="button">🗑 Borrar todo lo guardado en este navegador</button>
+        <button class="a-btn sm" id="b-csv" type="button">⬇ Descargar CSV</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="batin-footer"></div>
+
+  <script src="../../batin.js"></script>
+  <script src="config.js"></script>
+  <script src="banco.js"></script>
+  <script src="casos.js"></script>
+  <script src="comun.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var A = window.AR, REG = A.registro, esc = A.esc;
+    var RETO = {};
+    (window.AR_BANCO || []).forEach(function (r) { RETO[r.id] = r; });
+    (window.AR_CASOS || []).forEach(function (c) { c.pasos.forEach(function (p) { RETO[p.id] = { id: p.id, q: '[' + c.titulo + '] ' + p.q, sub: p.sub, nv: p.nv, tema: c.tema }; }); });
+    RETO['IDX-PS'] = { q: 'Escribir la celda del disparo en PSeInt: tablero[f,c] (desde 1)', sub: 'Índices en PSeInt', nv: 3, tema: 'matrices' };
+    RETO['IDX-PY'] = { q: 'Escribir la celda del disparo en Python: tablero[f][c] (desde 0)', sub: 'Índices en Python', nv: 3, tema: 'matrices' };
+    var JUEGO = { detective: '🐱 Gatiel detective', flota: '🤖 La flota de Bit', copa: '👩‍💻 Copa Techi' };
+    var fuente = 'local', todas = [];
+    function el(id) { return document.getElementById(id); }
+    function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+    function nivel(f) { var m = /N(\d)\s*$/.exec(f.sub || ''); return m ? Number(m[1]) : (RETO[f.qid] ? RETO[f.qid].nv : 0); }
+    function colorP(p) { return 'background:color-mix(in srgb, ' + (p >= 70 ? 'var(--ok)' : p >= 50 ? 'var(--juego)' : 'var(--mal)') + ' ' + (18 + Math.round(Math.abs(p - 60) / 3)) + '%, var(--bg3))'; }
+    function llenarCursos() {
+      var sel = el('f-curso'), act = sel.value, c = {};
+      todas.forEach(function (f) { if (f.curso) c[f.curso] = 1; });
+      sel.innerHTML = '<option value="">Todos</option>' + Object.keys(c).sort().map(function (x) { return '<option' + (x === act ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('');
+    }
+    function filtradas() { var c = el('f-curso').value, m = el('f-modo').value; return todas.filter(function (f) { return (!c || f.curso === c) && (!m || f.modo === m); }); }
+    function cargarLocal() {
+      todas = REG.filasLocales();
+      el('f-estado').textContent = 'Respuestas registradas en esta computadora.' + (REG.hayEndpoint() && REG.pendientes() ? ' Hay ' + REG.pendientes() + ' esperando para enviarse a la planilla.' : '');
+      llenarCursos(); pintar();
+    }
+    function cargarRemoto() {
+      if (!REG.hayEndpoint()) { el('f-estado').textContent = 'Todavía no hay endpoint en config.js. Ver LEEME.md.'; todas = []; pintar(); return; }
+      el('f-estado').textContent = 'Cargando desde la planilla…';
+      REG.filasRemotas(el('f-clave').value.trim()).then(function (f) {
+        todas = f; try { sessionStorage.setItem('batin_ar2_clave', el('f-clave').value.trim()); } catch (e) {}
+        el('f-estado').textContent = 'Datos de la planilla: todas las computadoras.'; llenarCursos(); pintar();
+      }).catch(function (e) { el('f-estado').textContent = 'No se pudo leer la planilla: ' + e.message; todas = []; pintar(); });
+    }
+    try { el('f-clave').value = sessionStorage.getItem('batin_ar2_clave') || ''; } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (b) {
+      b.addEventListener('click', function () {
+        fuente = b.dataset.fuente;
+        Array.prototype.forEach.call(document.querySelectorAll('[data-fuente]'), function (x) { x.classList.toggle('act', x === b); });
+        el('f-clave-box').classList.toggle('oculto', fuente !== 'remoto'); el('f-cargar').classList.toggle('oculto', fuente !== 'remoto');
+        if (fuente === 'local') cargarLocal(); else cargarRemoto();
+      });
+    });
+    el('f-cargar').addEventListener('click', cargarRemoto);
+    el('f-curso').addEventListener('change', pintar);
+    el('f-modo').addEventListener('change', pintar);
+    function kpi(v, l) { return '<div class="kpi"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>'; }
+    function barra(p) { return '<div class="barra"><div class="p"><i style="width:' + p + '%"></i></div><span>' + p + '%</span></div>'; }
+
+    function pintar() {
+      var filas = filtradas(), cuerpo = el('pn-cuerpo');
+      if (!filas.length) { cuerpo.innerHTML = '<div class="a-card vacio">Todavía no hay respuestas con estos filtros.<br>Cada desafío respondido en los tres juegos aparece aquí.</div>'; return; }
+      var jug = {}; filas.forEach(function (f) { jug[f.equipo + '|' + f.curso] = 1; });
+      var ok = filas.filter(function (f) { return f.ok; }).length;
+      var h = '<div class="kpis">' + kpi(Object.keys(jug).length, 'jugadores o equipos') + kpi(filas.length, 'respuestas') + kpi(pct(ok, filas.length) + '%', 'de aciertos') +
+        Object.keys(JUEGO).map(function (m) { var n = filas.filter(function (f) { return f.modo === m; }).length; return n ? kpi(n, JUEGO[m]) : ''; }).join('') + '</div>';
+      h += '<div class="a-card"><h3>Aciertos por tema y nivel</h3><div class="scroll-x"><table class="tabla"><thead><tr><th>Tema</th><th>Total</th>' + [3, 4, 5, 6].map(function (n) { return '<th style="text-align:center">N' + n + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        Object.keys(A.TEMA).map(function (t) {
+          var fs = filas.filter(function (f) { return f.tema === t; });
+          if (!fs.length) return '';
+          return '<tr><td>' + A.TEMA[t].ico + ' <b>' + A.TEMA[t].nom + '</b></td><td>' + barra(pct(fs.filter(function (f) { return f.ok; }).length, fs.length)) + '</td>' +
+            [3, 4, 5, 6].map(function (n) {
+              var x = fs.filter(function (f) { return nivel(f) === n; });
+              if (!x.length) return '<td></td>';
+              var p = pct(x.filter(function (f) { return f.ok; }).length, x.length);
+              return '<td><div class="celda-p" style="' + colorP(p) + '">' + p + '%<small>' + x.length + ' resp.</small></div></td>';
+            }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div><p class="nota">Verde: 70 % o más · magenta: entre 50 % y 70 % · rojo: menos de 50 %. En Matrices N3 se incluyen los disparos de la flota (escribir tablero[f,c] o tablero[f][c]).</p></div>';
+      var g = {};
+      filas.forEach(function (f) { var x = g[f.qid] || (g[f.qid] = { qid: f.qid, tot: 0, ok: 0, malas: {} }); x.tot++; if (f.ok) x.ok++; var e = String(f.elegida || '').replace(/^\[(pista|robo)\] /, ''); if (!f.ok && e) x.malas[e] = (x.malas[e] || 0) + 1; });
+      var dif = Object.keys(g).map(function (k) { return g[k]; }).filter(function (x) { return x.ok < x.tot; })
+        .sort(function (a, b) { return (a.ok / a.tot) - (b.ok / b.tot) || b.tot - a.tot; }).slice(0, 12);
+      h += '<div class="a-card"><h3>Desafíos con más fallas</h3>' + (dif.length ? '<div class="scroll-x"><table class="tabla"><thead><tr><th>Desafío</th><th class="num">Nivel</th><th class="num">Aciertos</th><th class="num">Resp.</th></tr></thead><tbody>' +
+        dif.map(function (x) {
+          var r = RETO[x.qid] || {}, top = Object.keys(x.malas).sort(function (a, b) { return x.malas[b] - x.malas[a]; })[0];
+          return '<tr><td><small style="color:var(--texto3)">' + esc(x.qid) + ' · ' + esc(r.sub || '') + '</small><br>' + esc(r.q || '(ya no está en el banco)') +
+            (top ? '<span class="q-mal">Respuesta equivocada más común: ' + esc(top) + (x.malas[top] > 1 ? ' (' + x.malas[top] + ' veces)' : '') + '</span>' : '') +
+            '</td><td class="num">N' + (r.nv || '?') + '</td><td class="num">' + pct(x.ok, x.tot) + '%</td><td class="num">' + x.tot + '</td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="nota">No hay desafíos fallados.</p>') + '</div>';
+      var por = {};
+      filas.forEach(function (f) { var k = f.equipo + '|' + f.curso; var x = por[k] || (por[k] = { nom: f.equipo, curso: f.curso, n: 0, ok: 0, juegos: {} }); x.n++; if (f.ok) x.ok++; x.juegos[f.modo] = 1; });
+      var lista = Object.keys(por).map(function (k) { return por[k]; }).sort(function (a, b) { return b.n - a.n; });
+      h += '<div class="a-card"><h3>Por estudiante o equipo</h3><div class="scroll-x"><table class="tabla"><thead><tr><th>Nombre</th><th>Curso</th><th>Juegos</th><th class="num">Respuestas</th><th>Aciertos</th></tr></thead><tbody>' +
+        lista.map(function (x) { return '<tr><td><b>' + esc(x.nom) + '</b></td><td>' + esc(x.curso) + '</td><td>' + Object.keys(x.juegos).map(function (m) { return (JUEGO[m] || m).split(' ')[0]; }).join(' ') + '</td><td class="num">' + x.n + '</td><td>' + barra(pct(x.ok, x.n)) + '</td></tr>'; }).join('') +
+        '</tbody></table></div></div>';
+      cuerpo.innerHTML = h;
+    }
+
+    el('b-csv').addEventListener('click', function () {
+      var f = filtradas(); if (!f.length) return;
+      var cols = [['fecha', 'fecha'], ['curso', 'curso'], ['modo', 'juego'], ['equipo', 'jugador_o_equipo'], ['tema', 'tema'], ['qid', 'desafio'], ['sub', 'subtema_nivel'], ['ok', 'acierto'], ['elegida', 'respuesta_equivocada']];
+      var csv = '﻿' + cols.map(function (c) { return c[1]; }).join(';') + '\n' + f.map(function (x) {
+        return cols.map(function (c) { var v = c[0] === 'ok' ? (x.ok ? 1 : 0) : (x[c[0]] == null ? '' : x[c[0]]); return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+      }).join('\n');
+      var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = 'arcade-2do-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+    });
+    el('b-borrar').addEventListener('click', function () {
+      var b = el('b-borrar');
+      if (!b.dataset.conf) { b.dataset.conf = '1'; b.textContent = '⚠ ¿Seguro? Se borran respuestas, investigaciones y el salón de la fama de este navegador (no la planilla). Clic otra vez para confirmar'; return; }
+      REG.borrarTodo(); b.dataset.conf = ''; b.textContent = '🗑 Borrar todo lo guardado en este navegador'; cargarLocal();
+    });
+    cargarLocal();
+  })();
+  </script>
+</body>
+</html>
