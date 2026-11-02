@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Árboles en Juego · BATIN · profe.DanFer</title>
+<meta name="description" content="Árboles, árboles binarios, recorridos y búsqueda en ABB: teoría interactiva, juegos por niveles y casos reales. Algorítmica 3.">
+<link rel="stylesheet" href="../batin.css">
+<style>
+.arb-hero{background:var(--bg2);border-bottom:1px solid var(--borde);padding:48px 56px 40px;position:relative;overflow:hidden}
+.arb-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 40%,var(--violeta-s) 0%,transparent 60%),radial-gradient(ellipse at 8% 85%,var(--naranja-s) 0%,transparent 50%);pointer-events:none}
+.arb-hero-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 210px;gap:40px;align-items:center;position:relative;z-index:1}
+.arb-hero-char img{width:190px;object-fit:contain;filter:drop-shadow(0 6px 24px var(--azul-s))}
+.arb-volver{display:inline-block;margin-bottom:14px;font-family:var(--font-mono);font-size:13px;color:var(--texto2);text-decoration:none}
+.arb-volver:hover{color:var(--naranja)}
+.arb-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.arb-tags a{text-decoration:none}
+#arb-app{display:block;max-width:1120px;margin:0 auto}
+@media (max-width:760px){.arb-hero{padding:32px 18px 28px}.arb-hero-inner{grid-template-columns:1fr}.arb-hero-char{display:none}}
+</style>
+</head>
+<body data-page="aprendiendo">
+
+<div id="batin-nav"></div>
+
+<!-- HERO -->
+<div class="arb-hero">
+  <div class="arb-hero-inner">
+    <div>
+      <a class="arb-volver" href="../aprendiendo.html#algoritmica">← Ruta Algorítmica</a><br>
+      <span class="kicker azul">// Algorítmica 3 · estructuras no lineales</span>
+      <h1 class="titulo-h1 mt-8">Árboles en Juego</h1>
+      <p class="desc mt-12">Árboles, árboles binarios, recorridos y búsqueda en ABB. Empieza por la teoría, practica nivel por nivel y termina resolviendo <strong style="color:var(--texto)">casos reales</strong>.</p>
+      <div class="arb-tags">
+        <a href="#teoria" class="tag tag-azul">Teoría</a>
+        <a href="#n1" class="tag tag-naranja">N1 · Partes</a>
+        <a href="#n2" class="tag tag-violeta">N2 · Recorridos</a>
+        <a href="#n3" class="tag tag-azul">N3 · ABB</a>
+        <a href="#n4" class="tag tag-naranja">N4 · Casos reales</a>
+        <a href="#n5" class="tag tag-violeta">N5 · Desafío</a>
+      </div>
+    </div>
+    <div class="arb-hero-char"><img src="../img/bit_motivando.png" alt="Bit"></div>
+  </div>
+</div>
+
+<!-- JUEGO (se monta en un Shadow DOM para que sus estilos no choquen con batin.css) -->
+<div id="arb-app"></div>
+<template id="arb-tpl">
+<style>
+
+/* Layout: cabecera + ruta de niveles fija arriba; cada nivel = teoría corrida o grilla árbol | panel de juego */
+:host{display:block;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  --surface:var(--bg2,#ffffff); --surface-2:var(--bg3,#efedf5); --ink:var(--texto,#1c1a24); --muted:var(--texto2,#5b576b); --line:var(--borde2,#d6d2e1);
+  --ok:#2e9d5f; --ok-s:rgba(46,157,95,.16); --bad:#d9434e; --bad-s:rgba(217,67,78,.16); --on-accent:#ffffff;
+  --f-display:var(--font-title,'Trebuchet MS',sans-serif); --f-body:'Segoe UI',system-ui,sans-serif; --f-mono:var(--font-mono,ui-monospace,Consolas,monospace);
+  --tab:var(--azul); --tab-s:var(--azul-s);
+}
+*{box-sizing:border-box}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.t-azul{--tab:var(--azul);--tab-s:var(--azul-s)}
+.t-naranja{--tab:var(--naranja);--tab-s:var(--naranja-s)}
+.t-violeta{--tab:var(--violeta);--tab-s:var(--violeta-s)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+p{margin:0}
+a{color:var(--tab)}
+code,kbd{font-family:var(--f-mono);font-size:.88em;background:var(--surface-2);padding:.08em .35em;border-radius:5px}
+
+/* cabecera */
+.top{padding-block:28px 18px}
+.top .wrap{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:end;justify-content:space-between}
+.eyebrow{font:600 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.top h1{font-size:clamp(2.1rem,5vw,3.3rem);font-weight:700;margin-top:6px}
+.top h1 .r{color:var(--naranja)} .top h1 .b{color:var(--violeta)} .top h1 .z{color:var(--azul)}
+.top .lead{color:var(--muted);max-width:60ch;margin-top:6px}
+.score{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;white-space:nowrap}
+.score b{font:700 1.3rem var(--f-display);font-variant-numeric:tabular-nums}
+
+/* ruta */
+.tabs{border-bottom:1px solid var(--line);margin-bottom:8px}
+.tabs .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:thin;align-items:center}
+.tabs .score{margin-left:auto}
+.tab{flex:0 0 auto;display:flex;gap:8px;align-items:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:7px 12px;font:600 15px var(--f-display);cursor:pointer}
+.tab .lv{font:700 11px var(--f-body);letter-spacing:.06em;color:var(--tab);border:1.5px solid currentColor;border-radius:6px;padding:1px 5px}
+.tab .pts{font:700 12px var(--f-body);color:var(--muted);font-variant-numeric:tabular-nums}
+.tab[aria-selected="true"]{background:var(--tab);border-color:var(--tab);color:var(--on-accent)}
+.tab[aria-selected="true"] .lv,.tab[aria-selected="true"] .pts{color:var(--on-accent)}
+.tab:focus-visible,.btn:focus-visible,.opt:focus-visible,.seg button:focus-visible,.case:focus-visible,.choice:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+main{padding-block:28px 60px}
+.view{display:grid;gap:34px}
+.sec-head{display:grid;gap:8px;max-width:72ch}
+.sec-head .eyebrow{color:var(--tab)}
+.sec-head h2{font-size:clamp(1.7rem,3.6vw,2.4rem)}
+.sec-head p{color:var(--muted)}
+.block{display:grid;gap:14px}
+.block>h3{font-size:1.4rem;display:flex;gap:10px;align-items:baseline}
+.block>h3 .k{font:700 13px var(--f-mono);color:var(--tab)}
+.prose{max-width:68ch;display:grid;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.chips li{background:var(--tab-s);border-radius:999px;padding:4px 12px;font-size:.92rem}
+
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:18px;align-items:start}
+.game{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,1fr);gap:18px;align-items:start}
+@media (max-width:840px){.split,.game{grid-template-columns:1fr}}
+.stage,.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.panel{display:grid;gap:12px;align-content:start}
+.tree-box{overflow-x:auto;padding-block:4px}
+svg.tree{display:block;width:100%;height:auto;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;border:3px solid;vertical-align:-1px;margin-right:6px}
+
+/* nodos */
+.node circle,.node rect{fill:var(--surface);stroke:var(--tab);stroke-width:2.5;transition:fill .2s,stroke-width .15s}
+.node text{fill:var(--ink);font:600 15px var(--f-display);text-anchor:middle;pointer-events:none}
+.node text.small{font-size:12px}
+.node text.sub{font:400 11px var(--f-body);fill:var(--muted)}
+.node.clickable{cursor:pointer}
+.node.clickable:hover circle,.node.clickable:hover rect{stroke-width:4.5}
+.node:focus{outline:none}
+.node:focus-visible circle,.node:focus-visible rect{stroke:var(--ink);stroke-width:4.5}
+.node.sel circle,.node.sel rect{fill:var(--tab-s);stroke-width:4.5}
+.node.relp circle,.node.relp rect{stroke:var(--naranja);stroke-width:4.5}
+.node.relk circle,.node.relk rect{stroke:var(--violeta);stroke-width:4.5}
+.node.hit circle,.node.hit rect{fill:var(--tab)}
+.node.hit text,.node.hit text.sub{fill:var(--on-accent)}
+.node.cur circle,.node.cur rect{stroke:var(--ink);stroke-width:3.5;stroke-dasharray:5 3}
+.node.bad circle,.node.bad rect,.node.wrong circle,.node.wrong rect{fill:var(--bad);stroke:var(--bad)}
+.node.bad text,.node.wrong text{fill:var(--surface)}
+.ghostnode circle{fill:transparent;stroke:var(--muted);stroke-width:2;stroke-dasharray:4 3}
+.ghostnode text{fill:var(--muted);font-size:16px}
+.ghostnode.clickable:hover circle{fill:var(--tab-s);stroke:var(--tab)}
+.edge{stroke:var(--line);stroke-width:2.5}
+.edge.ghost{stroke-dasharray:4 4}
+.edge.hit{stroke:var(--tab);stroke-width:4}
+.elabel{font:700 11px var(--f-body);fill:var(--muted);text-anchor:middle}
+.node .badge circle{fill:var(--ink);stroke:none}
+.node .badge text{fill:var(--bg);font:700 10px var(--f-body)}
+
+/* controles */
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 15px var(--f-display);border:2px solid var(--tab);background:var(--tab);color:var(--on-accent);border-radius:10px;padding:7px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--tab)}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:12px;padding:4px}
+.seg button{font:600 14px var(--f-display);border:0;background:transparent;color:var(--muted);border-radius:9px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--tab);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts.col{flex-direction:column;align-items:stretch}
+.opt{font:600 15px var(--f-body);text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer;min-width:44px}
+.opt:hover:not(:disabled){border-color:var(--tab)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-s);border-color:var(--ok)}
+.opt.wrongopt{background:var(--bad-s);border-color:var(--bad);opacity:.8}
+input[type=number],input[type=text]{font:600 16px var(--f-mono);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:7px 10px;width:8.5em}
+input:focus-visible{outline:3px solid var(--tab);outline-offset:1px}
+label{font-weight:700;font-size:.92rem}
+
+.meta{font:700 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.q{font-size:1.12rem;line-height:1.45}
+.big{font:700 1.6rem var(--f-display);color:var(--tab);font-variant-numeric:tabular-nums}
+.fb{border-radius:12px;padding:10px 14px;font-size:.98rem;display:grid;gap:4px}
+.fb-ok{background:var(--ok-s)} .fb-ok strong{color:var(--ok)}
+.fb-bad{background:var(--bad-s)} .fb-bad strong{color:var(--bad)}
+.fb-info{background:var(--surface-2)}
+.strip{display:flex;flex-wrap:wrap;gap:5px;min-height:34px}
+.strip span{min-width:32px;height:32px;padding:0 6px;display:grid;place-items:center;border:1.5px dashed var(--line);border-radius:8px;font:600 14px var(--f-mono)}
+.strip span.on{border-style:solid;border-color:var(--tab);background:var(--tab-s)}
+.msg{color:var(--muted);min-height:1.6em}
+.log{margin:0;padding-left:1.3em;font:14px/1.7 var(--f-mono);color:var(--muted)}
+.log li:last-child{color:var(--ink);font-weight:600}
+.queue{display:flex;flex-wrap:wrap;gap:6px}
+.queue span{font:600 14px var(--f-mono);background:var(--surface-2);border-radius:6px;padding:2px 8px}
+.queue span:first-child{background:var(--tab);color:var(--on-accent)}
+
+/* personajes */
+.say{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:start;max-width:76ch}
+.say .av{width:56px;height:56px;display:grid;place-items:center}
+.say .av img{width:56px;height:56px;object-fit:contain}
+.say .bubble{background:var(--surface-2);border-radius:4px 14px 14px 14px;padding:10px 14px;display:grid;gap:6px}
+.say .who{font:600 14px var(--f-display)}
+.say-bit .who{color:var(--azul)} .say-gatiel .who{color:var(--violeta)} .say-techi .who{color:var(--naranja)}
+details summary{cursor:pointer;font-weight:700;color:var(--tab)}
+
+/* teoría */
+.vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0}
+.vocab div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.vocab dt{font:600 1.05rem var(--f-display);color:var(--tab)}
+.vocab dd{margin:2px 0 0;font-size:.95rem}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.types figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:6px}
+.types figcaption b{font-family:var(--f-display);font-size:1.05rem}
+.types figcaption{font-size:.92rem;color:var(--muted)}
+.types figcaption b{color:var(--ink)}
+.tbl-box{overflow-x:auto}
+table{border-collapse:collapse;min-width:100%;font-size:.95rem;background:var(--surface);border-radius:12px;overflow:hidden}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 14px var(--f-display);background:var(--surface-2)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+pre{background:var(--surface-2);border-radius:12px;padding:14px 16px;overflow-x:auto;font:13.5px/1.6 var(--f-mono);margin:0}
+pre .c{color:var(--muted)} pre .k{color:var(--violeta);font-weight:600}
+.info{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:.97rem}
+.info dt{font-weight:700;color:var(--muted)}
+.info dd{margin:0;font-family:var(--f-mono)}
+.next-lv{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--tab-s);border-radius:16px;padding:16px 20px}
+.next-lv p{font:600 1.1rem var(--f-display)}
+.next-lv a{text-decoration:none}
+
+/* casos */
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.case{text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;cursor:pointer;display:grid;gap:2px;font:inherit}
+.case b{font:600 1.05rem var(--f-display)}
+.case small{color:var(--muted)}
+.case[aria-pressed="true"]{border-color:var(--tab);background:var(--tab-s)}
+.case .done{color:var(--ok);font-weight:700;font-size:.85rem}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.choice{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:10px;cursor:pointer;display:grid;gap:4px;color:var(--ink);font:600 14px var(--f-display)}
+.choice:hover:not(:disabled){border-color:var(--tab)}
+.choice.right{border-color:var(--ok);background:var(--ok-s)}
+.choice.wrongopt{border-color:var(--bad);background:var(--bad-s)}
+.seqbox{display:grid;gap:6px}
+.seqbox div{font:600 15px var(--f-mono);background:var(--surface-2);border-radius:8px;padding:6px 10px;overflow-x:auto}
+.seqbox b{font:700 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+
+footer{border-top:1px solid var(--line);padding-block:20px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+.bottom{display:flex;justify-content:flex-end;padding-block:0 30px}
+main{padding-block:12px 40px}
+
+</style>
+<nav class="tabs" aria-label="Niveles">
+  <div class="wrap" role="tablist">
+    <button class="tab t-azul" id="tab-teoria" data-view="teoria" role="tab"><span class="lv">T</span>Teoría</button>
+    <button class="tab t-naranja" id="tab-n1" data-view="n1" role="tab"><span class="lv">N1</span>Partes del árbol <span class="pts" id="pt-n1">0</span></button>
+    <button class="tab t-violeta" id="tab-n2" data-view="n2" role="tab"><span class="lv">N2</span>Recorridos <span class="pts" id="pt-n2">0</span></button>
+    <button class="tab t-azul" id="tab-n3" data-view="n3" role="tab"><span class="lv">N3</span>Búsqueda en ABB <span class="pts" id="pt-n3">0</span></button>
+    <button class="tab t-naranja" id="tab-n4" data-view="n4" role="tab"><span class="lv">N4</span>Casos reales <span class="pts" id="pt-n4">0</span></button>
+    <button class="tab t-violeta" id="tab-n5" data-view="n5" role="tab"><span class="lv">N5</span>Desafío <span class="pts" id="pt-n5">0</span></button>
+    <div class="score" aria-live="polite">Puntos <b id="pt-total">0</b></div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ================= TEORÍA ================= -->
+<section class="view t-azul" id="v-teoria">
+  <div class="sec-head">
+    <p class="eyebrow">Teoría</p>
+    <h2>Todo lo que necesitas antes de jugar</h2>
+    <p>Lee cada bloque y prueba los ejemplos: todos los árboles de esta parte se pueden tocar.</p>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">1</span>¿Qué es un árbol?</h3>
+    <div class="prose">
+      <p>Un <b>árbol</b> es una estructura de datos <b>no lineal y jerárquica</b>. Los datos se guardan en <b>nodos</b> conectados de arriba hacia abajo, como un árbol dado vuelta: la raíz arriba y las hojas abajo.</p>
+      <p>En una lista o un vector cada elemento tiene un solo “siguiente”. En un árbol, cada nodo puede tener varios <b>hijos</b>, pero un solo <b>padre</b>.</p>
+    </div>
+    <ul class="chips">
+      <li>Carpetas de tu compu</li><li>Organigrama del colegio</li><li>Árbol genealógico</li><li>Llaves de un torneo</li><li>Menús de una app</li><li>El HTML de una página (DOM)</li>
+    </ul>
+    <div class="split">
+      <div class="stage">
+        <div class="tree-box"><svg id="fold-svg" class="tree" aria-label="Árbol de carpetas del sitio BATIN"></svg></div>
+        <p class="legend"><span><i style="border-color:var(--azul)"></i>nodo elegido</span><span><i style="border-color:var(--naranja)"></i>su padre</span><span><i style="border-color:var(--violeta)"></i>sus hijos</span></p>
+      </div>
+      <div class="panel" id="fold-info" aria-live="polite">
+        <p class="meta">Ficha del nodo</p>
+        <p>Toca cualquier carpeta o archivo para ver su ficha.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">2</span>Vocabulario</h3>
+    <dl class="vocab">
+      <div><dt>Raíz</dt><dd>El nodo de arriba de todo. Es el único que no tiene padre.</dd></div>
+      <div><dt>Nodo</dt><dd>Cada elemento del árbol. Guarda un dato y los enlaces a sus hijos.</dd></div>
+      <div><dt>Arista (rama)</dt><dd>La conexión entre un padre y un hijo. Con <i>n</i> nodos hay <i>n − 1</i> aristas.</dd></div>
+      <div><dt>Padre e hijo</dt><dd>Si B está conectado justo debajo de A, A es el padre de B y B es hijo de A.</dd></div>
+      <div><dt>Hermanos</dt><dd>Nodos que tienen el mismo padre.</dd></div>
+      <div><dt>Hoja</dt><dd>Nodo sin hijos. Está en el borde de abajo del árbol.</dd></div>
+      <div><dt>Nodo interno</dt><dd>Nodo con al menos un hijo (todos los que no son hojas).</dd></div>
+      <div><dt>Subárbol</dt><dd>Un nodo junto con todos sus descendientes. Cada hijo es la raíz de su propio subárbol.</dd></div>
+      <div><dt>Nivel (profundidad)</dt><dd>Cantidad de aristas desde la raíz hasta el nodo. La raíz está en el nivel 0.</dd></div>
+      <div><dt>Altura</dt><dd>El nivel de la hoja más profunda. Un árbol de un solo nodo tiene altura 0.</dd></div>
+      <div><dt>Grado</dt><dd>Cantidad de hijos de un nodo. El grado del árbol es el mayor grado de sus nodos.</dd></div>
+    </dl>
+    <div class="say" data-who="gatiel"><p>Algunos libros cuentan los niveles desde 1. Aquí contamos desde 0. Antes de responder un examen, fíjate qué convención usa.</p>
+      <details><summary>Pregunta trampa: un árbol tiene 10 nodos. ¿Cuántas aristas tiene?</summary><p>9. Cada nodo, menos la raíz, tiene exactamente un padre, y cada uno de esos enlaces es una arista.</p></details>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">3</span>Árbol binario</h3>
+    <div class="prose">
+      <p>Un <b>árbol binario</b> es un árbol donde cada nodo tiene <b>como máximo dos hijos</b>, y además importa cuál es cuál: el <b>hijo izquierdo</b> y el <b>hijo derecho</b>. Un nodo con un solo hijo a la izquierda no es el mismo árbol que uno con ese hijo a la derecha.</p>
+    </div>
+    <div class="types">
+      <figure><div class="tree-box"><svg id="bt-perf" class="tree"></svg></div><figcaption><b>Perfecto (lleno)</b><br>Todos los niveles están completos.</figcaption></figure>
+      <figure><div class="tree-box"><svg id="bt-comp" class="tree"></svg></div><figcaption><b>Completo</b><br>Todos los niveles llenos menos el último, que se llena de izquierda a derecha.</figcaption></figure>
+      <figure><div class="tree-box"><svg id="bt-deg" class="tree"></svg></div><figcaption><b>Degenerado</b><br>Cada nodo tiene un solo hijo: en la práctica es una lista.</figcaption></figure>
+    </div>
+    <div class="prose">
+      <p>Dos cuentas útiles: en el nivel <i>k</i> caben como máximo <b>2<sup>k</sup></b> nodos, y un árbol binario de altura <i>h</i> tiene como máximo <b>2<sup>h+1</sup> − 1</b> nodos. Con altura 3 eso da 15.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">4</span>Recorridos</h3>
+    <div class="prose">
+      <p><b>Recorrer</b> un árbol es visitar todos sus nodos una sola vez. Como el árbol no es una fila, hay varias formas de hacerlo. Las tres primeras son <b>en profundidad</b> y recursivas: cada subárbol se recorre con la misma regla. La cuarta es <b>en anchura</b> y usa una cola.</p>
+    </div>
+    <div class="tbl-box"><table>
+      <thead><tr><th>Recorrido</th><th>Regla</th><th>Para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td><b>Preorden</b></td><td>Raíz → Izquierda → Derecha</td><td>Copiar un árbol, mostrar carpetas con sangría</td></tr>
+        <tr><td><b>Inorden</b></td><td>Izquierda → Raíz → Derecha</td><td>En un ABB devuelve los datos ordenados</td></tr>
+        <tr><td><b>Postorden</b></td><td>Izquierda → Derecha → Raíz</td><td>Calcular tamaños, borrar un árbol, evaluar expresiones</td></tr>
+        <tr><td><b>Por niveles</b></td><td>Nivel 0, nivel 1, nivel 2… de izquierda a derecha</td><td>Organigramas, el camino más corto en pasos</td></tr>
+      </tbody>
+    </table></div>
+    <div class="stage t-violeta">
+      <div class="row" style="justify-content:space-between">
+        <div class="seg" id="play-types" role="group" aria-label="Tipo de recorrido">
+          <button data-type="pre" aria-pressed="true">Preorden</button><button data-type="ino" aria-pressed="false">Inorden</button><button data-type="post" aria-pressed="false">Postorden</button><button data-type="lev" aria-pressed="false">Por niveles</button>
+        </div>
+        <div class="row"><button class="btn" id="play-step">Paso</button><button class="btn ghost" id="play-btn">Reproducir</button><button class="btn ghost" id="play-reset">Reiniciar</button></div>
+      </div>
+      <div class="tree-box"><svg id="play-svg" class="tree" aria-label="Árbol de ejemplo para recorridos"></svg></div>
+      <div class="strip" id="play-seq" aria-live="polite"></div>
+      <p class="msg" id="play-msg"></p>
+      <div class="queue" id="play-queue"></div>
+    </div>
+    <div class="say" data-who="bit"><p><b>Truco del contorno.</b> Dibuja una línea que rodee todo el árbol, empezando por la izquierda de la raíz y bajando por las ramas. Si anotas cada nodo cuando pasas por <b>su izquierda</b>, sale el preorden; cuando pasas <b>por debajo</b>, el inorden; cuando pasas por <b>su derecha</b>, el postorden.</p></div>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">5</span>Árbol binario de búsqueda (ABB)</h3>
+    <div class="prose">
+      <p>Un <b>ABB</b> es un árbol binario con una regla de orden: para cada nodo, <b>todo su subárbol izquierdo es menor</b> y <b>todo su subárbol derecho es mayor</b>. No alcanza con mirar al padre: la regla vale para todos los descendientes.</p>
+      <p><b>Buscar</b> un valor: empiezas en la raíz y comparas. Si es igual, lo encontraste. Si es menor, bajas a la izquierda; si es mayor, a la derecha. Si llegas a un lugar vacío, el valor no está.</p>
+      <p><b>Insertar</b> es buscar el valor y, en el lugar vacío donde termina la búsqueda, colgar el nodo nuevo.</p>
+    </div>
+    <div class="stage">
+      <div class="tree-box"><svg id="abb-svg" class="tree" aria-label="Árbol binario de búsqueda de ejemplo"></svg></div>
+      <div class="row">
+        <label for="abb-num">Número</label><input id="abb-num" type="number" min="1" max="999" value="35">
+        <button class="btn" id="abb-search" type="button">Buscar</button>
+        <button class="btn ghost" id="abb-insert" type="button">Insertar</button>
+        <button class="btn ghost" id="abb-reset" type="button">Reiniciar</button>
+        <button class="btn ghost" id="abb-worst" type="button">Peor caso</button>
+      </div>
+      <ol class="log" id="abb-log" aria-live="polite"></ol>
+    </div>
+    <div class="say" data-who="gatiel"><p>¿Qué pasa si insertas 10, 20, 30, 40, 50, 60 en ese orden? Toca <b>Peor caso</b> y mira. Un ABB es rápido solo si está más o menos <b>balanceado</b>.</p></div>
+    <div class="tbl-box"><table>
+      <thead><tr><th>Datos guardados</th><th>Lista sin orden (peor caso)</th><th>ABB balanceado (peor caso)</th></tr></thead>
+      <tbody>
+        <tr><td class="num">15</td><td class="num">15 comparaciones</td><td class="num">4 comparaciones</td></tr>
+        <tr><td class="num">1.000</td><td class="num">1.000</td><td class="num">10</td></tr>
+        <tr><td class="num">1.000.000</td><td class="num">1.000.000</td><td class="num">20</td></tr>
+      </tbody>
+    </table></div>
+    <div class="prose"><p>Cada comparación en un ABB balanceado descarta la mitad del árbol. Por eso la cantidad de pasos crece como log<sub>2</sub>(n): 2<sup>20</sup> ya pasa el millón. Además, <b>el inorden de un ABB siempre sale ordenado</b> de menor a mayor.</p></div>
+  </div>
+
+  <div class="block">
+    <h3><span class="k">6</span>Del dibujo al código</h3>
+    <div class="seg" id="code-tabs" role="group" aria-label="Lenguaje">
+      <button data-code="pseudo" aria-pressed="true">Pseudocódigo</button><button data-code="java" aria-pressed="false">Java</button>
+    </div>
+<pre id="code-pseudo"><span class="k">Procedimiento</span> Preorden(nodo)
+    <span class="k">Si</span> nodo &lt;&gt; NULO <span class="k">Entonces</span>
+        <span class="k">Escribir</span> nodo.dato        <span class="c">// 1. raíz</span>
+        Preorden(nodo.izq)        <span class="c">// 2. izquierda</span>
+        Preorden(nodo.der)        <span class="c">// 3. derecha</span>
+    <span class="k">FinSi</span>
+<span class="k">FinProcedimiento</span>
+<span class="c">// Inorden: mueve el Escribir entre las dos llamadas.</span>
+<span class="c">// Postorden: mueve el Escribir al final.</span>
+
+<span class="k">Funcion</span> encontrado &lt;- BuscarABB(nodo, x)
+    encontrado &lt;- Falso
+    <span class="k">Mientras</span> nodo &lt;&gt; NULO Y NO encontrado <span class="k">Hacer</span>
+        <span class="k">Si</span> x = nodo.dato <span class="k">Entonces</span>
+            encontrado &lt;- Verdadero
+        <span class="k">SiNo</span>
+            <span class="k">Si</span> x &lt; nodo.dato <span class="k">Entonces</span>
+                nodo &lt;- nodo.izq
+            <span class="k">SiNo</span>
+                nodo &lt;- nodo.der
+            <span class="k">FinSi</span>
+        <span class="k">FinSi</span>
+    <span class="k">FinMientras</span>
+<span class="k">FinFuncion</span></pre>
+<pre id="code-java" hidden><span class="c">// Cada nodo guarda un dato y dos referencias: izquierda y derecha.</span>
+<span class="k">class</span> Nodo {
+    <span class="k">int</span> dato;
+    Nodo izq, der;
+    Nodo(<span class="k">int</span> dato) { <span class="k">this</span>.dato = dato; }
+}
+
+<span class="k">public class</span> ArbolABB {
+    <span class="k">static</span> Nodo insertar(Nodo n, <span class="k">int</span> x) {
+        <span class="k">if</span> (n == <span class="k">null</span>) <span class="k">return new</span> Nodo(x);   <span class="c">// lugar vacío: va aquí</span>
+        <span class="k">if</span> (x &lt; n.dato) n.izq = insertar(n.izq, x);
+        <span class="k">else if</span> (x &gt; n.dato) n.der = insertar(n.der, x);
+        <span class="k">return</span> n;
+    }
+    <span class="k">static void</span> inorden(Nodo n) {
+        <span class="k">if</span> (n == <span class="k">null</span>) <span class="k">return</span>;
+        inorden(n.izq);
+        System.out.print(n.dato + " ");
+        inorden(n.der);
+    }
+    <span class="k">static boolean</span> buscar(Nodo n, <span class="k">int</span> x) {
+        <span class="k">while</span> (n != <span class="k">null</span>) {
+            <span class="k">if</span> (x == n.dato) <span class="k">return true</span>;
+            n = (x &lt; n.dato) ? n.izq : n.der;
+        }
+        <span class="k">return false</span>;
+    }
+    <span class="k">public static void</span> main(String[] args) {
+        Nodo raiz = <span class="k">null</span>;
+        <span class="k">int</span>[] datos = {50, 30, 70, 20, 40, 60, 80};
+        <span class="k">for</span> (<span class="k">int</span> d : datos) raiz = insertar(raiz, d);
+        inorden(raiz);                         <span class="c">// 20 30 40 50 60 70 80</span>
+        System.out.println();
+        System.out.println(buscar(raiz, 60));  <span class="c">// true</span>
+    }
+}</pre>
+    <div class="say" data-who="bit"><p>La clase <code>Nodo</code> es lo mínimo de objetos que necesitas para un árbol: un molde que guarda un dato y dos referencias. Si una referencia vale <code>null</code>, ese hijo no existe.</p></div>
+  </div>
+
+  <div class="next-lv t-naranja"><p>¿Listo? Empieza por reconocer las partes del árbol.</p><a class="btn" href="#n1">Ir al Nivel 1</a></div>
+</section>
+
+<!-- ================= N1 ================= -->
+<section class="view t-naranja" id="v-n1" hidden>
+  <div class="sec-head">
+    <p class="eyebrow">Nivel 1 · Cazanodos</p>
+    <h2>Reconoce las partes del árbol</h2>
+    <p>9 preguntas por ronda sobre raíz, hojas, padre, hijos, hermanos, nivel, altura y grado. Cada 3 preguntas cambia el árbol. 10 puntos por acierto.</p>
+  </div>
+  <div class="game">
+    <div class="stage"><div class="tree-box"><svg id="n1-svg" class="tree" aria-label="Árbol del nivel 1"></svg></div></div>
+    <div class="panel">
+      <p class="meta" id="n1-meta"></p>
+      <p class="q" id="n1-q"></p>
+      <div class="opts" id="n1-ctrl"></div>
+      <div id="n1-fb" aria-live="polite"></div>
+      <div class="row" id="n1-next"></div>
+    </div>
+  </div>
+  <div class="next-lv t-violeta"><p>Cuando aciertes 7 de 9, pasa a los recorridos.</p><a class="btn" href="#n2">Ir al Nivel 2</a></div>
+</section>
+
+<!-- ================= N2 ================= -->
+<section class="view t-violeta" id="v-n2" hidden>
+  <div class="sec-head">
+    <p class="eyebrow">Nivel 2 · Recorre el árbol</p>
+    <h2>Preorden, inorden, postorden y por niveles</h2>
+    <p>En <b>Toca en orden</b> visitas los nodos tú mismo (hasta 20 puntos, −5 por error). En <b>¿Qué recorrido es?</b> reconoces el recorrido a partir de la secuencia (10 puntos).</p>
+  </div>
+  <div class="seg" id="n2-modes" role="group" aria-label="Modo de juego">
+    <button data-mode="orden" aria-pressed="true">Toca en orden</button><button data-mode="que" aria-pressed="false">¿Qué recorrido es?</button>
+  </div>
+  <div class="game">
+    <div class="stage"><div class="tree-box"><svg id="n2-svg" class="tree" aria-label="Árbol del nivel 2"></svg></div><div class="strip" id="n2-strip"></div></div>
+    <div class="panel">
+      <p class="meta" id="n2-meta"></p>
+      <p class="q" id="n2-q"></p>
+      <div class="opts" id="n2-ctrl"></div>
+      <div id="n2-fb" aria-live="polite"></div>
+      <div class="row" id="n2-next"></div>
+    </div>
+  </div>
+  <div class="next-lv t-azul"><p>Ahora usa los árboles para buscar datos de verdad.</p><a class="btn" href="#n3">Ir al Nivel 3</a></div>
+</section>
+
+<!-- ================= N3 ================= -->
+<section class="view t-azul" id="v-n3" hidden>
+  <div class="sec-head">
+    <p class="eyebrow">Nivel 3 · El sistema de matrículas</p>
+    <h2>Busca e inserta como lo hace un sistema</h2>
+    <p>La secretaría guarda los números de matrícula en un ABB. Tú haces el trabajo del programa: insertar matrículas nuevas, buscarlas y detectar árboles mal armados.</p>
+  </div>
+  <div class="say" data-who="techi"><p>Esto pasa en cualquier sistema de gestión: cuando escribes una matrícula en el buscador, el programa no revisa una por una. Baja por un árbol y en pocos pasos llega a la ficha.</p></div>
+  <div class="seg" id="n3-modes" role="group" aria-label="Modo de juego">
+    <button data-mode="ins" aria-pressed="true">Inserta</button><button data-mode="bus" aria-pressed="false">Busca</button><button data-mode="chk" aria-pressed="false">¿Es un ABB?</button>
+  </div>
+  <div class="game">
+    <div class="stage"><div class="tree-box"><svg id="n3-svg" class="tree" aria-label="Árbol del nivel 3"></svg></div><div class="queue" id="n3-queue"></div></div>
+    <div class="panel">
+      <p class="meta" id="n3-meta"></p>
+      <p class="q" id="n3-q"></p>
+      <div class="opts" id="n3-ctrl"></div>
+      <div id="n3-fb" aria-live="polite"></div>
+      <div class="row" id="n3-next"></div>
+    </div>
+  </div>
+  <div class="next-lv t-naranja"><p>Ya sabes lo básico. Vamos a los casos reales.</p><a class="btn" href="#n4">Ir al Nivel 4</a></div>
+</section>
+
+<!-- ================= N4 ================= -->
+<section class="view t-naranja" id="v-n4" hidden>
+  <div class="sec-head">
+    <p class="eyebrow">Nivel 4 · Casos reales</p>
+    <h2>Árboles que usas sin darte cuenta</h2>
+    <p>Cinco situaciones reales. Cada una tiene varios pasos; sumas 10 puntos por cada paso que aciertas al primer intento.</p>
+  </div>
+  <div class="cases" id="n4-cases"></div>
+  <div class="say" data-who="techi" id="n4-intro"><p></p></div>
+  <div class="game">
+    <div class="stage"><div class="tree-box"><svg id="n4-svg" class="tree" aria-label="Árbol del caso"></svg></div><div class="strip" id="n4-strip"></div></div>
+    <div class="panel">
+      <p class="meta" id="n4-meta"></p>
+      <p class="q" id="n4-q"></p>
+      <div class="opts col" id="n4-ctrl"></div>
+      <div id="n4-fb" aria-live="polite"></div>
+      <div class="row" id="n4-next"></div>
+    </div>
+  </div>
+  <div class="next-lv t-violeta"><p>¿Terminaste los cinco casos? Queda el desafío final.</p><a class="btn" href="#n5">Ir al Nivel 5</a></div>
+</section>
+
+<!-- ================= N5 ================= -->
+<section class="view t-violeta" id="v-n5" hidden>
+  <div class="sec-head">
+    <p class="eyebrow">Nivel 5 · Desafío</p>
+    <h2>Reconstruye el árbol</h2>
+    <p>Te damos el preorden y el inorden de un árbol binario. Solo uno de los tres árboles los produce. 20 puntos por acierto.</p>
+  </div>
+  <div class="say" data-who="gatiel"><p>El primero del preorden siempre es la raíz. Búscalo en el inorden: lo que queda a su izquierda es el subárbol izquierdo y lo de la derecha, el derecho. Después repites lo mismo con cada lado.</p></div>
+  <div class="panel">
+    <p class="meta" id="n5-meta"></p>
+    <div class="seqbox"><div><b>Preorden</b><span id="n5-pre"></span></div><div><b>Inorden</b><span id="n5-in"></span></div></div>
+    <div class="choices" id="n5-opts"></div>
+    <div id="n5-fb" aria-live="polite"></div>
+    <div class="row" id="n5-next"></div>
+  </div>
+</section>
+
+</main>
+<div class="wrap bottom"><button class="btn ghost" id="reset-pts" type="button">Borrar mis puntos</button></div>
+</template>
+<noscript><p style="text-align:center;padding:40px">Esta página necesita JavaScript activado.</p></noscript>
+
+<div id="batin-footer"></div>
+
+<script src="../batin.js"></script>
+<script>
+(function(){
+'use strict';
+const HOST=document.getElementById('arb-app');
+const ROOT=HOST.attachShadow({mode:'open'});
+ROOT.appendChild(document.getElementById('arb-tpl').content.cloneNode(true));
+try{HOST.style.setProperty('--f-body',getComputedStyle(document.body).fontFamily);}catch(e){}
+const $=(s,r)=>(r||ROOT).querySelector(s);
+const $$=(s,r)=>Array.from((r||ROOT).querySelectorAll(s));
+const NS='http://www.w3.org/2000/svg';
+const RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const sleep=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
+function sv(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const rand=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rand(a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rand(i+1);const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function distinct(k,lo,hi){const s=new Set();while(s.size<k)s.add(lo+rand(hi-lo+1));return Array.from(s);}
+function letters(k){return shuffle('ABCDEFGHIJKLMNOPRSTUVZ'.split('')).slice(0,k);}
+function range(a,b){const r=[];for(let i=a;i<=b;i++)r.push(i);return r;}
+
+/* ---------- personajes ---------- */
+const IMG='../img/';
+const AV={bit:'<img src="'+IMG+'bit_explicando.png" alt="">',gatiel:'<img src="'+IMG+'gatiel_idea.png" alt="">',techi:'<img src="'+IMG+'techi_idea.png" alt="">'};
+const NAMES={bit:'Bit',gatiel:'Gatiel',techi:'Techi'};
+function decorateSay(el){const who=el.dataset.who;el.classList.add('say-'+who);el.innerHTML='<div class="av">'+AV[who]+'</div><div class="bubble"><b class="who">'+NAMES[who]+'</b>'+el.innerHTML+'</div>';}
+$$('.say[data-who]').forEach(decorateSay);
+function sayHTML(who,html){return '<div class="say say-'+who+'"><div class="av">'+AV[who]+'</div><div class="bubble"><b class="who">'+NAMES[who]+'</b><p>'+html+'</p></div></div>';}
+function fb(box,kind,html){const t={ok:'¡Bien!',bad:'Todavía no.',info:''}[kind];box.innerHTML='<div class="fb fb-'+kind+'">'+(t?'<strong>'+t+'</strong>':'')+'<p>'+html+'</p></div>';}
+
+/* ---------- puntos ---------- */
+const store={get(k,d){try{const v=localStorage.getItem('arbjuego_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('arbjuego_'+k,JSON.stringify(v));}catch(e){}}};
+let PTS=store.get('pts',{});
+function renderPts(){let tot=0;['n1','n2','n3','n4','n5'].forEach(k=>{const v=PTS[k]||0;tot+=v;$('#pt-'+k).textContent=v;});$('#pt-total').textContent=tot;}
+function addPts(k,p){PTS[k]=(PTS[k]||0)+p;store.set('pts',PTS);renderPts();}
+renderPts();
+const resetBtn=$('#reset-pts');let resetArmed=false;
+resetBtn.addEventListener('click',()=>{if(!resetArmed){resetArmed=true;resetBtn.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{resetArmed=false;resetBtn.textContent='Borrar mis puntos';},4000);return;}PTS={};store.set('pts',PTS);store.set('cases',[]);renderPts();resetArmed=false;resetBtn.textContent='Puntos borrados';if(typeof renderCasePicker==='function')renderCasePicker();});
+
+/* ---------- árboles ---------- */
+let UID=0;
+const N=(v,l,r)=>({id:'n'+(UID++),v:v,l:l||null,r:r||null});
+const G=(v,kids)=>({id:'n'+(UID++),v:v,kids:kids||[]});
+const T={
+ pre(n,a){a=a||[];if(n){a.push(n);T.pre(n.l,a);T.pre(n.r,a);}return a;},
+ ino(n,a){a=a||[];if(n){T.ino(n.l,a);a.push(n);T.ino(n.r,a);}return a;},
+ post(n,a){a=a||[];if(n){T.post(n.l,a);T.post(n.r,a);a.push(n);}return a;},
+ lev(n){const a=[],q=n?[n]:[];while(q.length){const x=q.shift();a.push(x);if(x.l)q.push(x.l);if(x.r)q.push(x.r);}return a;},
+ h(n){return n?1+Math.max(T.h(n.l),T.h(n.r)):-1;},
+ parents(n,m){m=m||{};if(n){if(n.l){m[n.l.id]=n;T.parents(n.l,m);}if(n.r){m[n.r.id]=n;T.parents(n.r,m);}}return m;},
+ depth(root,id){let d=-1;(function rec(n,k){if(!n)return;if(n.id===id)d=k;rec(n.l,k+1);rec(n.r,k+1);})(root,0);return d;}
+};
+const ORD={
+ pre:{name:'Preorden',rule:'Raíz → Izquierda → Derecha',f:n=>T.pre(n)},
+ ino:{name:'Inorden',rule:'Izquierda → Raíz → Derecha',f:n=>T.ino(n)},
+ post:{name:'Postorden',rule:'Izquierda → Derecha → Raíz',f:n=>T.post(n)},
+ lev:{name:'Por niveles',rule:'Nivel por nivel, de izquierda a derecha',f:n=>T.lev(n)}
+};
+const TYPES=['pre','ino','post','lev'];
+const leaves=r=>T.pre(r).filter(n=>!n.l&&!n.r);
+const seqStr=a=>a.map(n=>n.v).join(' ');
+function randomBin(labels,maxH){let root;for(let t=0;t<300;t++){root=N(labels[0]);const slots=[[root,'l'],[root,'r']];for(let i=1;i<labels.length;i++){const k=rand(slots.length);const s=slots.splice(k,1)[0];const c=N(labels[i]);s[0][s[1]]=c;slots.push([c,'l'],[c,'r']);}if(T.h(root)<=maxH&&T.h(root)>=2)return root;}return root;}
+function bstInsert(root,v){const n=N(v);if(!root)return n;let p=root;for(;;){if(v<p.v){if(!p.l){p.l=n;break;}p=p.l;}else{if(!p.r){p.r=n;break;}p=p.r;}}return root;}
+function buildBST(arr){let r=null;arr.forEach(v=>{r=bstInsert(r,v);});return r;}
+function bstPath(root,v){const path=[];let p=root;while(p){path.push(p);if(v===p.v)return{path:path,found:true};p=v<p.v?p.l:p.r;}return{path:path,found:false};}
+function bstSlot(root,v){let p=root;for(;;){if(v<p.v){if(!p.l)return{p:p,side:'l'};p=p.l;}else{if(!p.r)return{p:p,side:'r'};p=p.r;}}}
+function checkBST(root){let bad=null;(function rec(n,lo,hi){if(!n||bad)return;if(lo&&n.v<lo.v){bad={n:n,a:lo,dir:'derecho'};return;}if(hi&&n.v>hi.v){bad={n:n,a:hi,dir:'izquierdo'};return;}rec(n.l,lo,n);rec(n.r,n,hi);})(root,null,null);return bad;}
+function cmpLine(x,n){return x===n.v?x+' = '+n.v+' → encontrado':x<n.v?x+' &lt; '+n.v+' → izquierda':x+' &gt; '+n.v+' → derecha';}
+
+/* ---------- dibujo ---------- */
+function layoutBin(root,ghosts){const items=[];let i=0;(function rec(n,d,par,side){if(!n){if(ghosts&&par)items.push({ghost:true,id:'g_'+par.id+'_'+side,parId:par.id,parent:par,side:side,x:i++,d:d});return;}rec(n.l,d+1,n,'l');items.push({node:n,id:n.id,label:String(n.v),x:i++,d:d,parId:par?par.id:null,side:side});rec(n.r,d+1,n,'r');})(root,0,null,null);return items;}
+function layoutGen(root){const items=[];let leaf=0;(function rec(n,d,par){const it={node:n,id:n.id,label:String(n.v),d:d,parId:par?par.id:null};items.push(it);if(!n.kids.length){it.x=leaf++;}else{const ks=n.kids.map(k=>rec(k,d+1,n));it.x=(ks[0].x+ks[ks.length-1].x)/2;}return it;})(root,0,null);return items;}
+function drawTree(svg,items,o){
+ o=o||{};svg.innerHTML='';
+ const dx=o.dx||54,dy=o.dy||66,r=o.r||19;
+ const sizes=items.map(it=>{if(it.ghost)return{w:28,h:28};if(o.pill){const lines=it.label.split('\n');const L=Math.max.apply(null,lines.map(s=>s.length));return{w:Math.max(44,L*7.6+22),h:lines.length>1?42:32,lines:lines};}return{w:r*2,h:r*2};});
+ const padX=Math.max(30,Math.max.apply(null,sizes.map(s=>s.w/2+8)));
+ const padY=Math.max(28,Math.max.apply(null,sizes.map(s=>s.h/2+10)));
+ let maxX=0,maxD=0;items.forEach(it=>{maxX=Math.max(maxX,it.x);maxD=Math.max(maxD,it.d);});
+ const W=padX*2+maxX*dx,H=padY*2+maxD*dy;
+ svg.setAttribute('viewBox','0 0 '+W+' '+H);
+ svg.style.maxWidth=Math.round(W*(o.scale||1.25))+'px';
+ svg.style.minWidth=o.minW?Math.min(W,o.minW)+'px':'';
+ const pos={};
+ items.forEach((it,i)=>{it.cx=padX+it.x*dx;it.cy=padY+it.d*dy;it.sz=sizes[i];pos[it.id]=it;});
+ const ge=sv('g',null,svg),gl=sv('g',null,svg),gn=sv('g',null,svg);
+ items.forEach(it=>{if(it.parId==null)return;const p=pos[it.parId];it.edge=sv('line',{x1:p.cx,y1:p.cy,x2:it.cx,y2:it.cy,'class':'edge'+(it.ghost?' ghost':'')},ge);
+  if(o.edgeLabels&&!it.ghost&&it.side){const t=sv('text',{x:(p.cx+it.cx)/2+(it.side==='l'?-16:16),y:(p.cy+it.cy)/2-4,'class':'elabel'},gl);t.textContent=it.side==='l'?o.edgeLabels[0]:o.edgeLabels[1];}});
+ items.forEach(it=>{const g=sv('g',{'class':'node'+(it.ghost?' ghostnode':''),transform:'translate('+it.cx+','+it.cy+')'},gn);it.g=g;const s=it.sz;
+  if(it.ghost){sv('circle',{r:13},g);const t=sv('text',{dy:'.35em'},g);t.textContent='+';}
+  else if(o.pill){sv('rect',{x:-s.w/2,y:-s.h/2,width:s.w,height:s.h,rx:s.h/2},g);if(s.lines.length>1){const t1=sv('text',{y:-3},g);t1.textContent=s.lines[0];const t2=sv('text',{y:13,'class':'sub'},g);t2.textContent=s.lines[1];}else{const t=sv('text',{dy:'.35em'},g);t.textContent=s.lines[0];}}
+  else{sv('circle',{r:r},g);const t=sv('text',{dy:'.35em'},g);t.textContent=it.label;if(it.label.length>2)t.setAttribute('class','small');}
+  if(o.onClick){g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',it.ghost?'Lugar vacío':'Nodo '+it.label.replace('\n',' '));g.classList.add('clickable');const fire=()=>o.onClick(it);g.addEventListener('click',fire);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fire();}});}
+ });
+ return pos;
+}
+function mark(pos,id,cls){const it=pos[id];if(it&&it.g)it.g.classList.add(cls);}
+function unmarkAll(pos,cls){Object.keys(pos).forEach(k=>{const it=pos[k];if(it.g)it.g.classList.remove(cls);});}
+function flash(pos,id){const it=pos[id];if(!it)return;it.g.classList.add('bad');setTimeout(()=>it.g.classList.remove('bad'),650);}
+function badge(pos,id,txt){const it=pos[id];if(!it)return;const s=it.sz;const b=sv('g',{'class':'badge',transform:'translate('+(s.w/2-3)+','+(-s.h/2+3)+')'},it.g);sv('circle',{r:9},b);const t=sv('text',{dy:'.35em'},b);t.textContent=txt;}
+function edgeHit(pos,id){const it=pos[id];if(it&&it.edge)it.edge.classList.add('hit');}
+function strip(el,n){el.innerHTML='';for(let i=0;i<n;i++)el.appendChild(document.createElement('span'));}
+function stripSet(el,i,txt){const s=el.children[i];if(s){s.textContent=txt;s.classList.add('on');}}
+function btn(txt,cls,fn){const b=document.createElement('button');b.type='button';b.className=cls||'btn';b.textContent=txt;b.addEventListener('click',fn);return b;}
+function nextBtn(box,txt,fn){box.innerHTML='';const b=btn(txt,'btn',fn);box.appendChild(b);b.focus({preventScroll:true});}
+function segInit(seg,attr,fn){$$('button',seg).forEach(b=>b.addEventListener('click',()=>{$$('button',seg).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));fn(b.dataset[attr]);}));}
+
+/* ================= TEORÍA ================= */
+// 1. Carpetas
+(function(){
+ const root=G('batin/',[G('aprendiendo/',[G('algoritmica.html'),G('python.html')]),G('construyendo/',[G('promocion.html')]),G('juegos/',[G('oca/',[G('index.html'),G('preguntas.json')]),G('laberinto.html')])]);
+ const par={},dep={};(function rec(n,d,p){par[n.id]=p;dep[n.id]=d;n.kids.forEach(k=>rec(k,d+1,n));})(root,0,null);
+ const ht=n=>n.kids.length?1+Math.max.apply(null,n.kids.map(ht)):0;
+ const svg=$('#fold-svg');let pos;
+ function draw(){pos=drawTree(svg,layoutGen(root),{pill:true,dx:122,dy:70,minW:560,scale:1.1,onClick:show});}
+ function show(it){draw();const n=it.node,p=par[n.id];const sib=p?p.kids.filter(k=>k!==n):[];
+  mark(pos,n.id,'sel');if(p)mark(pos,p.id,'relp');n.kids.forEach(k=>mark(pos,k.id,'relk'));
+  const tipo=!p?'raíz':n.kids.length?'nodo interno':'hoja';
+  $('#fold-info').innerHTML='<p class="meta">Ficha del nodo</p><p class="big">'+n.v+'</p><dl class="info">'+
+   '<dt>Tipo</dt><dd>'+tipo+'</dd>'+
+   '<dt>Padre</dt><dd>'+(p?p.v:'— (no tiene)')+'</dd>'+
+   '<dt>Hijos</dt><dd>'+(n.kids.length?n.kids.map(k=>k.v).join(', '):'— (es hoja)')+'</dd>'+
+   '<dt>Hermanos</dt><dd>'+(sib.length?sib.map(k=>k.v).join(', '):'—')+'</dd>'+
+   '<dt>Nivel</dt><dd>'+dep[n.id]+'</dd>'+
+   '<dt>Grado</dt><dd>'+n.kids.length+'</dd>'+
+   '<dt>Altura de su subárbol</dt><dd>'+ht(n)+'</dd></dl>'+
+   (!p?'<p>La altura de todo el árbol es '+ht(root)+'. El grado del árbol es 3, porque <code>batin/</code> es el nodo con más hijos.</p>':'');
+ }
+ draw();
+})();
+// 3. Tipos de árbol binario
+drawTree($('#bt-perf'),layoutBin(N('A',N('B',N('D'),N('E')),N('C',N('F'),N('G')))),{r:15,dx:36,dy:48,scale:1});
+drawTree($('#bt-comp'),layoutBin(N('A',N('B',N('D'),N('E')),N('C',N('F')))),{r:15,dx:36,dy:48,scale:1});
+drawTree($('#bt-deg'),layoutBin(N('A',null,N('B',null,N('C',null,N('D'))))),{r:15,dx:30,dy:44,scale:1});
+// 4. Reproductor de recorridos
+(function(){
+ const root=N('F',N('B',N('A'),N('D',N('C'),N('E'))),N('G',null,N('I',N('H'))));
+ const S={type:'pre',seq:[],i:0,timer:null,pos:null};
+ const svg=$('#play-svg'),seqEl=$('#play-seq'),msg=$('#play-msg'),qEl=$('#play-queue'),pb=$('#play-btn');
+ function stop(){if(S.timer){clearInterval(S.timer);S.timer=null;}pb.textContent='Reproducir';}
+ function reset(){stop();S.seq=ORD[S.type].f(root);S.i=0;S.pos=drawTree(svg,layoutBin(root),{scale:1.15});strip(seqEl,S.seq.length);msg.textContent=ORD[S.type].name+': '+ORD[S.type].rule+'. Presiona Paso.';qEl.innerHTML='';}
+ function step(){if(S.i>=S.seq.length){stop();return;}const n=S.seq[S.i];unmarkAll(S.pos,'cur');mark(S.pos,n.id,'hit');badge(S.pos,n.id,S.i+1);stripSet(seqEl,S.i,n.v);
+  const ex={pre:'Visito '+n.v+' apenas llego, antes que sus hijos.',ino:'Visito '+n.v+' porque ya terminé su subárbol izquierdo.',post:'Visito '+n.v+' porque ya terminé sus dos subárboles.',lev:'Saco '+n.v+' de la cola y meto sus hijos al final.'}[S.type];
+  if(S.type==='lev'){let enq=1;for(let k=0;k<=S.i;k++){const x=S.seq[k];enq+=(x.l?1:0)+(x.r?1:0);}const q=S.seq.slice(S.i+1,enq);qEl.innerHTML='<b class="meta" style="align-self:center">Cola:</b>'+(q.length?q.map(x=>'<span>'+x.v+'</span>').join(''):'<em>vacía</em>');}
+  S.i++;msg.textContent=S.i>=S.seq.length?'Listo. '+ORD[S.type].name+': '+seqStr(S.seq)+(S.type==='ino'?'. ¿Viste? Salió en orden alfabético: este árbol es un ABB.':''):ex;
+  if(S.i>=S.seq.length)stop();}
+ $('#play-step').addEventListener('click',()=>{stop();step();});
+ pb.addEventListener('click',()=>{if(S.timer){stop();return;}if(S.i>=S.seq.length)reset();pb.textContent='Pausa';step();S.timer=setInterval(step,RM?400:900);});
+ $('#play-reset').addEventListener('click',reset);
+ segInit($('#play-types'),'type',t=>{S.type=t;reset();});
+ reset();
+})();
+// 5. ABB demo
+(function(){
+ const svg=$('#abb-svg'),log=$('#abb-log'),inp=$('#abb-num');
+ const A={root:null,pos:null,tok:0};
+ function draw(){A.pos=drawTree(svg,layoutBin(A.root),{dx:46,scale:1.15});}
+ function reset(vals){A.tok++;A.root=buildBST(vals||[50,30,70,20,40,60,80,35,45,65]);draw();log.innerHTML='';}
+ function line(t){const li=document.createElement('li');li.innerHTML=t;log.appendChild(li);}
+ function val(){const v=parseInt(inp.value,10);if(isNaN(v)||v<1||v>999){log.innerHTML='';line('Escribe un número entero entre 1 y 999.');return null;}return v;}
+ async function walk(v){const tok=++A.tok;draw();log.innerHTML='';const r=bstPath(A.root,v);for(let i=0;i<r.path.length;i++){if(tok!==A.tok)return null;const n=r.path[i];mark(A.pos,n.id,'cur');await sleep(550);if(tok!==A.tok)return null;A.pos[n.id].g.classList.remove('cur');mark(A.pos,n.id,'hit');edgeHit(A.pos,n.id);line(cmpLine(v,n));}return r;}
+ $('#abb-search').addEventListener('click',async()=>{const v=val();if(v==null)return;const r=await walk(v);if(!r)return;line(r.found?'Encontrado en '+r.path.length+' comparaciones.':'Llegué a un lugar vacío: '+v+' no está. Hice '+r.path.length+' comparaciones.');});
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#abb-search').click();}});
+ $('#abb-insert').addEventListener('click',async()=>{const v=val();if(v==null)return;if(T.pre(A.root).length>=15){log.innerHTML='';line('El árbol ya tiene 15 nodos. Presiona Reiniciar.');return;}const r=await walk(v);if(!r)return;if(r.found){line(v+' ya está en el árbol. Un ABB no repite valores.');return;}bstInsert(A.root,v);draw();T.pre(A.root).forEach(n=>{if(n.v===v)mark(A.pos,n.id,'sel');});line('Lugar vacío: inserto '+v+' aquí.');});
+ $('#abb-reset').addEventListener('click',()=>reset());
+ $('#abb-worst').addEventListener('click',()=>{reset([10,20,30,40,50,60]);line('Insertados en orden: 10, 20, 30, 40, 50, 60.');line('Quedó como una lista. Buscar 60 cuesta 6 comparaciones, igual que revisar una lista.');});
+ reset();
+})();
+// 6. Código
+segInit($('#code-tabs'),'code',c=>{$('#code-pseudo').hidden=c!=='pseudo';$('#code-java').hidden=c!=='java';});
+
+/* ================= N1 · Cazanodos ================= */
+const Q1={count:0,ok:0,root:null,q:null,sel:new Set(),done:false,last:null,pos:null};
+const N1_TOTAL=9;
+function n1Start(){Q1.count=0;Q1.ok=0;n1Next();}
+function n1Gen(){
+ const r=Q1.root,all=T.pre(r),par=T.parents(r),lv=leaves(r),internal=all.filter(n=>n.l||n.r),H=T.h(r);
+ const nonroot=all.filter(n=>n!==r),withSib=nonroot.filter(n=>{const p=par[n.id];return p.l&&p.r;});
+ const gens={
+  raiz:()=>({t:'Toca la <b>raíz</b> del árbol.',mode:'one',ans:[r.id],exp:'La raíz es '+r.v+': el único nodo que no tiene padre.'}),
+  hojas:()=>({t:'Toca <b>todas las hojas</b> y después presiona Comprobar.',mode:'many',ans:lv.map(n=>n.id),exp:'Las hojas son los nodos sin hijos: '+lv.map(n=>n.v).join(', ')+'.'}),
+  padre:()=>{const x=pick(nonroot);const p=par[x.id];return{t:'Toca el <b>padre</b> de '+x.v+'.',mode:'one',focus:x.id,ans:[p.id],exp:p.v+' está justo arriba de '+x.v+', unido por una arista.'};},
+  hijos:()=>{const x=pick(internal);const k=[x.l,x.r].filter(Boolean);return{t:'Toca <b>los hijos</b> de '+x.v+' y presiona Comprobar.',mode:'many',focus:x.id,ans:k.map(n=>n.id),exp:'Los hijos de '+x.v+' son '+k.map(n=>n.v).join(' y ')+'.'};},
+  hermano:()=>{if(!withSib.length)return null;const x=pick(withSib);const p=par[x.id];const s=p.l===x?p.r:p.l;return{t:'Toca el <b>hermano</b> de '+x.v+'.',mode:'one',focus:x.id,ans:[s.id],exp:x.v+' y '+s.v+' son hermanos porque tienen el mismo padre: '+p.v+'.'};},
+  nivel:()=>{const x=pick(nonroot);const d=T.depth(r,x.id);return{t:'¿En qué <b>nivel</b> está '+x.v+'?',mode:'num',focus:x.id,opts:range(0,H),ans:d,exp:'De la raíz a '+x.v+' hay '+d+' arista'+(d===1?'':'s')+': nivel '+d+'. La raíz es el nivel 0.'};},
+  altura:()=>({t:'¿Cuál es la <b>altura</b> del árbol?',mode:'num',opts:range(1,H+1),ans:H,exp:'La hoja más profunda está en el nivel '+H+', así que la altura es '+H+'.'}),
+  grado:()=>{const x=pick(all);const g=(x.l?1:0)+(x.r?1:0);return{t:'¿Cuál es el <b>grado</b> de '+x.v+'?',mode:'num',focus:x.id,opts:[0,1,2],ans:g,exp:x.v+' tiene '+g+' hijo'+(g===1?'':'s')+', entonces su grado es '+g+'.'};},
+  cuantas:()=>({t:'¿Cuántas <b>hojas</b> tiene el árbol?',mode:'num',opts:range(Math.max(1,lv.length-2),lv.length+2),ans:lv.length,exp:'Hojas: '+lv.map(n=>n.v).join(', ')+'.'})
+ };
+ const keys=Object.keys(gens);
+ for(let t=0;t<40;t++){const k=pick(keys);if(k===Q1.last)continue;const q=gens[k]();if(q){Q1.last=k;return q;}}
+ return gens.raiz();
+}
+function n1Next(){
+ if(Q1.count>=N1_TOTAL){n1End();return;}
+ if(Q1.count%3===0)Q1.root=randomBin(letters(7+rand(3)),3);
+ Q1.count++;Q1.q=n1Gen();Q1.sel=new Set();Q1.done=false;
+ Q1.pos=drawTree($('#n1-svg'),layoutBin(Q1.root),{onClick:n1Click});
+ if(Q1.q.focus)mark(Q1.pos,Q1.q.focus,'cur');
+ $('#n1-meta').textContent='Pregunta '+Q1.count+' de '+N1_TOTAL+' · Aciertos '+Q1.ok;
+ $('#n1-q').innerHTML=Q1.q.t+(Q1.q.focus?' <small style="color:var(--muted)">(borde punteado)</small>':'');
+ const c=$('#n1-ctrl');c.innerHTML='';$('#n1-fb').innerHTML='';$('#n1-next').innerHTML='';
+ if(Q1.q.mode==='many')c.appendChild(btn('Comprobar','btn',()=>{if(Q1.done)return;const a=new Set(Q1.q.ans);const ok=a.size===Q1.sel.size&&Array.from(a).every(x=>Q1.sel.has(x));Q1.sel.forEach(id=>{if(!a.has(id))mark(Q1.pos,id,'wrong');});n1Judge(ok);}));
+ if(Q1.q.mode==='num')Q1.q.opts.forEach(v=>c.appendChild(btn(String(v),'opt',function(){if(Q1.done)return;const ok=v===Q1.q.ans;$$('.opt',c).forEach(b=>{b.disabled=true;if(Number(b.textContent)===Q1.q.ans)b.classList.add('right');});if(!ok)this.classList.add('wrongopt');n1Judge(ok);})));
+}
+function n1Click(it){
+ if(Q1.done)return;const q=Q1.q;
+ if(q.mode==='one'){const ok=q.ans.indexOf(it.id)>=0;if(!ok)mark(Q1.pos,it.id,'wrong');n1Judge(ok);}
+ else if(q.mode==='many'){if(Q1.sel.has(it.id)){Q1.sel.delete(it.id);it.g.classList.remove('sel');}else{Q1.sel.add(it.id);it.g.classList.add('sel');}}
+ else fb($('#n1-fb'),'info','Esta pregunta se responde con los botones de abajo.');
+}
+function n1Judge(ok){
+ Q1.done=true;const q=Q1.q;
+ if(q.mode!=='num')q.ans.forEach(id=>{Q1.pos[id].g.classList.remove('sel');mark(Q1.pos,id,'hit');});
+ if(ok){Q1.ok++;addPts('n1',10);}
+ fb($('#n1-fb'),ok?'ok':'bad',q.exp);
+ $('#n1-meta').textContent='Pregunta '+Q1.count+' de '+N1_TOTAL+' · Aciertos '+Q1.ok;
+ nextBtn($('#n1-next'),Q1.count>=N1_TOTAL?'Ver resultado':'Siguiente',n1Next);
+}
+function n1End(){
+ const ok=Q1.ok;$('#n1-meta').textContent='Ronda terminada';$('#n1-q').innerHTML='Acertaste <span class="big">'+ok+'</span> de '+N1_TOTAL+'.';$('#n1-ctrl').innerHTML='';
+ $('#n1-fb').innerHTML=sayHTML(ok>=7?'bit':'gatiel',ok>=7?'Ya dominas el vocabulario. Pasa al Nivel 2 cuando quieras.':'Repasa el bloque 2 de la teoría, sobre todo nivel y altura, y juega otra ronda.');
+ nextBtn($('#n1-next'),'Otra ronda',n1Start);
+}
+
+/* ================= N2 · Recorridos ================= */
+const Q2={mode:'orden',bag:[],root:null,type:null,seq:null,idx:0,err:0,done:false,pos:null};
+const HINT={pre:'En preorden visitas cada nodo apenas llegas a él, antes que sus hijos. Después de un nodo va todo su subárbol izquierdo.',ino:'En inorden no puedes visitar un nodo hasta terminar todo su subárbol izquierdo. Empieza bajando todo lo posible a la izquierda.',post:'En postorden un nodo espera a que terminen sus dos subárboles. La raíz siempre va al final.',lev:'Por niveles: termina todo un nivel, de izquierda a derecha, antes de bajar al siguiente.'};
+function n2Type(){if(!Q2.bag.length)Q2.bag=shuffle(TYPES);return Q2.bag.pop();}
+function n2Clear(){$('#n2-ctrl').innerHTML='';$('#n2-fb').innerHTML='';$('#n2-next').innerHTML='';}
+function n2Orden(){
+ Q2.type=n2Type();Q2.root=randomBin(letters(6+rand(3)),3);Q2.seq=ORD[Q2.type].f(Q2.root);Q2.idx=0;Q2.err=0;Q2.done=false;
+ Q2.pos=drawTree($('#n2-svg'),layoutBin(Q2.root),{onClick:n2Click});strip($('#n2-strip'),Q2.seq.length);n2Clear();
+ $('#n2-meta').textContent='Toca en orden · Errores 0';
+ $('#n2-q').innerHTML='Recorre el árbol en <span class="big">'+ORD[Q2.type].name+'</span>. Toca los nodos uno por uno.';
+ const c=$('#n2-ctrl');c.appendChild(btn('Ver la regla','btn ghost',function(){this.replaceWith(Object.assign(document.createElement('p'),{innerHTML:'<b>'+ORD[Q2.type].rule+'</b>'}));}));
+}
+function n2Click(it){
+ if(Q2.mode!=='orden'||Q2.done)return;const exp=Q2.seq[Q2.idx];
+ if(it.id===exp.id){unmarkAll(Q2.pos,'cur');mark(Q2.pos,it.id,'hit');badge(Q2.pos,it.id,Q2.idx+1);stripSet($('#n2-strip'),Q2.idx,it.label);Q2.idx++;$('#n2-fb').innerHTML='';
+  if(Q2.idx===Q2.seq.length){Q2.done=true;const p=Math.max(5,20-5*Q2.err);addPts('n2',p);fb($('#n2-fb'),'ok',ORD[Q2.type].name+' completo: <code>'+seqStr(Q2.seq)+'</code>. '+(Q2.err?'Errores: '+Q2.err+'. ':'Sin errores. ')+'+'+p+' puntos.');nextBtn($('#n2-next'),'Otro árbol',n2Orden);}}
+ else if(it.g.classList.contains('hit')){fb($('#n2-fb'),'info',it.label+' ya fue visitado. Cada nodo se visita una sola vez.');}
+ else{flash(Q2.pos,it.id);Q2.err++;$('#n2-meta').textContent='Toca en orden · Errores '+Q2.err;
+  let h=HINT[Q2.type];if(Q2.err>=2){mark(Q2.pos,exp.id,'cur');h+=' Te marqué el siguiente con borde punteado.';}fb($('#n2-fb'),'bad',h);}
+}
+function n2Que(){
+ let root,seqs;for(let t=0;t<100;t++){root=randomBin(letters(6+rand(2)),3);seqs={};TYPES.forEach(k=>seqs[k]=seqStr(ORD[k].f(root)));if(new Set(TYPES.map(k=>seqs[k])).size===4)break;}
+ Q2.root=root;Q2.type=pick(TYPES);Q2.done=false;
+ Q2.pos=drawTree($('#n2-svg'),layoutBin(root),{});$('#n2-strip').innerHTML='';n2Clear();
+ $('#n2-meta').textContent='¿Qué recorrido es?';
+ $('#n2-q').innerHTML='Esta secuencia, ¿qué recorrido es?<br><code style="font-size:1.15rem">'+seqs[Q2.type]+'</code>';
+ const c=$('#n2-ctrl');
+ TYPES.forEach(k=>c.appendChild(btn(ORD[k].name,'opt',function(){if(Q2.done)return;Q2.done=true;$$('.opt',c).forEach(b=>b.disabled=true);
+  const ok=k===Q2.type;const right=$$('.opt',c).find(b=>b.textContent===ORD[Q2.type].name);right.classList.add('right');
+  ORD[Q2.type].f(root).forEach((n,i)=>badge(Q2.pos,n.id,i+1));
+  if(ok){addPts('n2',10);fb($('#n2-fb'),'ok','Es '+ORD[Q2.type].name+' ('+ORD[Q2.type].rule+'). Los números en el árbol muestran el orden de visita.');}
+  else{this.classList.add('wrongopt');fb($('#n2-fb'),'bad','Es '+ORD[Q2.type].name+'. El '+ORD[k].name.toLowerCase()+' sería <code>'+seqs[k]+'</code>. Pista: mira los extremos. En preorden y por niveles empieza la raíz; en postorden la raíz va al final; en inorden la raíz queda en el medio.');}
+  nextBtn($('#n2-next'),'Otra secuencia',n2Que);})));
+}
+segInit($('#n2-modes'),'mode',m=>{Q2.mode=m;m==='orden'?n2Orden():n2Que();});
+
+/* ================= N3 · ABB ================= */
+const Q3={mode:'ins'};
+function n3Clear(){$('#n3-ctrl').innerHTML='';$('#n3-fb').innerHTML='';$('#n3-next').innerHTML='';$('#n3-queue').innerHTML='';}
+// Inserta
+function n3Ins(){Q3.nums=distinct(7,10,99);UID++;Q3.root=N(Q3.nums[0]);Q3.i=1;Q3.err=0;Q3.done=false;n3Clear();n3InsDraw();
+ fb($('#n3-fb'),'info','La primera matrícula, '+Q3.nums[0]+', ya es la raíz. Toca el lugar vacío (+) donde va la siguiente.');}
+function n3InsDraw(newV){
+ Q3.pos=drawTree($('#n3-svg'),layoutBin(Q3.root,!Q3.done),{dx:44,onClick:Q3.done?null:n3InsClick});
+ if(newV!=null)T.pre(Q3.root).forEach(n=>{if(n.v===newV)mark(Q3.pos,n.id,'sel');});
+ $('#n3-meta').textContent='Inserta · Matrícula '+Math.min(Q3.i+1,Q3.nums.length)+' de '+Q3.nums.length+' · Errores '+Q3.err;
+ $('#n3-q').innerHTML=Q3.done?'Árbol terminado.':'Inserta la matrícula <span class="big">'+Q3.nums[Q3.i]+'</span>';
+ const rest=Q3.nums.slice(Q3.i+1);$('#n3-queue').innerHTML=rest.length&&!Q3.done?'<b class="meta" style="align-self:center">Después vienen:</b>'+rest.map(v=>'<span>'+v+'</span>').join(''):'';
+}
+function n3InsClick(it){
+ if(Q3.mode!=='ins'||Q3.done)return;
+ if(!it.ghost){fb($('#n3-fb'),'info','Los nodos ya están ocupados. Toca un lugar vacío (+).');return;}
+ const v=Q3.nums[Q3.i],s=bstSlot(Q3.root,v),path=bstPath(Q3.root,v).path;
+ if(it.parent===s.p&&it.side===s.side){
+  s.p[s.side]=N(v);Q3.i++;const lines=path.map(n=>cmpLine(v,n)).join(' · ');
+  if(Q3.i>=Q3.nums.length){Q3.done=true;n3InsDraw(v);const p=Math.max(5,30-5*Q3.err);addPts('n3',p);
+   fb($('#n3-fb'),'ok','Insertaste las '+Q3.nums.length+' matrículas. +'+p+' puntos. Mira el inorden: <code>'+seqStr(T.ino(Q3.root))+'</code>. Sale ordenado, como debe pasar en todo ABB.');
+   nextBtn($('#n3-next'),'Nuevas matrículas',n3Ins);}
+  else{n3InsDraw(v);fb($('#n3-fb'),'ok',lines+' · lugar vacío.');}
+ }else{flash(Q3.pos,it.id);Q3.err++;$('#n3-meta').textContent='Inserta · Matrícula '+(Q3.i+1)+' de '+Q3.nums.length+' · Errores '+Q3.err;
+  const r=Q3.root;let h='Empieza en la raíz: '+cmpLine(v,r)+'.';if(Q3.err>=2)h='Camino completo: '+path.map(n=>cmpLine(v,n)).join(' · ')+' · ahí queda el lugar vacío.';fb($('#n3-fb'),'bad',h);}
+}
+// Busca
+function n3Bus(){const arr=distinct(10,1,99);Q3.arr=arr;Q3.root=buildBST(arr);const present=Math.random()<0.7;let t;if(present)t=pick(arr);else{do{t=1+rand(99);}while(arr.indexOf(t)>=0);}
+ Q3.target=t;const r=bstPath(Q3.root,t);Q3.path=r.path;Q3.found=r.found;Q3.idx=0;Q3.err=0;Q3.done=false;n3Clear();
+ Q3.pos=drawTree($('#n3-svg'),layoutBin(Q3.root),{dx:46,onClick:n3BusClick});
+ $('#n3-meta').textContent='Busca · Comparaciones 0';
+ $('#n3-q').innerHTML='Busca la matrícula <span class="big">'+t+'</span>. Toca el camino desde la raíz. Si te quedas sin lugar a dónde bajar, presiona <b>No está</b>.';
+ $('#n3-ctrl').appendChild(btn('No está','btn ghost',n3NoEsta));}
+function n3BusClick(it){
+ if(Q3.mode!=='bus'||Q3.done)return;const t=Q3.target;
+ if(it.g.classList.contains('hit')){fb($('#n3-fb'),'info','Ya comparaste con '+it.label+'. Sigue bajando.');return;}
+ if(Q3.idx>=Q3.path.length){flash(Q3.pos,it.id);Q3.err++;fb($('#n3-fb'),'bad','Desde '+Q3.path[Q3.path.length-1].v+' ya no hay a dónde bajar: ese lado está vacío. Presiona No está.');return;}
+ const exp=Q3.path[Q3.idx];
+ if(it.id===exp.id){mark(Q3.pos,it.id,'hit');edgeHit(Q3.pos,it.id);Q3.idx++;$('#n3-meta').textContent='Busca · Comparaciones '+Q3.idx;
+  if(exp.v===t)n3Win();else{const nx=t<exp.v?exp.l:exp.r;fb($('#n3-fb'),'info',cmpLine(t,exp)+(nx?'':' · ese lado está vacío.'));}}
+ else{flash(Q3.pos,it.id);Q3.err++;fb($('#n3-fb'),'bad',Q3.idx===0?'Toda búsqueda empieza por la raíz: '+Q3.root.v+'.':'Compara '+t+' con '+Q3.path[Q3.idx-1].v+': '+cmpLine(t,Q3.path[Q3.idx-1])+'.');}
+}
+function n3NoEsta(){if(Q3.done)return;if(!Q3.found&&Q3.idx===Q3.path.length){n3Win();return;}Q3.err++;fb($('#n3-fb'),'bad',Q3.idx===0?'Primero compara con la raíz.':'Todavía puedes bajar: '+cmpLine(Q3.target,Q3.path[Q3.idx-1])+'.');}
+function n3Win(){Q3.done=true;const p=Math.max(5,15-5*Q3.err);addPts('n3',p);const n=Q3.arr.length,c=Q3.path.length;
+ fb($('#n3-fb'),'ok',(Q3.found?'Encontraste la matrícula '+Q3.target+'.':'Correcto: la matrícula '+Q3.target+' no está.')+' Hiciste '+c+' comparaciones. En una lista sin orden de '+n+' matrículas '+(Q3.found?'podrías necesitar hasta '+n:'tendrías que revisar las '+n+' para estar seguro')+'. +'+p+' puntos.');
+ nextBtn($('#n3-next'),'Otra búsqueda',n3Bus);}
+// ¿Es ABB?
+function corrupt(root){const all=T.pre(root).filter(n=>n!==root),par=T.parents(root),vals=T.pre(root).map(n=>n.v);
+ for(let t=0;t<80;t++){const x=pick(all);const anc=[];let p=par[x.id];while(p){anc.push(p);p=par[p.id];}if(anc.length<2)continue;
+  const a=pick(anc.slice(1)),inLeft=x.v<a.v,nv=inLeft?a.v+1+rand(6):a.v-1-rand(6);if(nv<1||nv>99||vals.indexOf(nv)>=0)continue;
+  const dp=anc[0];if(dp.l===x?nv>=dp.v:nv<=dp.v)continue;if(x.l&&x.l.v>=nv)continue;if(x.r&&x.r.v<=nv)continue;x.v=nv;return;}
+ const a=pick(all),b=pick(all);if(a!==b){const tv=a.v;a.v=b.v;b.v=tv;}}
+function n3Chk(){const root=buildBST(distinct(8,10,99));if(Math.random()<0.6)corrupt(root);Q3.root=root;Q3.bad=checkBST(root);Q3.done=false;n3Clear();
+ Q3.pos=drawTree($('#n3-svg'),layoutBin(root),{dx:46});
+ $('#n3-meta').textContent='¿Es un ABB?';$('#n3-q').innerHTML='Un compañero armó este árbol a mano. ¿Cumple la regla del ABB en <b>todos</b> sus nodos?';
+ const c=$('#n3-ctrl');[['Sí, es un ABB',true],['No, tiene un error',false]].forEach(o=>c.appendChild(btn(o[0],'opt',function(){if(Q3.done)return;Q3.done=true;$$('.opt',c).forEach(b=>b.disabled=true);
+  const valid=!Q3.bad,ok=o[1]===valid;this.classList.add(ok?'right':'wrongopt');let m;
+  if(valid)m='Es un ABB: en cada nodo, todo lo de la izquierda es menor y todo lo de la derecha, mayor. Comprobación rápida, el inorden sale ordenado: <code>'+seqStr(T.ino(root))+'</code>.';
+  else{mark(Q3.pos,Q3.bad.n.id,'wrong');mark(Q3.pos,Q3.bad.a.id,'cur');m='El '+Q3.bad.n.v+' está en el subárbol '+Q3.bad.dir+' de '+Q3.bad.a.v+' (borde punteado), pero es '+(Q3.bad.dir==='izquierdo'?'mayor':'menor')+' que '+Q3.bad.a.v+'. Con su padre directo puede parecer bien, pero la regla vale para todo el subárbol. El inorden lo delata: <code>'+seqStr(T.ino(root))+'</code> no está ordenado.';}
+  if(ok)addPts('n3',10);fb($('#n3-fb'),ok?'ok':'bad',m);nextBtn($('#n3-next'),'Otro árbol',n3Chk);})));}
+segInit($('#n3-modes'),'mode',m=>{Q3.mode=m;({ins:n3Ins,bus:n3Bus,chk:n3Chk})[m]();});
+
+/* ================= N4 · Casos reales ================= */
+const CASES=[
+{id:'carpetas',title:'Las carpetas del proyecto',tag:'Árbol general · recorridos',
+ intro:'Tu equipo guarda el Proyecto de Promoción en esta carpeta. El pendrive tiene poco espacio y necesitan saber cuánto pesa cada parte. Ningún nodo tiene límite de hijos: es un árbol general, no binario.',
+ build(){const root=G('proyecto/',[G('docs/',[G('informe.docx\n120 KB'),G('encuesta.xlsx\n40 KB')]),G('web/',[G('index.html\n8 KB'),G('img/',[G('logo.png\n60 KB'),G('foto.jpg\n300 KB')])]),G('presentacion.pptx\n900 KB')]);return{root:root,kind:'gen'};},
+ steps(){return[
+  {type:'mc',q:'Para saber cuánto pesa cada carpeta, ¿en qué orden conviene recorrer el árbol?',opts:['Preorden: primero la carpeta, después su contenido','Postorden: primero el contenido, después la carpeta','Por niveles','Da igual el orden'],ans:1,exp:'El peso de una carpeta es la suma de lo que tiene adentro. Necesitas el resultado de los hijos antes de calcular el padre: eso es postorden.'},
+  {type:'num',q:'¿Cuánto pesa la carpeta <code>web/</code>, en KB?',ans:368,exp:'index.html 8 + img/ (60 + 300) = 368 KB.'},
+  {type:'num',q:'¿Cuánto pesa <code>proyecto/</code> en total, en KB?',ans:1428,exp:'docs/ 160 + web/ 368 + presentacion.pptx 900 = 1428 KB.'},
+  {type:'mc',q:'El comando <code>tree</code> de la terminal muestra cada carpeta y debajo, con sangría, su contenido. ¿Qué recorrido usa?',opts:['Preorden','Postorden','Por niveles'],ans:0,exp:'Escribe la carpeta antes que su contenido y entra a cada subcarpeta completa antes de pasar a la siguiente: preorden.'},
+  {type:'num',q:'¿En qué nivel está <code>foto.jpg</code>?',ans:3,exp:'proyecto/ (0) → web/ (1) → img/ (2) → foto.jpg (3).'}
+ ];}},
+{id:'calculadora',title:'Cómo piensa una calculadora',tag:'Árbol de expresión · postorden',
+ intro:'Cuando escribes ((8 − 3) × (4 + 2)) − 10 ÷ 5 en una calculadora o en Java, el programa arma un árbol de expresión y lo recorre para calcular.',
+ build(){const root=N('−',N('×',N('−',N('8'),N('3')),N('+',N('4'),N('2'))),N('÷',N('10'),N('5')));return{root:root,kind:'bin'};},
+ steps(c){return[
+  {type:'mc',q:'Mira el árbol. ¿Qué guardan las hojas y qué guardan los nodos internos?',opts:['Hojas: números · Internos: operadores','Hojas: operadores · Internos: números','No hay una regla'],ans:0,exp:'Cada operador es un nodo interno y sus dos hijos son lo que opera. Los números siempre quedan en las hojas.'},
+  {type:'tap',q:'Toca los nodos en <b>postorden</b>. Así calcula la máquina: primero los dos operandos, después la operación.',order:T.post(c.root),hint:HINT.post},
+  {type:'num',q:'Calcula de abajo hacia arriba. ¿Cuál es el resultado?',ans:28,exp:'8 − 3 = 5 · 4 + 2 = 6 · 5 × 6 = 30 · 10 ÷ 5 = 2 · 30 − 2 = 28.'},
+  {type:'mc',q:'El inorden es <code>8 − 3 × 4 + 2 − 10 ÷ 5</code>. Si lo calculas así, sin paréntesis, ¿da 28?',opts:['Sí, da lo mismo','No: se pierde la prioridad de las operaciones'],ans:1,exp:'Sin paréntesis da 8 − 12 + 2 − 2 = −4. El árbol guarda la prioridad en su forma; el inorden la pierde si no pones un paréntesis por cada subárbol.'},
+  {type:'mc',q:'El postorden <code>8 3 − 4 2 + × 10 5 ÷ −</code> se llama notación polaca inversa. ¿Por qué le sirve a un programa?',opts:['Se evalúa con una pila, sin paréntesis ni reglas de prioridad','Ordena los números de menor a mayor','Busca un número más rápido'],ans:0,exp:'Lees de izquierda a derecha: si es número, lo apilas; si es operador, sacas dos, operas y apilas el resultado. Así trabajan muchos compiladores e intérpretes.'}
+ ];}},
+{id:'matriculas',title:'La secretaría del colegio',tag:'ABB · búsqueda',
+ intro:'El sistema de la secretaría guarda las matrículas en un ABB. Una madre pide en ventanilla la ficha de su hijo, matrícula 380.',
+ build(){return{root:buildBST([450,230,710,120,340,600,820,300,380,650]),kind:'bin'};},
+ steps(c){return[
+  {type:'tap',q:'Toca el camino que recorre el sistema para encontrar la matrícula <b>380</b>, desde la raíz.',order:bstPath(c.root,380).path,hint:'Compara 380 con cada nodo: si es menor, baja a la izquierda; si es mayor, a la derecha.'},
+  {type:'num',q:'¿Cuántas comparaciones hizo el sistema?',ans:4,exp:'450 → 230 → 340 → 380: cuatro comparaciones, aunque hay 10 matrículas guardadas.'},
+  {type:'mc',q:'Ahora piden la matrícula 500. ¿Dónde termina la búsqueda?',opts:['En el hijo izquierdo de 600, que está vacío: no está','En 710: no está','Recorre todo el árbol y no está','En 650'],ans:0,exp:'500 &gt; 450 → derecha · 500 &lt; 710 → izquierda · 500 &lt; 600 → izquierda, que está vacía. Bastaron 3 comparaciones para saber que no está.'},
+  {type:'mc',q:'Dirección pide el listado de matrículas de menor a mayor. ¿Qué recorrido usas?',opts:['Preorden','Inorden','Postorden','Por niveles'],ans:1,exp:'En un ABB el inorden siempre sale ordenado: 120 230 300 340 380 450 600 650 710 820.'},
+  {type:'mc',q:'El sistema crece hasta 1.000.000 de registros en un ABB balanceado. ¿Cuántas comparaciones necesita, como máximo, para encontrar uno?',opts:['Unas 20','Unas 1.000','Unas 500.000','1.000.000'],ans:0,exp:'2<sup>20</sup> = 1.048.576. Cada comparación descarta la mitad, así que alcanzan unas 20.'},
+  {type:'mc',q:'Un compañero carga las matrículas ya ordenadas: 120, 230, 300, 340… ¿Qué le pasa al árbol?',opts:['Queda balanceado solo','Queda degenerado, como una lista, y buscar se vuelve lento','No se puede insertar en orden'],ans:1,exp:'Cada matrícula nueva es mayor que todas y siempre va a la derecha. Por eso las bases de datos usan árboles que se balancean solos (AVL, árboles B).'}
+ ];}},
+{id:'torneo',title:'El torneo interclases',tag:'Árbol binario perfecto · conteo',
+ intro:'Para el día del estudiante se arma un torneo de fútbol con eliminación directa. Las llaves del torneo son un árbol binario: los equipos son hojas y cada partido es un nodo interno.',
+ build(){const L=['1.°A','1.°B','2.°A','2.°B','3.°A','3.°B','Doc.','Ex al.'].map(v=>N(v));const root=N('Final',N('S1',N('C1',L[0],L[1]),N('C2',L[2],L[3])),N('S2',N('C3',L[4],L[5]),N('C4',L[6],L[7])));return{root:root,kind:'bin',pill:true};},
+ steps(c){return[
+  {type:'num',q:'Hay 8 equipos. ¿Cuántos partidos se juegan en total?',ans:7,exp:'En un árbol binario donde cada nodo interno tiene 2 hijos: internos = hojas − 1. Cada partido elimina a un equipo y hay que eliminar a 7.'},
+  {type:'num',q:'¿Cuántas rondas hay? Pista: es la altura del árbol.',ans:3,exp:'Cuartos, semifinal y final: altura 3.'},
+  {type:'tap',q:'Un partido se juega cuando ya se jugaron los dos que lo alimentan. Toca <b>solo los partidos</b> (C, S y Final) en <b>postorden</b>.',order:T.post(c.root).filter(n=>n.l||n.r),hint:'Los equipos no son partidos. En postorden, un partido va después de sus dos subárboles.'},
+  {type:'mc',q:'Se anotan 16 equipos. ¿Cuántos partidos y cuántas rondas?',opts:['15 partidos, 4 rondas','16 partidos, 4 rondas','15 partidos, 8 rondas','8 partidos, 4 rondas'],ans:0,exp:'Partidos = 16 − 1 = 15. Rondas = altura: 2<sup>4</sup> = 16, entonces 4.'},
+  {type:'mc',q:'Si se anotan 6 equipos, el árbol ya no puede ser perfecto. ¿Qué se hace en los torneos reales?',opts:['Algunos equipos pasan directo a la ronda siguiente','Se inventan dos equipos más','No se puede usar un árbol'],ans:0,exp:'Algunos equipos “pasan de ronda” sin jugar. El árbol sigue siendo binario, pero no perfecto. Y se siguen jugando 6 − 1 = 5 partidos.'}
+ ];}},
+{id:'soporte',title:'El técnico del laboratorio',tag:'Árbol de decisión · IA',
+ intro:'Para ayudar en el laboratorio armaron un árbol de decisión: cada nodo interno es una pregunta y cada hoja, un diagnóstico. Rama izquierda = NO, rama derecha = SÍ.',
+ build(){const root=N('¿Enciende?',N('¿Enchufada?',N('Enchufar'),N('Revisar\nfuente')),N('¿Hay imagen?',N('¿Monitor\nprendido?',N('Prender\nmonitor'),N('Revisar cable\nde video')),N('¿Arranca el\nsistema?',N('Revisar\ndisco'),N('¡Funciona!'))));return{root:root,kind:'bin',pill:true,edge:['no','sí']};},
+ steps(c){const r=c.root;return[
+  {type:'tap',q:'Una PC enciende, no muestra imagen y el monitor sí está prendido. Toca el camino de preguntas hasta el diagnóstico.',order:[r,r.r,r.r.l,r.r.l.r],hint:'Empieza en la raíz. Izquierda es NO y derecha es SÍ.'},
+  {type:'num',q:'Como máximo, ¿cuántas preguntas hace este árbol antes de dar un diagnóstico?',ans:3,exp:'Es la altura del árbol: el camino más largo de la raíz a una hoja tiene 3 preguntas.'},
+  {type:'num',q:'¿Cuántos diagnósticos distintos puede dar?',ans:6,exp:'Un diagnóstico por hoja: hay 6 hojas.'},
+  {type:'mc',q:'En inteligencia artificial también hay “árboles de decisión”. ¿En qué se diferencian de este?',opts:['El programa aprende las preguntas a partir de muchos datos de ejemplo','Tienen siempre una sola pregunta','No usan ramas ni hojas'],ans:0,exp:'Un modelo de árbol de decisión analiza datos (por ejemplo, cientos de fallas registradas) y elige qué preguntar en cada nodo. La estructura es la misma que la tuya: preguntas en los nodos internos y respuestas en las hojas.'}
+ ];}}
+];
+const C4={c:null,ctx:null,steps:null,si:0,first:true,correct:0,tries:0,tapIdx:0,pos:null};
+let doneCases=store.get('cases',[]);
+function renderCasePicker(){doneCases=store.get('cases',[]);const box=$('#n4-cases');box.innerHTML='';
+ CASES.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='case';b.setAttribute('aria-pressed',String(C4.c===c));
+  b.innerHTML='<small>Caso '+(i+1)+' · '+c.tag+'</small><b>'+c.title+'</b>'+(doneCases.indexOf(c.id)>=0?'<span class="done">✓ resuelto</span>':'');
+  b.addEventListener('click',()=>caseStart(c));box.appendChild(b);});}
+function caseStart(c){C4.c=c;C4.ctx=c.build();C4.steps=c.steps(C4.ctx);C4.si=0;C4.correct=0;renderCasePicker();
+ $('#n4-intro .bubble p').innerHTML=c.intro;caseStep();}
+function caseDraw(){const x=C4.ctx;const items=x.kind==='gen'?layoutGen(x.root):layoutBin(x.root);
+ const st=C4.steps[C4.si];
+ const o=x.kind==='gen'?{pill:true,dx:122,dy:72,minW:600,scale:1.1}:x.pill?{pill:true,dx:x.edge?62:62,dy:x.edge?84:70,minW:x.edge?620:480,scale:1.1,edgeLabels:x.edge}:{scale:1.2};
+ if(x.edge)o.dx=68;
+ if(st&&st.type==='tap'&&!C4.stepDone)o.onClick=caseTap;
+ C4.pos=drawTree($('#n4-svg'),items,o);}
+function caseStep(){const st=C4.steps[C4.si];C4.first=true;C4.tries=0;C4.tapIdx=0;C4.stepDone=false;
+ caseDraw();$('#n4-fb').innerHTML='';$('#n4-next').innerHTML='';$('#n4-strip').innerHTML='';
+ $('#n4-meta').textContent=C4.c.title+' · Paso '+(C4.si+1)+' de '+C4.steps.length;$('#n4-q').innerHTML=st.q;
+ const ctrl=$('#n4-ctrl');ctrl.innerHTML='';
+ if(st.type==='mc'){st.opts.forEach((t,i)=>ctrl.appendChild(btn(t,'opt',function(){if(C4.stepDone)return;if(i===st.ans){this.classList.add('right');$$('.opt',ctrl).forEach(b=>b.disabled=true);caseOk(st.exp);}else{this.classList.add('wrongopt');this.disabled=true;caseBad(st);}})));}
+ else if(st.type==='num'){const row=document.createElement('div');row.className='row';const id='n4-in-'+C4.c.id+'-'+C4.si;row.innerHTML='<label for="'+id+'">Respuesta</label><input type="text" inputmode="numeric" id="'+id+'" autocomplete="off">';
+  const inp=row.querySelector('input');const go=()=>{if(C4.stepDone)return;const v=Number(inp.value.replace(/\s|\./g,'').replace(',','.'));if(inp.value.trim()===''||isNaN(v)){fb($('#n4-fb'),'info','Escribe un número.');return;}if(v===st.ans){inp.disabled=true;caseOk(st.exp);}else caseBad(st);};
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});row.appendChild(btn('Comprobar','btn',go));ctrl.appendChild(row);}
+ else if(st.type==='tap'){strip($('#n4-strip'),st.order.length);}
+}
+function caseTap(it){const st=C4.steps[C4.si];if(st.type!=='tap'||C4.stepDone)return;const exp=st.order[C4.tapIdx];
+ if(it.id===exp.id){mark(C4.pos,it.id,'hit');badge(C4.pos,it.id,C4.tapIdx+1);if(C4.tapIdx>0)edgeHit(C4.pos,it.id);stripSet($('#n4-strip'),C4.tapIdx,it.label.replace('\n',' '));unmarkAll(C4.pos,'cur');C4.tapIdx++;$('#n4-fb').innerHTML='';
+  if(C4.tapIdx===st.order.length)caseOk('Secuencia: <code>'+st.order.map(n=>String(n.v).replace('\n',' ')).join(' · ')+'</code>');}
+ else if(it.g.classList.contains('hit')){fb($('#n4-fb'),'info','Ese ya lo tocaste.');}
+ else{flash(C4.pos,it.id);C4.first=false;C4.tries++;let h=st.hint;if(C4.tries>=2){mark(C4.pos,exp.id,'cur');h+=' Te marqué el siguiente con borde punteado.';}fb($('#n4-fb'),'bad',h);}}
+function caseOk(exp){C4.stepDone=true;if(C4.first){C4.correct++;addPts('n4',10);}fb($('#n4-fb'),'ok',exp);
+ if(C4.steps[C4.si].type==='tap')caseDrawKeep();
+ const last=C4.si===C4.steps.length-1;nextBtn($('#n4-next'),last?'Terminar caso':'Siguiente paso',()=>{if(last)caseEnd();else{C4.si++;caseStep();}});}
+function caseDrawKeep(){$$('.node.clickable',$('#n4-svg')).forEach(g=>{g.classList.remove('clickable');g.removeAttribute('tabindex');});}
+function caseBad(st){C4.first=false;C4.tries++;
+ if(C4.tries>=2&&st.type!=='tap'){C4.stepDone=true;let ans=st.type==='mc'?st.opts[st.ans]:st.ans;$$('#n4-ctrl .opt').forEach((b,i)=>{b.disabled=true;if(i===st.ans)b.classList.add('right');});$$('#n4-ctrl input').forEach(i=>i.disabled=true);
+  fb($('#n4-fb'),'bad','La respuesta es <b>'+ans+'</b>. '+st.exp);const last=C4.si===C4.steps.length-1;nextBtn($('#n4-next'),last?'Terminar caso':'Siguiente paso',()=>{if(last)caseEnd();else{C4.si++;caseStep();}});}
+ else fb($('#n4-fb'),'bad','Piénsalo otra vez. Tienes un intento más antes de ver la respuesta.');}
+function caseEnd(){const c=C4.c,n=C4.steps.length;if(doneCases.indexOf(c.id)<0){doneCases.push(c.id);store.set('cases',doneCases);}renderCasePicker();
+ $('#n4-meta').textContent=c.title+' · Terminado';$('#n4-q').innerHTML='Acertaste <span class="big">'+C4.correct+'</span> de '+n+' pasos al primer intento.';$('#n4-ctrl').innerHTML='';$('#n4-strip').innerHTML='';
+ const idx=CASES.indexOf(c),nx=CASES[idx+1];
+ $('#n4-fb').innerHTML=sayHTML('techi',nx?'Siguiente caso: '+nx.title+'.':'Terminaste los cinco casos. Te queda el desafío del Nivel 5.');
+ const box=$('#n4-next');box.innerHTML='';box.appendChild(btn('Repetir este caso','btn ghost',()=>caseStart(c)));if(nx){const b=btn('Ir al siguiente caso','btn',()=>caseStart(nx));box.appendChild(b);b.focus({preventScroll:true});}}
+
+/* ================= N5 · Desafío ================= */
+const Q5={rounds:0,ok:0,done:false};
+function n5New(){
+ const labs=letters(6+rand(2));const right=randomBin(labs,3);const sigOf=t=>seqStr(T.pre(t))+'|'+seqStr(T.ino(t));const rs=sigOf(right);
+ const opts=[right];const seen=new Set([rs]);
+ // un distractor con el mismo preorden (más tramposo), si aparece
+ for(let t=0;t<400&&opts.length<2;t++){const cand=randomBin(labs,3);const s=sigOf(cand);if(!seen.has(s)&&seqStr(T.pre(cand))===seqStr(T.pre(right))){seen.add(s);opts.push(cand);}}
+ for(let t=0;t<400&&opts.length<3;t++){const cand=randomBin(t%2?labs:shuffle(labs),3);const s=sigOf(cand);if(!seen.has(s)){seen.add(s);opts.push(cand);}}
+ Q5.right=right;Q5.done=false;Q5.rounds++;
+ const pre=T.pre(right).map(n=>n.v),ino=T.ino(right).map(n=>n.v);$('#n5-pre').textContent=pre.join(' ');$('#n5-in').textContent=ino.join(' ');
+ $('#n5-meta').textContent='Ronda '+Q5.rounds+' · Aciertos '+Q5.ok;$('#n5-fb').innerHTML='';$('#n5-next').innerHTML='';
+ const box=$('#n5-opts');box.innerHTML='';
+ shuffle(opts).forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.className='choice';b.setAttribute('aria-label','Árbol '+'ABC'[i]);
+  b.innerHTML='<span>Árbol '+'ABC'[i]+'</span>';const s=sv('svg',{'class':'tree'});b.appendChild(s);box.appendChild(b);drawTree(s,layoutBin(t),{r:15,dx:34,dy:46,scale:1});
+  b.addEventListener('click',()=>{if(Q5.done)return;Q5.done=true;const ok=t===right;$$('.choice',box).forEach(x=>x.disabled=true);b.classList.add(ok?'right':'wrongopt');
+   $$('.choice',box).forEach(x=>{if(x._tree===right)x.classList.add('right');});
+   const k=ino.indexOf(pre[0]),L=ino.slice(0,k),R=ino.slice(k+1);
+   const ex='La raíz es <b>'+pre[0]+'</b> (la primera del preorden). En el inorden, a su izquierda quedan <code>'+(L.join(' ')||'nada')+'</code> → subárbol izquierdo; a su derecha <code>'+(R.join(' ')||'nada')+'</code> → subárbol derecho. Repite lo mismo dentro de cada lado.'+(ok?'':' Para comprobar un árbol, escribe su preorden y su inorden y compáralos con los de arriba.');
+   if(ok){Q5.ok++;addPts('n5',20);}fb($('#n5-fb'),ok?'ok':'bad',ex);$('#n5-meta').textContent='Ronda '+Q5.rounds+' · Aciertos '+Q5.ok;nextBtn($('#n5-next'),'Otro árbol',n5New);});
+  b._tree=t;});
+}
+
+/* ================= navegación ================= */
+const VIEWS=['teoria','n1','n2','n3','n4','n5'];
+const inits={n1:n1Start,n2:n2Orden,n3:n3Ins,n4:()=>caseStart(CASES[0]),n5:n5New};const inited={};
+function show(v,fromClick){if(VIEWS.indexOf(v)<0)v='teoria';
+ VIEWS.forEach(x=>{$('#v-'+x).hidden=x!==v;$('#tab-'+x).setAttribute('aria-selected',String(x===v));});
+ if(inits[v]&&!inited[v]){inited[v]=true;inits[v]();}
+ const t=$('#tab-'+v);if(t&&t.scrollIntoView)t.scrollIntoView({block:'nearest',inline:'nearest'});
+ if(fromClick)window.scrollTo({top:Math.max(0,HOST.getBoundingClientRect().top+window.scrollY-70),behavior:RM?'auto':'smooth'});}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>{const v=t.dataset.view;if(location.hash!=='#'+v)location.hash=v;else show(v,true);}));
+window.addEventListener('hashchange',()=>show(location.hash.slice(1),true));
+show(location.hash.slice(1),false);
+})();
+</script>
+</body>
+</html>
