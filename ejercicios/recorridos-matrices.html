@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recorridos con matrices · BATIN · profe.DanFer</title>
+<meta name="description" content="Juego de 10 misiones: recorridos con matrices en casos reales, de pseudocódigo a Python.">
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@600;800&display=swap">
+<style>
+/* Layout: consola oscura de una columna; mapa de misiones en grilla, cada misión es una secuencia vertical de pasos que se desbloquean */
+:root{
+  --bg:#0D0F15; --bg2:#121620; --panel:#181D28; --panel2:#1F2534; --line:#2B3345; --code:#0A0C11;
+  --fg:#E8EAF0; --muted:#9AA3B5; --dim:#6B7488;
+  --or:#E8611A; --or2:#C0511E; --vi:#A283F2; --bl:#52A6EA; --ok:#3CC48D; --bad:#EF5B51; --warn:#F0B33D;
+  --f-disp:'Orbitron','Segoe UI',system-ui,sans-serif;
+  --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,'Courier New',monospace;
+  --codefg:#FFD2B8;
+  color-scheme:dark;
+}
+[data-tema="claro"]{--bg:#F3F4F8;--bg2:#E9ECF2;--panel:#FFFFFF;--panel2:#EEF0F5;--line:#D3D8E2;--fg:#1A1E27;--muted:#525B6C;--dim:#768093;--codefg:#9A3C0E;--vi:#7652D6;--bl:#2B78BD;--ok:#1C9767;--bad:#CF3D33;--warn:#A9740C;color-scheme:light}
+[data-tema="claro"] .btn{color:#fff}
+[data-tema="claro"] .btn.sec{color:var(--fg)}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{margin:0;font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px;padding-top:env(safe-area-inset-top,0px);
+  background-image:linear-gradient(rgba(82,166,234,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(82,166,234,.035) 1px,transparent 1px);
+  background-size:28px 28px}
+.wrap{width:100%;max-width:900px;margin:0 auto;min-width:0;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-disp);letter-spacing:.02em;text-wrap:balance;margin:0;line-height:1.2}
+p{margin:0}
+code,.mono{font-family:var(--f-mono);font-size:.9em}
+code{background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--codefg)}
+a{color:var(--bl)}
+button{font-family:var(--f-body);font-size:15px;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-block:18px 14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;cursor:pointer;background:none;border:0;color:var(--fg);padding:0}
+.brand b{font-family:var(--f-disp);font-weight:800;font-size:clamp(20px,5vw,26px);letter-spacing:.08em}
+.brand span{font-family:var(--f-mono);color:var(--or);font-size:15px}
+.volver{font-family:var(--f-mono);font-size:13px;color:var(--muted);text-decoration:none}
+.volver:hover{color:var(--or)}
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px;color:var(--muted)}
+.hud .pts{font-family:var(--f-disp);color:var(--warn);font-size:15px;font-variant-numeric:tabular-nums}
+.bar{width:120px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--or),var(--vi))}
+.rank{font-family:var(--f-mono);font-size:12px;color:var(--vi);border:1px solid var(--vi);border-radius:20px;padding:1px 8px}
+
+/* generic */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.btn{background:var(--or);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:700}
+.btn:hover{background:var(--or2)}
+.btn.sec{background:transparent;border:1px solid var(--line);color:var(--fg)}
+.btn.sec:hover{border-color:var(--bl)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+label{font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+input[type=text],select,textarea{background:var(--bg2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--f-body);font-size:16px}
+textarea{min-height:90px;resize:vertical;width:100%}
+
+/* mascots */
+.voz{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--bg2);border-left:3px solid var(--c,var(--bl))}
+.voz .av{font-size:26px;line-height:1;flex:none}
+.voz .tx{min-width:0;display:flex;flex-direction:column;gap:4px}
+.voz .nm{font-family:var(--f-disp);font-size:12px;letter-spacing:.1em;color:var(--c,var(--bl))}
+.gatiel{--c:var(--or)} .bit{--c:var(--bl)} .techi{--c:var(--vi)}
+
+/* map */
+.grupo{display:flex;flex-direction:column;gap:12px}
+.grupo h2{font-size:16px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.mcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;color:var(--fg);display:flex;flex-direction:column;gap:6px;min-height:128px}
+.mcard:hover:not(:disabled){border-color:var(--or)}
+.mcard .n{font-family:var(--f-disp);font-size:22px;color:var(--or);font-variant-numeric:tabular-nums}
+.mcard .t{font-weight:700;line-height:1.25}
+.mcard .s{font-size:13px;color:var(--muted)}
+.mcard .st{margin-top:auto;font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+.mcard.done{border-color:rgba(60,196,141,.5)} .mcard.done .st{color:var(--ok)}
+.mcard.cur .st{color:var(--warn)}
+.mcard:disabled{opacity:.45;cursor:not-allowed}
+
+/* mission */
+.mhead{display:flex;flex-direction:column;gap:8px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:1px 8px;color:var(--muted)}
+.tag.bloom{color:var(--vi);border-color:var(--vi)}
+.mhead h1{font-size:clamp(22px,5.5vw,30px)}
+.tarea{border:1px dashed var(--or);border-radius:8px;padding:10px 14px;background:rgba(232,97,26,.06)}
+
+/* matrix */
+.tablas{display:flex;flex-wrap:wrap;gap:16px}
+.tbox{overflow-x:auto;min-width:0;max-width:100%}
+.tbox .tt{font-family:var(--f-mono);font-size:13px;color:var(--or);margin-bottom:6px}
+table.mx{border-collapse:separate;border-spacing:3px;font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+table.mx th{font-weight:400;color:var(--muted);padding:4px 6px;text-align:center;white-space:nowrap}
+table.mx th small{display:block;color:var(--dim);font-size:11px}
+table.mx th.rh{text-align:right}
+table.mx th.corner{color:var(--dim);font-size:11px}
+table.mx td{background:var(--panel2);border:1px solid var(--line);border-radius:5px;min-width:44px;padding:6px 8px;text-align:center;transition:background .15s,border-color .15s}
+table.mx td.visto{background:rgba(82,166,234,.13);border-color:rgba(82,166,234,.35)}
+table.mx td.hi{background:var(--or);border-color:var(--or);color:#fff;font-weight:600}
+
+/* steps */
+.paso{position:relative}
+.paso.lock{opacity:.5}
+.paso.lock .cuerpo{display:none}
+.paso .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.paso .ph h3{font-size:15px}
+.estado{font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+.estado.ok{color:var(--ok)}
+.cuerpo{display:flex;flex-direction:column;gap:12px}
+pre.cod{margin:0;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;font-family:var(--f-mono);font-size:13.5px;line-height:1.85;color:#D7DAE3;tab-size:4}
+.t-kw{color:var(--bl);font-weight:600}.t-st{color:#E6C07B}.t-nu{color:#F29E74}.t-cm{color:var(--dim);font-style:italic}.t-op{color:var(--or)}
+input.hueco{font-family:var(--f-mono);font-size:13.5px;background:#232A3C;color:#fff;border:1px dashed var(--or);border-radius:4px;padding:1px 4px;margin:0 1px;text-align:center;vertical-align:baseline;min-width:3ch}
+input.hueco::placeholder{color:var(--dim)}
+input.hueco.ok{border:1px solid var(--ok);background:rgba(60,196,141,.15)}
+input.hueco.bad{border:1px solid var(--bad);background:rgba(239,91,81,.15);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.fb{display:flex;flex-direction:column;gap:6px}
+.fb .it{font-size:14px;padding:8px 12px;border-radius:6px;background:rgba(239,91,81,.1);border-left:3px solid var(--bad)}
+.fb .it.ok{background:rgba(60,196,141,.1);border-left-color:var(--ok)}
+.fb .it b{font-family:var(--f-mono);font-size:12px}
+details.pista{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+details.pista summary{cursor:pointer;color:var(--warn);font-weight:500;font-size:14px}
+details.pista ol,details.pista ul{margin:8px 0 2px;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.puente{overflow-x:auto}
+.puente table{border-collapse:collapse;font-size:13px;width:100%;min-width:460px}
+.puente td,.puente th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.puente th{color:var(--muted);font-weight:500}
+.puente td:first-child,.puente td:nth-child(2){font-family:var(--f-mono);white-space:nowrap}
+
+/* tracer */
+.tracer{display:flex;flex-direction:column;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:12px}
+.tctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tctl button{background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-family:var(--f-mono);font-size:13px}
+.tctl button:hover{border-color:var(--bl)}
+.tctl .cnt{font-family:var(--f-mono);font-size:12px;color:var(--dim);margin-left:auto;font-variant-numeric:tabular-nums}
+.vars{display:flex;flex-wrap:wrap;gap:6px}
+.vars span{font-family:var(--f-mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+.vars span b{color:var(--bl);font-weight:600}
+.nota{font-size:14px;color:var(--warn);min-height:1.5em}
+.consola{background:var(--code);border-radius:6px;padding:8px 10px;font-family:var(--f-mono);font-size:12.5px;color:#9EE6B8;min-height:44px;max-height:170px;overflow:auto;white-space:pre}
+.consola .ttl{color:var(--dim)}
+
+/* quiz */
+.ops{display:flex;flex-direction:column;gap:8px}
+.op{text-align:left;background:var(--bg2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:15px}
+.op:hover:not(:disabled){border-color:var(--or)}
+.op.ok{border-color:var(--ok);background:rgba(60,196,141,.12)}
+.op.bad{border-color:var(--bad);background:rgba(239,91,81,.1)}
+.op:disabled{cursor:default}
+
+.reto-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.reto-in input{flex:1 1 180px;min-width:0}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel2);border:1px solid var(--or);color:var(--fg);padding:10px 18px;border-radius:8px;font-size:14px;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;min-width:100%}
+.tbl th,.tbl td{border:1px solid var(--line);padding:5px 8px;text-align:center}
+.tbl th{color:var(--muted);font-weight:500;background:var(--bg2)}
+.tbl td:first-child{text-align:left}
+.gloss{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.gloss b{font-family:var(--f-mono);color:var(--or)}
+footer{color:var(--dim);font-size:13px;text-align:center;padding-top:10px}
+footer button{background:none;border:0;color:var(--dim);text-decoration:underline;font-size:13px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="goMapa" aria-label="Ir al mapa de misiones"><b>RECORRIDOS</b><span>[f][c]</span></button>
+    <div class="hud" id="hud"></div>
+  </header>
+  <a class="volver" href="../aprendiendo.html">← Volver a Estoy aprendiendo</a>
+  <main id="app" class="wrap" style="gap:20px"></main>
+  <footer><span>2do BATIN · Algorítmica 2 / Laboratorio 2 · Matrices</span> · <button id="goDoc">Guía docente</button></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== DATOS ===================== */
+const SUC = ["Luque","San Lorenzo","Asunción"];
+const PROD = ["Chipa","Sopa","Mbeju","Cocido"];
+const STOCK = [[24,8,15,40],[12,30,5,22],[35,18,27,9]];
+const VENTAS = [[120,45,30,80],[95,60,25,70],[150,40,50,110]];
+const EST = ["Lucía","Mathías","Fátima","Rodrigo","Belén","Joel"];
+const DIAS5 = ["Lun","Mar","Mié","Jue","Vie"];
+const ASIS = [[1,1,1,1,1],[1,0,1,0,0],[1,1,0,1,1],[0,1,1,1,0],[1,1,1,0,1],[1,1,1,1,0]];
+const DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes"];
+const CANT_P = ["Empanada","Chipa","Jugo","Sándwich"];
+const PRECIOS = [5000,3000,4000,8000];
+const CANT = [[20,35,25,10],[18,40,30,12],[25,30,20,15],[15,45,35,8],[30,50,40,20]];
+const CURSOS = ["1ro BATIN","2do BATIN","3ro BATIN"];
+const MATS = ["Matemática","Algorítmica","Inglés","Física","Lengua"];
+const PROM = [[3.4,3.8,3.1,2.9,3.6],[2.8,3.5,3.3,2.6,3.9],[3.1,4.2,3.0,2.7,3.7]];
+const EQ = ["Aguará","Jaguarete","Yacaré","Tucán"];
+const TABLA = [[3,1,3,0,3],[1,3,1,3,1],[0,0,3,1,3],[3,3,0,3,0]];
+const FILAS = ["A","B","C","D"];
+const SALA = [[1,1,0,1,1,1],[1,0,0,0,1,1],[0,1,1,1,1,0],[0,0,0,0,1,0]];
+const T3 = [["X","O","X"],["O","X","O"],["O","-","X"]];
+const SUC2 = ["Luque","San Lorenzo"];
+const VEND = [["Ramón","Liz","Óscar"],["Nilda","Hugo","Sara"]];
+const V3 = [[[12,8,5,10],[15,6,9,12],[7,10,4,6]],[[9,14,6,8],[11,5,8,9],[10,12,7,13]]];
+
+const ERR = {
+  E1:"Índices invertidos u orden de índices",
+  E2:"Límite del recorrido (Hasta / range / dimensión)",
+  E3:"Acumulador, contador o bandera mal ubicado o mal iniciado",
+  E4:"Condición o comparación incorrecta",
+  E5:"Ciclo externo equivocado (qué se reporta)",
+  E6:"Traducción a Python (sintaxis)",
+  EX:"Otro"
+};
+
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g,".");
+const range = n => [...Array(n).keys()];
+const rowCells = (t,f,n) => range(n).map(c=>[t,f,c]);
+const colCells = (t,c,n) => range(n).map(f=>[t,f,c]);
+
+/* ===================== MISIONES ===================== */
+const M = [
+/* ---------- 1 ---------- */
+{id:1, clase:1, bloom:"Comprende", titulo:"Inventario de la despensa", sub:"Recorrido completo por filas",
+ historia:"La despensa <b>Ñande Rógape</b> tiene tres sucursales. Cada noche, el encargado revisa el stock de cada producto en cada sucursal, <b>una celda por vez</b>.",
+ tarea:"Recorre toda la matriz <code>stock</code> y muestra cada sucursal con cada producto y su cantidad.",
+ tablas:[{tt:"stock", iF:"f", iC:"c", filas:SUC, cols:PROD, m:STOCK}],
+ datos:[["sucursales",SUC],["productos",PROD],["stock",STOCK]],
+ pseudo:{code:`Algoritmo Inventario
+    // stock tiene 3 filas (sucursales) y 4 columnas (productos)
+    // usamos base 0: la primera fila es la 0
+    Para f <- 0 Hasta {{b1}} Con Paso 1 Hacer
+        Para c <- 0 Hasta {{b2}} Con Paso 1 Hacer
+            Escribir sucursales[f], " - ", productos[c], ": ", stock[{{b3}}]
+        FinPara
+    FinPara
+FinAlgoritmo`,
+  blanks:{
+   b1:{a:["2"], e:{"3":["E2","Con 3 filas los índices son 0, 1 y 2. <code>Hasta</code> incluye el último valor."],"4":["E2","4 es la cantidad de columnas, no de filas."]}, g:"Cuenta las sucursales y recuerda que empiezas en 0."},
+   b2:{a:["3"], e:{"4":["E2","Con 4 columnas los índices son 0, 1, 2 y 3."],"2":["E2","Ese es el límite de las filas. Aquí recorres productos."]}, g:"Cuenta los productos y resta 1."},
+   b3:{a:["f,c"], e:{"c,f":["E1","Primero va la fila y después la columna: <code>stock[fila,columna]</code>."]}, g:"La celda se escribe con dos índices separados por coma."}
+  },
+  pistas:["Cuenta las filas de la tabla. Si la primera es la 0, ¿cuál es la última?","Haz lo mismo con las columnas.","En PSeInt una celda se escribe <code>matriz[fila,columna]</code>. ¿Cómo se llaman aquí la variable de fila y la de columna?"]},
+ expP:"El ciclo de <b>afuera</b> (f) elige la fila; el de <b>adentro</b> (c) la recorre completa. Por cada vuelta de f, c da 4 vueltas: 3 × 4 = <b>12 celdas</b>. Con base 0, el último índice siempre es <b>cantidad − 1</b>: 3 filas → <code>Hasta 2</code>; 4 columnas → <code>Hasta 3</code>.",
+ quiz:{q:"Con este recorrido, ¿en qué orden se visitan las primeras cinco celdas?",
+  ops:[
+   {t:"stock[0,0] → stock[0,1] → stock[0,2] → stock[0,3] → stock[1,0]", ok:true, fb:"Exacto: se termina la fila 0 completa antes de pasar a la fila 1."},
+   {t:"stock[0,0] → stock[1,0] → stock[2,0] → stock[0,1] → stock[1,1]", c:"E5", fb:"Ese es el orden por columnas. Pasaría si el ciclo de afuera fuera c."},
+   {t:"stock[0,0] → stock[1,1] → stock[2,2] → stock[0,1] → stock[1,2]", c:"E1", fb:"f y c no avanzan juntos: c da todas sus vueltas por cada valor de f."},
+   {t:"stock[1,1] → stock[1,2] → stock[1,3] → stock[1,4] → stock[2,1]", c:"E2", fb:"Los índices empiezan en 0, y la columna 4 no existe."}
+  ]},
+ py:{code:`for f in range({{p1}}):
+    for c in range({{p2}}):
+        print(sucursales[f], "-", productos[c], ":", stock{{p3}})`,
+  blanks:{
+   p1:{a:["3","len(stock)","len(sucursales)"], e:{"2":["E6","<code>range(3)</code> genera 0, 1, 2: el número final <b>no</b> se incluye. En PSeInt era <code>Hasta 2</code>; en Python es <code>range(3)</code>."],"4":["E2","4 son las columnas."],"len(stock[0])":["E2","<code>len(stock[0])</code> cuenta las columnas de la fila 0."]}, g:"¿Cuántas filas hay? range no incluye el último número."},
+   p2:{a:["4","len(stock[0])","len(stock[f])","len(productos)"], e:{"3":["E6","<code>range(3)</code> llega solo hasta 2 y se pierde Cocido."],"len(stock)":["E2","<code>len(stock)</code> cuenta las filas (3), no las columnas."]}, g:"¿Cuántas columnas hay?"},
+   p3:{a:["[f][c]"], e:{"[f,c]":["E6","En Python cada índice va en su propio corchete: <code>[f][c]</code>."],"[c][f]":["E1","Primero la fila, después la columna."]}, g:"En Python: un corchete por índice."}
+  },
+  pistas:["Python cuenta igual que PSeInt (desde 0), pero <code>range(n)</code> se detiene <b>antes</b> de n.","También puedes usar <code>len()</code>: <code>len(stock)</code> es la cantidad de filas.","<code>stock[f]</code> es una fila completa (una lista). Para llegar a la celda agregas otro corchete."]},
+ expY:"Tres cambios para pasar a Python. <code>Para f &lt;- 0 Hasta 2</code> se vuelve <code>for f in range(3)</code>, porque range <b>no incluye</b> el número final. <code>stock[f,c]</code> se vuelve <code>stock[f][c]</code>: primero eliges la fila (una lista) y después la celda dentro de ella. Y <code>FinPara</code> desaparece: el bloque termina donde termina la sangría. Si usas <code>len(stock)</code> en vez de 3, el programa sigue funcionando aunque se agreguen sucursales.",
+ reto:{txt:"Modifica el programa para que muestre <b>solo</b> los productos con stock <b>menor a 20</b> (agrega un <code>if</code> dentro del segundo <code>for</code>). ¿Cuántas líneas muestra?", a:["6"]},
+ trace(){const T=this.tablas[0],s=[];for(const f of range(3))for(const c of range(4))s.push({cells:[[0,f,c]],vars:{f,c},note:`f=${f}, c=${c} → stock[${f}][${c}] = ${T.m[f][c]}`,out:`${SUC[f]} - ${PROD[c]} : ${T.m[f][c]}`});return s;}
+},
+/* ---------- 2 ---------- */
+{id:2, clase:1, bloom:"Aplica", titulo:"Cierre de caja por sucursal", sub:"Acumulador que se reinicia por fila",
+ historia:"Son las 20:00 y cada sucursal cierra caja. La gerente quiere saber <b>cuántas unidades vendió cada sucursal</b> en el día, sumando todos sus productos.",
+ tarea:"Calcula y muestra el total de unidades vendidas por cada sucursal.",
+ tablas:[{tt:"ventas", iF:"f", iC:"c", filas:SUC, cols:PROD, m:VENTAS}],
+ datos:[["sucursales",SUC],["productos",PROD],["ventas",VENTAS]],
+ pseudo:{code:`Para f <- 0 Hasta 2 Con Paso 1 Hacer
+    {{b1}} <- 0
+    Para c <- 0 Hasta 3 Con Paso 1 Hacer
+        total <- total + ventas[f,{{b2}}]
+    FinPara
+    Escribir sucursales[f], " vendió ", {{b3}}
+FinPara`,
+  blanks:{
+   b1:{a:["total"], e:{"ventas":["E3","No se borra la matriz: se pone en 0 la variable que va a acumular."],"c":["E3","c la controla el Para. Aquí se inicia el acumulador."]}, g:"¿Qué variable va sumando las ventas?"},
+   b2:{a:["c"], e:{"f":["E1","<code>ventas[f,f]</code> recorre solo la diagonal. La columna la marca c."]}, g:"El segundo índice es la columna."},
+   b3:{a:["total"], e:{"ventas[f,c]":["E3","Eso es solo una celda. La suma de toda la fila está guardada en otra variable."],"ventas":["E3","Se muestra el resultado acumulado, no la matriz."]}, g:"¿Qué variable tiene la suma de la fila completa?"}
+  },
+  pistas:["Un acumulador necesita empezar en 0 <b>antes</b> de sumar.","La celda actual es <code>ventas[fila,columna]</code>.","Cuando termina el ciclo de c, la fila ya está sumada. ¿Dónde quedó guardada esa suma?"]},
+ expP:"Fíjate dónde está <code>total &lt;- 0</code>: <b>dentro</b> del ciclo de filas y <b>antes</b> del ciclo de columnas. Así cada sucursal empieza su cuenta desde cero. <code>total &lt;- total + ventas[f,c]</code> es un <b>acumulador</b>: toma lo que ya había y le suma la celda actual. El Escribir va después del FinPara de c, así que se muestra una vez por sucursal, cuando la fila ya está sumada.",
+ quiz:{q:"Si movemos <code>total &lt;- 0</code> arriba de todo, antes del primer Para, ¿qué muestra el programa?",
+  ops:[
+   {t:"Lo mismo: Luque 275, San Lorenzo 250, Asunción 350", c:"E3", fb:"No. total ya no vuelve a 0 al cambiar de sucursal."},
+   {t:"Luque 275, San Lorenzo 525, Asunción 875", ok:true, fb:"Correcto. San Lorenzo arrastra lo de Luque, y Asunción lo de las dos anteriores. Es el error de acumulador más común."},
+   {t:"Un error, porque total no tiene valor", c:"EX", fb:"total sí tiene valor: se inició una vez, al principio."},
+   {t:"Todas las sucursales muestran 0", c:"E3", fb:"El acumulador sí suma; el problema es que nunca se reinicia."}
+  ]},
+ py:{code:`for f in range(len(ventas)):
+    total = {{p1}}
+    for c in range(len(ventas[f])):
+        total = {{p2}}
+    print(sucursales[f], "vendió", total)`,
+  blanks:{
+   p1:{a:["0"], e:{}, g:"¿Con qué valor empieza un acumulador?"},
+   p2:{a:["total+ventas[f][c]","ventas[f][c]+total"], e:{"ventas[f][c]":["E3","Así total solo guarda la última celda. Falta sumarle lo que ya tenía."],"total+ventas[f,c]":["E6","En Python: <code>ventas[f][c]</code>, un corchete por índice."],"total+ventas[c][f]":["E1","Primero la fila, después la columna."]}, g:"Lo que ya tenía total, más la celda actual."}
+  },
+  pistas:["Igual que en PSeInt, pero con <code>=</code> en lugar de <code>&lt;-</code>.","La suma es: total anterior + celda actual."]},
+ expY:"En Python, la posición de cada línea la decide la <b>sangría</b>. <code>total = 0</code> tiene 4 espacios (dentro del <code>for f</code>), la suma tiene 8 (dentro del <code>for c</code>) y el <code>print</code> vuelve a 4, por eso se ejecuta una vez por sucursal. Si el print tuviera 8 espacios, verías 12 líneas con totales parciales.",
+ reto:{txt:"Agrega una variable <code>general</code> que sume los totales de todas las sucursales y muéstrala al final. ¿Cuántas unidades vendió la empresa?", a:["875"]},
+ trace(){const T=this.tablas[0],s=[];for(const f of range(3)){let tot=0;s.push({cells:[],vars:{f,total:0},note:`Nueva sucursal: ${SUC[f]}. total vuelve a 0`});for(const c of range(4)){const v=T.m[f][c];s.push({cells:[[0,f,c]],vars:{f,c,total:tot+v},note:`total = ${tot} + ${v} = ${tot+v}`});tot+=v;}s.push({cells:rowCells(0,f,4),vars:{f,total:tot},note:"Terminó la fila: se muestra el total",out:`${SUC[f]} vendió ${tot}`});}return s;}
+},
+/* ---------- 3 ---------- */
+{id:3, clase:1, bloom:"Aplica", titulo:"El producto estrella", sub:"Recorrido por columnas",
+ historia:"Con los mismos datos, ahora el proveedor pregunta otra cosa: <b>¿cuántas unidades se vendieron de cada producto</b>, sumando las tres sucursales?",
+ tarea:"Calcula el total de cada producto. Ahora el reporte es por <b>columna</b>.",
+ tablas:[{tt:"ventas", iF:"f", iC:"c", filas:SUC, cols:PROD, m:VENTAS}],
+ datos:[["sucursales",SUC],["productos",PROD],["ventas",VENTAS]],
+ pseudo:{code:`Para {{b1}} <- 0 Hasta {{b2}} Con Paso 1 Hacer
+    total <- 0
+    Para {{b3}} <- 0 Hasta 2 Con Paso 1 Hacer
+        total <- total + ventas[f,c]
+    FinPara
+    Escribir productos[c], ": ", total
+FinPara`,
+  blanks:{
+   b1:{a:["c"], e:{"f":["E5","Si afuera va f, el reporte sale por sucursal, como en la misión 2. Aquí se reporta por producto."]}, g:"¿Qué se reporta? Eso va en el ciclo de afuera."},
+   b2:{a:["3"], e:{"2":["E2","Hay 4 productos: índices 0 a 3."],"4":["E2","Base 0: 4 productos → último índice 3."]}, g:"Último índice de columna."},
+   b3:{a:["f"], e:{"c":["E5","c ya se usa en el ciclo de afuera. Adentro se recorren las sucursales."]}, g:"Dentro de cada producto, recorres las sucursales."}
+  },
+  pistas:["Regla de oro: <b>el ciclo de afuera es lo que se reporta</b>.","El Escribir usa <code>productos[c]</code>: eso te dice qué variable va afuera.","Fíjate que la celda sigue siendo <code>ventas[f,c]</code>."]},
+ expP:"Para totalizar por producto, el producto tiene que ir en el ciclo de <b>afuera</b>. Regla: <b>el ciclo de afuera es lo que se reporta</b>. Lo que <b>no cambia</b> es la celda: sigue siendo <code>ventas[f,c]</code>, fila primero y columna después, aunque ahora c vaya afuera.",
+ quiz:{q:"En Python, si alguien escribe <code>ventas[c][f]</code> en este recorrido por columnas, ¿qué pasa?",
+  ops:[
+   {t:"Funciona igual, porque solo cambió el orden de los ciclos", c:"E1", fb:"El orden de los ciclos cambió, pero la matriz sigue siendo ventas[fila][columna]."},
+   {t:"Da totales incorrectos y, cuando c vale 3, IndexError", ok:true, fb:"Correcto. c=0,1,2 lee filas en lugar de columnas (totales mal) y con c=3 busca una fila 3 que no existe."},
+   {t:"Suma por filas en lugar de por columnas, sin error", c:"E1", fb:"Casi: lee mal las celdas, pero además con c=3 se sale de la matriz."},
+   {t:"No muestra nada", c:"EX", fb:"Sí muestra algo antes de fallar. Ejecútalo en Pydroid y fíjate."}
+  ]},
+ py:{code:`for c in range({{p1}}):
+    total = 0
+    for f in range({{p2}}):
+        total = total + ventas{{p3}}
+    print(productos[c], ":", total)`,
+  blanks:{
+   p1:{a:["4","len(productos)","len(ventas[0])"], e:{"3":["E6","range(3) se queda en 2: se pierde Cocido."],"len(ventas)":["E2","<code>len(ventas)</code> son las filas (3). Aquí recorres columnas."]}, g:"Cantidad de columnas."},
+   p2:{a:["3","len(ventas)","len(sucursales)"], e:{"4":["E2","No existe la fila 3: IndexError."],"2":["E6","range(2) se queda en 1: se pierde Asunción."],"len(ventas[0])":["E2","Eso son columnas (4)."]}, g:"Cantidad de filas."},
+   p3:{a:["[f][c]"], e:{"[c][f]":["E1","El orden de los índices <b>no</b> cambia con el orden de los ciclos: siempre [fila][columna]."],"[f,c]":["E6","Un corchete por índice."]}, g:"Fila primero, columna después."}
+  },
+  pistas:["Ciclo de afuera: columnas. ¿Cuántas hay?","<code>len(ventas)</code> → filas; <code>len(ventas[0])</code> → columnas.","Aunque recorras por columnas, la celda se escribe igual que siempre."]},
+ expY:"Esta matriz es de 3 × 4, y por eso un error de índices aparece enseguida: con <code>ventas[c][f]</code>, cuando c llega a 3 Python busca la fila 3 y muestra <code>IndexError: list index out of range</code>. En una matriz cuadrada el error pasaría sin aviso y los totales saldrían mal. Por eso conviene probar con matrices que no sean cuadradas.",
+ reto:{txt:"Agrega lo necesario para que, al final, el programa diga cuál es el <b>producto estrella</b> (el de mayor total). ¿Cuál es?", a:["chipa"]},
+ trace(){const T=this.tablas[0],s=[];for(const c of range(4)){let tot=0;s.push({cells:[],vars:{c,total:0},note:`Nuevo producto: ${PROD[c]}. total vuelve a 0`});for(const f of range(3)){const v=T.m[f][c];s.push({cells:[[0,f,c]],vars:{c,f,total:tot+v},note:`total = ${tot} + ${v} = ${tot+v}`});tot+=v;}s.push({cells:colCells(0,c,3),vars:{c,total:tot},note:"Terminó la columna",out:`${PROD[c]} : ${tot}`});}return s;}
+},
+/* ---------- 4 ---------- */
+{id:4, clase:1, bloom:"Aplica", titulo:"Alerta de asistencia", sub:"Contador con condición",
+ historia:"La coordinación necesita avisar a las familias cuando un estudiante tiene <b>más de 2 ausencias</b> en la semana. En la planilla, <b>1 = presente</b> y <b>0 = ausente</b>.",
+ tarea:"Cuenta las ausencias de cada estudiante y muestra una ALERTA si tiene más de 2.",
+ tablas:[{tt:"asistencia", iF:"e", iC:"d", filas:EST, cols:DIAS5, m:ASIS}],
+ datos:[["estudiantes",EST],["dias",DIAS5],["asistencia",ASIS]],
+ pseudo:{code:`Para e <- 0 Hasta 5 Con Paso 1 Hacer
+    ausencias <- 0
+    Para d <- 0 Hasta {{b1}} Con Paso 1 Hacer
+        Si asistencia[e,d] {{b2}} 0 Entonces
+            ausencias <- ausencias + {{b3}}
+        FinSi
+    FinPara
+    Si ausencias {{b4}} 2 Entonces
+        Escribir "ALERTA: ", estudiantes[e], " tiene ", ausencias, " ausencias"
+    FinSi
+FinPara`,
+  blanks:{
+   b1:{a:["4"], e:{"5":["E2","Hay 5 días: índices 0 a 4. El 5 es el último estudiante."],"3":["E2","Te quedas sin el viernes."]}, g:"5 días, base 0."},
+   b2:{a:["=","=="], e:{"<>":["E4","Así contarías las presencias."],"!=":["E4","Así contarías las presencias."],">":["E4","Ninguna celda es mayor que 0 si es ausencia."]}, g:"Una ausencia es una celda que vale exactamente 0."},
+   b3:{a:["1"], e:{"asistencia[e,d]":["E3","Esa celda vale 0: estarías sumando 0. Un contador suma 1."],"0":["E3","Sumar 0 no cuenta nada."]}, g:"Un contador suma de a uno."},
+   b4:{a:[">"], e:{">=":["E4","<b>Más de 2</b> no incluye el 2. Con <code>&gt;=</code> también avisarías con exactamente 2."],"<":["E4","Así avisarías a quienes faltaron poco."],"=":["E4","Solo avisarías con exactamente 2."]}, g:"\"Más de 2\"."}
+  },
+  pistas:["¿Cuántos días tiene la semana escolar?","Una ausencia es un 0 en la planilla.","Un contador no suma el valor de la celda: suma 1 cada vez que se cumple la condición.","\"Más de 2\" es distinto de \"2 o más\"."]},
+ expP:"Un <b>contador</b> suma 1 cada vez que se cumple una condición; no suma el valor de la celda. Aquí la celda vale 0 cuando hay ausencia, por eso <code>ausencias &lt;- ausencias + 1</code> va <b>dentro del Si</b>. Después del ciclo de días, con la fila ya revisada, decides si corresponde la alerta: <b>más de 2</b> se escribe <code>&gt; 2</code>.",
+ quiz:{q:"¿Cuántas alertas muestra el programa con esta planilla?",
+  ops:[
+   {t:"1", ok:true, fb:"Correcto: solo Mathías (3 ausencias). Rodrigo tiene exactamente 2, y 2 > 2 es Falso."},
+   {t:"2", c:"E4", fb:"Rodrigo tiene 2 ausencias, pero 2 > 2 es Falso."},
+   {t:"3", c:"E4", fb:"Revisa fila por fila cuántos 0 hay."},
+   {t:"0", c:"E4", fb:"Mathías tiene 3 ausencias: martes, jueves y viernes."}
+  ]},
+ py:{code:`for e in range(len(asistencia)):
+    ausencias = 0
+    for d in range(len(asistencia[e])):
+        if asistencia[e][d] {{p1}} 0:
+            ausencias {{p2}} 1
+    if ausencias > 2:
+        print("ALERTA:", estudiantes[e], "tiene", ausencias, "ausencias")`,
+  blanks:{
+   p1:{a:["=="], e:{"=":["E6","En Python <code>=</code> guarda un valor; para <b>comparar</b> se usa <code>==</code>. En PSeInt sirven los dos."],"!=":["E4","Así contarías las presencias."]}, g:"Operador de comparación de igualdad en Python."},
+   p2:{a:["+="], e:{"=":["E3","<code>ausencias = 1</code> pisa el valor: nunca pasaría de 1."],"+":["E6","Falta el <code>=</code>: la forma corta es <code>+=</code>."],"=+":["E6","El orden es <code>+=</code>."]}, g:"Forma corta de ausencias = ausencias + 1."}
+  },
+  pistas:["Comparar en Python: dos signos igual.","<code>x += 1</code> es lo mismo que <code>x = x + 1</code>."]},
+ expY:"Dos detalles de Python: para <b>comparar</b> se usa <code>==</code>, porque un solo <code>=</code> guarda un valor. Y <code>ausencias += 1</code> es la forma corta de <code>ausencias = ausencias + 1</code>. Fíjate que el <code>if ausencias &gt; 2</code> está a la altura del <code>for d</code>: se evalúa una vez por estudiante, cuando ya se contaron sus 5 días.",
+ reto:{txt:"Recorre la planilla <b>por columnas</b> para contar las ausencias de cada día. ¿Qué día faltaron más estudiantes?", a:["viernes","vie"]},
+ trace(){const T=this.tablas[0],s=[];for(const e of range(6)){let a=0;s.push({cells:[],vars:{e,ausencias:0},note:`${EST[e]}: ausencias vuelve a 0`});for(const d of range(5)){const v=T.m[e][d];if(v===0)a++;s.push({cells:[[0,e,d]],vars:{e,d,ausencias:a},note:v===0?`${DIAS5[d]}: 0 → ausencia, ausencias = ${a}`:`${DIAS5[d]}: 1 → presente, no cuenta`});}s.push(a>2?{cells:rowCells(0,e,5),vars:{e,ausencias:a},note:`${a} > 2 → Verdadero`,out:`ALERTA: ${EST[e]} tiene ${a} ausencias`}:{cells:rowCells(0,e,5),vars:{e,ausencias:a},note:`${a} > 2 → Falso, sin alerta`});}return s;}
+},
+/* ---------- 5 ---------- */
+{id:5, clase:1, bloom:"Aplica", titulo:"La cantina del cole", sub:"Matriz combinada con una lista",
+ historia:"La cantina anota cuántas unidades vende por día. Los precios están en una <b>lista aparte</b>, porque son los mismos toda la semana. La comisión de padres quiere saber <b>cuánto se recaudó cada día</b>, en guaraníes.",
+ tarea:"Calcula la recaudación de cada día: unidades × precio, sumando todos los productos.",
+ tablas:[{tt:"ventas (unidades)", iF:"d", iC:"p", filas:DIAS, cols:CANT_P, m:CANT},{tt:"precios (Gs.)", iF:"", iC:"p", filas:["precio"], cols:CANT_P, m:[PRECIOS.map(fmt)], lista:true}],
+ datos:[["dias",DIAS],["productos",CANT_P],["precios",PRECIOS],["ventas",CANT]],
+ pseudo:{code:`Para d <- 0 Hasta 4 Con Paso 1 Hacer
+    recaudado <- 0
+    Para p <- 0 Hasta {{b1}} Con Paso 1 Hacer
+        recaudado <- recaudado + ventas[d,p] * {{b2}}
+    FinPara
+    Escribir dias[d], ": Gs. ", recaudado
+FinPara`,
+  blanks:{
+   b1:{a:["3"], e:{"4":["E2","Hay 4 productos (0 a 3). El 4 es el último <b>día</b>."],"5":["E2","5 es la cantidad de días."]}, g:"Último índice de producto."},
+   b2:{a:["precios[p]"], e:{"precios[d]":["E1","El precio depende del <b>producto</b> (columna p), no del día."],"precios":["E1","Falta el índice: ¿cuál de los precios?"],"precios[d,p]":["E1","precios es una lista: tiene un solo índice."]}, g:"El precio del producto de esta columna."}
+  },
+  pistas:["4 productos, base 0.","La lista precios tiene un precio por <b>producto</b>. ¿Qué variable recorre los productos?"]},
+ expP:"Esta misión combina una <b>matriz</b> (unidades por día y producto) con una <b>lista</b> (precio por producto). La lista se recorre con el mismo índice que la columna, <code>p</code>, porque cada precio corresponde a una columna. Unidades × precio = guaraníes.",
+ quiz:{q:"¿Por qué <code>precios</code> es una lista y no una matriz como <code>ventas</code>?",
+  ops:[
+   {t:"Porque el precio de cada producto es el mismo todos los días", ok:true, fb:"Exacto. Si el precio cambiara por día, sí necesitarías una matriz de precios."},
+   {t:"Porque Python no permite dos matrices en un programa", c:"E6", fb:"Python permite todas las matrices que necesites."},
+   {t:"Porque los precios se recorren por filas", c:"E5", fb:"Los precios se recorren junto con las columnas (p)."},
+   {t:"Para ahorrar un ciclo Para", c:"EX", fb:"La cantidad de ciclos la decide la estructura de los datos, no al revés."}
+  ]},
+ py:{code:`for d in range(5):
+    recaudado = 0
+    for p in range(4):
+        recaudado = recaudado + {{p1}}
+    print(dias[d], ": Gs.", recaudado)`,
+  blanks:{
+   p1:{a:["ventas[d][p]*precios[p]","precios[p]*ventas[d][p]"], e:{"ventas[d][p]*precios[d]":["E1","precios[d] usa el índice del día. Con d=4 además daría IndexError."],"ventas[d][p]":["EX","Falta multiplicar por el precio: así sumas unidades, no guaraníes."],"ventas[p][d]*precios[p]":["E1","Primero la fila (d), después la columna (p)."],"ventas[d,p]*precios[p]":["E6","Un corchete por índice."]}, g:"Celda actual × precio del producto."}
+  },
+  pistas:["Traduce <code>ventas[d,p] * precios[p]</code> a Python."]},
+ expY:"En <code>ventas[d][p] * precios[p]</code> el índice <code>p</code> aparece en las dos partes y las conecta. Si usaras <code>precios[d]</code>, el lunes todos los productos costarían Gs. 5.000, y el viernes Python fallaría, porque no existe <code>precios[4]</code>.",
+ reto:{txt:"Agrega el cálculo de la recaudación de <b>toda la semana</b>. ¿Cuántos guaraníes recaudó la cantina?", a:["2260000"]},
+ trace(){const T=this.tablas[0],s=[];for(const d of range(5)){let r=0;s.push({cells:[],vars:{d,recaudado:0},note:`${DIAS[d]}: recaudado vuelve a 0`});for(const p of range(4)){const v=T.m[d][p],x=v*PRECIOS[p];r+=x;s.push({cells:[[0,d,p],[1,0,p]],vars:{d,p,recaudado:fmt(r)},note:`${v} × ${fmt(PRECIOS[p])} = ${fmt(x)}`});}s.push({cells:rowCells(0,d,4),vars:{d,recaudado:fmt(r)},note:"Terminó el día",out:`${DIAS[d]} : Gs. ${r}`});}return s;}
+},
+/* ---------- 6 ---------- */
+{id:6, clase:2, bloom:"Analiza", titulo:"Consejo de docentes", sub:"Mínimo con su posición",
+ historia:"En el consejo de docentes se revisan los promedios de cada curso en cada materia. Hay que encontrar <b>el promedio más bajo</b> de toda la tabla y decir <b>en qué curso y en qué materia</b> está, para planificar el apoyo.",
+ tarea:"Encuentra el promedio más bajo y su posición (curso y materia).",
+ tablas:[{tt:"promedios", iF:"f", iC:"c", filas:CURSOS, cols:MATS, m:PROM}],
+ datos:[["cursos",CURSOS],["materias",MATS],["promedios",PROM]],
+ pseudo:{code:`menor <- promedios[0,0]
+fmen <- 0
+cmen <- 0
+Para f <- 0 Hasta 2 Con Paso 1 Hacer
+    Para c <- 0 Hasta 4 Con Paso 1 Hacer
+        Si promedios[f,c] {{b1}} menor Entonces
+            menor <- {{b2}}
+            fmen <- {{b3}}
+            cmen <- c
+        FinSi
+    FinPara
+FinPara
+Escribir "Más baja: ", cursos[fmen], " en ", materias[cmen], " con ", menor`,
+  blanks:{
+   b1:{a:["<"], e:{">":["E4","Así buscas el <b>mayor</b>."],"<=":["E4","Funciona, pero con empates guardaría la última posición. Usa <code>&lt;</code>."],"=":["E4","Solo encontrarías valores iguales al candidato."]}, g:"¿Cuándo la celda actual es un nuevo candidato a menor?"},
+   b2:{a:["promedios[f,c]"], e:{"promedios[c,f]":["E1","Fila primero, columna después."],"f":["E1","f es la posición, no el valor."]}, g:"El nuevo menor es el valor de la celda actual."},
+   b3:{a:["f"], e:{"c":["E1","cmen guarda la columna; fmen guarda la fila."]}, g:"fmen = fila del menor."}
+  },
+  pistas:["Buscas el <b>menor</b>: ¿qué comparación usas?","Cuando encuentras uno menor, guardas su valor...","...y también su posición: la fila en fmen y la columna en cmen."]},
+ expP:"Para buscar el menor necesitas un <b>candidato</b>: empiezas con la primera celda y lo comparas con todas las demás. Si aparece una menor, la reemplazas y guardas <b>dónde</b> estaba (fmen, cmen). Al final, con esas posiciones buscas los nombres en las listas cursos y materias.",
+ quiz:{q:"¿Por qué <code>menor</code> empieza con <code>promedios[0,0]</code> y no con 0?",
+  ops:[
+   {t:"Porque con 0 ningún promedio sería menor y menor nunca cambiaría", ok:true, fb:"Exacto. Empezar con un valor real de la tabla garantiza que el candidato sea válido."},
+   {t:"Porque PSeInt no permite asignar 0 a una variable", c:"EX", fb:"Sí lo permite. El problema es lógico, no de sintaxis."},
+   {t:"Da lo mismo, el resultado sería igual", c:"E3", fb:"Pruébalo en el trazo mental: 2.6 < 0 es Falso, nunca se actualiza."},
+   {t:"Porque promedios[0,0] siempre es el menor", c:"E4", fb:"No: es solo el primer candidato. Aquí vale 3.4 y no es el menor."}
+  ]},
+ py:{code:`menor = promedios[0][0]
+fmen = 0
+cmen = 0
+for f in range(len(promedios)):
+    for c in range({{p0}}):
+        if promedios[f][c] {{p1}} menor:
+            menor = promedios[f][c]
+            {{p2}} = f
+            cmen = c
+print("Más baja:", cursos[fmen], "en", materias[cmen], "con", menor)`,
+  blanks:{
+   p0:{a:["len(promedios[f])","len(promedios[0])","5","len(materias)"], e:{"len(promedios)":["E2","Eso son las filas (3). Aquí recorres las 5 materias."],"4":["E6","range(4) se queda en 3: se pierde Lengua."]}, g:"Cantidad de columnas."},
+   p1:{a:["<"], e:{">":["E4","Así buscas el mayor."]}, g:"Comparación para el menor."},
+   p2:{a:["fmen"], e:{"cmen":["E1","cmen ya se asigna en la línea siguiente con c."],"menor":["E1","menor guarda el valor, no la fila."]}, g:"¿Qué variable guarda la fila del menor?"}
+  },
+  pistas:["<code>len(promedios[f])</code> cuenta las celdas de la fila f.","Es la misma comparación que en el pseudocódigo.","Una variable para la fila y otra para la columna."]},
+ expY:"Es el mismo algoritmo con otra sintaxis. Guardamos el <b>índice</b> (fmen) y no el nombre. Con el índice puedes recuperar cualquier dato relacionado: el nombre del curso, el de la materia o el valor.",
+ reto:{txt:"Recorre <b>por columnas</b> y muestra, para cada materia, el curso con el promedio <b>más alto</b>. ¿Qué curso lidera Algorítmica?", a:["3ro","3robatin","tercero","3"]},
+ trace(){const T=this.tablas[0],s=[];let mn=T.m[0][0],fm=0,cm=0;s.push({cells:[[0,0,0]],vars:{menor:mn,fmen:0,cmen:0},note:"Primer candidato: promedios[0][0]"});for(const f of range(3))for(const c of range(5)){const v=T.m[f][c];if(v<mn){mn=v;fm=f;cm=c;s.push({cells:[[0,f,c]],vars:{f,c,menor:mn,fmen:fm,cmen:cm},note:`${v} < anterior → ¡nuevo menor!`});}else s.push({cells:[[0,f,c],[0,fm,cm]],vars:{f,c,menor:mn,fmen:fm,cmen:cm},note:`${v} no es menor que ${mn}`});}s.push({cells:[[0,fm,cm]],vars:{menor:mn,fmen:fm,cmen:cm},note:"Fin del recorrido",out:`Más baja: ${CURSOS[fm]} en ${MATS[cm]} con ${mn}`});return s;}
+},
+/* ---------- 7 ---------- */
+{id:7, clase:2, bloom:"Analiza", titulo:"Torneo intercolegial", sub:"Acumulador y bandera",
+ historia:"En el torneo de fútbol se reparten <b>3 puntos</b> por partido ganado, <b>1</b> por empate y <b>0</b> por derrota. La organización quiere los puntos de cada equipo y saber quién está <b>invicto</b> (nunca perdió).",
+ tarea:"Suma los puntos de cada equipo e indica si está invicto.",
+ tablas:[{tt:"tabla", iF:"e", iC:"f", filas:EQ, cols:["F1","F2","F3","F4","F5"], m:TABLA}],
+ datos:[["equipos",EQ],["tabla",TABLA]],
+ pseudo:{code:`Para e <- 0 Hasta 3 Con Paso 1 Hacer
+    puntos <- 0
+    invicto <- {{b1}}
+    Para f <- 0 Hasta 4 Con Paso 1 Hacer
+        puntos <- puntos + tabla[e,f]
+        Si tabla[e,f] = {{b2}} Entonces
+            invicto <- {{b3}}
+        FinSi
+    FinPara
+    Escribir equipos[e], ": ", puntos, " pts"
+    Si invicto Entonces
+        Escribir "   ", equipos[e], " está invicto"
+    FinSi
+FinPara`,
+  blanks:{
+   b1:{a:["verdadero"], e:{"falso":["E3","Si empieza en Falso, nunca podría pasar a Verdadero: nadie sería invicto."]}, g:"Cada equipo arranca invicto hasta que pierda."},
+   b2:{a:["0"], e:{"1":["E4","1 es empate: no rompe el invicto."],"3":["E4","3 es victoria."]}, g:"¿Cuántos puntos da una derrota?"},
+   b3:{a:["falso"], e:{"verdadero":["E4","Si perdió, deja de estar invicto."]}, g:"Perdió: ya no está invicto."}
+  },
+  pistas:["Una bandera empieza en el estado \"todo bien\".","Una derrota vale 0 puntos.","Cuando ocurre lo que buscas, la bandera cambia."]},
+ expP:"Una <b>bandera</b> es una variable lógica que empieza en un estado y cambia si ocurre algo. Cada equipo arranca <b>invicto (Verdadero)</b> hasta que se demuestre lo contrario: si aparece un 0, pasa a Falso. Por eso se reinicia <b>dentro</b> del ciclo de equipos, igual que el acumulador de puntos.",
+ quiz:{q:"Si <code>invicto &lt;- Verdadero</code> se escribe una sola vez, <b>antes</b> del primer Para, ¿qué equipos aparecen como invictos?",
+  ops:[
+   {t:"Jaguarete, igual que antes", c:"E3", fb:"Aguará pierde en la fecha 4 y la bandera queda en Falso para todos los que siguen."},
+   {t:"Ninguno", ok:true, fb:"Correcto. Aguará (el primero) tiene un 0, la bandera pasa a Falso y nunca vuelve a Verdadero."},
+   {t:"Todos", c:"E3", fb:"La bandera sí cambia; el problema es que no se reinicia."},
+   {t:"Solo Aguará", c:"E4", fb:"Aguará tiene un 0: no es invicto en ningún caso."}
+  ]},
+ py:{code:`for e in range(len(tabla)):
+    puntos = 0
+    invicto = {{p1}}
+    for f in range(len(tabla[e])):
+        puntos = puntos + tabla[e][f]
+        if tabla[e][f] == 0:
+            invicto = {{p2}}
+    print(equipos[e], ":", puntos, "pts")
+    if invicto:
+        print("  ", equipos[e], "está invicto")`,
+  blanks:{
+   p1:{a:["True"], e:{"true":["E6","En Python va con mayúscula: <code>True</code>."],"Verdadero":["E6","En Python: <code>True</code>."],"verdadero":["E6","En Python: <code>True</code>."],"False":["E3","Empezaría sin invicto."]}, g:"Verdadero, en Python."},
+   p2:{a:["False"], e:{"false":["E6","En Python va con mayúscula: <code>False</code>."],"Falso":["E6","En Python: <code>False</code>."],"falso":["E6","En Python: <code>False</code>."],"True":["E4","Si perdió, deja de estar invicto."]}, g:"Falso, en Python."}
+  },
+  pistas:["Python es sensible a mayúsculas: <code>True</code> y <code>False</code>."]},
+ expY:"En Python, los valores lógicos se escriben <code>True</code> y <code>False</code>, con mayúscula. <code>if invicto:</code> es lo mismo que <code>if invicto == True:</code>, pero más limpio.",
+ reto:{txt:"Agrega lo necesario para mostrar el <b>equipo líder</b> (el de más puntos). ¿Cuál es?", a:["aguara"]},
+ trace(){const T=this.tablas[0],s=[];for(const e of range(4)){let p=0,inv=true;s.push({cells:[],vars:{e,puntos:0,invicto:"Verdadero"},note:`${EQ[e]}: puntos 0, invicto Verdadero`});for(const f of range(5)){const v=T.m[e][f];p+=v;if(v===0)inv=false;s.push({cells:[[0,e,f]],vars:{e,f,puntos:p,invicto:inv?"Verdadero":"Falso"},note:v===0?`Fecha ${f+1}: 0 → perdió, invicto = Falso`:`Fecha ${f+1}: +${v}`});}s.push({cells:rowCells(0,e,5),vars:{e,puntos:p,invicto:inv?"Verdadero":"Falso"},note:"Fin del equipo",out:`${EQ[e]} : ${p} pts`+(inv?`\n   ${EQ[e]} está invicto`:"")});}return s;}
+},
+/* ---------- 8 ---------- */
+{id:8, clase:2, bloom:"Analiza", titulo:"Butacas del salón de actos", sub:"Dos contadores con alcances distintos",
+ historia:"Para el acto de fin de año se vende la entrada con asiento numerado. En el plano, <b>1 = ocupado</b> y <b>0 = libre</b>. La comisión quiere los asientos libres de cada fila y el <b>porcentaje de ocupación</b> de todo el salón.",
+ tarea:"Cuenta los libres por fila y los ocupados de toda la sala; calcula el porcentaje.",
+ tablas:[{tt:"sala", iF:"f", iC:"c", filas:FILAS, cols:range(6).map(i=>"A"+(i+1)), m:SALA}],
+ datos:[["filas",FILAS],["sala",SALA]],
+ pseudo:{code:`ocupados <- 0
+Para f <- 0 Hasta 3 Con Paso 1 Hacer
+    libres <- 0
+    Para c <- 0 Hasta 5 Con Paso 1 Hacer
+        Si sala[f,c] = 1 Entonces
+            {{b1}} <- ocupados + 1
+        SiNo
+            libres <- libres + 1
+        FinSi
+    FinPara
+    Escribir "Fila ", filas[f], ": ", libres, " libres"
+FinPara
+porcentaje <- ocupados * 100 / {{b2}}
+Escribir "Ocupación: ", porcentaje, " %"`,
+  blanks:{
+   b1:{a:["ocupados"], e:{"libres":["E3","Si la celda vale 1, el asiento está ocupado."],"sala[f,c]":["E3","No se modifica la sala: se cuenta."]}, g:"¿Qué contador aumenta cuando la celda vale 1?"},
+   b2:{a:["24","4*6","6*4"], e:{"6":["E2","6 son los asientos de <b>una</b> fila. Necesitas el total de la sala."],"4":["E2","4 son las filas. Necesitas el total de asientos."],"100":["EX","El 100 ya está en la multiplicación."]}, g:"Total de asientos: filas × asientos por fila."}
+  },
+  pistas:["1 significa ocupado.","El porcentaje es parte / total × 100. ¿Cuántos asientos hay en total?"]},
+ expP:"Aquí hay dos contadores con <b>alcances distintos</b>: <code>libres</code> se reinicia en cada fila (reporte por fila) y <code>ocupados</code> se inicia una sola vez, antes de todo (reporte de la sala completa). Para el porcentaje divides por el total de asientos: 4 filas × 6 = 24.",
+ quiz:{q:"¿Por qué <code>ocupados &lt;- 0</code> está <b>antes</b> del primer Para y <code>libres &lt;- 0</code> está <b>dentro</b>?",
+  ops:[
+   {t:"Porque ocupados cuenta toda la sala y libres se cuenta por cada fila", ok:true, fb:"Exacto: dónde inicias una variable define su alcance."},
+   {t:"Por orden alfabético", c:"EX", fb:"El orden de las líneas tiene efecto en el resultado, no es estético."},
+   {t:"Porque hay más ocupados que libres", c:"E3", fb:"La cantidad no importa; importa qué se reporta."},
+   {t:"Da lo mismo dónde se inicien", c:"E3", fb:"Si libres se iniciara afuera, cada fila arrastraría los libres de las anteriores."}
+  ]},
+ py:{code:`ocupados = 0
+for f in range(len(sala)):
+    libres = 0
+    for c in range(len(sala[f])):
+        if sala[f][c] == 1:
+            ocupados += 1
+        {{p1}}:
+            libres += 1
+    print("Fila", filas[f], ":", libres, "libres")
+porcentaje = ocupados * 100 / ({{p2}} * len(sala[0]))
+print("Ocupación:", round(porcentaje, 1), "%")`,
+  blanks:{
+   p1:{a:["else"], e:{"sino":["E6","En Python: <code>else</code>."],"SiNo":["E6","En Python: <code>else</code>."],"elif":["E6","<code>elif</code> necesita una condición. Aquí va el caso contrario, sin condición."]}, g:"SiNo, en Python."},
+   p2:{a:["len(sala)","4","len(filas)"], e:{"len(sala[0])":["E2","Eso ya está multiplicando: son los asientos por fila."],"6":["E2","6 son los asientos por fila; aquí faltan las filas."]}, g:"Cantidad de filas."}
+  },
+  pistas:["<code>else</code> va a la misma altura que su <code>if</code>.","Total de asientos = filas × asientos de una fila."]},
+ expY:"<code>else</code> va a la misma altura que su <code>if</code> y termina en dos puntos. Para el total, <code>len(sala) * len(sala[0])</code> sirve para cualquier tamaño de sala. <code>round(porcentaje, 1)</code> deja un solo decimal.",
+ reto:{txt:"Un grupo de 3 amigos quiere sentarse junto. Busca la <b>primera fila</b> que tenga 3 asientos libres seguidos: <code>sala[f][c]</code>, <code>sala[f][c+1]</code> y <code>sala[f][c+2]</code> en 0. Cuidado con el límite de c. ¿Qué fila es?", a:["b","filab"]},
+ trace(){const T=this.tablas[0],s=[];let oc=0;s.push({cells:[],vars:{ocupados:0},note:"ocupados empieza en 0 una sola vez"});for(const f of range(4)){let li=0;s.push({cells:[],vars:{f,libres:0,ocupados:oc},note:`Fila ${FILAS[f]}: libres vuelve a 0`});for(const c of range(6)){const v=T.m[f][c];if(v===1)oc++;else li++;s.push({cells:[[0,f,c]],vars:{f,c,libres:li,ocupados:oc},note:v===1?"Ocupado → ocupados + 1":"Libre → libres + 1"});}s.push({cells:rowCells(0,f,6),vars:{f,libres:li,ocupados:oc},note:"Fin de la fila",out:`Fila ${FILAS[f]} : ${li} libres`});}s.push({cells:[],vars:{ocupados:oc},note:`${oc} × 100 / 24`,out:`Ocupación: ${(Math.round(oc*1000/24)/10)} %`});return s;}
+},
+/* ---------- 9 ---------- */
+{id:9, clase:2, bloom:"Analiza", titulo:"Tres en raya", sub:"Filas, columnas y diagonales",
+ historia:"Terminó una partida de tres en raya (<i>ta-te-tí</i>). El programa tiene que revisar el tablero y decir <b>quién ganó</b>. Un guion <code>-</code> es una casilla vacía.",
+ tarea:"Revisa filas, columnas y las dos diagonales buscando tres iguales.",
+ tablas:[{tt:"t", iF:"f", iC:"c", filas:["","",""], cols:["","",""], m:T3}],
+ datos:[["t",T3]],
+ pseudo:{code:`ganador <- "nadie"
+// filas: f fija, la columna cambia
+Para f <- 0 Hasta 2 Con Paso 1 Hacer
+    Si t[f,0] <> "-" Y t[f,0] = t[f,1] Y t[f,1] = t[f,{{b1}}] Entonces
+        ganador <- t[f,0]
+    FinSi
+FinPara
+// columnas: c fija, la fila cambia
+Para c <- 0 Hasta 2 Con Paso 1 Hacer
+    Si t[0,c] <> "-" Y t[0,c] = t[{{b2}},c] Y t[1,c] = t[2,c] Entonces
+        ganador <- t[0,c]
+    FinSi
+FinPara
+// diagonal principal: fila y columna iguales
+Si t[0,0] <> "-" Y t[0,0] = t[1,1] Y t[1,1] = t[{{b3}}] Entonces
+    ganador <- t[0,0]
+FinSi
+// diagonal secundaria: fila + columna = 2
+Si t[0,2] <> "-" Y t[0,2] = t[1,1] Y t[1,1] = t[{{b4}}] Entonces
+    ganador <- t[0,2]
+FinSi
+Escribir "Ganó: ", ganador`,
+  blanks:{
+   b1:{a:["2"], e:{"3":["E2","El tablero es de 3 × 3: la última columna es la 2."],"f":["E1","En una fila, la fila queda fija y la columna cambia: 0, 1, 2."]}, g:"Última columna de la fila."},
+   b2:{a:["1"], e:{"c":["E1","En una columna, la columna queda fija (c) y la fila cambia."],"0":["E2","t[0,c] ya es el primero; el segundo es la fila 1."]}, g:"Segunda fila de la columna."},
+   b3:{a:["2,2"], e:{"2,0":["E1","Esa es la diagonal secundaria."],"0,2":["E1","En la diagonal principal la fila y la columna son iguales."]}, g:"Fila = columna."},
+   b4:{a:["2,0"], e:{"0,2":["E1","t[0,2] ya es el primero. Sigue bajando: fila 2, columna 0."],"2,2":["E1","Esa es la principal. En la secundaria fila + columna = 2."]}, g:"Fila + columna = 2."}
+  },
+  pistas:["En una fila: t[f,0], t[f,1], t[f,?].","En una columna: t[0,c], t[?,c], t[2,c].","Diagonal principal: [0,0], [1,1], [?,?].","Diagonal secundaria: [0,2], [1,1], [?,?]."]},
+ expP:"En un tablero no buscas sumar: buscas <b>tres iguales en línea</b>. Las filas fijan f y varían la columna; las columnas fijan c y varían la fila. En la <b>diagonal principal</b> la fila y la columna son iguales: [0,0], [1,1], [2,2]. En la <b>secundaria</b> suman 2: [0,2], [1,1], [2,0]. Con este tablero solo la diagonal principal da ganador.",
+ quiz:{q:"Si el programa revisara <b>solo filas y columnas</b>, ¿qué mostraría con este tablero?",
+  ops:[
+   {t:"Ganó: X", c:"E2", fb:"X gana solo por la diagonal. Sin revisarla, no se detecta."},
+   {t:"Ganó: nadie", ok:true, fb:"Correcto. Por eso hay que revisar los 8 caminos: 3 filas, 3 columnas y 2 diagonales."},
+   {t:"Ganó: O", c:"E4", fb:"O no tiene ninguna línea completa."},
+   {t:"Ganó: -", c:"E4", fb:"La condición <code>&lt;&gt; \"-\"</code> evita que las casillas vacías cuenten."}
+  ]},
+ py:{code:`ganador = "nadie"
+for f in range(3):
+    if t[f][0] != "-" and t[f][0] == t[f][1] == t[f][2]:
+        ganador = t[f][0]
+for c in range(3):
+    if t[0][c] != "-" and t[0][c] == t[1][c] == t[2][{{p1}}]:
+        ganador = t[0][c]
+# diagonal principal
+if t[0][0] != "-" and t[0][0] == t[1][1] == {{p2}}:
+    ganador = t[0][0]
+# diagonal secundaria
+if t[0][2] != "-" and t[0][2] == t[1][1] == t[2][{{p3}}]:
+    ganador = t[0][2]
+print("Ganó:", ganador)`,
+  blanks:{
+   p1:{a:["c"], e:{"2":["E1","Así siempre miras la columna 2. La columna es c."],"0":["E1","Así siempre miras la columna 0."],"f":["E1","En el ciclo de columnas no hay f."]}, g:"La columna que se está revisando."},
+   p2:{a:["t[2][2]"], e:{"t[2,2]":["E6","Un corchete por índice: <code>t[2][2]</code>."],"t[2][0]":["E1","Esa es la diagonal secundaria."]}, g:"La última casilla de la diagonal principal, completa."},
+   p3:{a:["0"], e:{"2":["E1","t[2][2] es de la diagonal principal."]}, g:"Fila 2, ¿columna?"}
+  },
+  pistas:["En las columnas, la columna es siempre c.","Escribe la casilla completa: <code>t[?][?]</code>.","Diagonal secundaria: fila + columna = 2."]},
+ expY:"Python permite <b>encadenar</b> comparaciones: <code>a == b == c</code> significa <code>a == b and b == c</code>. La condición <code>!= \"-\"</code> evita que tres casillas vacías cuenten como ganador. <code>&lt;&gt;</code> de PSeInt se escribe <code>!=</code> y <code>Y</code> se escribe <code>and</code>.",
+ reto:{txt:"Agrega el caso de <b>empate</b>: si nadie ganó y no queda ningún <code>\"-\"</code> en el tablero, muestra <code>Empate</code>. Prueba con el tablero <code>X O X / X O O / O X X</code>. ¿Qué muestra?", a:["empate"]},
+ trace(){const t=this.tablas[0].m,s=[];const chk=(cells,label)=>{const v=cells.map(([_,f,c])=>t[f][c]);const w=v[0]!=="-"&&v[0]===v[1]&&v[1]===v[2];s.push({cells,vars:{revisa:label},note:`${v.join(" ")} → ${w?"¡tres iguales! ganador = "+v[0]:"no son iguales"}`});return w?v[0]:null;};let g="nadie";for(const f of range(3)){const r=chk(rowCells(0,f,3),"fila "+f);if(r)g=r;}for(const c of range(3)){const r=chk(colCells(0,c,3),"columna "+c);if(r)g=r;}let r=chk([[0,0,0],[0,1,1],[0,2,2]],"diagonal principal");if(r)g=r;r=chk([[0,0,2],[0,1,1],[0,2,0]],"diagonal secundaria");if(r)g=r;s.push({cells:[],vars:{ganador:g},note:"Se revisaron los 8 caminos",out:`Ganó: ${g}`});return s;}
+},
+/* ---------- 10 ---------- */
+{id:10, clase:2, bloom:"Evalúa", titulo:"Jefe final: la cadena", sub:"Sucursales × vendedores × productos",
+ historia:"La despensa creció: ahora cada sucursal tiene tres vendedores, y se registra cuántas unidades vendió <b>cada vendedor de cada producto</b>. Son tres dimensiones: <code>ventas[s][v][p]</code>. La dueña quiere premiar al <b>mejor vendedor de cada sucursal</b>.",
+ tarea:"Para cada sucursal, suma lo vendido por cada vendedor y encuentra al mejor.",
+ tablas:[{tt:"Luque · ventas[0]", iF:"v", iC:"p", filas:VEND[0], cols:PROD, m:V3[0]},{tt:"San Lorenzo · ventas[1]", iF:"v", iC:"p", filas:VEND[1], cols:PROD, m:V3[1]}],
+ datos:[["sucursales",SUC2],["vendedores",VEND],["productos",PROD],["ventas",V3]],
+ pseudo:{code:`Para s <- 0 Hasta 1 Con Paso 1 Hacer
+    mejor <- -1
+    nombre <- ""
+    Para v <- 0 Hasta {{b1}} Con Paso 1 Hacer
+        total <- 0
+        Para p <- 0 Hasta 3 Con Paso 1 Hacer
+            total <- total + ventas[{{b2}}]
+        FinPara
+        Si total > {{b3}} Entonces
+            mejor <- total
+            nombre <- vendedores[s,v]
+        FinSi
+    FinPara
+    Escribir sucursales[s], ": mejor vendedor ", nombre, " (", mejor, ")"
+FinPara`,
+  blanks:{
+   b1:{a:["2"], e:{"3":["E2","3 vendedores por sucursal: índices 0 a 2. El 3 es el último producto."],"1":["E2","1 es el límite de sucursales."]}, g:"Último índice de vendedor."},
+   b2:{a:["s,v,p"], e:{"v,s,p":["E1","De afuera hacia adentro: sucursal, vendedor, producto."],"s,p,v":["E1","De afuera hacia adentro: sucursal, vendedor, producto."],"v,p":["E1","Falta la sucursal: hay dos tablas."]}, g:"Tres índices, en el orden de los ciclos."},
+   b3:{a:["mejor"], e:{"total":["E4","total > total siempre es Falso."],"nombre":["E4","nombre es un texto. Se compara con el mejor total hasta ahora."]}, g:"¿Contra qué comparas el total de este vendedor?"}
+  },
+  pistas:["Cada sucursal tiene 3 vendedores.","El orden de los índices es el orden de los ciclos: s, v, p.","Buscas el mayor: comparas con el mejor encontrado hasta ahora."]},
+ expP:"Tres ciclos, uno por dimensión: sucursal → vendedor → producto. La pregunta es la de siempre: <b>¿qué se reporta y dónde se reinicia cada cosa?</b> <code>mejor</code> se reinicia por sucursal; <code>total</code>, por vendedor. El mayor se busca <b>después</b> de sumar todos los productos de cada vendedor.",
+ quiz:{q:"Bruno dice: \"Si pongo <code>total &lt;- 0</code> justo después de <code>Para s</code> (antes de <code>Para v</code>), funciona igual\". ¿Tiene razón?",
+  ops:[
+   {t:"Sí, porque total igual empieza en 0", c:"E3", fb:"Empieza en 0 una vez por sucursal, pero no por vendedor."},
+   {t:"No: el total se arrastra de un vendedor a otro y siempre gana el último", ok:true, fb:"Correcto. En Luque: Ramón 35, Liz 77, Óscar 104 → \"gana\" Óscar, que en realidad vendió menos."},
+   {t:"No, porque da error de sintaxis", c:"EX", fb:"La sintaxis es válida; el error es lógico, y eso lo hace más peligroso."},
+   {t:"Sí, pero solo en San Lorenzo", c:"E3", fb:"El problema aparece en las dos sucursales."}
+  ]},
+ py:{code:`for s in range(len(ventas)):
+    mejor = -1
+    nombre = ""
+    for v in range(len(ventas[s])):
+        total = {{p1}}
+        for p in range(len(ventas[s][v])):
+            total += ventas{{p2}}
+        if total > mejor:
+            mejor = total
+            nombre = vendedores[s][v]
+    print(sucursales[s], ": mejor vendedor", nombre, "(", mejor, ")")`,
+  blanks:{
+   p1:{a:["0"], e:{"-1":["E3","-1 es para mejor. total es un acumulador: empieza en 0."]}, g:"Valor inicial de un acumulador."},
+   p2:{a:["[s][v][p]"], e:{"[s,v,p]":["E6","Un corchete por índice: <code>[s][v][p]</code>."],"[v][s][p]":["E1","De afuera hacia adentro: s, v, p."],"[s][p][v]":["E1","De afuera hacia adentro: s, v, p."]}, g:"Tres corchetes, uno por dimensión."}
+  },
+  pistas:["Un acumulador empieza en...","Traduce <code>ventas[s,v,p]</code> a Python."]},
+ expY:"<code>ventas[s][v][p]</code> se lee de afuera hacia adentro: la lista de la sucursal s → la lista del vendedor v → el producto p. <code>mejor = -1</code> asegura que el primer total, aunque sea 0, ya sea mayor. Terminaste las 10 misiones.",
+ reto:{txt:"¿Cuál es el <b>producto más vendido</b> de toda la cadena, sumando las dos sucursales y todos los vendedores? (Pista: el ciclo de productos va afuera.)", a:["chipa"]},
+ trace(){const s=[];for(const si of range(2)){let mj=-1,nm="";s.push({cells:[],vars:{s:si,mejor:-1,nombre:'""'},note:`${SUC2[si]}: mejor vuelve a -1`});for(const v of range(3)){let tot=0;for(const p of range(4)){const x=V3[si][v][p];tot+=x;s.push({cells:[[si,v,p]],vars:{s:si,v,p,total:tot,mejor:mj,nombre:nm||'""'},note:`ventas[${si}][${v}][${p}] = ${x} → total = ${tot}`});}if(tot>mj){mj=tot;nm=VEND[si][v];s.push({cells:rowCells(si,v,4),vars:{s:si,v,total:tot,mejor:mj,nombre:nm},note:`${tot} > anterior → ${nm} es el nuevo mejor`});}else s.push({cells:rowCells(si,v,4),vars:{s:si,v,total:tot,mejor:mj,nombre:nm},note:`${tot} no supera a ${mj}`});}s.push({cells:[],vars:{s:si,mejor:mj,nombre:nm},note:"Fin de la sucursal",out:`${SUC2[si]} : mejor vendedor ${nm} ( ${mj} )`});}return s;}
+}
+];
+
+/* ===================== ESTADO ===================== */
+const KEY="recorridos-batin-v1";
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return {nombre:"",fila:"",m:{},unlockAll:false,meta:""};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function ms(id){if(!S.m[id])S.m[id]={P:{b:{},hint:false,ok:false,pts:0},Y:{b:{},hint:false,ok:false,pts:0},Q:{done:false,first:null,code:null,pts:0},R:{done:false,pts:0}};return S.m[id];}
+const done=id=>{const s=S.m[id];return !!(s&&s.P.ok&&s.Q.done&&s.Y.ok);};
+const unlocked=i=>i===0||S.unlockAll||done(M[i-1].id);
+const totalPts=()=>Object.values(S.m).reduce((a,s)=>a+s.P.pts+s.Y.pts+s.Q.pts+s.R.pts,0);
+const rank=p=>p>=700?"Maestro/a de matrices":p>=450?"Rastreador/a de índices":p>=200?"Recorredor/a":"Aprendiz";
+
+/* ===================== UTILIDADES ===================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const nB=(v,cs)=>{v=String(v).replace(/[\s\u00A0]+/g,"").replace(/[“”]/g,'"');return cs?v:v.toLowerCase();};
+const nR=v=>String(v).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/gs|[\s.,]/g,"");
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>e.classList.remove("on"),1800);}
+async function copiar(text,el){try{await navigator.clipboard.writeText(text);toast("Copiado");}catch(e){if(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);}toast("Texto seleccionado: cópialo manualmente");}}
+function hl(s,lang){
+  const kw=lang==="P"?"FinAlgoritmo|Algoritmo|FinPara|Para|Hasta|Con Paso|Hacer|FinSi|SiNo|Si|Entonces|Escribir|Verdadero|Falso|Y":"for|in|range|if|else|print|len|and|True|False|round";
+  const cm=lang==="P"?"\\/\\/.*$":"#.*$";
+  const re=new RegExp("("+cm+")|(\"[^\"]*\")|\\b("+kw+")\\b|\\b(\\d+(?:\\.\\d+)?)\\b|(<-|<>|!=|==|\\+=)","g");
+  let out="",last=0,m;
+  while((m=re.exec(s))){out+=esc(s.slice(last,m.index));const t=esc(m[0]);out+=m[1]?`<span class="t-cm">${t}</span>`:m[2]?`<span class="t-st">${t}</span>`:m[3]?`<span class="t-kw">${t}</span>`:m[4]?`<span class="t-nu">${t}</span>`:`<span class="t-op">${t}</span>`;last=re.lastIndex;}
+  return out+esc(s.slice(last));
+}
+function pyVal(v,ind=""){if(Array.isArray(v)){if(v.length&&Array.isArray(v[0]))return"[\n"+v.map(r=>ind+"    "+pyVal(r,ind+"    ")+",").join("\n")+"\n"+ind+"]";return"["+v.map(x=>pyVal(x)).join(", ")+"]";}return typeof v==="string"?'"'+v+'"':String(v);}
+function pyFull(m){const d=m.datos.map(([k,v])=>k+" = "+pyVal(v)).join("\n");const code=m.py.code.replace(/\{\{(\w+)\}\}/g,(_,id)=>{const a=m.py.blanks[id].a[0];return a==="+="?a:a.replace(/,/g,", ").replace(/([*+])/g," $1 ");});return "# Misión "+m.id+": "+m.titulo+"\n"+d+"\n\n"+code+"\n";}
+
+/* ===================== VISTAS ===================== */
+function hud(){const p=totalPts(),n=M.filter(m=>done(m.id)).length;$("#hud").innerHTML=S.nombre?`<span>${esc(S.nombre)}</span><span class="pts">${p} pts</span><span class="rank">${rank(p)}</span><span class="bar" title="${n} de 10 misiones"><i style="width:${n*10}%"></i></span><span class="mono small">${n}/10</span>`:"";}
+
+function vInicio(){
+  $("#app").innerHTML=`
+  <section class="card">
+    <p class="eyebrow">Matrices · 2 clases · 10 misiones</p>
+    <h1 style="font-size:clamp(24px,6vw,34px)">Recorre la matriz,<br>resuelve el caso</h1>
+    <p class="muted">Cada misión es un problema real: una despensa, la cantina, la asistencia, un torneo. Primero completas el algoritmo en <b>pseudocódigo</b>, después lo pasas a <b>Python</b> y al final lo ejecutas en <b>Pydroid</b>.</p>
+  </section>
+  <section class="card">
+    <div class="voz bit"><span class="av">🤖</span><div class="tx"><span class="nm">BIT</span><p>Completa los espacios del código y toca <b>Comprobar</b>. Si te equivocas, te explico qué pasó. Si te trabas, abre <b>¿Por dónde empiezo?</b> (vale menos puntos).</p></div></div>
+    <div class="voz gatiel"><span class="av">🦊</span><div class="tx"><span class="nm">GATIEL</span><p>Cuando resuelvas el pseudocódigo, te hago una pregunta para ver si entendiste <b>por qué</b> funciona. Piensa antes de tocar.</p></div></div>
+    <div class="voz techi"><span class="av">👩‍💻</span><div class="tx"><span class="nm">TECHI</span><p>Usamos índices desde <b>0</b> también en pseudocódigo, igual que Python. Así el único cambio grande al traducir es <code>Hasta 2</code> → <code>range(3)</code>.</p></div></div>
+  </section>
+  <form class="card" id="fIni">
+    <h2 style="font-size:16px">¿Quién juega?</h2>
+    <div class="row">
+      <label style="flex:1 1 220px">Nombre y apellido<input type="text" id="iNom" required autocomplete="off" value="${esc(S.nombre)}"></label>
+      <label>Fila<select id="iFila"><option value="1">Fila 1</option><option value="2">Fila 2</option><option value="-">Sin fila</option></select></label>
+    </div>
+    <div><button class="btn" type="submit">Empezar</button></div>
+  </form>`;
+  if(S.fila)$("#iFila").value=S.fila;
+  $("#fIni").addEventListener("submit",e=>{e.preventDefault();const n=$("#iNom").value.trim();if(!n){toast("Escribe tu nombre");return;}S.nombre=n.replace(/\|/g,"/");S.fila=$("#iFila").value;save();hud();vMapa();});
+}
+
+function vMapa(){
+  if(!S.nombre)return vInicio();
+  const card=(m,i)=>{const s=S.m[m.id],d=done(m.id),u=unlocked(i);const pts=s?s.P.pts+s.Y.pts+s.Q.pts+s.R.pts:0;
+    const st=d?`Completa · ${pts} pts${s.R.done?" · reto ✓":""}`:u?(s?"En curso":"Disponible"):"Bloqueada";
+    return `<button class="mcard ${d?"done":u&&!d?"cur":""}" data-m="${i}" ${u?"":"disabled"}><span class="n">${String(m.id).padStart(2,"0")}</span><span class="t">${m.titulo}</span><span class="s">${m.sub}</span><span class="st">${st}</span></button>`;};
+  $("#app").innerHTML=`
+   <section class="grupo"><h2>CLASE 1 · Recorridos y acumuladores</h2><div class="grid">${M.filter(m=>m.clase===1).map(m=>card(m,M.indexOf(m))).join("")}</div></section>
+   <section class="grupo"><h2>CLASE 2 · Analizar y decidir</h2><div class="grid">${M.filter(m=>m.clase===2).map(m=>card(m,M.indexOf(m))).join("")}</div></section>
+   <section class="card"><div class="row" style="justify-content:space-between"><div><h2 style="font-size:16px">Mi informe</h2><p class="muted small">Al final de cada clase, copia tu informe y pégalo en la tarea de Classroom.</p></div><button class="btn sec" id="bInf">Ver mi informe</button></div></section>`;
+  document.querySelectorAll(".mcard").forEach(b=>b.addEventListener("click",()=>vMision(+b.dataset.m)));
+  $("#bInf").addEventListener("click",vInforme);
+  window.scrollTo(0,0);
+}
+
+/* ---------- misión ---------- */
+let TR={i:0,steps:[],timer:null};
+function tablasHTML(m,hi=[],seen=new Set()){
+  const hk=new Set(hi.map(x=>x.join("-")));
+  return `<div class="tablas">${m.tablas.map((T,t)=>`<div class="tbox"><div class="tt">${T.tt}</div><table class="mx"><thead><tr><th class="corner">${T.lista?"":T.iF+"\\"+T.iC}</th>${T.cols.map((c,j)=>`<th>${c}<small>[${j}]</small></th>`).join("")}</tr></thead><tbody>${T.m.map((r,f)=>`<tr><th class="rh">${T.filas[f]}${T.lista?"":` <small style="display:inline">[${f}]</small>`}</th>${r.map((v,c)=>{const k=t+"-"+f+"-"+c;return `<td class="${hk.has(k)?"hi":seen.has(k)?"visto":""}">${v}</td>`;}).join("")}</tr>`).join("")}</tbody></table></div>`).join("")}</div>`;
+}
+function codeHTML(m,ph){
+  const st=ph==="P"?m.pseudo:m.py,ss=ms(m.id)[ph];let n=0;st._o=[];
+  return st.code.split("\n").map(line=>line.split(/(\{\{\w+\}\})/).map(p=>{const mm=p.match(/^\{\{(\w+)\}\}$/);if(!mm)return hl(p,ph);n++;const id=mm[1],b=st.blanks[id],bs=ss.b[id]||{};st._o.push(id);const w=Math.max(3,...b.a.map(x=>x.length))+1;
+    return `<input class="hueco ${bs.ok?"ok":""}" id="h-${m.id}-${ph}-${id}" data-b="${id}" placeholder="${n}" value="${esc(bs.v||"")}" style="width:${w+1}ch" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Espacio ${n}" ${ss.ok?"readonly":""}>`;}).join("")).join("\n");
+}
+const PUENTE=`<details class="pista puente"><summary>Diccionario PSeInt → Python</summary><table><thead><tr><th>PSeInt</th><th>Python</th><th>Ojo</th></tr></thead><tbody>
+<tr><td>Para f &lt;- 0 Hasta 2 Con Paso 1 Hacer</td><td>for f in range(3):</td><td>Hasta incluye el 2; range <b>no</b> incluye el 3</td></tr>
+<tr><td>FinPara / FinSi</td><td>(sangría)</td><td>El bloque termina cuando el código vuelve a la izquierda</td></tr>
+<tr><td>m[f,c]</td><td>m[f][c]</td><td>Un corchete por índice</td></tr>
+<tr><td>x &lt;- 0</td><td>x = 0</td><td></td></tr>
+<tr><td>Si ... Entonces / SiNo</td><td>if ...: / else:</td><td>Dos puntos al final</td></tr>
+<tr><td>=  (comparar)</td><td>==</td><td>Un solo = guarda un valor</td></tr>
+<tr><td>&lt;&gt;  ·  Y  ·  O</td><td>!=  ·  and  ·  or</td><td></td></tr>
+<tr><td>Verdadero / Falso</td><td>True / False</td><td>Con mayúscula</td></tr>
+<tr><td>Escribir a, b</td><td>print(a, b)</td><td></td></tr></tbody></table></details>`;
+
+function pasoCode(m,ph){
+  const s=ms(m.id),ss=s[ph],st=ph==="P"?m.pseudo:m.py;
+  const lock=ph==="Y"&&!s.Q.done;
+  const exp=ph==="P"?`<div class="voz bit"><span class="av">🤖</span><div class="tx"><span class="nm">BIT EXPLICA</span><p>${m.expP}</p></div></div>`:`<div class="voz techi"><span class="av">👩‍💻</span><div class="tx"><span class="nm">TECHI EXPLICA</span><p>${m.expY}</p></div></div>`;
+  return `<section class="card paso ${lock?"lock":""}" id="paso-${ph}">
+    <div class="ph"><h3>${ph==="P"?"Paso 1 · Pseudocódigo":"Paso 3 · Python"}</h3><span class="estado ${ss.ok?"ok":""}">${ss.ok?`✓ resuelto · ${ss.pts} pts`:lock?"Responde la pregunta de Gatiel":"Completa los espacios"}</span></div>
+    <div class="cuerpo">
+      ${ph==="Y"?PUENTE:""}
+      <pre class="cod">${codeHTML(m,ph)}</pre>
+      ${ss.ok?"":`<details class="pista" id="pi-${ph}" ${ss.hint?"open":""}><summary>¿Por dónde empiezo?</summary><ol>${st.pistas.map(p=>`<li>${p}</li>`).join("")}</ol></details>
+      <div class="row"><button class="btn" id="chk-${ph}">Comprobar</button><span class="muted small">Espacios numerados del 1 al ${Object.keys(st.blanks).length}</span></div>`}
+      <div class="fb" id="fb-${ph}"></div>
+      ${ss.ok?exp:""}
+      ${ss.ok&&ph==="P"?tracerHTML(m):""}
+    </div></section>`;
+}
+function tracerHTML(m){return `<div class="tracer" id="tracer"><div class="row" style="justify-content:space-between"><span class="eyebrow" style="color:var(--bl)">Mira el recorrido paso a paso</span></div>
+  <div id="trT">${tablasHTML(m)}</div>
+  <div class="vars" id="trV"></div><div class="nota" id="trN">Toca ▶ para avanzar una celda.</div>
+  <div class="consola" id="trC"><span class="ttl">salida del programa</span></div>
+  <div class="tctl"><button id="tr0" aria-label="Reiniciar">⏮</button><button id="trB" aria-label="Paso anterior">◀</button><button id="trF" aria-label="Paso siguiente">▶ Paso</button><button id="trA">⏵ Auto</button><span class="cnt" id="trK"></span></div></div>`;}
+function trDraw(m){const st=TR.steps,i=TR.i;const seen=new Set();for(let k=0;k<i;k++)st[k].cells.forEach(c=>seen.add(c.join("-")));const cur=i>0?st[i-1]:null;
+  $("#trT").innerHTML=tablasHTML(m,cur?cur.cells:[],seen);
+  $("#trV").innerHTML=cur?Object.entries(cur.vars).map(([k,v])=>`<span><b>${k}</b> = ${esc(v)}</span>`).join(""):"";
+  $("#trN").textContent=cur?cur.note:"Toca ▶ para avanzar una celda.";
+  const outs=st.slice(0,i).filter(x=>x.out).map(x=>esc(x.out));$("#trC").innerHTML=outs.length?outs.join("\n"):'<span class="ttl">salida del programa</span>';$("#trC").scrollTop=1e6;
+  $("#trK").textContent=`${i} / ${st.length}`;}
+function trBind(m){if(!$("#tracer"))return;TR.steps=m.trace();TR.i=0;clearInterval(TR.timer);trDraw(m);
+  const stop=()=>{clearInterval(TR.timer);TR.timer=null;$("#trA").textContent="⏵ Auto";};
+  $("#tr0").onclick=()=>{stop();TR.i=0;trDraw(m);};
+  $("#trB").onclick=()=>{stop();if(TR.i>0)TR.i--;trDraw(m);};
+  $("#trF").onclick=()=>{stop();if(TR.i<TR.steps.length)TR.i++;trDraw(m);};
+  $("#trA").onclick=()=>{if(TR.timer){stop();return;}if(TR.i>=TR.steps.length)TR.i=0;$("#trA").textContent="⏸ Pausa";TR.timer=setInterval(()=>{if(TR.i>=TR.steps.length){stop();return;}TR.i++;trDraw(m);},650);};}
+
+function pasoQuiz(m){const s=ms(m.id),q=s.Q,lock=!s.P.ok;
+  return `<section class="card paso ${lock?"lock":""}" id="paso-Q"><div class="ph"><h3>Paso 2 · Gatiel pregunta</h3><span class="estado ${q.done?"ok":""}">${q.done?(q.first?"✓ a la primera · "+q.pts+" pts":"✓ resuelta · "+q.pts+" pts"):lock?"Resuelve el pseudocódigo":"Elige una respuesta"}</span></div>
+  <div class="cuerpo"><div class="voz gatiel"><span class="av">🦊</span><div class="tx"><span class="nm">GATIEL</span><p>${m.quiz.q}</p></div></div>
+  <div class="ops">${m.quiz.ops.map((o,k)=>`<button class="op ${q.done&&o.ok?"ok":""}" data-k="${k}" ${q.done?"disabled":""}>${o.t}</button>`).join("")}</div>
+  <div class="fb" id="fb-Q">${q.done?`<div class="it ok">${m.quiz.ops.find(o=>o.ok).fb}</div>`:""}</div></div></section>`;}
+
+function pasoReto(m){const s=ms(m.id),lock=!s.Y.ok;
+  return `<section class="card paso ${lock?"lock":""}" id="paso-R"><div class="ph"><h3>Paso 4 · Reto en Pydroid</h3><span class="estado ${s.R.done?"ok":""}">${s.R.done?"✓ reto superado · 20 pts":lock?"Resuelve el código en Python":"Bonus: +20 pts"}</span></div>
+  <div class="cuerpo"><p class="small muted">1. Copia el programa completo (con los datos) y pégalo en Pydroid 3. 2. Ejecútalo y compara con el recorrido. 3. Modifícalo para resolver el reto.</p>
+  <div class="row"><button class="btn sec" id="bCopy">Copiar programa completo</button></div>
+  <pre class="cod" id="pyFull">${esc(pyFull(m))}</pre>
+  <div class="voz techi"><span class="av">👩‍💻</span><div class="tx"><span class="nm">RETO</span><p>${m.reto.txt}</p></div></div>
+  <div class="reto-in"><input type="text" id="iReto" placeholder="Tu resultado" autocomplete="off" ${s.R.done?"disabled":""}><button class="btn" id="bReto" ${s.R.done?"disabled":""}>Verificar</button></div>
+  <div class="fb" id="fb-R">${s.R.done?'<div class="it ok">Reto superado. Guarda tu programa en el teléfono con un nombre como <code>mision'+m.id+'.py</code>.</div>':""}</div></div></section>`;}
+
+function vMision(i){
+  const m=M[i];if(!unlocked(i))return vMapa();ms(m.id);save();clearInterval(TR.timer);
+  const next=M[i+1];
+  $("#app").innerHTML=`
+   <div class="row" style="justify-content:space-between"><button class="btn sec" id="bBack">← Mapa</button>${next?`<button class="btn sec" id="bNext" ${done(m.id)?"":"disabled"}>Misión ${next.id} →</button>`:""}</div>
+   <section class="mhead"><div class="tags"><span class="tag">Misión ${m.id} · Clase ${m.clase}</span><span class="tag bloom">Bloom: ${m.bloom}</span></div><h1>${m.titulo}</h1><p class="muted">${m.sub}</p></section>
+   <section class="card"><p>${m.historia}</p><div class="tarea"><b>Tu tarea:</b> ${m.tarea}</div>${tablasHTML(m)}</section>
+   ${pasoCode(m,"P")}${pasoQuiz(m)}${pasoCode(m,"Y")}${pasoReto(m)}
+   ${done(m.id)?`<section class="card"><p><b>Misión completa.</b> ${next?`Sigue con la misión ${next.id}.`:"Ve a <b>Mi informe</b> y entrégalo en Classroom."}</p><div class="row">${next?`<button class="btn" id="bNext2">Misión ${next.id} →</button>`:`<button class="btn" id="bInf2">Ver mi informe</button>`}</div></section>`:""}`;
+  $("#bBack").onclick=vMapa;
+  if($("#bNext"))$("#bNext").onclick=()=>vMision(i+1);
+  if($("#bNext2"))$("#bNext2").onclick=()=>vMision(i+1);
+  if($("#bInf2"))$("#bInf2").onclick=vInforme;
+  ["P","Y"].forEach(ph=>{const b=$("#chk-"+ph);if(b)b.onclick=()=>check(i,ph);const d=$("#pi-"+ph);if(d)d.addEventListener("toggle",()=>{if(d.open){ms(m.id)[ph].hint=true;save();}});
+    document.querySelectorAll(`#paso-${ph} input.hueco`).forEach(inp=>inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check(i,ph);}}));});
+  document.querySelectorAll("#paso-Q .op").forEach(b=>b.onclick=()=>answer(i,+b.dataset.k));
+  if($("#bCopy"))$("#bCopy").onclick=()=>copiar(pyFull(m),$("#pyFull"));
+  if($("#bReto"))$("#bReto").onclick=()=>reto(i);
+  trBind(m);hud();
+}
+function rerender(i,anchor){const y=anchor&&$(anchor)?$(anchor).getBoundingClientRect().top:null;vMision(i);if(anchor&&$(anchor)){const ny=$(anchor).getBoundingClientRect().top;window.scrollBy(0,ny-(y??ny));}}
+
+function check(i,ph){
+  const m=M[i],s=ms(m.id),ss=s[ph],st=ph==="P"?m.pseudo:m.py,cs=ph==="Y";
+  const msgs=[];let all=true;
+  st._o.forEach((id,k)=>{const inp=$(`#h-${m.id}-${ph}-${id}`),b=st.blanks[id];const bs=ss.b[id]||(ss.b[id]={v:"",tries:0,errs:[],ok:false,last:""});
+    const raw=inp.value;bs.v=raw;const v=nB(raw,cs);inp.classList.remove("ok","bad");
+    if(!v){all=false;msgs.push(`<div class="it"><b>Espacio ${k+1}</b> · Está vacío.</div>`);return;}
+    if(b.a.some(a=>nB(a,cs)===v)){bs.ok=true;inp.classList.add("ok");return;}
+    all=false;bs.ok=false;void inp.offsetWidth;inp.classList.add("bad");
+    let hit=Object.entries(b.e).find(([k2])=>nB(k2,cs)===v);
+    if(!hit&&cs){const lv=v.toLowerCase();if(b.a.some(a=>nB(a,false)===lv))hit=["",["E6","Casi: revisa mayúsculas y minúsculas. Python las distingue."]];}
+    const [code,txt]=hit?hit[1]:["EX",b.g];
+    if(v!==bs.last){bs.tries++;bs.errs.push(code);bs.last=v;}
+    msgs.push(`<div class="it"><b>Espacio ${k+1}</b> · ${txt}</div>`);});
+  if(all){ss.ok=true;ss.pts=st._o.reduce((a,id)=>{const bs=ss.b[id];return a+((bs.tries===0&&!ss.hint)?10:5);},0);save();toast(`+${ss.pts} pts`);rerender(i,"#paso-"+ph);if(ph==="P"&&$("#paso-Q"))$("#paso-P .voz").scrollIntoView({behavior:"smooth",block:"center"});return;}
+  save();$("#fb-"+ph).innerHTML=msgs.join("");
+}
+function answer(i,k){const m=M[i],s=ms(m.id),q=s.Q,o=m.quiz.ops[k];if(q.done)return;
+  const btn=document.querySelector(`#paso-Q .op[data-k="${k}"]`);
+  if(q.first===null){q.first=!!o.ok;if(!o.ok)q.code=o.c||"EX";}
+  if(o.ok){q.done=true;q.pts=q.first?15:5;save();toast(`+${q.pts} pts`);rerender(i,"#paso-Q");return;}
+  btn.classList.add("bad");btn.disabled=true;save();$("#fb-Q").innerHTML=`<div class="it">${o.fb}</div>`;}
+function reto(i){const m=M[i],s=ms(m.id),v=nR($("#iReto").value);if(!v)return;
+  if(m.reto.a.some(a=>nR(a)===v)){s.R.done=true;s.R.pts=20;save();toast("+20 pts");rerender(i,"#paso-R");}
+  else $("#fb-R").innerHTML=`<div class="it">Todavía no. Ejecuta tu programa en Pydroid y revisa la salida. Si da error, lee la última línea del mensaje: dice qué y dónde.</div>`;}
+
+/* ---------- informe ---------- */
+function codigo(){const parts=["R1",S.nombre,S.fila||"-",totalPts()];
+  M.forEach(m=>{const s=S.m[m.id];if(!s)return;const e=x=>{const a=Object.values(x.b).flatMap(b=>b.errs);return a.length?a.join(","):"0";};
+    parts.push(`M${m.id}=P:${e(s.P)};Y:${e(s.Y)};H:${(s.P.hint?"P":"")+(s.Y.hint?"Y":"")||"0"};Q:${s.Q.done||s.Q.first!==null?(s.Q.first?"1":s.Q.code):"-"};R:${s.R.done?1:0}`);});
+  parts.push("META="+(S.meta||"").replace(/[|\n\r]+/g," ").trim());return parts.join("|");}
+function vInforme(){
+  const rows=M.map(m=>{const s=S.m[m.id];if(!s)return `<tr><td>${m.id}. ${m.titulo}</td><td colspan="5" class="muted">sin empezar</td></tr>`;
+    const e=x=>{const a=Object.values(x.b).flatMap(b=>b.errs);return a.length?a.join(" "):"—";};
+    return `<tr><td>${m.id}. ${m.titulo}</td><td>${e(s.P)}</td><td>${e(s.Y)}</td><td>${s.Q.done?(s.Q.first?"✓":"✗ "+s.Q.code):"—"}</td><td>${s.R.done?"✓":"—"}</td><td>${s.P.pts+s.Y.pts+s.Q.pts+s.R.pts}</td></tr>`;}).join("");
+  $("#app").innerHTML=`<div class="row"><button class="btn sec" id="bBack">← Mapa</button></div>
+  <section class="mhead"><p class="eyebrow">Informe de ${esc(S.nombre)} · Fila ${esc(S.fila)}</p><h1>Mi informe</h1><p class="muted">${totalPts()} puntos · ${rank(totalPts())}</p></section>
+  <section class="card"><h2 style="font-size:15px">Mis errores por misión</h2><div class="tbl"><table><thead><tr><th>Misión</th><th>Pseudocódigo</th><th>Python</th><th>Pregunta</th><th>Reto</th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="gloss">${Object.entries(ERR).map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join("")}</div></section>
+  <section class="card"><div class="voz gatiel"><span class="av">🦊</span><div class="tx"><span class="nm">GATIEL</span><p>Antes de entregar: ¿qué error te salió más veces y cómo te diste cuenta de que estaba mal?</p></div></div>
+  <textarea id="iMeta" placeholder="Escribe tu reflexión en 2 o 3 líneas">${esc(S.meta||"")}</textarea></section>
+  <section class="card"><h2 style="font-size:15px">Código de entrega</h2><p class="muted small">Copia este código y pégalo como respuesta en la tarea de Classroom. Contiene tus errores, pistas y reflexión.</p>
+  <pre class="cod" id="cod" style="white-space:pre-wrap;word-break:break-all">${esc(codigo())}</pre><div class="row"><button class="btn" id="bCod">Copiar código</button></div></section>`;
+  $("#bBack").onclick=vMapa;
+  $("#iMeta").addEventListener("input",e=>{S.meta=e.target.value;save();$("#cod").textContent=codigo();});
+  $("#bCod").onclick=()=>copiar(codigo(),$("#cod"));window.scrollTo(0,0);
+}
+
+/* ---------- docente ---------- */
+let docOK=false;
+function vDocente(){
+  if(!docOK){$("#app").innerHTML=`<form class="card" id="fDoc"><p class="eyebrow">Acceso docente</p><label>Clave<input type="text" id="iClave" autocomplete="off"></label><div class="row"><button class="btn" type="submit">Entrar</button><button class="btn sec" type="button" id="bVolver">Volver</button></div></form>`;
+    $("#fDoc").addEventListener("submit",e=>{e.preventDefault();if($("#iClave").value.trim().toUpperCase()==="DANFER"){docOK=true;vDocente();}else toast("Clave incorrecta");});
+    $("#bVolver").onclick=()=>{location.hash="";vMapa();};return;}
+  const key=M.map(m=>{const b=(st)=>Object.entries(st.blanks).map(([id,x],k)=>`${k+1}: <code>${esc(x.a.join(" | "))}</code>`).join(" · ");
+    return `<tr><td>${m.id}</td><td>${m.titulo}<br><span class="muted small">${m.bloom}</span></td><td style="text-align:left">${b(m.pseudo)}</td><td style="text-align:left">${b(m.py)}</td><td style="text-align:left">${esc(m.quiz.ops.find(o=>o.ok).t)}</td><td>${esc(m.reto.a[0])}</td></tr>`;}).join("");
+  $("#app").innerHTML=`<div class="row"><button class="btn sec" id="bBack">← Mapa</button></div>
+  <section class="mhead"><p class="eyebrow">Guía docente</p><h1>Recorridos con matrices</h1><p class="muted">2do BATIN · Algorítmica 2 + Laboratorio 2 · dos clases de 2 bloques (160 min c/u)</p></section>
+  <section class="card"><h2 style="font-size:16px">Plan de las dos clases</h2><div class="tbl"><table><thead><tr><th>Momento</th><th>Tiempo</th><th>Actividad</th></tr></thead><tbody>
+   <tr><td>C1 · Bloque 1</td><td>10'</td><td style="text-align:left"><b>El aula es una matriz.</b> Los bancos son filas y columnas. La profe dice <code>aula[2][1]</code> y se levanta quien está ahí; después "recorre la fila 1" y "recorre la columna 0". Se anota en la pizarra: el ciclo de afuera es lo que se reporta.</td></tr>
+   <tr><td></td><td>60'</td><td style="text-align:left">Misiones 1 a 3 (recorrido por filas, acumulador, recorrido por columnas).</td></tr>
+   <tr><td></td><td>10'</td><td style="text-align:left">Puesta en común de la pregunta de la misión 3 (<code>ventas[c][f]</code> e IndexError). Ejecutarlo en vivo.</td></tr>
+   <tr><td>C1 · Bloque 2</td><td>65'</td><td style="text-align:left">Misiones 4 y 5 + retos en Pydroid.</td></tr>
+   <tr><td></td><td>15'</td><td style="text-align:left">Cada estudiante copia el <b>código de entrega</b> en Classroom.</td></tr>
+   <tr><td>C2 · Bloque 1</td><td>5'</td><td style="text-align:left">Recuperación oral: "¿Qué pasa si <code>total &lt;- 0</code> queda fuera del ciclo?"</td></tr>
+   <tr><td></td><td>75'</td><td style="text-align:left">Misiones 6 a 8 (mínimo con posición, bandera, contadores con distinto alcance).</td></tr>
+   <tr><td>C2 · Bloque 2</td><td>55'</td><td style="text-align:left">Misiones 9 y 10 (tablero y tres dimensiones).</td></tr>
+   <tr><td></td><td>25'</td><td style="text-align:left">Metacognición: reflexión escrita en el informe ("¿qué error te salió más y cómo lo detectaste?") y entrega del código.</td></tr>
+  </tbody></table></div>
+  <p class="small muted">PSeInt: para que los arreglos empiecen en 0, en <i>Configurar → Opciones del lenguaje</i> elige un perfil personalizado y activa "Utilizar índices en arreglos y cadenas en base 0".</p>
+  <div class="row"><button class="btn sec" id="bUnl">${S.unlockAll?"Volver a bloquear misiones en este dispositivo":"Desbloquear todas las misiones en este dispositivo"}</button><button class="btn sec" id="bRes">Borrar progreso de este dispositivo</button></div><div id="resConf"></div></section>
+
+  <section class="card"><h2 style="font-size:16px">Taxonomía de errores registrada</h2><div class="gloss">${Object.entries(ERR).map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join("")}</div>
+  <p class="small muted">Cada respuesta incorrecta distinta queda registrada con su código, separada por fase: <b>P</b> pseudocódigo, <b>Y</b> Python, <b>Q</b> primera respuesta a la pregunta de Gatiel. <b>H</b> indica si se abrieron pistas. Así se puede comparar la frecuencia de errores en pseudocódigo frente a Python, y su relación con el nivel de Bloom de cada misión.</p></section>
+
+  <section class="card"><h2 style="font-size:16px">Analizar los códigos de entrega</h2><p class="muted small">Pega aquí todos los códigos que entregaron en Classroom (uno por línea).</p>
+  <textarea id="iAgg" style="min-height:140px" placeholder="R1|Nombre|1|540|M1=P:E2;Y:0;H:0;Q:1;R:1|..."></textarea>
+  <div class="row"><button class="btn" id="bAgg">Analizar</button></div><div id="agg" style="display:flex;flex-direction:column;gap:12px"></div></section>
+
+  <section class="card"><h2 style="font-size:16px">Respuestas</h2><div class="tbl"><table><thead><tr><th>#</th><th>Misión</th><th>Pseudocódigo</th><th>Python</th><th>Pregunta</th><th>Reto</th></tr></thead><tbody>${key}</tbody></table></div></section>`;
+  $("#bBack").onclick=()=>{location.hash="";vMapa();};
+  $("#bUnl").onclick=()=>{S.unlockAll=!S.unlockAll;save();vDocente();toast(S.unlockAll?"Misiones desbloqueadas":"Misiones bloqueadas");};
+  $("#bRes").onclick=()=>{$("#resConf").innerHTML=`<div class="row" style="margin-top:8px"><span class="small">Se borran nombre, puntos y errores de este dispositivo.</span><button class="btn" id="bResOk" style="background:var(--bad)">Sí, borrar</button></div>`;$("#bResOk").onclick=()=>{S={nombre:"",fila:"",m:{},unlockAll:false,meta:""};save();hud();toast("Progreso borrado");vDocente();};};
+  $("#bAgg").onclick=agg;
+}
+function agg(){
+  const lines=$("#iAgg").value.split(/\n+/).map(l=>l.trim()).filter(l=>l.startsWith("R1|"));
+  if(!lines.length){$("#agg").innerHTML='<p class="muted small">No se encontraron códigos que empiecen con R1|.</p>';return;}
+  const codes=Object.keys(ERR),A={},F={P:{},Y:{},Q:{}},long=[],meta=[];
+  M.forEach(m=>A[m.id]={n:0,c:Object.fromEntries(codes.map(k=>[k,0])),h:0,q1:0,qn:0,r:0});
+  lines.forEach(l=>{const p=l.split("|");const nom=p[1],fila=p[2],pts=p[3];
+    p.slice(4).forEach(x=>{if(x.startsWith("META=")){meta.push([nom,fila,pts,x.slice(5)]);return;}
+      const [mid,body]=x.split("=");const id=+mid.slice(1);if(!A[id]||!body)return;const f=Object.fromEntries(body.split(";").map(z=>z.split(":")));const a=A[id];a.n++;
+      ["P","Y"].forEach(ph=>(f[ph]||"0").split(",").filter(c=>c&&c!=="0").forEach(c=>{if(a.c[c]!==undefined)a.c[c]++;F[ph][c]=(F[ph][c]||0)+1;long.push([nom,fila,"M"+id,ph,c]);}));
+      if(f.H&&f.H!=="0")a.h++;
+      if(f.Q&&f.Q!=="-"){a.qn++;if(f.Q==="1")a.q1++;else{if(a.c[f.Q]!==undefined)a.c[f.Q]++;F.Q[f.Q]=(F.Q[f.Q]||0)+1;long.push([nom,fila,"M"+id,"Q",f.Q]);}}
+      if(f.R==="1")a.r++;});});
+  const pct=(x,n)=>n?Math.round(x*100/n)+"%":"—";
+  const tot=Object.fromEntries(codes.map(k=>[k,M.reduce((s,m)=>s+A[m.id].c[k],0)]));
+  const t1=`<div class="tbl"><table><thead><tr><th>Misión</th><th>Bloom</th><th>n</th>${codes.map(k=>`<th>${k}</th>`).join("")}<th>Pistas</th><th>Preg. 1ra</th><th>Reto</th></tr></thead><tbody>${M.map(m=>{const a=A[m.id];return `<tr><td>${m.id}. ${m.titulo}</td><td>${m.bloom}</td><td>${a.n}</td>${codes.map(k=>`<td>${a.c[k]||""}</td>`).join("")}<td>${pct(a.h,a.n)}</td><td>${pct(a.q1,a.qn)}</td><td>${pct(a.r,a.n)}</td></tr>`;}).join("")}<tr><td><b>Total</b></td><td></td><td></td>${codes.map(k=>`<td><b>${tot[k]}</b></td>`).join("")}<td></td><td></td><td></td></tr></tbody></table></div>`;
+  const t2=`<div class="tbl"><table><thead><tr><th>Fase</th>${codes.map(k=>`<th>${k}</th>`).join("")}</tr></thead><tbody>${[["P","Pseudocódigo"],["Y","Python"],["Q","Pregunta"]].map(([k,n])=>`<tr><td>${n}</td>${codes.map(c=>`<td>${F[k][c]||""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const tsv="nombre\tfila\tmision\tfase\tcodigo\n"+long.map(r=>r.join("\t")).join("\n");
+  const tsvM="nombre\tfila\tpuntos\treflexion\n"+meta.map(r=>r.join("\t")).join("\n");
+  $("#agg").innerHTML=`<p class="small"><b>${lines.length}</b> estudiantes.</p><h3 style="font-size:14px">Errores por misión</h3>${t1}<h3 style="font-size:14px">Errores por fase</h3>${t2}
+   <div class="row"><button class="btn sec" id="bT1">Copiar errores para Sheets</button><button class="btn sec" id="bT2">Copiar reflexiones para Sheets</button></div>
+   <pre class="cod" id="tsvA" hidden>${esc(tsv)}</pre><pre class="cod" id="tsvB" hidden>${esc(tsvM)}</pre>`;
+  $("#bT1").onclick=()=>{$("#tsvA").hidden=false;copiar(tsv,$("#tsvA"));};
+  $("#bT2").onclick=()=>{$("#tsvB").hidden=false;copiar(tsvM,$("#tsvB"));};
+}
+
+/* ===================== ARRANQUE ===================== */
+function route(){if(location.hash==="#docente")vDocente();else S.nombre?vMapa():vInicio();hud();}
+$("#goMapa").onclick=()=>{location.hash="";S.nombre?vMapa():vInicio();};
+$("#goDoc").onclick=()=>{location.hash="docente";};
+window.addEventListener("hashchange",route);
+route();
+</script>
+
+</body>
+</html>
