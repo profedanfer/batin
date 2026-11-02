@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Evaluación del sitio BATIN · 2026 · profe.DanFer</title>
+<meta name="description" content="Formularios de evaluación del sitio BATIN para estudiantes de 1ro, 2do y 3ro.">
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+<link rel="stylesheet" href="batin.css">
+<style>
+.eval-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
+}
+
+.eval-head {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.eval-head h1 {
+  font-family: var(--font-title);
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  line-height: 1.25;
+  color: var(--texto-fuerte);
+  margin: 10px 0 14px;
+}
+
+.eval-head p {
+  color: var(--texto2);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.eval-bit {
+  width: 160px;
+  height: 138px;
+  overflow: hidden;
+  justify-self: center;
+}
+
+.eval-bit img {
+  width: 200px;
+  max-width: none;
+  margin: -8px 0 0 -20px;
+  object-fit: contain;
+}
+
+.eval-globo {
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-left: 4px solid var(--azul);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 40px;
+}
+
+.eval-globo .quien {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--azul);
+  letter-spacing: .04em;
+  margin-bottom: 8px;
+}
+
+.eval-globo ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--texto);
+  line-height: 1.7;
+}
+
+.eval-cursos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.eval-curso {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  background: var(--bg2);
+  border: 1px solid var(--borde2);
+  border-radius: 14px;
+  padding: 26px 22px 22px;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.eval-curso:hover,
+.eval-curso:focus-visible {
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.eval-curso .num {
+  font-family: var(--font-title);
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.eval-curso .nombre {
+  font-weight: 600;
+  color: var(--texto-fuerte);
+  font-size: 1.05rem;
+}
+
+.eval-curso .detalle {
+  color: var(--texto2);
+  font-size: .92rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.eval-curso .ir {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  margin-top: 6px;
+}
+
+.eval-curso.c1 .num, .eval-curso.c1 .ir { color: var(--naranja); }
+.eval-curso.c1:hover, .eval-curso.c1:focus-visible { border-color: var(--naranja); background: var(--naranja-s); }
+.eval-curso.c2 .num, .eval-curso.c2 .ir { color: var(--violeta); }
+.eval-curso.c2:hover, .eval-curso.c2:focus-visible { border-color: var(--violeta); background: var(--violeta-s); }
+.eval-curso.c3 .num, .eval-curso.c3 .ir { color: var(--azul); }
+.eval-curso.c3:hover, .eval-curso.c3:focus-visible { border-color: var(--azul); background: var(--azul-s); }
+
+.eval-pie {
+  margin-top: 36px;
+  color: var(--texto3);
+  font-size: .88rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .eval-head { grid-template-columns: 1fr; }
+  .eval-bit { display: none; }
+  .eval-cursos { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-page="evaluacion">
+
+<div id="batin-nav"></div>
+
+<main class="eval-wrap">
+
+  <div class="eval-head">
+    <div>
+      <span class="kicker azul">// evaluación del sitio BATIN · 2026</span>
+      <h1>¿Qué te sirvió del sitio BATIN?</h1>
+      <p>Queremos saber qué te ayudó a aprender y qué no, para mejorar el sitio y para compartir esta experiencia con otros docentes. Elige el formulario de tu curso.</p>
+    </div>
+    <div class="eval-bit">
+      <img src="img/bit_ok.png" alt="Bit">
+    </div>
+  </div>
+
+  <div class="eval-globo">
+    <div class="quien">// Bit dice</div>
+    <ul>
+      <li><strong>Es anónimo:</strong> no te pide nombre, correo ni iniciar sesión.</li>
+      <li><strong>No tiene nota</strong> y no afecta tus calificaciones.</li>
+      <li><strong>Responde con sinceridad:</strong> una crítica sirve tanto como un elogio.</li>
+      <li>Responde <strong>una sola vez</strong> y solo en el formulario de tu curso. Toma entre 20 y 25 minutos.</li>
+    </ul>
+  </div>
+
+  <div class="eval-cursos">
+    <a class="eval-curso c1" href="https://forms.gle/DZ9ksgLDGuR6UhDt9" target="_blank" rel="noopener">
+      <span class="num">1°</span>
+      <span class="nombre">Primer curso</span>
+      <span class="detalle">Laboratorio 1, ICIENTEC y la primera etapa del Proyecto de Promoción.</span>
+      <span class="ir">Abrir formulario →</span>
+    </a>
+    <a class="eval-curso c2" href="https://forms.gle/BnB6FsSEjLtZ3PPs6" target="_blank" rel="noopener">
+      <span class="num">2°</span>
+      <span class="nombre">Segundo curso</span>
+      <span class="detalle">Algorítmica 2, Laboratorio 2, ICIENTEC y la comparación con el sitio del año pasado.</span>
+      <span class="ir">Abrir formulario →</span>
+    </a>
+    <a class="eval-curso c3" href="https://forms.gle/E7b2Wrsd8tunSKiz9" target="_blank" rel="noopener">
+      <span class="num">3°</span>
+      <span class="nombre">Tercer curso</span>
+      <span class="detalle">Algorítmica 3, Laboratorio 3, Proyecto de Promoción y Árboles en Juego.</span>
+      <span class="ir">Abrir formulario →</span>
+    </a>
+  </div>
+
+  <p class="eval-pie">Responsable: Prof. Dra. R. Daniela Ferreira Delgado · CEDMR · 2026</p>
+
+</main>
+
+<div id="batin-footer"></div>
+<script src="batin.js"></script>
+</body>
+</html>
