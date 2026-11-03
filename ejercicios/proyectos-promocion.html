@@ -3,116 +3,104 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Proyectos de Promoción CEDMR</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<title>Proyectos de Promoción · BATIN</title>
+<script>try{if(localStorage.getItem('batin-tema')==='claro')document.documentElement.dataset.tema='claro'}catch(e){}</script>
+<link rel="stylesheet" href="../batin.css">
 <style>
-/* Layout: banda institucional + barra de filtros fija + un bloque por promoción, tarjetas en grilla.
-   Para sumar una promoción nueva basta con agregar repos con el prefijo correspondiente (029-, 030-…). */
-:root{
-  --bg:#f5f6fa; --surface:#ffffff; --ink:#16203a; --muted:#5b6479; --line:#dde1ea;
-  --navy:#1d2c5b; --navy-ink:#ffffff;
-  --c3:#c0182f; --c3-soft:#fbe9ec;   /* promociones 2026, 2029, 2032… rojo del escudo */
-  --c2:#2453b3; --c2-soft:#e7eefb;   /* promociones 2027, 2030… azul */
-  --c1:#a86a00; --c1-soft:#fbf1dc;   /* promociones 2028, 2031… ámbar */
-  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
-  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f1424; --surface:#171e33; --ink:#e8ebf3; --muted:#9aa3b8; --line:#2a3350;
-  --navy:#141d3d; --navy-ink:#ffffff;
-  --c3:#ff6b7d; --c3-soft:#3a1a22; --c2:#7ea6ff; --c2-soft:#1a2747; --c1:#f0b54a; --c1-soft:#3a2d12;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0f1424; --surface:#171e33; --ink:#e8ebf3; --muted:#9aa3b8; --line:#2a3350;
-  --navy:#141d3d; --navy-ink:#ffffff;
-  --c3:#ff6b7d; --c3-soft:#3a1a22; --c2:#7ea6ff; --c2-soft:#1a2747; --c1:#f0b54a; --c1-soft:#3a2d12;
-  color-scheme:dark}
+/* Proyectos de Promoción — usa las variables de batin.css (modo oscuro por defecto, claro con data-tema="claro").
+   Cada promoción toma una familia de color del sitio y el ciclo se repite cada 3 años:
+   2026/2029… naranja · 2027/2030… violeta · 2028/2031… azul */
+.pp-wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
-.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* Cabecera */
+.pp-head{background:var(--bg2);border-bottom:3px solid var(--naranja)}
+.pp-head .pp-wrap{display:flex;gap:24px;align-items:center;padding-block:34px 30px}
+.pp-logo{width:88px;height:88px;border-radius:50%;background:#fff;flex:none;object-fit:contain;padding:4px;border:2px solid var(--borde2)}
+.pp-back{display:inline-block;margin-bottom:10px;color:var(--texto2);font-size:.88rem;text-decoration:none}
+.pp-back:hover{color:var(--naranja2);text-decoration:underline}
+.pp-inst{margin:0 0 8px;font-family:var(--font-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--naranja2)}
+.pp-head h1{font-family:var(--font-title);font-weight:800;font-size:clamp(1.5rem,4vw,2.4rem);line-height:1.1;margin:0;color:var(--texto-fuerte);text-wrap:balance;letter-spacing:.01em}
+.pp-sub{margin:10px 0 0;color:var(--texto2);max-width:62ch;line-height:1.55}
 
-/* Banda institucional */
-.band{background:var(--navy);color:var(--navy-ink);border-bottom:4px solid var(--c3)}
-.band .wrap{display:flex;gap:24px;align-items:center;padding-block:32px 28px}
-.logo{width:88px;height:88px;border-radius:50%;background:#fff;flex:none;object-fit:contain;padding:4px}
-.band h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
-.band .inst{margin:0 0 6px;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
-.band .sub{margin:8px 0 0;opacity:.9;max-width:60ch}
-.back{display:inline-block;margin-bottom:10px;color:var(--navy-ink);opacity:.85;font-size:.88rem;text-decoration:none}
-.back:hover{opacity:1;text-decoration:underline}
-.course-head .estado{font-size:.85rem;font-weight:700;color:var(--c)}
-
-/* Filtros */
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.bar .wrap{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding-block:12px}
+/* Filtros: se pega debajo del menú de BATIN (58px; 52px en celular) */
+.pp-bar{position:sticky;top:58px;z-index:400;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)}
+.pp-bar .pp-wrap{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding-block:12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{font:inherit;font-size:.92rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
-.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
-.chip[data-color="3"] .dot{background:var(--c3)} .chip[data-color="2"] .dot{background:var(--c2)} .chip[data-color="1"] .dot{background:var(--c1)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip:focus-visible,.search:focus-visible,.btn:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
-.search{flex:1 1 220px;min-width:0;font:inherit;font-size:.95rem;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.chip{font:inherit;font-size:.9rem;border:1px solid var(--borde2);background:var(--bg3);color:var(--texto);padding:6px 14px;border-radius:999px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chip:hover{border-color:var(--borde3)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--texto3)}
+.chip[data-color="naranja"] .dot{background:var(--naranja)}
+.chip[data-color="violeta"] .dot{background:var(--violeta)}
+.chip[data-color="azul"] .dot{background:var(--azul)}
+.chip[aria-pressed="true"]{background:var(--naranja);color:#fff;border-color:var(--naranja)}
+.chip[aria-pressed="true"] .dot{background:#fff}
+.chip:focus-visible,.pp-search:focus-visible,.pp-btn:focus-visible{outline:3px solid var(--azul2);outline-offset:2px}
+.pp-search{flex:1 1 220px;min-width:0;font:inherit;font-size:.95rem;padding:8px 12px;border:1px solid var(--borde2);border-radius:var(--r);background:var(--bg2);color:var(--texto)}
+.pp-search::placeholder{color:var(--texto3)}
 
-/* Bloques por curso */
-main{padding-block:28px 56px;display:flex;flex-direction:column;gap:44px}
-.course{--c:var(--c2);--soft:var(--c2-soft)}
-.course[data-color="3"]{--c:var(--c3);--soft:var(--c3-soft)}
-.course[data-color="1"]{--c:var(--c1);--soft:var(--c1-soft)}
+/* Bloques por promoción */
+.pp-main{padding-block:30px 56px;display:flex;flex-direction:column;gap:44px}
+.course{--c:var(--naranja);--c2:var(--naranja2);--soft:var(--naranja-s);--mid:var(--naranja-b)}
+.course[data-color="violeta"]{--c:var(--violeta);--c2:var(--violeta2);--soft:var(--violeta-s);--mid:var(--violeta-b)}
+.course[data-color="azul"]{--c:var(--azul);--c2:var(--azul2);--soft:var(--azul-s);--mid:var(--azul-b)}
 .course-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;border-bottom:2px solid var(--c);padding-bottom:10px;margin-bottom:18px}
-.course-head h2{font-family:var(--f-display);font-weight:700;font-size:clamp(1.5rem,3vw,2rem);margin:0;color:var(--c)}
-.course-head .meta{color:var(--muted);font-size:.95rem}
-.course-head .pref{font-family:var(--f-mono);font-size:.85rem;background:var(--soft);color:var(--c);padding:2px 8px;border-radius:4px}
-.course-head .count{margin-left:auto;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.course-head h2{font-family:var(--font-title);font-weight:700;font-size:clamp(1.2rem,2.6vw,1.6rem);margin:0;color:var(--c2);letter-spacing:.02em}
+.course-head .estado{font-size:.85rem;font-weight:600;color:var(--texto2)}
+.course-head .pref{font-family:var(--font-mono);font-size:.8rem;background:var(--soft);color:var(--c2);border:1px solid var(--mid);padding:1px 8px;border-radius:4px}
+.course-head .count{margin-left:auto;color:var(--texto3);font-size:.88rem;font-variant-numeric:tabular-nums}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:6px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.card .slug{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);overflow-wrap:anywhere}
-.card h3{font-family:var(--f-display);font-weight:700;font-size:1.2rem;line-height:1.2;margin:0}
-.card p{margin:0;color:var(--muted);font-size:.93rem;flex:1}
+.pp-card{background:var(--bg2);border:1px solid var(--borde);border-top:3px solid var(--c);border-radius:var(--r);padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .15s,transform .15s}
+.pp-card:hover{border-color:var(--mid);border-top-color:var(--c);transform:translateY(-2px)}
+.pp-card .slug{font-family:var(--font-mono);font-size:.74rem;color:var(--texto3);overflow-wrap:anywhere}
+.pp-card h3{font-family:var(--font-body);font-weight:600;font-size:1.15rem;line-height:1.25;margin:0;color:var(--texto-fuerte)}
+.pp-card p{margin:0;color:var(--texto2);font-size:.92rem;flex:1}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.btn{font-size:.88rem;font-weight:700;text-decoration:none;padding:7px 12px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
-.btn.site{background:var(--c);color:var(--surface)}
-.btn.repo{color:var(--ink);border:1px solid var(--line)}
-.btn:hover{filter:brightness(1.08)} .btn.repo:hover{border-color:var(--c)}
-.card.empty{border-style:dashed;border-top-style:solid;background:transparent}
-.tag{align-self:flex-start;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;background:var(--soft);color:var(--c);padding:2px 8px;border-radius:4px;font-weight:700}
-.none{color:var(--muted);font-style:italic}
-footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
-footer .wrap{padding-block:20px}
-@media (max-width:520px){.band .wrap{flex-direction:column;align-items:flex-start;gap:14px}.logo{width:68px;height:68px}}
-body{margin:0}img{max-width:100%}
+.pp-btn{font-size:.86rem;font-weight:600;text-decoration:none;padding:7px 12px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+.pp-btn.site{background:var(--c);color:#fff}
+.pp-btn.repo{color:var(--texto);border:1px solid var(--borde2)}
+.pp-btn.site:hover{filter:brightness(1.1)} .pp-btn.repo:hover{border-color:var(--c);color:var(--c2)}
+.pp-card.empty{border-style:dashed;border-top-style:solid;background:transparent}
+.tag{align-self:flex-start;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;background:var(--soft);color:var(--c2);border:1px solid var(--mid);padding:2px 8px;border-radius:4px;font-weight:700}
+.none{color:var(--texto3);font-style:italic}
+.pp-nota{border-top:1px solid var(--borde);color:var(--texto3);font-size:.85rem}
+.pp-nota .pp-wrap{padding-block:18px}
+.pp-nota a{color:var(--texto2)}
+@media (max-width:768px){.pp-bar{top:52px}}
+@media (max-width:520px){.pp-head .pp-wrap{flex-direction:column;align-items:flex-start;gap:14px}.pp-logo{width:68px;height:68px}}
+img{max-width:100%}
 </style>
 </head>
-<body>
+<body data-page="construyendo">
 
-<header class="band">
-  <div class="wrap">
-    <img class="logo" alt="Escudo del Centro Educativo Departamental Miguela Rodríguez Araujo" src="data:image/webp;base64,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">
+<div id="batin-nav"></div>
+
+<header class="pp-head">
+  <div class="pp-wrap">
+    <img class="pp-logo" alt="Escudo del Centro Educativo Departamental Miguela Rodríguez Araujo" src="data:image/webp;base64,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">
     <div>
-      <a class="back" href="../construyendo.html#promocion">← Volver a Estoy construyendo</a>
-      <p class="inst">Centro Educativo Departamental Miguela Rodríguez Araujo · Luque</p>
+      <a class="pp-back" href="../construyendo.html#promocion">← Volver a Estoy construyendo</a>
+      <p class="pp-inst">Centro Educativo Departamental Miguela Rodríguez Araujo · Luque</p>
       <h1>Proyectos de Promoción</h1>
-      <p class="sub">Cuadernos de campo virtuales de los proyectos del Bachillerato Técnico en Informática, organizados por promoción. Cada tarjeta lleva al sitio publicado y a su repositorio.</p>
+      <p class="pp-sub">Cuadernos de campo virtuales de los proyectos del Bachillerato Técnico en Informática, organizados por promoción. Cada tarjeta lleva al sitio publicado y a su repositorio.</p>
     </div>
   </div>
 </header>
 
-<nav class="bar" aria-label="Filtros">
-  <div class="wrap">
+<nav class="pp-bar" aria-label="Filtros">
+  <div class="pp-wrap">
     <div class="chips" id="chips" role="group" aria-label="Filtrar por promoción"></div>
-    <input class="search" id="q" type="search" placeholder="Buscar proyecto…" aria-label="Buscar proyecto">
+    <input class="pp-search" id="q" type="search" placeholder="Buscar proyecto…" aria-label="Buscar proyecto">
   </div>
 </nav>
 
-<main class="wrap" id="main"></main>
+<main class="pp-wrap pp-main" id="main"></main>
 
-<footer><div class="wrap">Repositorios en <a href="https://github.com/cedmr-pytos-promo" style="color:inherit">github.com/cedmr-pytos-promo</a>. El prefijo del repositorio indica la promoción: 026- = Promoción 2026, 027- = Promoción 2027, y así sucesivamente.</div></footer>
+<div class="pp-nota"><div class="pp-wrap">Repositorios en <a href="https://github.com/cedmr-pytos-promo" target="_blank" rel="noopener">github.com/cedmr-pytos-promo</a>. El prefijo del repositorio indica la promoción: 026- = Promoción 2026, 027- = Promoción 2027, y así sucesivamente.</div></div>
 
+<div id="batin-footer"></div>
+
+<script src="../batin.js"></script>
 <script>
 const OWNER = "cedmr-pytos-promo";
 // vacio:true → el repositorio todavía no tiene un sitio publicable
@@ -150,7 +138,7 @@ const P = [
 // Promociones: se generan solas a partir de los prefijos (026 → 2026, 029 → 2029…).
 // El curso actual se calcula con el año en curso, así cada año se actualiza sin tocar nada.
 const AHORA = new Date().getFullYear();
-const COLOR = {0:"1",1:"3",2:"2"};          // 2026 rojo · 2027 azul · 2028 ámbar · y se repite
+const COLOR = {1:"naranja",2:"violeta",0:"azul"}; // 2026 naranja · 2027 violeta · 2028 azul · y se repite (familias de batin.css)
 const ESTADO = d => d<0 ? "Egresada" : d===0 ? "3er curso" : d===1 ? "2do curso" : d===2 ? "1er curso" : "Por ingresar";
 const COURSES = [...new Set(P.map(p=>p.c))].map(pref=>{
   const año = 2000 + Number(pref), d = año - AHORA;
@@ -172,18 +160,18 @@ document.getElementById("chips").innerHTML =
 function card(p){
   const site = `https://${OWNER}.github.io/${p.repo}/`;
   const repo = `https://github.com/${OWNER}/${p.repo}`;
-  if (p.vacio) return `<article class="card empty">
+  if (p.vacio) return `<article class="pp-card empty">
       <span class="slug">${esc(p.repo)}</span><h3>${esc(p.name)}</h3>
       <span class="tag">En construcción</span>
       <p>El sitio todavía no está publicado.</p>
-      <div class="actions"><a class="btn repo" href="${repo}" target="_blank" rel="noopener">Repositorio</a></div>
+      <div class="actions"><a class="pp-btn repo" href="${repo}" target="_blank" rel="noopener">Repositorio</a></div>
     </article>`;
-  return `<article class="card">
+  return `<article class="pp-card">
       <span class="slug">${esc(p.repo)}</span><h3>${esc(p.name)}</h3>
       <p>${esc(p.desc)}</p>
       <div class="actions">
-        <a class="btn site" href="${site}" target="_blank" rel="noopener">Ver sitio ↗</a>
-        <a class="btn repo" href="${repo}" target="_blank" rel="noopener">Repositorio</a>
+        <a class="pp-btn site" href="${site}" target="_blank" rel="noopener">Ver sitio ↗</a>
+        <a class="pp-btn repo" href="${repo}" target="_blank" rel="noopener">Repositorio</a>
       </div>
     </article>`;
 }
