@@ -845,6 +845,9 @@
             <p class="char-guia-texto">"El proyecto de promoción no es algo que haces al final. Es algo que construyes desde el primer año. Cuando llegas a 3ro, ya tienes la mitad del camino recorrido."</p>
           </div>
         </div>
+        <div class="flex gap-12 mt-24" style="flex-wrap:wrap">
+          <a href="ejercicios/proyectos-promocion.html" class="btn btn-naranja">📓 Cuadernos de campo de cada promoción</a>
+        </div>
       </div>
     </div>
 
@@ -1087,6 +1090,11 @@ function showTab(id, el) {
   });
   window.scrollTo({ top: document.querySelector('.tabs-nav').offsetTop - 60, behavior: 'smooth' });
 }
+// Abrir la pestaña indicada en la URL (ej.: construyendo.html#promocion)
+(function(){
+  const id = location.hash.slice(1);
+  if (id && document.getElementById('tab-' + id)) showTab(id);
+})();
 </script>
 </body>
 </html>
