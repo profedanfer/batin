@@ -1,0 +1,570 @@
+<meta charset="utf-8">
+<title>Detectives de PataFeliz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: barra de marcador fija arriba · mapa de 5 niveles · cada nivel = pista del examen → traza paso a paso → desafíos por equipos */
+:root{
+  --bg:#FBF8F5; --surface:#FFFFFF; --ink:#2A1F18; --muted:#6E5E52; --line:#E8DCD2;
+  --accent:#C85A12; --accent-soft:#FBE4D5; --accent-ink:#8A3A06;
+  --code-bg:#2B211B; --code-ink:#F6EDE6; --code-dim:#A8978A; --code-hl:#5A3416;
+  --ok:#2F7D4F; --ok-soft:#DDF1E4; --bad:#B3261E; --bad-soft:#F9DEDC;
+  --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1C1612; --surface:#261E19; --ink:#F3EAE3; --muted:#B9A89B; --line:#3D3029;
+  --accent:#F08A3E; --accent-soft:#3E2616; --accent-ink:#FFC69B;
+  --code-bg:#120D0A; --code-ink:#F6EDE6; --code-dim:#8F7F73; --code-hl:#5A3416;
+  --ok:#6FCF97; --ok-soft:#1E3A29; --bad:#F2918A; --bad-soft:#44201D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1C1612; --surface:#261E19; --ink:#F3EAE3; --muted:#B9A89B; --line:#3D3029;
+  --accent:#F08A3E; --accent-soft:#3E2616; --accent-ink:#FFC69B;
+  --code-bg:#120D0A; --code-ink:#F6EDE6; --code-dim:#8F7F73; --code-hl:#5A3416;
+  --ok:#6FCF97; --ok-soft:#1E3A29; --bad:#F2918A; --bad-soft:#44201D; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Barra de marcador */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:10px}
+.brand{display:flex;align-items:baseline;gap:10px;flex:1 1 260px;min-width:0}
+.brand h1{font-size:1.45rem;font-weight:800;color:var(--accent-ink)}
+.brand span{font-size:.85rem;color:var(--muted)}
+.teams{display:flex;flex-wrap:wrap;gap:8px}
+.team{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 12px}
+.team input{width:6.5em;border:0;background:transparent;font:inherit;font-size:.9rem;font-weight:700;color:var(--ink)}
+.team .pts{font-family:var(--f-mono);font-weight:700;font-size:1.05rem;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums}
+.team button{border:0;background:var(--accent-soft);color:var(--accent-ink);width:28px;height:28px;border-radius:50%;font-weight:700;line-height:1}
+.team.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.12);border-color:var(--accent)}}
+
+/* Mapa de niveles */
+.map{display:flex;flex-wrap:wrap;gap:8px;padding-block:18px 6px}
+.map a{flex:1 1 170px;text-decoration:none;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:var(--r);padding:10px 14px;display:flex;flex-direction:column;gap:2px}
+.map a small{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.map a b{font-family:var(--f-display);font-size:1.05rem}
+.map a[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.map a[aria-current="true"] small{color:var(--accent-ink)}
+
+section.level{padding-block:14px 60px}
+.lvl-head{display:flex;flex-wrap:wrap;align-items:end;gap:6px 20px;margin-bottom:18px}
+.lvl-head h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800}
+.lvl-head p{margin:0;color:var(--muted);flex:1 1 300px;max-width:60ch}
+
+/* Pista del examen */
+.clue{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:center;background:var(--accent-soft);border-radius:var(--r);padding:16px 20px;margin-bottom:22px}
+.clue .big{grid-row:span 2;font-family:var(--f-display);font-weight:800;font-size:3rem;color:var(--accent-ink);line-height:1;font-variant-numeric:tabular-nums}
+.clue .big small{font-size:1.1rem}
+.clue p{margin:0;min-width:0}
+.clue .q{font-size:.85rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--accent-ink)}
+
+.step-title{display:flex;align-items:center;gap:10px;margin:28px 0 10px;font-family:var(--f-display);font-size:1.3rem}
+.step-title .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--surface);font-size:.95rem}
+
+/* Traza */
+.tracer{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.tracer{grid-template-columns:1fr}}
+.code{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:14px 0;font-family:var(--f-mono);font-size:.92rem;overflow-x:auto;margin:0}
+.code .ln{display:block;padding:1px 16px 1px 0;white-space:pre;border-left:4px solid transparent}
+.code .ln::before{content:attr(data-n);display:inline-block;width:2.4em;text-align:right;margin-right:14px;color:var(--code-dim)}
+.code .ln.on{background:var(--code-hl);border-left-color:var(--accent)}
+.code .ln.err{background:var(--bad);color:#fff;border-left-color:#fff}
+.state{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.vars{display:flex;flex-wrap:wrap;gap:8px}
+.var{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-family:var(--f-mono);font-size:.95rem;background:var(--bg)}
+.var b{color:var(--accent-ink)}
+.var.changed{border-color:var(--accent);background:var(--accent-soft)}
+.note{margin:0;padding:10px 12px;border-radius:8px;background:var(--bg);border-left:4px solid var(--accent);min-height:3.2em}
+.note.err{border-left-color:var(--bad);background:var(--bad-soft)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--surface);border-radius:8px;padding:7px 16px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--accent-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.counter{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);margin-left:auto}
+.seg{display:inline-flex;border:2px solid var(--accent);border-radius:8px;overflow:hidden;margin-bottom:10px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:6px 14px;font-weight:700;color:var(--accent-ink)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+
+/* Arreglo */
+.arr{display:flex;gap:4px;flex-wrap:wrap}
+.cell{width:52px;text-align:center;border:2px solid var(--line);border-radius:6px;font-family:var(--f-mono);background:var(--bg)}
+.cell b{display:block;font-size:1.1rem;padding:4px 0}
+.cell small{display:block;font-size:.7rem;color:var(--muted);border-top:1px solid var(--line)}
+.cell.on{border-color:var(--accent);background:var(--accent-soft)}
+.cell.ghost{border-style:dashed;opacity:.7}
+.cell.ghost.on{border-color:var(--bad);background:var(--bad-soft);opacity:1}
+
+/* Matriz */
+.grid{border-collapse:separate;border-spacing:4px;font-family:var(--f-mono)}
+.grid th{font-size:.78rem;color:var(--muted);font-weight:700;padding:2px 6px}
+.grid td{width:58px;height:46px;text-align:center;font-size:1.15rem;border:2px solid var(--line);border-radius:6px;background:var(--bg)}
+.grid td.path{border-color:var(--accent);border-style:dashed}
+.grid td.on{background:var(--accent);color:var(--surface);border-style:solid}
+.grid td.done{background:var(--accent-soft);border-color:var(--accent);border-style:solid}
+.grid th.mv{color:var(--accent-ink);background:var(--accent-soft);border-radius:4px}
+
+/* Lista enlazada */
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:70px}
+.ptr{font-family:var(--f-mono);font-size:.85rem;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);border-radius:6px;padding:3px 8px}
+.node{display:flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden;font-family:var(--f-mono)}
+.node .d{padding:6px 10px;font-weight:700}
+.node .s{padding:6px 8px;border-left:2px solid var(--ink);background:var(--bg);font-size:.8rem;color:var(--muted)}
+.node.new{border-color:var(--accent);border-style:dashed}
+.node.new .s{border-left-color:var(--accent)}
+.node.lost{opacity:.4;border-style:dotted}
+.arrow{color:var(--muted);font-weight:700}
+.nullbox{font-family:var(--f-mono);color:var(--muted);font-size:.85rem}
+.lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+
+/* SQL */
+.pipe{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pipe span{font-family:var(--f-mono);font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;border:2px solid var(--line);color:var(--muted)}
+.pipe span.on{border-color:var(--accent);background:var(--accent);color:var(--surface)}
+.pipe span.done{border-color:var(--accent);color:var(--accent-ink)}
+.tbl-wrap{overflow-x:auto}
+table.t{border-collapse:collapse;font-family:var(--f-mono);font-size:.88rem;width:100%}
+table.t th{text-align:left;font-size:.75rem;color:var(--muted);border-bottom:2px solid var(--line);padding:4px 8px}
+table.t td{padding:4px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+table.t tr.gone td{text-decoration:line-through;color:var(--bad);opacity:.6}
+table.t tr.keep td{background:var(--ok-soft)}
+.data-tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:10px}
+.data-tables > div{min-width:0}
+
+/* Regla */
+.rule{margin:18px 0 0;padding:14px 18px;border-radius:var(--r);border:2px dashed var(--accent);font-size:1.05rem}
+.rule b{font-family:var(--f-display);color:var(--accent-ink)}
+
+/* Desafíos */
+.challenges{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+.ch{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ch h3{font-size:1.1rem}
+.ch .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch .meta .tag{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-ink)}
+.timer{margin-left:auto;border:2px solid var(--line);background:transparent;border-radius:999px;padding:3px 12px;font-family:var(--f-mono);font-weight:700;font-variant-numeric:tabular-nums}
+.timer.run{border-color:var(--accent);color:var(--accent-ink)}
+.timer.end{border-color:var(--bad);color:var(--bad)}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:baseline}
+.opt .k{font-family:var(--f-mono);font-weight:700;color:var(--accent-ink)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opts.done .opt:not(.right):not(.wrong){opacity:.55}
+.expl{margin:0;padding:10px 12px;border-radius:8px;background:var(--ok-soft);border-left:4px solid var(--ok)}
+.award{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.award span{font-size:.85rem;color:var(--muted)}
+.award button{border:2px solid var(--accent);background:transparent;color:var(--accent-ink);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.88rem}
+.award button.given{background:var(--accent);color:var(--surface)}
+
+/* Cierre */
+.check{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:c}
+.check li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;counter-increment:c}
+.check li::before{content:"Trampa " counter(c);display:block;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
+.check b{font-family:var(--f-display);font-size:1.15rem;display:block;margin-bottom:4px}
+.podium{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.podium div{flex:1 1 160px;border:2px solid var(--line);border-radius:var(--r);padding:12px 16px;background:var(--surface)}
+.podium div:first-child{border-color:var(--accent);background:var(--accent-soft)}
+.podium b{font-family:var(--f-display);font-size:1.4rem;display:block}
+.ticket{margin-top:22px;padding:18px;border-radius:var(--r);background:var(--accent-soft)}
+.ticket h3{margin-bottom:6px}
+.ticket ol{margin:0;padding-left:1.3em}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:520px){body{font-size:16px}.top{position:static}.teams{display:grid;grid-template-columns:1fr 1fr;width:100%}.team input{width:100%;min-width:0}.clue{grid-template-columns:1fr}.clue .big{grid-row:auto}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><h1>Detectives de PataFeliz</h1><span>Repaso del examen final · 3er curso</span></div>
+    <div class="teams" id="teams" aria-label="Marcador por equipos"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="map" id="map" aria-label="Niveles">
+    <a href="#nivel-1" data-l="1"><small>Nivel 1</small><b>El bucle tramposo</b></a>
+    <a href="#nivel-2" data-l="2"><small>Nivel 2</small><b>La agenda de turnos</b></a>
+    <a href="#nivel-3" data-l="3"><small>Nivel 3</small><b>La fila de internados</b></a>
+    <a href="#nivel-4" data-l="4"><small>Nivel 4</small><b>El embudo SQL</b></a>
+    <a href="#cierre" data-l="5"><small>Cierre</small><b>Ficha del detective</b></a>
+  </nav>
+
+  <!-- NIVEL 1 -->
+  <section class="level" id="nivel-1" data-level>
+    <div class="lvl-head"><h2>El bucle tramposo</h2><p>Leer lo que el código <strong>hace</strong>, no lo que debería hacer. Ejecutamos línea por línea, como la computadora.</p></div>
+    <div class="clue">
+      <div class="big">7<small>/12</small></div>
+      <p class="q">Pista del examen · Fila 1, ítem A2</p>
+      <p>Eligieron <strong>«Imprime 16»</strong>. El código se veía bien… pero la condición tenía un <code>&lt;=</code>. En la Fila 2, 4 de 11 dijeron «error de índice» cuando en realidad faltaba el <code>i++</code>.</p>
+    </div>
+    <div class="step-title"><span class="n">1</span>Traza paso a paso</div>
+    <div class="seg" role="group" aria-label="Caso"><button data-case="le" aria-pressed="true">Caso A: el &lt;=</button><button data-case="noinc" aria-pressed="false">Caso B: falta i++</button></div>
+    <div class="tracer" id="t1"></div>
+    <p class="rule"><b>Regla 1.</b> En cada vuelta, escribe el valor de las variables y evalúa la condición <em>con números</em>: «4 &lt;= 4 → verdadero». Si una variable nunca cambia, la condición tampoco: bucle infinito.</p>
+    <div class="step-title"><span class="n">2</span>Desafíos por equipo</div>
+    <div class="challenges" data-ch="1"></div>
+  </section>
+
+  <!-- NIVEL 2 -->
+  <section class="level" id="nivel-2" data-level hidden>
+    <div class="lvl-head"><h2>La agenda de turnos</h2><p>En <code>consultas[fila][columna]</code>, el índice que <strong>cambia</strong> en el bucle es el que se mueve. El índice <strong>fijo</strong> dice dónde estás parado.</p></div>
+    <div class="clue">
+      <div class="big">8<small>/12</small></div>
+      <p class="q">Pista del examen · Fila 1, ítem A4</p>
+      <p>Eligieron <strong>«11: total del veterinario de la fila 2»</strong>. Leyeron el <code>[2]</code> como fila, pero estaba en la posición de la columna: era el miércoles. Solo 1 de 12 acertó.</p>
+    </div>
+    <div class="step-title"><span class="n">1</span>Traza paso a paso</div>
+    <div class="seg" role="group" aria-label="Caso"><button data-case="col" aria-pressed="true">Caso A: consultas[f][2]</button><button data-case="row" aria-pressed="false">Caso B: consultas[1][c]</button></div>
+    <div class="tracer" id="t2"></div>
+    <p class="rule"><b>Regla 2.</b> Pinta en la matriz las casillas que visita el bucle. Si se mueve la <em>fila</em>, recorres una columna (un día). Si se mueve la <em>columna</em>, recorres una fila (un veterinario). El número solo no alcanza: di <em>qué representa</em>.</p>
+    <div class="step-title"><span class="n">2</span>Desafíos por equipo</div>
+    <div class="challenges" data-ch="2"></div>
+  </section>
+
+  <!-- NIVEL 3 -->
+  <section class="level" id="nivel-3" data-level hidden>
+    <div class="lvl-head"><h2>La fila de internados</h2><p>Una lista enlazada se sigue con el dedo, flecha por flecha. La última línea del código también cuenta.</p></div>
+    <div class="clue">
+      <div class="big">0<small>/12</small></div>
+      <p class="q">Pista del examen · Fila 1, ítem A7</p>
+      <p>Nadie acertó. 7 eligieron <strong>«Rocky Luna Toby»</strong>: hicieron bien la inserción al inicio, pero se olvidaron de la última línea, <code>cabeza = cabeza.sig</code>.</p>
+    </div>
+    <div class="step-title"><span class="n">1</span>Traza paso a paso</div>
+    <div class="tracer" id="t3"></div>
+    <p class="rule"><b>Regla 3.</b> Dibuja cajas y flechas en cada línea. <code>cabeza = cabeza.sig</code> mueve el puntero un lugar: el nodo que queda atrás ya no se puede alcanzar. Antes de responder, revisa que ejecutaste <em>todas</em> las líneas.</p>
+    <div class="step-title"><span class="n">2</span>Desafíos por equipo</div>
+    <div class="challenges" data-ch="3"></div>
+  </section>
+
+  <!-- NIVEL 4 -->
+  <section class="level" id="nivel-4" data-level hidden>
+    <div class="lvl-head"><h2>El embudo SQL</h2><p>Una consulta no se ejecuta en el orden en que se escribe. Los datos pasan por un embudo: cada cláusula deja pasar menos filas.</p></div>
+    <div class="clue">
+      <div class="big">8<small>/12</small></div>
+      <p class="q">Pista del examen · ítem A9</p>
+      <p>En la Fila 1 eligieron <strong>«5 filas»</strong>: ignoraron el <code>HAVING</code>. En la Fila 2, 5 de 11 sumaron todo: ignoraron el <code>WHERE</code>. Solo 4 de 23 acertaron.</p>
+    </div>
+    <div class="data-tables" id="sqldata"></div>
+    <div class="step-title"><span class="n">1</span>Traza paso a paso</div>
+    <div class="seg" role="group" aria-label="Caso"><button data-case="having" aria-pressed="true">Caso A: HAVING</button><button data-case="where" aria-pressed="false">Caso B: WHERE</button></div>
+    <div class="tracer" id="t4"></div>
+    <p class="rule"><b>Regla 4.</b> Orden real: <code>FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT</code>. <strong>WHERE</strong> tacha <em>filas</em> antes de agrupar. <strong>HAVING</strong> tacha <em>grupos</em> después de agrupar.</p>
+    <div class="step-title"><span class="n">2</span>Desafíos por equipo</div>
+    <div class="challenges" data-ch="4"></div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="level" id="cierre" data-level hidden>
+    <div class="lvl-head"><h2>Ficha del detective</h2><p>Antes de marcar una respuesta en el retest, revisa estas cuatro trampas.</p></div>
+    <ul class="check">
+      <li><b>¿Termina el bucle?</b>Evalúa la condición con números en cada vuelta. ¿La variable cambia? ¿Llega al último índice válido o se pasa?</li>
+      <li><b>¿Qué índice se mueve?</b>En <code>m[f][c]</code>, pinta las casillas. Fila fija = un veterinario; columna fija = un día.</li>
+      <li><b>¿Leí la última línea?</b>En listas, dibuja cajas y flechas línea por línea hasta el final del código.</li>
+      <li><b>¿Dónde está el filtro?</b>WHERE tacha filas antes de agrupar; HAVING tacha grupos después.</li>
+    </ul>
+    <div class="step-title"><span class="n">★</span>Marcador final</div>
+    <div class="podium" id="podium"></div>
+    <div class="ticket">
+      <h3>Ticket de salida (en tu cuaderno)</h3>
+      <ol>
+        <li>¿En cuál de las cuatro trampas caíste en el examen? ¿Por qué crees que te pasó?</li>
+        <li>Inventa un código corto (3 o 4 líneas) que tenga esa misma trampa, para que un compañero lo resuelva.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ---------- Equipos ---------- */
+let teams = [{n:'Equipo 1',p:0},{n:'Equipo 2',p:0},{n:'Equipo 3',p:0},{n:'Equipo 4',p:0}];
+try { const s = JSON.parse(localStorage.getItem('pf-teams')); if (Array.isArray(s) && s.length) teams = s; } catch (e) {}
+const save = () => { try { localStorage.setItem('pf-teams', JSON.stringify(teams)); } catch (e) {} };
+function renderTeams(){
+  const box = $('#teams'); box.innerHTML = '';
+  teams.forEach((t, i) => {
+    const d = document.createElement('div'); d.className = 'team'; d.dataset.i = i;
+    d.innerHTML = `<input id="team-${i}" aria-label="Nombre del equipo ${i+1}" value="${esc(t.n)}"><button aria-label="Restar punto">−</button><span class="pts">${t.p}</span><button aria-label="Sumar punto">+</button>`;
+    d.querySelector('input').addEventListener('input', e => { t.n = e.target.value; save(); $$('.award').forEach(renderAward); renderPodium(); });
+    const [minus, plus] = d.querySelectorAll('button');
+    minus.onclick = () => addPts(i, -1); plus.onclick = () => addPts(i, 1);
+    box.appendChild(d);
+  });
+  renderPodium();
+}
+function addPts(i, v){
+  teams[i].p = Math.max(0, teams[i].p + v); save();
+  const el = $(`.team[data-i="${i}"]`); el.querySelector('.pts').textContent = teams[i].p;
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); renderPodium();
+}
+function renderPodium(){
+  const p = $('#podium'); if (!p) return;
+  p.innerHTML = [...teams].sort((a,b) => b.p - a.p).map(t => `<div><span class="lbl">${t.p} puntos</span><b>${esc(t.n)}</b></div>`).join('');
+}
+
+/* ---------- Navegación ---------- */
+function show(){
+  const h = location.hash.slice(1) || 'nivel-1';
+  const target = $$('[data-level]').find(s => s.id === h) ? h : 'nivel-1';
+  $$('[data-level]').forEach(s => s.hidden = s.id !== target);
+  $$('#map a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + target));
+}
+window.addEventListener('hashchange', () => { show(); window.scrollTo({top:0}); });
+
+/* ---------- Motor de traza ---------- */
+function tracer(root, code, steps, renderState){
+  let k = 0;
+  root.innerHTML = `<pre class="code">${code.map((l,i)=>`<span class="ln" data-n="${i+1}">${esc(l)}</span>`).join('')}</pre>
+    <div class="state"><div class="st"></div><p class="note"></p>
+    <div class="controls"><button class="btn ghost" data-a="reset">Reiniciar</button><button class="btn ghost" data-a="prev">◀ Anterior</button><button class="btn" data-a="next">Siguiente paso ▶</button><span class="counter"></span></div></div>`;
+  const lines = $$('.ln', root), note = $('.note', root), st = $('.st', root);
+  function draw(){
+    const s = steps[k], prev = steps[k-1];
+    lines.forEach((l,i) => { l.classList.toggle('on', s.line === i && !s.err); l.classList.toggle('err', s.line === i && !!s.err); });
+    note.innerHTML = s.note; note.className = 'note' + (s.err ? ' err' : s.ok ? ' ok' : '');
+    st.innerHTML = renderState(s, prev);
+    $('[data-a="prev"]', root).disabled = k === 0;
+    $('[data-a="next"]', root).disabled = k === steps.length - 1;
+    $('.counter', root).textContent = `paso ${k+1} de ${steps.length}`;
+  }
+  root.onclick = e => { const a = e.target.closest('[data-a]')?.dataset.a; if (!a) return;
+    if (a === 'next' && k < steps.length-1) k++; if (a === 'prev' && k > 0) k--; if (a === 'reset') k = 0; draw(); };
+  draw();
+}
+const varsHTML = (s, prev, keys) => `<div class="vars">${keys.map(([k,label]) => {
+  const v = s[k]; if (v === undefined) return '';
+  const ch = prev && prev[k] !== v; return `<span class="var${ch?' changed':''}">${label||k} = <b>${esc(v)}</b></span>`; }).join('')}</div>`;
+
+/* ---------- Nivel 1: bucles ---------- */
+const turnos = [3,5,2,6];
+function stepsLE(){
+  const S = []; let i, total;
+  S.push({line:0, note:'Se crea el arreglo. Sus índices válidos son 0, 1, 2 y 3 (length = 4).'});
+  i = 0; total = 0; S.push({line:1, i, total, note:'i y total empiezan en 0.'});
+  while (true){
+    const c = i <= turnos.length;
+    S.push({line:2, i, total, cond:`${i} <= 4 → ${c}`, note: i === 4 ? '<strong>¡Ojo!</strong> 4 &lt;= 4 es verdadero: el bucle entra una vez más.' : `Condición: ${i} &lt;= 4 → verdadero. Entra al bucle.`});
+    if (i >= turnos.length){ S.push({line:3, i, total, idx:i, err:true, note:`Intenta leer <code>turnos[4]</code>, que no existe. Java se detiene con <strong>ArrayIndexOutOfBoundsException</strong>. Nunca llega a imprimir.`}); break; }
+    total += turnos[i]; S.push({line:3, i, total, idx:i, note:`total = total + turnos[${i}] → suma ${turnos[i]}.`});
+    i++; S.push({line:4, i, total, note:`i pasa a ${i}.`});
+  }
+  return S;
+}
+function stepsNoInc(){
+  const S = []; let i = 0, total = 0;
+  S.push({line:0, note:'Mismo arreglo. Ahora la condición usa &lt; (correcto)…'});
+  S.push({line:1, i, total, note:'i y total empiezan en 0.'});
+  for (let v = 1; v <= 4; v++){
+    S.push({line:2, i, total, cond:`${i} < 4 → true`, note: v === 1 ? 'Condición: 0 &lt; 4 → verdadero. Entra.' : `Vuelta ${v}: i sigue valiendo <strong>0</strong>. La condición vuelve a ser verdadera.`});
+    total += turnos[i]; S.push({line:3, i, total, idx:i, note:`total suma turnos[0] = 3 otra vez. ¿Alguna línea cambia i?`});
+  }
+  S.push({line:2, i, total, cond:'0 < 4 → true (siempre)', err:true, note:'Nadie cambia i: la condición <strong>nunca</strong> será falsa. Es un <strong>bucle infinito</strong> y el println nunca se ejecuta.'});
+  return S;
+}
+const codeLE = ['int[] turnos = {3, 5, 2, 6};','int i = 0, total = 0;','while (i <= turnos.length) {','    total += turnos[i];','    i++;','}','System.out.println(total);'];
+const codeNoInc = ['int[] turnos = {3, 5, 2, 6};','int i = 0, total = 0;','while (i < turnos.length) {','    total += turnos[i];','}','System.out.println(total);'];
+function stateArr(s, prev){
+  const cells = turnos.map((v,j) => `<div class="cell${s.idx===j?' on':''}"><b>${v}</b><small>[${j}]</small></div>`).join('')
+    + `<div class="cell ghost${s.idx===4?' on':''}"><b>?</b><small>[4]</small></div>`;
+  return `<div class="lbl">turnos</div><div class="arr">${cells}</div>${varsHTML(s, prev, [['i'],['total'],['cond','condición']])}`;
+}
+function case1(c){ const r = $('#t1'); c === 'le' ? tracer(r, codeLE, stepsLE(), stateArr) : tracer(r, codeNoInc, stepsNoInc(), stateArr); }
+
+/* ---------- Nivel 2: matriz ---------- */
+const M = [[4,2,5],[3,6,1],[2,2,7]], DIAS = ['lun','mar','mié'];
+function stepsMat(mode){
+  const S = []; let x = 0;
+  S.push({line:0, x:undefined, cells:[], note:'Filas = veterinarios (0, 1, 2). Columnas = días (lunes, martes, miércoles).'});
+  S.push({line:5, x, cells:[], note:'x empieza en 0.'});
+  const visited = [];
+  for (let t = 0; t < 3; t++){
+    const f = mode === 'col' ? t : 1, c = mode === 'col' ? 2 : t;
+    S.push({line:6, x, cells:[...visited], cur:[f,c], loopVar: mode==='col' ? `f = ${t}` : `c = ${t}`, note: mode === 'col' ? `f = ${t}. La columna sigue fija en 2.` : `c = ${t}. La fila sigue fija en 1.`});
+    x += M[f][c]; visited.push([f,c]);
+    S.push({line:7, x, cells:[...visited], cur:[f,c], loopVar: mode==='col' ? `f = ${t}` : `c = ${t}`, note:`x += consultas[${f}][${c}] → suma ${M[f][c]}.`});
+  }
+  S.push({line:9, x, cells:[...visited], ok:true, note: mode === 'col'
+    ? 'Imprime <strong>13</strong>: el total de consultas del <strong>miércoles</strong> (una columna). No es el veterinario 2.'
+    : 'Imprime <strong>10</strong>: el total del <strong>veterinario 1</strong> (una fila). Ojo: la columna del martes también suma 10. El número solo no alcanza.'});
+  return S;
+}
+const codeMat = mode => ['int[][] consultas = {','    {4, 2, 5},','    {3, 6, 1},','    {2, 2, 7}','};','int x = 0;',
+  mode === 'col' ? 'for (int f = 0; f < 3; f++) {' : 'for (int c = 0; c < 3; c++) {',
+  mode === 'col' ? '    x += consultas[f][2];' : '    x += consultas[1][c];','}','System.out.println(x);'];
+function stateMat(mode){ return (s, prev) => {
+  const inPath = (f,c) => mode === 'col' ? c === 2 : f === 1;
+  const has = (arr,f,c) => arr && arr.some(([a,b]) => a===f && b===c);
+  let h = `<div class="tbl-wrap"><table class="grid"><tr><th></th>${DIAS.map((d,c)=>`<th class="${mode==='row'&&s.line>=6?'mv':''}">${d} [${c}]</th>`).join('')}</tr>`;
+  M.forEach((row,f) => { h += `<tr><th class="${mode==='col'&&s.line>=6?'mv':''}">vet [${f}]</th>` + row.map((v,c) => {
+    const cur = s.cur && s.cur[0]===f && s.cur[1]===c && s.line===7;
+    const cls = cur ? 'on' : has(s.cells,f,c) ? 'done' : (s.line>=5 && inPath(f,c)) ? 'path' : '';
+    return `<td class="${cls}">${v}</td>`; }).join('') + '</tr>'; });
+  h += '</table></div>';
+  return h + varsHTML(s, prev, [['loopVar','índice que se mueve'],['x']]);
+};}
+function case2(c){ tracer($('#t2'), codeMat(c), stepsMat(c), stateMat(c)); }
+
+/* ---------- Nivel 3: lista enlazada ---------- */
+const codeList = ['Nodo cabeza = null;','String[] llegadas = {"Toby", "Luna", "Rocky"};','for (String m : llegadas) {','    Nodo nuevo = new Nodo(m);','    nuevo.sig = cabeza;','    cabeza = nuevo;','}','cabeza = cabeza.sig;','// imprimir desde cabeza'];
+function stepsList(){
+  const S = []; const nodes = {}; let cabeza = null, nuevo = null;
+  const snap = (line, note, extra={}) => S.push({line, note, nodes: JSON.parse(JSON.stringify(nodes)), cabeza, nuevo, ...extra});
+  snap(0, 'La lista está vacía: cabeza apunta a null.');
+  snap(1, 'Llegan Toby, Luna y Rocky, en ese orden.');
+  for (const m of ['Toby','Luna','Rocky']){
+    snap(2, `Vuelta con m = "${m}".`);
+    nodes[m] = {d:m, sig:null}; nuevo = m; snap(3, `Se crea el nodo ${m}, todavía suelto.`);
+    nodes[m].sig = cabeza; snap(4, `${m}.sig apunta a lo que apunta cabeza${cabeza ? ` (${cabeza})` : ' (null)'}.`);
+    cabeza = m; snap(5, `cabeza ahora apunta a ${m}: <strong>se insertó al inicio</strong>.`);
+    nuevo = null;
+  }
+  snap(6, 'Terminó el for. La lista es Rocky → Luna → Toby. <strong>¿Ya terminamos?</strong> Mira la línea 8.');
+  cabeza = nodes[cabeza].sig; snap(7, 'cabeza = cabeza.sig: el puntero avanza a Luna. <strong>Rocky queda perdido</strong>: ninguna flecha llega a él.');
+  snap(8, 'Se imprime desde cabeza: <strong>Luna Toby</strong>.', {ok:true});
+  return S;
+}
+function stateList(s){
+  const reach = []; let p = s.cabeza; while (p){ reach.push(p); p = s.nodes[p].sig; }
+  const nodeHTML = (n, cls='') => `<span class="node ${cls}"><span class="d">${n}</span><span class="s">sig</span></span>`;
+  let h = `<div class="lbl">Memoria</div><div class="chain"><span class="ptr">cabeza</span><span class="arrow">→</span>`;
+  h += reach.length ? reach.map(n => nodeHTML(n)).join('<span class="arrow">→</span>') + '<span class="arrow">→</span><span class="nullbox">null</span>' : '<span class="nullbox">null</span>';
+  h += '</div>';
+  if (s.nuevo && !reach.includes(s.nuevo)){
+    const tail = s.nodes[s.nuevo].sig;
+    h += `<div class="chain"><span class="ptr">nuevo</span><span class="arrow">→</span>${nodeHTML(s.nuevo,'new')}<span class="arrow">→</span><span class="nullbox">${tail ? tail + ' (inicio de la lista)' : 'null'}</span></div>`;
+  }
+  const lost = Object.keys(s.nodes).filter(n => !reach.includes(n) && n !== s.nuevo);
+  if (lost.length) h += `<div class="chain"><span class="lbl">Sin acceso:</span>${lost.map(n => nodeHTML(n,'lost')).join('')}</div>`;
+  return h;
+}
+
+/* ---------- Nivel 4: SQL ---------- */
+const MASC = [[1,'Toby','Perro'],[2,'Luna','Gato'],[3,'Rocky','Perro'],[4,'Mishi','Gato'],[5,'Max','Perro']];
+const CONS = [[1,1,1,150000],[2,1,2,80000],[3,2,1,120000],[4,3,1,200000],[5,4,2,90000],[6,1,1,60000],[7,2,2,100000],[8,5,2,70000]];
+const fmt = n => n.toLocaleString('es-PY');
+const tableHTML = (head, rows, cls = () => '') => `<div class="tbl-wrap"><table class="t"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${cls(r,i)}">${r.map(c=>`<td>${typeof c==='number'&&c>999?fmt(c):esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+$('#sqldata').innerHTML = `<div><div class="lbl">MASCOTAS</div>${tableHTML(['id_mascota','nombre','especie'], MASC)}</div>
+  <div><div class="lbl">CONSULTAS</div>${tableHTML(['id_consulta','id_mascota','id_vet','costo'], CONS)}</div>`;
+const joined = CONS.map(([id,im,iv,costo]) => { const m = MASC.find(x => x[0]===im); return {nombre:m[1], especie:m[2], vet:iv, costo}; });
+const STAGES = ['FROM / JOIN','WHERE','GROUP BY','HAVING','SELECT'];
+const SQL = {
+  having: {code:['SELECT m.nombre, COUNT(*) AS total','FROM MASCOTAS m','JOIN CONSULTAS c ON m.id_mascota = c.id_mascota','GROUP BY m.nombre','HAVING COUNT(*) >= 2;'],
+    key:'nombre', agg:'count', where:null, having: g => g.v >= 2, aggLabel:'COUNT(*)'},
+  where: {code:['SELECT m.especie, SUM(c.costo) AS total','FROM MASCOTAS m','JOIN CONSULTAS c ON m.id_mascota = c.id_mascota','WHERE c.costo > 100000','GROUP BY m.especie;'],
+    key:'especie', agg:'sum', where: r => r.costo > 100000, having:null, aggLabel:'SUM(costo)'}
+};
+function stepsSQL(q){
+  const Q = SQL[q], S = [];
+  const kept = joined.filter(r => !Q.where || Q.where(r));
+  const groups = []; kept.forEach(r => { let g = groups.find(x => x.k === r[Q.key]); if (!g){ g = {k:r[Q.key], v:0}; groups.push(g); } g.v += Q.agg === 'count' ? 1 : r.costo; });
+  const lineOf = {0:[1,2], 1:3, 2:3, 3:4, 4:0};
+  S.push({stage:0, line: q==='having'?2:2, view:'join', note:'FROM + JOIN: se unen las tablas. Quedan <strong>8 filas</strong>, una por consulta.'});
+  S.push({stage:1, line: q==='where'?3:-1, view:'where', note: Q.where ? 'WHERE costo &gt; 100000: se tachan <strong>filas</strong> antes de agrupar. Solo pasan 3. (El 100000 no pasa: es &gt; y no &gt;=.)' : 'Esta consulta no tiene WHERE: pasan las 8 filas.'});
+  S.push({stage:2, line: q==='having'?3:4, view:'group', groups, note:`GROUP BY ${Q.key}: se forman ${groups.length} grupos y se calcula ${Q.aggLabel} de cada uno.`});
+  S.push({stage:3, line: q==='having'?4:-1, view:'having', groups, note: Q.having ? 'HAVING COUNT(*) &gt;= 2: se tachan <strong>grupos</strong>. Solo quedan Toby y Luna. <strong>Aquí cayeron los 8 que eligieron «5 filas»</strong>.' : 'No hay HAVING: todos los grupos pasan.'});
+  const final = groups.filter(g => !Q.having || Q.having(g));
+  S.push({stage:4, line:0, view:'final', groups:final, ok:true, note:`Resultado: <strong>${final.map(g=>`${g.k} ${fmt(g.v)}`).join(' y ')}</strong>.`});
+  return S.map(s => ({...s, q}));
+}
+function stateSQL(s){
+  const Q = SQL[s.q];
+  let h = `<div class="pipe">${STAGES.map((n,i)=>`<span class="${i===s.stage?'on':i<s.stage?'done':''}">${n}</span>`).join('')}</div>`;
+  if (s.view === 'join' || s.view === 'where'){
+    h += tableHTML(['nombre','especie','id_vet','costo'], joined.map(r => [r.nombre, r.especie, r.vet, r.costo]),
+      (r,i) => s.view === 'where' && Q.where ? (Q.where(joined[i]) ? 'keep' : 'gone') : '');
+  } else {
+    h += tableHTML([Q.key, Q.aggLabel], s.groups.map(g => [g.k, g.v]),
+      (r,i) => s.view === 'having' && Q.having ? (Q.having(s.groups[i]) ? 'keep' : 'gone') : s.view === 'final' ? 'keep' : '');
+  }
+  return h;
+}
+function case4(c){ tracer($('#t4'), SQL[c].code, stepsSQL(c), stateSQL); }
+
+/* ---------- Desafíos ---------- */
+const CH = {
+ 1: [
+  {t:'Las dosis de la mañana', code:'int[] dosis = {2, 4, 6};\nint s = 0;\nfor (int i = 1; i < dosis.length; i++) {\n    s += dosis[i];\n}\nSystem.out.println(s);',
+   q:'¿Qué imprime?', o:['12','10','6','Error de índice'], c:1, e:'i empieza en 1: se salta dosis[0]. Suma 4 + 6 = 10. La condición i &lt; 3 se detiene a tiempo, así que no hay error.'},
+  {t:'La cuenta regresiva', code:'int i = 10;\nwhile (i > 0) {\n    i -= 3;\n}\nSystem.out.println(i);',
+   q:'¿Qué imprime?', o:['1','0','-2','Bucle infinito'], c:2, e:'i vale 10, 7, 4, 1 y luego -2. Con -2 la condición -2 &gt; 0 es falsa y sale. No es infinito: i sí cambia en cada vuelta.'}
+ ],
+ 2: [
+  {t:'Planilla del hospital', code:'int[][] m = {\n    {1, 2, 3},\n    {4, 5, 6}\n};\nint x = 0;\nfor (int c = 0; c < 3; c++) {\n    x += m[0][c];\n}', q:'¿Cuánto vale x y qué representa?',
+   o:['6: toda la fila 0','5: toda la columna 0','6: toda la columna 0','15: toda la fila 1'], c:0, e:'La fila está fija en 0 y se mueve c: recorre la fila 0 completa. 1 + 2 + 3 = 6.'},
+  {t:'Planilla del hospital (2)', code:'int[][] m = {\n    {1, 2, 3},\n    {4, 5, 6}\n};\nint x = 0;\nfor (int f = 0; f < 2; f++) {\n    x += m[f][1];\n}', q:'¿Cuánto vale x y qué representa?',
+   o:['15: toda la fila 1','7: toda la columna 1','7: toda la fila 1','5: el elemento m[1][1]'], c:1, e:'La columna está fija en 1 y se mueve f: recorre la columna 1. 2 + 5 = 7.'}
+ ],
+ 3: [
+  {t:'Alta de Luna', code:'// cabeza: Toby -> Luna -> Rocky\ncabeza.sig = cabeza.sig.sig;', q:'¿Qué queda en la lista?',
+   o:['Luna Rocky','Toby Rocky','Toby Luna','Rocky'], c:1, e:'cabeza.sig.sig es Rocky. Toby pasa a apuntar a Rocky y Luna queda fuera de la lista.'},
+  {t:'Llega Max', code:'// cabeza: Toby -> Luna\nNodo n = new Nodo("Max");\nn.sig = cabeza.sig;\ncabeza.sig = n;', q:'¿Qué queda en la lista?',
+   o:['Max Toby Luna','Toby Luna Max','Toby Max Luna','Toby Max'], c:2, e:'Max apunta a Luna y después Toby apunta a Max: Max queda insertado entre Toby y Luna.'}
+ ],
+ 4: [
+  {t:'Especies frecuentes', code:'SELECT especie, COUNT(*)\nFROM MASCOTAS\nGROUP BY especie\nHAVING COUNT(*) > 2;', q:'Con la tabla MASCOTAS de arriba, ¿qué devuelve?',
+   o:['2 filas: Perro 3 y Gato 2','1 fila: Perro 3','5 filas, una por mascota','Error: no se puede usar HAVING sin WHERE'], c:1, e:'Se agrupa: Perro 3, Gato 2. HAVING tacha los grupos con 2 o menos: queda solo Perro.'},
+  {t:'La agenda del veterinario 2', code:'SELECT m.nombre, SUM(c.costo)\nFROM MASCOTAS m\nJOIN CONSULTAS c ON m.id_mascota = c.id_mascota\nWHERE c.id_veterinario = 2\nGROUP BY m.nombre;', q:'Con las tablas de arriba, ¿qué devuelve?',
+   o:['5 filas, todas las mascotas','1 fila: total 340.000','4 filas: Toby 80.000, Luna 100.000, Mishi 90.000 y Max 70.000','2 filas: Toby 80.000 y Luna 100.000'], c:2, e:'WHERE deja solo las consultas del veterinario 2 (filas 2, 5, 7 y 8). Después se agrupa por mascota: Rocky no aparece porque no tuvo consultas con ese veterinario.'}
+ ]
+};
+function renderAward(box){
+  const given = box.dataset.given ? box.dataset.given.split(',').map(Number) : [];
+  box.innerHTML = '<span>Punto para:</span>' + teams.map((t,i) => `<button data-t="${i}" class="${given.includes(i)?'given':''}" aria-pressed="${given.includes(i)}">${esc(t.n)}</button>`).join('');
+}
+function buildChallenges(){
+  $$('[data-ch]').forEach(wrap => {
+    CH[wrap.dataset.ch].forEach((c, n) => {
+      const id = `ch-${wrap.dataset.ch}-${n}`;
+      const el = document.createElement('article'); el.className = 'ch'; el.id = id;
+      el.innerHTML = `<div class="meta"><span class="tag">Desafío ${n+1}</span><h3>${c.t}</h3><button class="timer" aria-label="Iniciar 60 segundos">60 s</button></div>
+        <pre class="code">${c.code.split('\n').map((l,i)=>`<span class="ln" data-n="${i+1}">${esc(l)}</span>`).join('')}</pre>
+        <p style="margin:0"><strong>${c.q}</strong> Cada equipo anota su respuesta en el cuaderno antes de ver las opciones resueltas.</p>
+        <div class="opts">${c.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'abcd'[i]})</span><span>${esc(o)}</span></button>`).join('')}</div>
+        <p class="expl" hidden>${c.e}</p><div class="award" hidden></div>`;
+      const opts = $('.opts', el), expl = $('.expl', el), award = $('.award', el);
+      opts.onclick = e => { const b = e.target.closest('.opt'); if (!b || opts.classList.contains('done')) return;
+        const i = +b.dataset.i; opts.classList.add('done');
+        $$('.opt', opts)[c.c].classList.add('right'); if (i !== c.c) b.classList.add('wrong');
+        expl.hidden = false; award.hidden = false; renderAward(award); };
+      award.onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; const t = +b.dataset.t;
+        const g = award.dataset.given ? award.dataset.given.split(',').map(Number) : [];
+        if (g.includes(t)){ g.splice(g.indexOf(t),1); addPts(t,-1); } else { g.push(t); addPts(t,1); }
+        award.dataset.given = g.join(','); renderAward(award); };
+      const tm = $('.timer', el); let iv = null;
+      tm.onclick = () => { if (iv){ clearInterval(iv); iv = null; tm.textContent = '60 s'; tm.className = 'timer'; return; }
+        let s = 60; tm.className = 'timer run'; tm.textContent = s + ' s';
+        iv = setInterval(() => { s--; tm.textContent = s + ' s'; if (s <= 0){ clearInterval(iv); iv = null; tm.textContent = '¡Tiempo!'; tm.className = 'timer end'; } }, 1000); };
+      wrap.appendChild(el);
+    });
+  });
+}
+
+/* ---------- Selectores de caso ---------- */
+function seg(levelId, fn){
+  const box = $(`#${levelId} .seg`); if (!box) return;
+  box.onclick = e => { const b = e.target.closest('[data-case]'); if (!b) return;
+    $$('button', box).forEach(x => x.setAttribute('aria-pressed', x === b)); fn(b.dataset.case); };
+}
+
+renderTeams(); buildChallenges();
+case1('le'); seg('nivel-1', case1);
+case2('col'); seg('nivel-2', case2);
+tracer($('#t3'), codeList, stepsList(), stateList);
+case4('having'); seg('nivel-4', case4);
+show();
+})();
+</script>
