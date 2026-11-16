@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Juego de práctica de Python para 2do BATIN: return, listas, cadenas, contador y acumulador, if–elif y depuración.">
+<title>Misión Depuración BIT · 2do BATIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="mision-depuracion.css">
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===================== BANCO DE RETOS =====================
+   Tipos: mc (una opción), multi (marca todas), in (escribir), trace (seguir variables), line (tocar la línea con el error)
+   Cada opción incorrecta tiene su propia retroalimentación, pensada para el error típico que la elige. */
+const MISIONES = [
+{ id:'m1', ico:'↩️', crit:true, titulo:'El misterio del return',
+  desc:'Devolver no es mostrar ni repetir. La zona donde más se tropezó en la prueba.',
+  retos:[
+  {t:'mc', q:'¿Qué muestra este programa?', code:
+`def doble(n):
+    return n * 2
+
+r = doble(5)
+print(r)`,
+   opts:[{x:'10',ok:1},{x:'5',fb:'5 es lo que entra a la función. return entrega el resultado de n * 2.'},{x:'None',fb:'Esta función sí tiene return, así que entrega un valor: 5 * 2.'},{x:'55',fb:'n * 2 con un número es multiplicación, no repetición de texto.'}],
+   hint:'Sigue el viaje del 5: entra como n, se calcula n * 2 y return lo envía de vuelta a r.',
+   exp:'return envía el resultado (10) al lugar donde se llamó la función, y ahí se guarda en r.'},
+
+  {t:'mc', q:'Esta función no tiene return. ¿Qué muestra el programa?', code:
+`def doble(n):
+    resultado = n * 2
+
+x = doble(5)
+print(x)`,
+   opts:[{x:'10',fb:'La cuenta sí se hizo, pero quedó guardada dentro de la función. Como no hay return, nadie se la lleva afuera.'},{x:'None',ok:1},{x:'Error',fb:'No hay error: Python ejecuta todo sin problemas. Solo que la función no devuelve nada, y "nada" en Python es None.'},{x:'5',fb:'x no recibe el 5 que entró: recibe lo que la función devuelve, y aquí no devuelve nada.'}],
+   hint:'Pregúntate: ¿qué línea entrega algo hacia afuera de la función?',
+   exp:'Una función sin return devuelve None. La variable resultado existe solo dentro de la función y se pierde al terminar.',
+   who:'gatiel'},
+
+  {t:'mc', q:'¿Qué aparece en la pantalla al ejecutar este código?', code:
+`def saludar():
+    print("Hola")
+
+x = saludar()
+print(x)`,
+   opts:[{x:'Hola',fb:'Falta una línea: el segundo print muestra x, y x guarda lo que devolvió saludar().'},{x:'Hola y debajo None',ok:1},{x:'None',fb:'El print de adentro de la función sí se ejecuta: primero aparece Hola.'},{x:'Hola y debajo Hola',fb:'print muestra, pero no devuelve. x no recibe "Hola", recibe None.'}],
+   hint:'Hay dos print. Uno está dentro de la función y otro afuera. ¿Qué muestra cada uno?',
+   exp:'print("Hola") muestra el texto, pero la función no tiene return, así que x vale None. Mostrar no es lo mismo que devolver.'},
+
+  {t:'mc', q:'¿Cuál es la diferencia entre print y return?',
+   opts:[{x:'print muestra en pantalla; return entrega un valor',ok:1},{x:'return muestra en pantalla; print entrega un valor',fb:'Es al revés. print es para que lo vea una persona; return es para que lo use el programa.'},{x:'Son iguales, solo cambia cómo se escriben',fb:'No son iguales: con print el valor se ve pero no se puede guardar en una variable.'},{x:'return repite la función hasta cumplir la meta',fb:'Este fue el error más común en la prueba. return no repite: termina la función y entrega un valor. Para repetir se usan for o while.'}],
+   hint:'Piensa en quién recibe el resultado: ¿una persona mirando la pantalla, o el programa?',
+   exp:'print es para las personas (muestra). return es para el programa (entrega un valor que se puede guardar y usar).'},
+
+  {t:'in', q:'Escribe la palabra que falta para que total reciba 5.', code:
+`def sumar(a, b):
+    ______ a + b
+
+total = sumar(2, 3)`,
+   ans:['return'], wrong:{'print':'Con print el 5 se vería en pantalla, pero total quedaría en None. Para entregar el valor se usa otra palabra.','def':'def ya está en la primera línea: sirve para definir la función, no para entregar el resultado.'},
+   hint:'Necesitas la palabra que envía el resultado de vuelta a quien llamó la función.',
+   exp:'return a + b entrega el 5, que se guarda en total.'},
+
+  {t:'trace', q:'Sigue el valor de v en cada paso.', code:
+`def restar_vida(vidas):
+    vidas = vidas - 1
+    return vidas
+
+v = 3
+v = restar_vida(v)
+v = restar_vida(v)
+print(v)`,
+   fields:[{l:'v después del 1er llamado',a:'2'},{l:'v después del 2° llamado',a:'1'},{l:'¿Qué muestra print?',a:'1'}],
+   hint:'Cada llamado recibe el valor actual de v, le resta 1 y lo devuelve. Ese valor se vuelve a guardar en v.',
+   exp:'3 → 2 → 1. Como la función devuelve el valor y se guarda otra vez en v, el cambio se acumula.'},
+
+  {t:'mc', q:'¿Qué muestra este programa?', code:
+`def evaluar(puntaje):
+    if puntaje >= 10:
+        return "gano"
+    return "sigue"
+
+print(evaluar(12))`,
+   opts:[{x:'gano y debajo sigue',fb:'Cuando se ejecuta un return, la función termina en ese momento. La última línea no llega a ejecutarse.'},{x:'sigue',fb:'12 >= 10 es verdadero, así que se ejecuta el primer return.'},{x:'gano',ok:1},{x:'None',fb:'Ambos caminos tienen return, así que la función siempre devuelve un texto.'}],
+   hint:'¿12 es mayor o igual que 10? ¿Qué pasa con la función cuando se ejecuta un return?',
+   exp:'return termina la función inmediatamente. Por eso "sigue" no se devuelve cuando el puntaje llega a 10.',
+   who:'gatiel'},
+
+  {t:'multi', q:'Marca TODAS las afirmaciones verdaderas sobre return.',
+   opts:[{x:'Entrega un valor a quien llamó la función',ok:1},{x:'Repite la función hasta cumplir la meta'},{x:'Termina la ejecución de la función',ok:1},{x:'Muestra el valor en la pantalla del juego'},{x:'Sin return, la función devuelve None',ok:1}],
+   hint:'Hay tres verdaderas. Las falsas confunden return con print o con un ciclo.',
+   exp:'return entrega un valor y termina la función. Sin return, se devuelve None. No muestra (eso hace print) ni repite (eso hacen for y while).'}
+]},
+
+{ id:'m2', ico:'🪙', crit:true, titulo:'Listas al rescate',
+  desc:'append, índices desde 0, el -1 y el famoso "fuera de rango".',
+  retos:[
+  {t:'in', q:'Escribe el método que agrega una moneda al FINAL de la lista.', code:
+`monedas = []
+monedas.______(5)`,
+   ans:['append'], wrong:{'add':'add existe, pero para otro tipo de dato (conjuntos). En las listas se usa append.','insert':'insert existe, pero pide también la posición. Para agregar al final se usa otro método.','print':'print muestra, no agrega nada a la lista.'},
+   hint:'En inglés, "añadir al final" se dice "append".',
+   exp:'lista.append(valor) agrega el valor al final de la lista. Es el método más usado para ir guardando datos.'},
+
+  {t:'mc', q:'¿Qué muestra print?', code:
+`monedas = [10, 20]
+monedas.append(30)
+print(monedas)`,
+   opts:[{x:'[30, 10, 20]',fb:'append agrega al final, no al principio.'},{x:'[10, 20, 30]',ok:1},{x:'[10, 20]',fb:'append sí modifica la lista: después de esa línea tiene un elemento más.'},{x:'[10, 50]',fb:'append no suma números: agrega un elemento nuevo.'}],
+   hint:'append = agregar al final.',
+   exp:'append(30) agrega el 30 al final: [10, 20, 30].'},
+
+  {t:'mc', q:'¿Qué valor muestra print?', code:
+`colores = ["rojo", "verde", "azul"]
+print(colores[1])`,
+   opts:[{x:'"rojo"',fb:'"rojo" está en el índice 0. En Python se cuenta desde 0.'},{x:'"azul"',fb:'"azul" está en el índice 2.'},{x:'"verde"',ok:1},{x:'Error',fb:'El índice 1 existe: la lista tiene índices 0, 1 y 2.'}],
+   hint:'Numera los elementos empezando desde 0: rojo es 0, verde es…',
+   exp:'Los índices empiezan en 0: colores[0] = "rojo", colores[1] = "verde", colores[2] = "azul".'},
+
+  {t:'mc', q:'¿Qué valor muestra print?', code:
+`colores = ["rojo", "verde", "azul"]
+print(colores[-1])`,
+   opts:[{x:'Error',fb:'Python permite índices negativos: cuentan desde el final de la lista.'},{x:'"azul"',ok:1},{x:'"rojo"',fb:'"rojo" es colores[0] o colores[-3].'},{x:'"verde"',fb:'"verde" es colores[-2].'}],
+   hint:'Los índices negativos cuentan desde el final.',
+   exp:'colores[-1] es siempre el último elemento, sin importar el largo de la lista. Muy útil para leer el último puntaje registrado.'},
+
+  {t:'mc', q:'¿Qué ocurre al ejecutar este código?', code:
+`colores = ["rojo", "verde", "azul"]
+print(colores[3])`,
+   opts:[{x:'Muestra "azul", el último',fb:'"azul" está en el índice 2. El índice 3 sería un cuarto elemento, que no existe.'},{x:'Muestra "rojo", vuelve al inicio',fb:'Las listas no "dan la vuelta" con índices positivos.'},{x:'Muestra None, el lugar vacío',fb:'No hay un lugar vacío: el índice 3 directamente no existe.'},{x:'Da error: índice fuera de rango',ok:1}],
+   hint:'Con 3 elementos, ¿cuáles son los índices válidos?',
+   exp:'3 elementos → índices 0, 1 y 2. Pedir colores[3] produce IndexError: list index out of range.',
+   who:'gatiel'},
+
+  {t:'mc', q:'¿Qué muestra print?', code:
+`lista = [4, 7]
+lista.append(9)
+print(len(lista))`,
+   opts:[{x:'2',fb:'Esa era la cantidad antes del append.'},{x:'20',fb:'len no suma los valores: cuenta cuántos elementos hay.'},{x:'9',fb:'9 es el último valor, no la cantidad de elementos.'},{x:'3',ok:1}],
+   hint:'len() cuenta elementos. ¿Cuántos hay después de agregar el 9?',
+   exp:'Después del append la lista es [4, 7, 9]: len() devuelve 3.'},
+
+  {t:'mc', q:'¿Qué muestra print al terminar el ciclo?', code:
+`puntos = []
+for i in range(3):
+    puntos.append(i * 2)
+print(puntos)`,
+   opts:[{x:'[0, 2, 4]',ok:1},{x:'[2, 4, 6]',fb:'range(3) empieza en 0, no en 1: i toma 0, 1 y 2.'},{x:'[0, 1, 2]',fb:'Se agrega i * 2, no i.'},{x:'[6]',fb:'append agrega un elemento en cada vuelta: al final hay tres.'}],
+   hint:'range(3) da 0, 1, 2. En cada vuelta se agrega i * 2.',
+   exp:'Vueltas: i = 0 → 0, i = 1 → 2, i = 2 → 4. La lista queda [0, 2, 4].'}
+]},
+
+{ id:'m3', ico:'🔤', crit:true, titulo:'Cadenas y len()',
+  desc:'Contar caracteres, unir texto con números y leer letras por índice.',
+  retos:[
+  {t:'in', num:true, q:'Escribe el número que muestra este código.', code:
+`nombre = "Techi"
+print(len(nombre))`,
+   ans:['5'], wrong:{'1':'len() no cuenta cuántas variables o palabras hay: cuenta los caracteres de la cadena, uno por uno.'},
+   hint:'Cuenta letra por letra: T, e, c, h, i.',
+   exp:'len() cuenta caracteres: "Techi" tiene 5.', who:'gatiel'},
+
+  {t:'in', num:true, q:'Escribe el número que muestra este código.', code:
+`clave = "Bit 2"
+print(len(clave))`,
+   ans:['5'], wrong:{'4':'El espacio también es un carácter y se cuenta.','1':'len() cuenta todos los caracteres de la cadena, no las palabras.','2':'len() no cuenta palabras: cuenta caracteres, incluido el espacio.'},
+   hint:'Cuenta todo lo que está entre comillas, también el espacio.',
+   exp:'B, i, t, espacio, 2 = 5 caracteres. El espacio cuenta.'},
+
+  {t:'mc', q:'¿Qué muestra print?', code:
+`palabra = "Gatiel"
+print(palabra[0])`,
+   opts:[{x:'a',fb:'"a" está en el índice 1. Las cadenas, igual que las listas, empiezan en 0.'},{x:'G',ok:1},{x:'Gatiel',fb:'[0] no devuelve toda la palabra: devuelve un solo carácter.'},{x:'Error',fb:'Las cadenas se pueden leer por índice, igual que las listas.'}],
+   hint:'Una cadena funciona como una lista de letras.',
+   exp:'palabra[0] es el primer carácter: "G". Los índices en cadenas funcionan igual que en listas.'},
+
+  {t:'mc', q:'¿Qué muestra este programa?', code:
+`mensaje = "Puntos: " + str(12)
+print(mensaje)`,
+   opts:[{x:'Puntos: str(12)',fb:'str(12) no se escribe tal cual: se ejecuta y convierte el 12 en "12".'},{x:'Puntos: + 12',fb:'El + no aparece en el resultado: es la operación que une las dos cadenas.'},{x:'Puntos: 12',ok:1},{x:'12 Puntos:',fb:'Se une en el orden escrito: primero "Puntos: " y después "12".'}],
+   hint:'str(12) convierte el número en texto. Después, + une los dos textos.',
+   exp:'"Puntos: " + "12" = "Puntos: 12". Así se muestra el puntaje en la pantalla del juego.'},
+
+  {t:'mc', q:'¿Qué pasa al ejecutar este código?', code:
+`vidas = 3
+print("Vidas: " + vidas)`,
+   opts:[{x:'Muestra: Vidas: 3',fb:'Parece lógico, pero Python no une texto con números automáticamente.'},{x:'Da error de tipos (TypeError)',ok:1},{x:'Muestra: Vidas: + 3',fb:'El + es una operación, no se muestra.'},{x:'Muestra: Vidas3 sin espacio',fb:'No llega a mostrar nada: Python se detiene antes.'}],
+   hint:'"Vidas: " es texto y vidas es un número. ¿Python puede sumarlos así?',
+   exp:'No se puede usar + entre str e int. La corrección es "Vidas: " + str(vidas).', who:'gatiel'},
+
+  {t:'mc', q:'¿Cuál es la corrección adecuada del código anterior?',
+   opts:[{x:'print("Vidas: " + int(vidas))',fb:'vidas ya es int. El problema es que el texto necesita otro texto para unirse.'},{x:'print("Vidas: " + str(vidas))',ok:1},{x:'print("Vidas: " - str(vidas))',fb:'Con - no se unen cadenas: eso produce otro error.'},{x:'print("Vidas: " + vidas())',fb:'vidas es una variable, no una función: no lleva paréntesis.'}],
+   hint:'Hay que convertir el número en texto.',
+   exp:'str(vidas) convierte el 3 en "3", y entonces el + puede unir las dos cadenas.'}
+]},
+
+{ id:'m4', ico:'🧮', crit:true, titulo:'Contador vs. acumulador',
+  desc:'Dos patrones que se parecen pero no son iguales.',
+  retos:[
+  {t:'mc', q:'En la instrucción cantidad = cantidad + 1, ¿qué función cumple cantidad?',
+   opts:[{x:'Acumulador',fb:'Casi. El acumulador suma valores que cambian (total = total + precio). Si siempre se suma 1, es un contador.'},{x:'Contador',ok:1},{x:'Condicional',fb:'Un condicional es un if. Aquí no se evalúa ninguna condición.'},{x:'Constante',fb:'Una constante no cambia. cantidad aumenta en cada ejecución.'}],
+   hint:'Mira lo que se suma: ¿siempre es lo mismo o cambia?',
+   exp:'Contador: suma siempre 1 para contar cuántas veces ocurre algo (monedas recogidas, enemigos tocados).', who:'gatiel'},
+
+  {t:'mc', q:'En la instrucción total = total + puntos, ¿qué función cumple total?',
+   opts:[{x:'Contador',fb:'Un contador siempre suma 1. Aquí se suma puntos, que puede valer cualquier cosa.'},{x:'Índice',fb:'Un índice señala una posición en una lista.'},{x:'Acumulador',ok:1},{x:'Parámetro',fb:'Un parámetro es lo que recibe una función entre paréntesis.'}],
+   hint:'¿Se suma siempre 1, o se suma un valor que puede cambiar?',
+   exp:'Acumulador: va sumando valores distintos (puntos de cada nivel, precios, tiempos).'},
+
+  {t:'trace', q:'Sigue las variables hasta el final del ciclo.', code:
+`lista = [5, 3, 8]
+cantidad = 0
+total = 0
+for x in lista:
+    cantidad = cantidad + 1
+    total = total + x
+print(cantidad, total)`,
+   fields:[{l:'Valor final de cantidad',a:'3'},{l:'Valor final de total',a:'16'}],
+   hint:'Haz una tabla: en cada vuelta, cantidad sube 1 y total suma el valor de x.',
+   exp:'cantidad: 1, 2, 3 (contador). total: 5, 8, 16 (acumulador). Mismo ciclo, dos patrones.'},
+
+  {t:'mc', q:'¿Qué muestra este programa?', code:
+`def contar_mayores(lista, minimo):
+    cantidad = 0
+    for x in lista:
+        if x >= minimo:
+            cantidad = cantidad + 1
+    return cantidad
+
+print(contar_mayores([8, 12, 10, 5], 10))`,
+   opts:[{x:'4',fb:'4 es el largo de la lista. Solo se cuentan los que cumplen x >= 10.'},{x:'3',fb:'Revisa el 8: 8 >= 10 es falso.'},{x:'1',fb:'Revisa el 10: 10 >= 10 es verdadero (mayor O igual).'},{x:'2',ok:1}],
+   hint:'Revisa uno por uno: 8, 12, 10, 5. ¿Cuáles son mayores o iguales a 10?',
+   exp:'Cumplen 12 y 10 → cantidad = 2. El contador solo sube cuando la condición es verdadera.'},
+
+  {t:'in', q:'Completa la línea para contar cuántas monedas recogió el jugador.', code:
+`if jugador.colliderect(moneda):
+    recogidas = ______`,
+   ans:['recogidas+1','1+recogidas'], wrong:{'1':'Así recogidas siempre valdría 1. Hay que sumarle 1 a su valor anterior.','recogidas':'Así el valor no cambia. Falta sumarle algo.'},
+   hint:'Usa el patrón del contador: variable = variable + 1.',
+   exp:'recogidas = recogidas + 1. Cada colisión suma una moneda al conteo.'}
+]},
+
+{ id:'m5', ico:'🎮', crit:false, titulo:'El orden importa',
+  desc:'Prioridad en if–elif y cómo funcionan draw() y update().',
+  retos:[
+  {t:'mc', q:'Si vidas = 0 y puntaje = 12, ¿qué valor queda en estado?', code:
+`if vidas == 0:
+    estado = "perdio"
+elif puntaje >= 10:
+    estado = "gano"`,
+   opts:[{x:'"gano"',fb:'Llegó a 10, pero esa condición se revisa después. En un if–elif, gana la primera verdadera.'},{x:'"perdio"',ok:1},{x:'Error',fb:'No hay error: que dos condiciones sean verdaderas está permitido.'},{x:'Ambos valores',fb:'En un if–elif se ejecuta un solo bloque.'}],
+   hint:'Revisa las condiciones de arriba hacia abajo. ¿Cuál es la primera verdadera?',
+   exp:'if–elif ejecuta solo el primer bloque cuya condición es verdadera. vidas == 0 va primero.'},
+
+  {t:'mc', q:'Ahora el equipo cambió el orden. Con vidas = 0 y puntaje = 12, ¿qué queda en estado?', code:
+`if puntaje >= 10:
+    estado = "gano"
+elif vidas == 0:
+    estado = "perdio"`,
+   opts:[{x:'"perdio"',fb:'Ahora la primera condición es puntaje >= 10, y es verdadera.'},{x:'Ambos valores',fb:'Solo se ejecuta un bloque del if–elif.'},{x:'"gano"',ok:1},{x:'Error',fb:'El código es válido.'}],
+   hint:'Mismas condiciones, otro orden.',
+   exp:'Cambiar el orden cambia la prioridad. Decidir qué se revisa primero es una decisión de diseño del juego.', who:'gatiel'},
+
+  {t:'mc', q:'En Pygame Zero, ¿cuántas veces se ejecuta update()?',
+   opts:[{x:'Una sola vez, al iniciar el juego',fb:'Si fuera así, el jugador no podría moverse. update() se repite todo el tiempo.'},{x:'Unas 60 veces por segundo',ok:1},{x:'Solo cuando se presiona una tecla',fb:'Para eso existe on_key_down(). update() se ejecuta aunque nadie toque nada.'},{x:'Solo cuando el jugador pierde',fb:'update() funciona durante todo el juego.'}],
+   hint:'¿Cómo logra el juego que la moneda caiga sola, sin que nadie toque una tecla?',
+   exp:'update() se ejecuta continuamente, unas 60 veces por segundo. Por eso ahí van el movimiento y las colisiones.'},
+
+  {t:'mc', q:'Si dentro de update() está jugador.x = jugador.x + 2, ¿cuántos píxeles avanza el jugador en 1 segundo?',
+   opts:[{x:'2 píxeles',fb:'Eso es por cada ejecución de update(). En un segundo hay unas 60.'},{x:'60 píxeles',fb:'60 es la cantidad de ejecuciones. Falta multiplicar por lo que avanza en cada una.'},{x:'62 píxeles',fb:'No se suman: se multiplican las 60 ejecuciones por 2 píxeles.'},{x:'120 píxeles',ok:1}],
+   hint:'update() se ejecuta unas 60 veces por segundo, y en cada una avanza 2.',
+   exp:'60 ejecuciones × 2 píxeles = 120 píxeles por segundo. Así se calcula la velocidad del juego.'},
+
+  {t:'mc', q:'¿En qué función va screen.draw.text("Puntos: " + str(puntaje), (10, 10))?',
+   opts:[{x:'draw()',ok:1},{x:'update()',fb:'update() calcula y mueve. Lo que se ve en pantalla se dibuja en otra función.'},{x:'on_key_down()',fb:'Esa función reacciona a las teclas; no dibuja.'},{x:'En ninguna, va suelta',fb:'Fuera de las funciones se ejecutaría una sola vez y el texto no se actualizaría.'}],
+   hint:'¿Qué función se encarga de lo que se ve?',
+   exp:'draw() dibuja todo lo visible (fondo, actores, textos). update() maneja la lógica.'}
+]},
+
+{ id:'m6', ico:'🐞', crit:false, titulo:'Cazador de bugs',
+  desc:'Toca la línea que tiene el error. Modo depurador.',
+  retos:[
+  {t:'line', q:'Toca la línea que tiene el error de sintaxis.', code:
+`def mover_jugador():
+    jugador.x = jugador.x + 5
+
+def verificar_meta()
+    if puntaje >= 10:
+        estado = "gano"`,
+   bad:4, hint:'Revisa el final de cada línea que empieza con def, if, for o while.',
+   exp:'Línea 4: falta el ":" al final del def. Toda línea def, if, for o while termina con dos puntos.'},
+
+  {t:'line', q:'Este código da error al ejecutarse. Toca la línea responsable.', code:
+`vidas = 3
+puntaje = 0
+puntaje = puntaje + 1
+print("Vidas: " + vidas)`,
+   bad:4, hint:'Busca dónde se intenta unir texto con un número.',
+   exp:'Línea 4: "Vidas: " + vidas mezcla str con int. Se corrige con str(vidas).'},
+
+  {t:'line', q:'Este código se detiene con IndexError. ¿En qué línea?', code:
+`niveles = ["bosque", "cueva", "castillo"]
+print(niveles[0])
+print(niveles[-1])
+print(niveles[3])`,
+   bad:4, hint:'Cuenta los índices válidos de la lista.',
+   exp:'Línea 4: niveles[3] no existe; los índices válidos son 0, 1 y 2 (o -1, -2, -3).'},
+
+  {t:'line', q:'Esta función debería sumar TODA la lista, pero devuelve solo el primer valor. Toca la línea del problema.', code:
+`def sumar_todo(lista):
+    total = 0
+    for x in lista:
+        total = total + x
+        return total
+
+print(sumar_todo([4, 6, 10]))`,
+   bad:5, hint:'Recuerda lo que hace return con la función. ¿En qué vuelta del for se ejecuta?',
+   exp:'Línea 5: el return está dentro del for (tiene más sangría). Se ejecuta en la 1ra vuelta y termina la función. Debe ir al nivel del for, fuera del ciclo.', who:'gatiel'},
+
+  {t:'line', q:'Este código da error. Toca la línea con el método equivocado.', code:
+`monedas = []
+monedas.add(5)
+monedas.append(10)
+print(len(monedas))`,
+   bad:2, hint:'Uno de los métodos no existe para las listas.',
+   exp:'Línea 2: las listas no tienen .add(). Para agregar al final se usa .append().'},
+
+  {t:'mc', q:'Esta función devuelve None. ¿Cuál es la corrección?', code:
+`def calcular_total(lista):
+    total = 0
+    for x in lista:
+        total = total + x
+
+print(calcular_total([1, 2, 3]))`,
+   opts:[{x:'Agregar print(total) dentro del for',fb:'Así se mostrarían los valores parciales, pero la función seguiría devolviendo None.'},{x:'Agregar return total dentro del for',fb:'Así la función terminaría en la 1ra vuelta y devolvería 1.'},{x:'Agregar return total después del for',ok:1},{x:'Cambiar total = 0 por total = None',fb:'Así no se podría sumar: None + 1 da error.'}],
+   hint:'La función calcula bien, pero no entrega nada. ¿Dónde debería entregar el resultado?',
+   exp:'return total después del for (misma sangría que el for) devuelve 6, la suma completa.'}
+]}
+];
+
+/* ===================== ESTADO ===================== */
+const KEY = 'batin2-mision-depuracion-v1';
+let S = load() || { nombre:'', res:{}, pistas:0, xp:0, fallados:[], revancha:null };
+let cur = null; // {mid, i, list, mode, answered, hintUsed, picks}
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const $app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const norm = s => String(s).toLowerCase().replace(/[\s"'`]/g,'').replace(/\.0$/,'');
+const MASC = { bit:['🤖','Bit'], gatiel:['🦊','Gatiel'], techi:['👩‍💻','Techi'] };
+const findReto = key => { const [m,i] = key.split(':'); return MISIONES.find(x=>x.id===m).retos[+i]; };
+
+/* Resaltado simple de Python */
+function hl(line){
+  const re = /(#.*$)|("[^"]*"|'[^']*')|\b(def|return|if|elif|else|for|in|while|and|or|not|None|True|False|global)\b|\b(print|len|str|int|range|update|draw)\b(?=\()|\b(\d+)\b|(_{3,})/g;
+  let out='', last=0, m;
+  while((m = re.exec(line))){
+    out += esc(line.slice(last, m.index));
+    const t = esc(m[0]);
+    out += m[1]?`<span class="c">${t}</span>`:m[2]?`<span class="s">${t}</span>`:m[3]?`<span class="k">${t}</span>`:m[4]?`<span class="f">${t}</span>`:m[5]?`<span class="nm">${t}</span>`:`<span class="blank">${t}</span>`;
+    last = re.lastIndex;
+  }
+  return out + esc(line.slice(last));
+}
+function codeBlock(code, clickable){
+  const lines = code.split('\n');
+  return `<div class="code" role="${clickable?'group':'region'}" aria-label="Código">` + lines.map((l,i)=>
+    clickable ? `<button class="ln" data-line="${i+1}"><span class="n">${i+1}</span><span>${hl(l)||' '}</span></button>`
+              : `<div class="ln"><span class="n">${i+1}</span><span>${hl(l)||' '}</span></div>`).join('') + `</div>`;
+}
+
+/* ===================== PANTALLAS ===================== */
+function totalRetos(){ return MISIONES.reduce((s,m)=>s+m.retos.length,0); }
+function topBar(){
+  return `<div class="top"><a class="volver" href="../../aprendiendo.html#programacion">← Sitio BATIN</a><span class="eyebrow">2do BATIN · Práctica</span><span class="chip">XP <b>${S.xp}</b></span></div>`;
+}
+
+function home(){
+  cur = null;
+  if(!S.nombre){
+    $app.innerHTML = `${topBar()}
+    <section class="hero">
+      <div class="prompt">&gt;&gt;&gt; iniciar mision_depuracion.py</div>
+      <h1>Misión <span class="acc">Depuración</span> BIT</h1>
+      <p class="muted">Después de la prueba, toca reforzar. Son 6 misiones cortas sobre los temas que más costaron. Cada error trae una explicación de por qué pasó, así que equivocarse también suma.</p>
+    </section>
+    <div class="cast">
+      <div><b>🤖 Bit</b>Te explica qué hace cada línea de código.</div>
+      <div><b>🦊 Gatiel</b>Te avisa cuando una respuesta parece correcta pero es una trampa.</div>
+      <div><b>👩‍💻 Techi</b>Te acompaña al cerrar cada misión.</div>
+    </div>
+    <form class="card" id="f-nombre">
+      <label for="nombre" class="q">¿Cómo te llamas?</label>
+      <div class="namebox"><input type="text" id="nombre" autocomplete="name" placeholder="Nombre y apellido" required><button class="btn">Empezar</button></div>
+      <p class="small muted">Tu nombre aparece en el código de resultados que vas a entregar al final.</p>
+    </form>`;
+    document.getElementById('f-nombre').onsubmit = e => { e.preventDefault(); const v = document.getElementById('nombre').value.trim(); if(!v) return; S.nombre = v; save(); home(); };
+    return;
+  }
+  const hechas = MISIONES.filter(m=>S.res[m.id]).length;
+  const pend = S.fallados.length;
+  $app.innerHTML = `${topBar()}
+  <section class="hero">
+    <div class="prompt">&gt;&gt;&gt; hola, ${esc(S.nombre.split(' ')[0])}</div>
+    <h1>Elige tu <span class="acc">misión</span></h1>
+    <p class="muted">Empieza por las de <span class="tag crit" style="margin:0">zona crítica</span>: son los temas con menos aciertos en la prueba. Puedes hacerlas en cualquier orden.</p>
+  </section>
+  <div class="missions">
+    ${MISIONES.map(m=>{ const r = S.res[m.id]; const pct = r? Math.round(100*r.ok/r.n):0;
+      return `<button class="mission" data-m="${m.id}">
+        <span class="ico" aria-hidden="true">${m.ico}</span>
+        <span><span class="t">${esc(m.titulo)}</span>${m.crit?'<span class="tag crit">zona crítica</span>':''}${r?'<span class="tag done">hecha</span>':''}
+          <span class="d" style="display:block">${esc(m.desc)}</span>
+          ${r?`<span class="bar"><i style="width:${pct}%"></i></span>`:''}</span>
+        <span class="s">${r?`${r.ok}/${r.n}`:`${m.retos.length} retos`}</span></button>`;}).join('')}
+    <button class="mission revancha" id="rev" ${pend?'':'disabled'}>
+      <span class="ico" aria-hidden="true">🔁</span>
+      <span><span class="t">Revancha</span><span class="d" style="display:block">${pend?`Vuelve a intentar los ${pend} retos que fallaste.`:'Aquí aparecen los retos que falles, para intentarlos de nuevo.'}</span></span>
+      <span class="s">${pend}</span></button>
+  </div>
+  <div class="actions" style="justify-content:space-between">
+    <button class="btn ghost" id="reset">Empezar de cero</button>
+    <button class="btn" id="fin" ${hechas===MISIONES.length?'':'disabled'}>Ver resultados (${hechas}/${MISIONES.length})</button>
+  </div>
+  <div id="confirm"></div>
+  <footer>Prof. Daniela Ferreira · CED Miguela Rodríguez · Algorítmica + Laboratorio</footer>`;
+  $app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m));
+  document.getElementById('rev').onclick = ()=> pend && startRevancha();
+  document.getElementById('fin').onclick = ()=> results();
+  document.getElementById('reset').onclick = ()=>{
+    document.getElementById('confirm').innerHTML = `<div class="card"><p>¿Borrar todo tu progreso en este dispositivo?</p><div class="actions"><button class="btn ghost" id="no">Cancelar</button><button class="btn" id="si">Sí, borrar</button></div></div>`;
+    document.getElementById('no').onclick = ()=> document.getElementById('confirm').innerHTML='';
+    document.getElementById('si').onclick = ()=>{ S = { nombre:'', res:{}, pistas:0, xp:0, fallados:[], revancha:null }; save(); home(); };
+  };
+  window.scrollTo(0,0);
+}
+
+function start(mid){
+  const m = MISIONES.find(x=>x.id===mid);
+  cur = { mid, titulo:m.titulo, list: m.retos.map((_,i)=>`${mid}:${i}`), i:0, ok:0, marks:[], mode:'mision' };
+  question();
+}
+function startRevancha(){
+  cur = { mid:'rev', titulo:'Revancha', list: shuffle(S.fallados), i:0, ok:0, marks:[], mode:'revancha' };
+  question();
+}
+
+function question(){
+  const key = cur.list[cur.i], r = findReto(key);
+  cur.answered = false; cur.hintUsed = false; cur.picks = new Set(); cur.line = null;
+  cur.order = (r.t==='mc'||r.t==='multi') ? shuffle(r.opts.map((o,i)=>i)) : null;
+  const dots = cur.list.map((_,i)=>`<i class="${i<cur.i?(cur.marks[i]?'ok':'no'):i===cur.i?'cur':''}"></i>`).join('');
+  let input = '';
+  if(r.t==='mc'||r.t==='multi'){
+    input = `<div class="opts">${cur.order.map((oi,k)=>`<button class="opt ${r.t==='multi'?'box':''}" data-o="${oi}"><span class="l">${r.t==='multi'?'':String.fromCharCode(65+k)+')'}</span><span class="x">${esc(r.opts[oi].x)}</span></button>`).join('')}</div>`;
+  } else if(r.t==='in'){
+    input = `<div class="namebox"><input type="text" id="resp" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="${r.num?'numeric':'text'}" placeholder="Escribe tu respuesta"></div>`;
+  } else if(r.t==='trace'){
+    input = `<div class="fields">${r.fields.map((f,k)=>`<div class="field"><label for="tr${k}">${esc(f.l)}</label><input type="text" id="tr${k}" inputmode="numeric" autocomplete="off"></div>`).join('')}</div>`;
+  }
+  $app.innerHTML = `${topBar()}
+  <div class="qhead"><h2>${esc(cur.titulo)}</h2><span class="chip">${cur.i+1} / ${cur.list.length}</span></div>
+  <div class="dots" aria-hidden="true">${dots}</div>
+  <section class="card" aria-live="polite">
+    <p class="q">${esc(r.q)}</p>
+    ${r.code? codeBlock(r.code, r.t==='line') : ''}
+    ${input}
+    <details class="hint" id="hint"><summary>¿Por dónde empiezo?</summary><p>${esc(r.hint)}</p></details>
+    <div class="actions"><button class="btn ghost" id="salir">Volver al mapa</button><button class="btn" id="ok" ${r.t==='in'||r.t==='trace'?'':'disabled'}>Comprobar</button></div>
+  </section>
+  <div id="fb"></div>`;
+  const okBtn = document.getElementById('ok');
+  document.getElementById('hint').addEventListener('toggle', e=>{ if(e.target.open && !cur.answered && !cur.hintUsed){ cur.hintUsed = true; S.pistas++; save(); }});
+  document.getElementById('salir').onclick = home;
+  if(r.t==='mc') $app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(cur.answered) return; $app.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); cur.picks=new Set([+b.dataset.o]); okBtn.disabled=false; });
+  if(r.t==='multi') $app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(cur.answered) return; const o=+b.dataset.o; cur.picks.has(o)?cur.picks.delete(o):cur.picks.add(o); b.classList.toggle('sel'); okBtn.disabled = cur.picks.size===0; });
+  if(r.t==='line') $app.querySelectorAll('button.ln').forEach(b=>b.onclick=()=>{ if(cur.answered) return; $app.querySelectorAll('button.ln').forEach(x=>x.classList.remove('pick')); b.classList.add('pick'); cur.line=+b.dataset.line; okBtn.disabled=false; });
+  if(r.t==='in'){ const inp=document.getElementById('resp'); inp.focus({preventScroll:true}); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); }); }
+  okBtn.onclick = check;
+  window.scrollTo(0,0);
+}
+
+function check(){
+  if(cur.answered) return;
+  const key = cur.list[cur.i], r = findReto(key);
+  let ok = false, specific = '';
+  if(r.t==='mc'){
+    const o = [...cur.picks][0]; if(o===undefined) return;
+    ok = !!r.opts[o].ok; specific = ok? '' : r.opts[o].fb;
+    $app.querySelectorAll('.opt').forEach(b=>{ const oi=+b.dataset.o; b.disabled=true; if(r.opts[oi].ok) b.classList.add('right'); else if(oi===o) b.classList.add('wrong'); });
+  } else if(r.t==='multi'){
+    const correctas = r.opts.map((o,i)=>o.ok?i:-1).filter(i=>i>=0);
+    const malas = [...cur.picks].filter(i=>!r.opts[i].ok).length;
+    const faltan = correctas.filter(i=>!cur.picks.has(i)).length;
+    ok = malas===0 && faltan===0;
+    if(!ok){
+      const p=[];
+      if(faltan) p.push(`te faltó marcar ${faltan} opción${faltan>1?'es':''} correcta${faltan>1?'s':''}`);
+      if(malas) p.push(`marcaste ${malas} opción${malas>1?'es':''} falsa${malas>1?'s':''}`);
+      specific = 'Casi: ' + p.join(' y ') + '. En las preguntas de "marca TODAS" el punto se gana solo con la selección completa.';
+    }
+    $app.querySelectorAll('.opt').forEach(b=>{ const oi=+b.dataset.o; b.disabled=true; if(r.opts[oi].ok) b.classList.add('right'); else if(cur.picks.has(oi)) b.classList.add('wrong'); });
+  } else if(r.t==='in'){
+    const v = document.getElementById('resp').value; if(!v.trim()) return;
+    ok = r.ans.some(a=>norm(a)===norm(v));
+    if(!ok){ specific = (r.wrong && r.wrong[norm(v)]) || `Escribiste "${v.trim()}". La respuesta esperada es: ${r.ans[0].replace('+',' + ')}.`; }
+    const inp = document.getElementById('resp'); inp.disabled = true; inp.style.borderColor = ok?'var(--ok)':'var(--bad)';
+  } else if(r.t==='trace'){
+    const vals = r.fields.map((f,k)=>document.getElementById('tr'+k).value);
+    if(vals.some(v=>!v.trim())) { document.getElementById('fb').innerHTML = `<p class="small" style="color:var(--warn)">Completa todos los casilleros antes de comprobar.</p>`; return; }
+    let bien = 0;
+    r.fields.forEach((f,k)=>{ const inp=document.getElementById('tr'+k); const g = norm(vals[k])===norm(f.a); bien+=g; inp.classList.add(g?'ok':'no'); inp.disabled=true; if(!g) inp.value = `${vals[k].trim()} → ${f.a}`; });
+    ok = bien===r.fields.length;
+    if(!ok) specific = `Acertaste ${bien} de ${r.fields.length} valores. Los correctos quedaron escritos al lado de tu respuesta.`;
+  } else if(r.t==='line'){
+    if(cur.line===null) return;
+    ok = cur.line===r.bad;
+    $app.querySelectorAll('button.ln').forEach(b=>{ const n=+b.dataset.line; b.disabled=true; if(n===r.bad) b.classList.add('right'); else if(n===cur.line) b.classList.add('wrong'); });
+    if(!ok) specific = `Tocaste la línea ${cur.line}, pero esa línea es correcta. El problema está en la línea ${r.bad}.`;
+  }
+  cur.answered = true; cur.marks[cur.i] = ok; if(ok) cur.ok++;
+  const gain = ok ? (cur.hintUsed? 6 : 10) * (cur.mode==='revancha'? .5 : 1) : 0;
+  S.xp += gain;
+  const chipXP = $app.querySelector('.top .chip b'); if(chipXP) chipXP.textContent = S.xp;
+  if(cur.mode==='mision'){
+    if(!ok && !S.fallados.includes(key)) S.fallados.push(key);
+  } else {
+    if(ok) S.fallados = S.fallados.filter(k=>k!==key);
+    S.revancha = S.revancha || {intentos:0, recuperados:0};
+    S.revancha.intentos++; if(ok) S.revancha.recuperados++;
+  }
+  save();
+  const who = ok ? (cur.hintUsed? 'bit' : 'techi') : (r.who || 'bit');
+  const [emo, nom] = MASC[who];
+  const ttl = ok ? (cur.hintUsed? `Correcto con pista · +${gain} XP` : `¡Correcto! · +${gain} XP`) : 'Todavía no';
+  const ultimo = cur.i === cur.list.length-1;
+  document.getElementById('fb').innerHTML = `
+  <div class="fb ${ok?'ok':'no'}"><span class="who" aria-hidden="true">${emo}</span>
+    <div class="body"><span class="ttl">${nom} · ${ttl}</span>
+      ${specific?`<p>${esc(specific)}</p>`:''}
+      <p>${esc(r.exp)}</p>
+      ${!ok && cur.mode==='mision'?'<p class="small muted">Este reto se guardó en tu Revancha.</p>':''}
+    </div></div>
+  <div class="actions" style="margin-top:12px"><button class="btn" id="next">${ultimo?'Terminar misión':'Siguiente'}</button></div>`;
+  const ok2 = document.getElementById('ok'); ok2.disabled = true;
+  const nx = document.getElementById('next'); nx.onclick = next; nx.focus({preventScroll:true});
+  document.getElementById('fb').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'nearest'});
+}
+
+function next(){
+  if(cur.i < cur.list.length-1){ cur.i++; question(); return; }
+  if(cur.mode==='mision'){
+    const prev = S.res[cur.mid];
+    if(!prev || cur.ok > prev.ok) S.res[cur.mid] = { ok:cur.ok, n:cur.list.length, primera: prev? prev.primera : cur.ok };
+    save();
+  }
+  missionEnd();
+}
+
+function missionEnd(){
+  const pct = Math.round(100*cur.ok/cur.list.length);
+  const msg = cur.mode==='revancha'
+    ? (cur.ok===cur.list.length? 'Recuperaste todos los retos pendientes. Eso es aprender del error.' : `Recuperaste ${cur.ok}. Los que quedan siguen en tu Revancha: relee la explicación antes de volver a intentarlo.`)
+    : pct>=80 ? 'Muy bien. Este tema ya lo manejas: en el proyecto vas a usarlo todo el tiempo.'
+    : pct>=50 ? 'Vas bien. Repasa los que fallaste en la Revancha y vuelve a intentarlo.'
+    : 'Este tema todavía cuesta, y está bien: para eso es la práctica. Lee las explicaciones con calma y prueba el código en Pydroid 3.';
+  $app.innerHTML = `${topBar()}
+  <section class="hero"><div class="prompt">&gt;&gt;&gt; mision_terminada()</div><h1>${esc(cur.titulo)}</h1></section>
+  <div class="stats"><div class="stat"><b>${cur.ok}/${cur.list.length}</b><span>aciertos</span></div><div class="stat"><b>${pct}%</b><span>logro</span></div><div class="stat"><b>${S.xp}</b><span>XP total</span></div></div>
+  <div class="fb ok" style="background:var(--panel);border-color:var(--line)"><span class="who" aria-hidden="true">👩‍💻</span><div class="body"><span class="ttl" style="color:var(--violet)">Techi</span><p>${msg}</p></div></div>
+  <div class="actions"><button class="btn" id="mapa">Volver al mapa</button></div>`;
+  document.getElementById('mapa').onclick = home;
+  window.scrollTo(0,0);
+}
+
+function results(){
+  const filas = MISIONES.map(m=>{ const r=S.res[m.id]; return {m, r}; });
+  const okT = filas.reduce((s,x)=>s+(x.r?x.r.primera:0),0);
+  const tot = totalRetos();
+  const rev = S.revancha || {intentos:0, recuperados:0};
+  const codigo = `PRACT-2BATIN | ${S.nombre} | ` + filas.map((x,i)=>`M${i+1} ${x.r?x.r.primera:0}/${x.m.retos.length}`).join(' · ') +
+    ` | 1er intento ${okT}/${tot} | Revancha ${rev.recuperados}/${rev.intentos} | Pistas ${S.pistas} | Pendientes ${S.fallados.length} | XP ${S.xp}`;
+  $app.innerHTML = `${topBar()}
+  <section class="hero"><div class="prompt">&gt;&gt;&gt; reporte_final()</div><h1>¡Misión <span class="acc">cumplida</span>!</h1>
+  <p class="muted">${esc(S.nombre)}, este es tu resumen. Copia el código de abajo y entrégalo en Classroom.</p></section>
+  <div class="stats"><div class="stat"><b>${okT}/${tot}</b><span>al 1er intento</span></div><div class="stat"><b>${rev.recuperados}</b><span>recuperados</span></div><div class="stat"><b>${S.pistas}</b><span>pistas usadas</span></div></div>
+  <section class="card"><table class="res">${filas.map(x=>`<tr><td>${x.m.ico} ${esc(x.m.titulo)}</td><td>${x.r?x.r.primera:0}/${x.m.retos.length}</td></tr>`).join('')}</table></section>
+  <section class="card"><span class="eyebrow">Código de resultados</span><div class="codeout" id="cod">${esc(codigo)}</div>
+    <div class="actions"><span class="small muted" id="copiado" style="margin-right:auto;align-self:center"></span><button class="btn" id="copiar">Copiar código</button></div></section>
+  ${S.fallados.length?`<p class="small muted">Te quedan ${S.fallados.length} retos en Revancha. Puedes seguir practicando: el código registra tu 1er intento y lo que recuperes.</p>`:''}
+  <div class="actions"><button class="btn ghost" id="mapa">Volver al mapa</button></div>`;
+  document.getElementById('mapa').onclick = home;
+  document.getElementById('copiar').onclick = ()=>{
+    const el = document.getElementById('copiado');
+    const selectIt = ()=>{ const rg=document.createRange(); rg.selectNodeContents(document.getElementById('cod')); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); el.textContent='Texto seleccionado: cópialo con el menú del celular.'; };
+    try{ navigator.clipboard.writeText(codigo).then(()=>{ el.textContent='Copiado ✔'; }, selectIt); }catch(e){ selectIt(); }
+  };
+  window.scrollTo(0,0);
+}
+
+home();
+</script>
+</body>
+</html>
