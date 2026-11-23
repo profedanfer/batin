@@ -212,6 +212,84 @@
 .ic-externo.azul { color: var(--azul); border-color: var(--azul-b); background: var(--azul-s); }
 .ic-externo.azul:hover { background: var(--azul-m); }
 
+/* Evaluación ICIENTEC 2026 */
+.eval-box {
+  background: linear-gradient(135deg, var(--azul-s), transparent 60%), var(--bg3);
+  border: 1.5px solid var(--azul-b);
+  border-left: 5px solid var(--azul);
+  border-radius: var(--r2);
+  padding: 26px 28px;
+  margin-bottom: 40px;
+}
+.eval-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.eval-ico { font-size: 38px; line-height: 1; }
+.eval-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin-bottom: 4px;
+}
+.eval-titulo {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--texto-fuerte);
+}
+.eval-desc {
+  font-size: 13px;
+  color: var(--texto2);
+  line-height: 1.65;
+  margin-top: 6px;
+}
+.eval-opciones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.eval-op {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg4);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  text-decoration: none;
+  transition: all .2s;
+}
+.eval-op:hover { transform: translateY(-2px); }
+.eval-op.expo { border-left: 3px solid var(--azul); }
+.eval-op.staff { border-left: 3px solid var(--violeta); }
+.eval-op.expo:hover { border-color: var(--azul-b); box-shadow: 0 6px 20px var(--azul-s); }
+.eval-op.staff:hover { border-color: var(--violeta-b); box-shadow: 0 6px 20px var(--violeta-s); }
+.eval-op-ico { font-size: 26px; flex-shrink: 0; }
+.eval-op-texto { flex: 1; }
+.eval-op-quien {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  margin-bottom: 3px;
+}
+.eval-op.expo .eval-op-quien { color: var(--azul); }
+.eval-op.staff .eval-op-quien { color: var(--violeta); }
+.eval-op-nombre { font-size: 14px; font-weight: 700; color: var(--texto-fuerte); }
+.eval-op-sub { font-size: 12px; color: var(--texto3); margin-top: 2px; }
+.eval-op-flecha {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.eval-op.expo .eval-op-flecha { color: var(--azul); background: var(--azul-s); border: 1px solid var(--azul-b); }
+.eval-op.staff .eval-op-flecha { color: var(--violeta); background: var(--violeta-s); border: 1px solid var(--violeta-b); }
+
 /* Método científico */
 /* Juegos ICIENTEC */
 .juegos-section {
@@ -633,6 +711,8 @@
   .icientec-header { grid-template-columns: 1fr; }
   .icientec-char { display: none; }
   .icientec-cursos { grid-template-columns: 1fr; }
+  .eval-box { padding: 22px 18px; }
+  .eval-opciones { grid-template-columns: 1fr; }
   .juegos-section { flex-direction: column; align-items: flex-start; }
   .metodo-pasos { grid-template-columns: 1fr; }
   .metodo-paso::after { display: none; }
@@ -679,6 +759,38 @@
 <!-- ══════ ICIENTEC ══════ -->
 <div id="tab-icientec" class="tab-panel act">
   <div class="proy-section">
+
+    <!-- Evaluación ICIENTEC 2026 -->
+    <div class="eval-box">
+      <div class="eval-head">
+        <div class="eval-ico">📝</div>
+        <div>
+          <div class="eval-kicker">// evaluación · ICIENTEC 2026</div>
+          <div class="eval-titulo">¿Cómo te fue en la feria?</div>
+          <p class="eval-desc">Tu opinión sirve para mejorar la próxima edición. Elige el formulario según tu rol en la ICIENTEC 2026 — te lleva menos de 5 minutos.</p>
+        </div>
+      </div>
+      <div class="eval-opciones">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_aY3QTYDYH6iiDKo_k91CWdGecL8LgunLcUX9VDFT6WriSQ/viewform" target="_blank" rel="noopener" class="eval-op expo">
+          <span class="eval-op-ico">🔬</span>
+          <span class="eval-op-texto">
+            <span class="eval-op-quien" style="display:block">// 1er y 2° curso</span>
+            <span class="eval-op-nombre" style="display:block">Soy expositor</span>
+            <span class="eval-op-sub" style="display:block">Presentaste un proyecto en un stand</span>
+          </span>
+          <span class="eval-op-flecha">Evaluar →</span>
+        </a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeibkV4UDBkQ7yyT1zuUBQP4YiTic-61YMnL16MigMgznD8_w/viewform" target="_blank" rel="noopener" class="eval-op staff">
+          <span class="eval-op-ico">🎯</span>
+          <span class="eval-op-texto">
+            <span class="eval-op-quien" style="display:block">// 3er curso</span>
+            <span class="eval-op-nombre" style="display:block">Soy staff</span>
+            <span class="eval-op-sub" style="display:block">Organizaste y apoyaste la feria</span>
+          </span>
+          <span class="eval-op-flecha">Evaluar →</span>
+        </a>
+      </div>
+    </div>
 
     <div class="icientec-header">
       <div>
