@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulario · sitio BATIN</title>
+<style>
+  :root{
+    --naranja:#e8731a; --naranja-s:#fdebdc;
+    --violeta:#6b3fa0; --violeta-s:#ece3f6;
+    --azul:#1f6fb2;    --azul-s:#dde9f5;
+    --texto:#222; --gris:#666;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    color:var(--texto);
+    background:linear-gradient(135deg,var(--violeta-s) 0%,#fff 50%,var(--naranja-s) 100%);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .card{
+    background:#fff;
+    width:100%;max-width:520px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(60,30,100,.15);
+    overflow:hidden;
+    border-top:6px solid var(--violeta);
+  }
+  .card header{padding:28px 28px 8px;text-align:center}
+  .tag{
+    display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--violeta);background:var(--violeta-s);
+    padding:4px 12px;border-radius:999px;margin-bottom:12px;
+  }
+  h1{font-size:1.6rem;color:var(--violeta);margin-bottom:6px}
+  .sub{color:var(--gris);font-size:.98rem}
+  .opciones{display:grid;gap:14px;padding:22px 28px 28px}
+  .btn{
+    display:flex;align-items:center;gap:14px;
+    text-decoration:none;color:var(--texto);
+    padding:16px 18px;border-radius:14px;
+    border:2px solid transparent;
+    transition:transform .15s,box-shadow .15s,border-color .15s;
+  }
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12);outline:none}
+  .btn .num{
+    flex:0 0 68px;height:52px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.82rem;font-weight:800;letter-spacing:.04em;color:#fff;
+  }
+  .btn .txt strong{display:block;font-size:1.05rem}
+  .btn .txt span{font-size:.88rem;color:var(--gris)}
+  .btn .flecha{margin-left:auto;font-size:1.4rem;font-weight:700}
+  .par{background:var(--naranja-s)}
+  .par:hover,.par:focus-visible{border-color:var(--naranja)}
+  .par .num{background:var(--naranja)}
+  .par .flecha{color:var(--naranja)}
+  .impar{background:var(--azul-s)}
+  .impar:hover,.impar:focus-visible{border-color:var(--azul)}
+  .impar .num{background:var(--azul)}
+  .impar .flecha{color:var(--azul)}
+  footer{
+    text-align:center;font-size:.8rem;color:var(--gris);
+    padding:12px;border-top:1px solid #eee;background:#fafafa;
+  }
+  @media print{
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #999}
+    .btn{border:1px solid #999}
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <span class="tag">⚡ sitio BATIN</span>
+      <h1>Ingresa al enlace</h1>
+      <p class="sub">Fíjate en el último dígito de tu número de lista y elige tu formulario.</p>
+    </header>
+
+    <div class="opciones">
+      <a class="btn par" href="https://forms.gle/1ioqk4JKfXBpxtmj6" target="_blank" rel="noopener">
+        <div class="num">PAR</div>
+        <div class="txt">
+          <strong>Mi número termina en par</strong>
+          <span>0 · 2 · 4 · 6 · 8</span>
+        </div>
+        <div class="flecha">→</div>
+      </a>
+
+      <a class="btn impar" href="https://forms.gle/1ioqk4JKfXBpxtmj6" target="_blank" rel="noopener">
+        <div class="num">IMPAR</div>
+        <div class="txt">
+          <strong>Mi número termina en impar</strong>
+          <span>1 · 3 · 5 · 7 · 9</span>
+        </div>
+        <div class="flecha">→</div>
+      </a>
+    </div>
+
+    <footer>profe DanFer · sitio BATIN</footer>
+  </main>
+</body>
+</html>
